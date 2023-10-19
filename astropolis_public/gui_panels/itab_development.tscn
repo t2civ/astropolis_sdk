@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://crwfsrh6c5ik5"]
+
+[ext_resource type="PackedScene" uid="uid://bd4dl3ewvjdms" path="res://astropolis_public/gui_widgets/stats_grid.tscn" id="1"]
+[ext_resource type="Script" path="res://astropolis_public/gui_panels/itab_development.gd" id="2"]
+
+[node name="Development" type="MarginContainer"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 568.0
+offset_bottom = 347.0
+script = ExtResource("2")
+
+[node name="StatsGrid" parent="." instance=ExtResource("1")]
+layout_mode = 2
+size_flags_vertical = 1
+
+[node name="NoDevLabel" type="Label" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "LABEL_NO_DEVELOPMENT"

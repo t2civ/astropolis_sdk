@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://l7ox8b5xj6xt"
+path="res://.godot/imported/compositions_resources_percents.tsv-bd3f4feab7784d3dd7facd4fd5e5a647.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/compositions_resources_percents.tsv"
+dest_files=["res://.godot/imported/compositions_resources_percents.tsv-bd3f4feab7784d3dd7facd4fd5e5a647.tres"]
+
+[params]
+

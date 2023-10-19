@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://cn6k65ny7vupo"
+path="res://.godot/imported/major_strata.tsv-a7615d4e5d599f03d569d8c101c8cb1d.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/major_strata.tsv"
+dest_files=["res://.godot/imported/major_strata.tsv-a7615d4e5d599f03d569d8c101c8cb1d.tres"]
+
+[params]
+

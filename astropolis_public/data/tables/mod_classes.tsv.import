@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://b8dc748kuqqaf"
+path="res://.godot/imported/mod_classes.tsv-315c20df98f5c0a2dd2a24d4c3575a4b.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/mod_classes.tsv"
+dest_files=["res://.godot/imported/mod_classes.tsv-315c20df98f5c0a2dd2a24d4c3575a4b.tres"]
+
+[params]
+

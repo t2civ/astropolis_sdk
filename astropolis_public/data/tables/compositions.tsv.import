@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://bsbrbiujmtovj"
+path="res://.godot/imported/compositions.tsv-0507cd903b46ccdd14a980dc28c9f992.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/compositions.tsv"
+dest_files=["res://.godot/imported/compositions.tsv-0507cd903b46ccdd14a980dc28c9f992.tres"]
+
+[params]
+

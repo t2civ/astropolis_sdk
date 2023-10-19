@@ -1,0 +1,15 @@
+	carrying_capacity_group	carrying_capacity_group2	is_biological	is_mechanical	is_corporeal	is_virtual	is_subsentient	required_space	reproduction_rate	#comments
+Type	INT	INT	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	FLOAT	
+Unit									1/y	
+Default								1	0	
+Prefix/POPULATION_	CARRYING_CAPACITY_GROUP_	CARRYING_CAPACITY_GROUP_								
+BASE_HUMAN	HUMAN		x		x				0.04	
+SUBSENTIENT_ANDROID	ANDROID	HUMAN		x	x		x	0.1		# Subsentient "servants"
+SENTIENT_AGI	VIRTUAL					x				
+VIRTUAL_HUMAN	VIRTUAL					x				# Uploaded human or approximate simulation
+CYBORG	ANDROID	HUMAN	x	x	x					# Extensively mechanized, but w/ bio brain
+EMBODIED_ANDROID	ANDROID	HUMAN		x	x					# AGI or approximate human sim in mech body
+EMBODIED_HUMAN	HUMAN		x		x					# A "downloaded" person
+MOD_AQUATIC	AQUATIC		x		x					# Modified for Earth aquatic environment
+MOD_AMPHIBIOUS	AQUATIC	HUMAN	x		x					# Modified for Earth land or aquatic environment
+# max 64										
