@@ -154,6 +154,5 @@ func _on_project_objects_instantiated() -> void:
 
 
 func _on_project_nodes_added() -> void:
-	# FIXME: This breaks stand-alone SDK...
-	IVCoreInitializer.move_top_gui_child_to_sibling(&"AstroGUI", &"SplashScreen", true)
+	pass
 
