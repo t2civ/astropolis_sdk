@@ -4,7 +4,6 @@
 # *****************************************************************************
 extends RefCounted
 
-const VERSION := "0.0.4.dev"
 
 const AI_VERBOSE := false
 const AI_VERBOSE2 := false
@@ -13,13 +12,19 @@ const USE_THREADS := false
 
 
 func _init():
-	print("Astropolis Public %s, USE_THREADS = %s" % [VERSION, USE_THREADS])
+	
+	var version: String = ProjectSettings.get_setting("application/config/version")
+	print("Astropolis %s - https://t2civ.com" % version)
+	print("USE_THREADS = %s" % USE_THREADS)
+	
 	IVGlobal.project_objects_instantiated.connect(_on_project_objects_instantiated)
 	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
 
 	# properties
 	AIGlobal.verbose = AI_VERBOSE
 	AIGlobal.verbose2 = AI_VERBOSE2
+	IVCoreSettings.project_name = "Astropolis"
+	IVCoreSettings.project_version = version # helps load file debug
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.save_file_extension = "AstropolisSave"
 	IVCoreSettings.save_file_extension_name = "Astropolis Save"
