@@ -1,0 +1,115 @@
+id,en
+HINT_MODULE_SOLAR_ARRAYS,Solar Arrays
+HINT_MODULE_COMBUSTION_GENERATORS,Combustion Generators
+HINT_MODULE_FISSION_REACTORS,Fission Reactors
+HINT_MODULE_DT_FUSION_REACTORS,Deuterium-Tritium Fusion Reactors
+HINT_MODULE_DD_FUSION_REACTORS,Deuterium-Deuterium Fusion Reactors
+HINT_MODULE_DHe3_FUSION_REACTORS,Deuterium-Helium-3 Fusion Reactors
+HINT_MODULE_He3He3_FUSION_REACTORS,Helium-3-Helium-3 Fusion Rectors
+HINT_MODULE_MINES,Mines
+HINT_MODULE_AIR_CONDENSERS,Atmosphere Condensers
+HINT_MODULE_FARMS,Farms
+HINT_MODULE_REFINERIES,Refineries
+HINT_MODULE_GASSIFIERS,Gassifiers
+HINT_MODULE_GAS_CONVERTERS,Gas Converters
+HINT_MODULE_WATER_ELECTROLYZERS,Water Electrolyzers
+HINT_MODULE_ISOTOPE_SEPARATORS,Isotope Separators
+HINT_MODULE_SMELTERS,Smelters
+HINT_MODULE_CEMENT_KILNS,Cement Kilns
+HINT_MODULE_GLASS_KILNS,Glass Kilns
+HINT_MODULE_FERMENTERS,Fermenters
+HINT_MODULE_RECYCLING_PLANTS,Recycling Plants
+HINT_MODULE_FACTORIES,Factories
+HINT_MODULE_CHIP_FABRICATORS,Chip Fabricatiors
+HINT_MODULE_CHEMICAL_PLANTS,Chemical Plants
+HINT_MODULE_PHARMACEUTICAL_PLANTS,Pharmaceutical Plants
+HINT_PROCESS_SOLAR_POWER,Solar
+HINT_PROCESS_FOSSIL_FUELS_COMBUSTION_POWER,Fossile Fuels
+HINT_PROCESS_REFINED_HYDROCARBONS_COMBUSTION_POWER,Refined Hydrocarbons
+HINT_PROCESS_ETHANOL_COMBUSTION_POWER,Ethanol
+HINT_PROCESS_METHANE_COMBUSTION_POWER,Methane
+HINT_PROCESS_HYDROGEN_COMBUSTION_POWER,Hydrogen
+HINT_PROCESS_FISSION_POWER,Fission
+HINT_PROCESS_DT_FUSION_POWER,DT Fusion
+HINT_PROCESS_DD_FUSION_POWER,DD Fusion
+HINT_PROCESS_DHe3_FUSION_POWER,DHe3 Fusion
+HINT_PROCESS_He3He3_FUSION_POWER,He3He3 Fusion
+HINT_PROCESS_IRON_ORES_EXTRACTION,Iron Ores
+HINT_PROCESS_INDUSTRIAL_METAL_ORES_EXTRACTION,Industrial Metal Ores
+HINT_PROCESS_PRECIOUS_METAL_ORES_EXTRACTION,Precious Metal Ores
+HINT_PROCESS_RARE_EARTH_ORES_EXTRACTION,Rare Earth Ores
+HINT_PROCESS_FISSILE_FUEL_ORES_EXTRACTION,Fissile Fuel Ores
+HINT_PROCESS_HELIUM3_REGOLITH_EXTRACTION,Helium-3 Ores
+HINT_PROCESS_GEMSTONE_ORES_EXTRACTION,Gemstone Ores
+HINT_PROCESS_WATER_ORES_EXTRACTION,Water Ores
+HINT_PROCESS_ROCK_AGGREGATE_EXTRACTION,Rock Aggregate
+HINT_PROCESS_REGOLITH_EXTRACTION,Regolith
+HINT_PROCESS_THOLIN_KEROGEN_EXTRACTION,Tholin/Kerogen
+HINT_PROCESS_WATER_VAPOR_EXTRACTION,Water Vapor
+HINT_PROCESS_OXYGEN_EXTRACTION,Oxygen
+HINT_PROCESS_NITROGEN_EXTRACTION,Nitrogen
+HINT_PROCESS_CARBON_DIOXIDE_EXTRACTION,Carbon Dioxide
+HINT_PROCESS_CARBON_MONOXIDE_EXTRACTION,Carbon Monoxide
+HINT_PROCESS_ETHANE_EXTRACTION,Ethane
+HINT_PROCESS_AMMONIA_EXTRACTION,Ammonia
+HINT_PROCESS_SULFER_DIOXIDE_EXTRACTION,Sulfer Dioxide
+HINT_PROCESS_HELIUM_EXTRACTION,Helium
+HINT_PROCESS_ARGON_EXTRACTION,Argon
+HINT_PROCESS_HEAVY_NOBLE_GASSES_EXTRACTION,Heavy Noble Gasses
+HINT_PROCESS_FOODSTUFFS_FARMING,Foodstuffs
+HINT_PROCESS_CRAFT_FOODS_FARMING,Luxury Foods
+HINT_PROCESS_WOOD_FARMING,Wood
+HINT_PROCESS_BIOFIBERS_FARMING,Biofibers
+HINT_PROCESS_BIOFEEDSTOCK_FARMING,Biofeedstock
+HINT_PROCESS_FOSSIL_FUELS_REFINING,Fossil Fuels Refining
+HINT_PROCESS_FISCHER_TROPSCH_PROCESS,Fischer-Tropsch Process
+HINT_PROCESS_PLASTICS_POLYMERS_PRODUCTION,Plastics/Polymers Synthesis
+HINT_PROCESS_GASIFICATION_1,Hydrocarbons Gassification
+HINT_PROCESS_GASIFICATION_2,Fossil Fuels Gassification
+HINT_PROCESS_GASIFICATION_3,Tholins/Karogins Gassification
+HINT_PROCESS_GASIFICATION_4,Biofeedstock Gassification
+HINT_PROCESS_SABATIER_PROCESS,Catalyzes at high temperature and pressure the reaction:\nCO2 + 4 H2 -> CH4 + 2 H2O
+HINT_PROCESS_STEAM_REFORMING,Catalyzes with application of intense heat the endothermic reaction:\nCH4 + H2O -> CO + 3 H3
+HINT_PROCESS_DRY_REFORMING,Catalyzes with application of intense heat the endothermic reaction:\nCH4 + CO2 -> 2 CO + 2 H3
+HINT_PROCESS_WATER_GAS_SHIFT_REACTION,Separation of the right-hand products of the equilibrium reaction:\nCO + H2O <-> CO2 + H2
+HINT_PROCESS_REVERSE_WATER_GAS_SHIFT_REACTION,Separation of the left-hand products of the equilibrium reaction:\nCO + H2O <-> CO2 + H2
+HINT_PROCESS_HABER_BOSCH_PROCESS,Catalyzes at high temperature and pressure the reaction:\nN2 + 3 H2 -> 2 NH3
+HINT_PROCESS_WATER_ELECTROLYSIS,Applies electric current to an electrolyte solution to split water:\n 2 H2O -> 4 H2 + O2
+HINT_PROCESS_FISSILE_FUELS_ENRICHMENT,Fissile Fuels Enrichment
+HINT_PROCESS_DEUTERIUM_SEPARATION,Deuterium Separation
+HINT_PROCESS_HELIUM3_SEPARATION,Helium-3 Separation
+HINT_PROCESS_BASIC_OXYGEN_STEELMAKING,Basic O2 Steelmaking
+HINT_PROCESS_H2_REDUCTION_STEELMAKING,H2 Reduction Steelmaking
+HINT_PROCESS_INDUSTRIAL_METALS_SMELTING,Industrial Metals Smelting
+HINT_PROCESS_SMELTING_W_PRECIOUS_METALS_SEPARATION,Precious Metals Separation
+HINT_PROCESS_RARE_EARTHS_REFINING,Rare Earths Separation
+HINT_PROCESS_CONCRETE_PRODUCTION,Concrete Production
+HINT_PROCESS_GLASSES_PRODUCTION,Glasses Production
+HINT_PROCESS_ETHANOL_FERMENTATION,Ethanol Fermentation
+HINT_PROCESS_FOODSTUFFS_SYNTHESIS,Foodstuffs Synthesis
+HINT_PROCESS_SEWAGE_TREATMENT,Sewage Treatment
+HINT_PROCESS_INDUSTRIAL_SCRAP_RECYCLING,Industrial Scrap
+HINT_PROCESS_SYNTHETIC_FIBERS_PRODUCTION,Synthetic Fibers
+HINT_PROCESS_FINISHED_STRUCTURES_PRODUCTION,Finished Structures
+HINT_PROCESS_HEAVY_MACHINERY_PRODUCTION,Heavy Machinery
+HINT_PROCESS_ROBOTICS_PRODUCTION,Robotics
+HINT_PROCESS_BATTERIES_PRODUCTION,Batteries
+HINT_PROCESS_CONSUMER_GOODS_PRODUCTION,Consumer Goods
+HINT_PROCESS_LUXURY_GOODS_PRODUCTION,Luxury Goods
+HINT_PROCESS_ELECTRONICS_PRODUCTION,Electronics
+HINT_PROCESS_FERTILIZERS_PRODUCTION,Fertilizers
+HINT_PROCESS_INDUSTRIAL_CHEMICALS_PRODUCTION,Industrial Chemicals
+HINT_PROCESS_FINE_CHEMICALS_PRODUCTION,Fine Chemicals
+HINT_PROCESS_PHARMACEUTICALS_PRODUCTION,Pharmaceuticals
+HINT_STRATUM_FORMAT_1,%s\n\nRadius:           %s\nVolume:         %s\nDensity:          %s\nTotal Mass:   %s
+HINT_STRATUM_FORMAT_2,%s\n\nThickness:     %s\nVolume:         %s\nDensity:          %s\nTotal Mass:   %s
+HINT_5_QUARTERS,past 4 quarters / current estimate
+HINT_AI,Singular artificial intelligences that may or may not manefest in physical form(s) 
+HINT_CYBORG,"Cyborgs are mechanically transformed persons that retain only a small biological part,  possibly only a brain or parts of a brain"
+HINT_EMBODIED,Embodied are uploaded persons generally (re-)manefesting in a physical body of some sort
+HINT_IN_ORBIT,"Satellites including minor moons, but not major moons nor their satellites"
+HINT_LARGE_BODIES,Planets and their satellites
+HINT_ORGANIC,"Organic persons are primarily biological,  but may be modified in form or mechanically augmented"
+HINT_SMALL_BODIES,"Asteroids,  comets and spacecraft in heliocentric orbit"
+HINT_SUBORBITAL,"Subsurface,  surface and atomosphere (if any)"
+HINT_UPLOADED,"Uploaded are electronic copies of living biological persons and the electronic offspring of such persons,  generally existing in virtual reality only"

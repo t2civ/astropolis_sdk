@@ -11,11 +11,12 @@ config_version=5
 [application]
 
 config/name="Astropolis SDK"
+config/version="0.0.4.dev"
 run/main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
 config/features=PackedStringArray("4.2")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/image="res://replace_me/gui_example/pale_blue_dot.png"
-config/icon="res://replace_me/jupiter-icon-128.png"
+boot_splash/image="res://astropolis_public/pale_blue_dot.png"
+config/icon="res://astropolis_public/astropolis-icon-128.png"
 main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
 name="Astropolis SDK"
 icon="res://jupiter-icon-128.png"

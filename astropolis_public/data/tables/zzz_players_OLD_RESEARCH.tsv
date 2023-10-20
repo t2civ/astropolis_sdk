@@ -1,0 +1,42 @@
+name	public_debt	tax	space_agency_support	population	adults	wealth_per_adult	median_wealth	gdp_per_adult	millionaires	top_10_p	top_1_p	Comments
+@DONT_PARSE												
+# Real-world data on the right is not used directly, but transformed into simplified game terms.												
+# Space tax is a made-up concept where a space agency taxes private activity off the homeworld. It starts at 0% and can be raised later.												
+# Private Sector GDP --(tax)--> Govt --(space_agency_support)--> Space Agency; Private Sector Space GDP --(space_tax)--> Space Agency												
+# The local player can control a space agency or space company at game start, and later an independent. An independent will be a new PLAYER_CLASS_IND_GOVT/PLAYER_CLASS_IND_PRIVATE pair.												
+# For computer players, private sectors are profit motivated, while public sectors may act with more abstract goals.												
+# Public sector has taxing juristiction over their respective private sector and provide policing and other public services.												
+# Investment (i.e., debt) flows relatively freely among private sector players if there are no sanctions.												
+# Sources:												
+# Population, wealth, gdp from Global Wealth Databook 2016 (Credit Suisse): http://publications.credit-suisse.com/tasks/render/file/index.cfm?fileid=AD6F2B43-B17B-345E-E20A1A254A3E24A5												
+# Net government debt: https://en.wikipedia.org/wiki/List_of_countries_by_public_debt (gross government or gross public debt if net gov not available)												
+# Tax as %GDP: https://en.wikipedia.org/wiki/List_of_countries_by_tax_revenue_to_GDP_ratio (my guess for other)												
+# sponsor_space_tax as % of GDP from https://www.weforum.org/agenda/2016/01/which-countries-spend-the-most-on-space-exploration/												
+# Above gives US space budget equivilant to 0.89% of total federal tax on GDP, which is better than true NASA share of budget 0.49%. We take full space budget here as NASA for game simplfication.												
+# For simplicity, start space agencies with 0 debt												
+#	gross if net not available			GWD 2016, Table 6-1, using Europe as proxy for EU (except gdp_per_adult w/ Germany as proxy)								
+# 	% GDP	% GDP	% GDP	World values are either remainder (people counts, wealth), listed value (median wealth) or interpolated guess (gdp_per_adult)								
+Type	REAL	REAL	REAL	REAL	REAL	REAL	REAL	REAL	REAL	REAL	REAL	
+Default	0	0	0	0	0	0	0	0	0	0	0	
+Units												
+PLAYER_NASA												
+PLAYER_ROSCOSMOS												
+PLAYER_CNSA												
+PLAYER_ESA												
+PLAYER_ISRO												
+PLAYER_JAXA												
+#PLAYER_SPACE_A												
+PLAYER_USA_PRIVATE				3.34E+08	2.46E+08	344692	44977	75992	1.36E+07	1.06E+08	1.83E+07	
+PLAYER_RUSSIA_PRIVATE				1.38E+08	1.09E+08	10344	991	24945	7.90E+04	1.03E+06	1.05E+05	
+PLAYER_CHINA_PRIVATE				1.38E+09	1.02E+09	22864	4885	10795	1.59E+06	4.47E+07	2.31E+06	
+PLAYER_EU_PRIVATE				7.37E+08	5.84E+08	125460	11319	56447	9.80E+06	1.70E+08	1.52E+07	
+PLAYER_INDIA_PRIVATE				1.30E+09	8.08E+08	3835	608	3137	1.78E+05	3.39E+06	2.48E+05	
+PLAYER_JAPAN_PRIVATE				1.26E+08	1.04E+08	230946	120493	61940	2.83E+06	6.56E+07	4.67E+06	
+PLAYER_OTHER_PRIVATE				3.33E+09	1.97E+09	23315.22843	2222	15000	4.60E+06	9.39E+07	7.51E+06	# wealth_per_adult = (world - sum(powers))/adults = (255708e9 - 84784e9 - 1126e9 - 23393e9 - 73305e9 - 3099e9 - 24070e9) / 1.97e9
+PLAYER_USA_PUBLIC	82.3	26	0.23									
+PLAYER_RUSSIA_PUBLIC	17.4	19.5	0.25									
+PLAYER_CHINA_PUBLIC	65.7	20.1	0.07									
+PLAYER_EU_PUBLIC	68.5	35.7	0.07									
+PLAYER_INDIA_PUBLIC	70.2	17.7	0.06									
+PLAYER_JAPAN_PUBLIC	153	35.9	0.07									
+PLAYER_OTHER_PUBLIC	56	25	0									

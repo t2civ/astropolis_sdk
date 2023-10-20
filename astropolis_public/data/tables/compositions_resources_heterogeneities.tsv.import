@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://c380y1dyesqr"
+path="res://.godot/imported/compositions_resources_heterogeneities.tsv-4be7077b3699f3409bc3ccec36cf3a80.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/compositions_resources_heterogeneities.tsv"
+dest_files=["res://.godot/imported/compositions_resources_heterogeneities.tsv-4be7077b3699f3409bc3ccec36cf3a80.tres"]
+
+[params]
+

@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://cqpkq3oy68bl6"
+path="res://.godot/imported/asset_adjustments_mod.tsv-1c92f30614c122fc7fe505b874d1fd9c.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/asset_adjustments_mod.tsv"
+dest_files=["res://.godot/imported/asset_adjustments_mod.tsv-1c92f30614c122fc7fe505b874d1fd9c.tres"]
+
+[params]
+

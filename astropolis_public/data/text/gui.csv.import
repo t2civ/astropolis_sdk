@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c8ulyvr18dh33"
+
+[deps]
+
+files=["res://astropolis_public/data/text/gui.en.translation"]
+
+source_file="res://astropolis_public/data/text/gui.csv"
+dest_files=["res://astropolis_public/data/text/gui.en.translation"]
+
+[params]
+
+compress=false
+delimiter=0

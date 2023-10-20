@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://6x45pxup51yr"
+path="res://.godot/imported/surveys.tsv-c215b934f5a8493fde75f79b6043cfca.tres"
+
+[deps]
+
+source_file="res://astropolis_public/data/tables/surveys.tsv"
+dest_files=["res://.godot/imported/surveys.tsv-c215b934f5a8493fde75f79b6043cfca.tres"]
+
+[params]
+

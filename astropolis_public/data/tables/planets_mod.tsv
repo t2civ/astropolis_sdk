@@ -1,0 +1,16 @@
+	solar_occlusion
+Type	FLOAT
+Default	0.5
+Unit	
+Prefix/PLANET_	
+MERCURY	
+VENUS	0.99
+EARTH	0.75
+MARS	0.6
+CERES	
+JUPITER	0.95
+SATURN	0.95
+URANUS	0.95
+NEPTUNE	0.95
+PLUTO	
+@MODIFIES=planets	

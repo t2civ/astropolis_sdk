@@ -1,4 +1,4 @@
-Copyright 2019-2022 Charlie Whitfield, ALL RIGHTS RESERVED.
+Copyright 2019-2023 Charlie Whitfield, ALL RIGHTS RESERVED.
 Astropolis is a registered trademark of Charlie Whitfield in the US.
 
 (TODO: Update and add EULA to provide for modding.)

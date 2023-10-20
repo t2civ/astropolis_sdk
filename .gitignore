@@ -10,5 +10,6 @@ export_presets.cfg
 
 # Astropolis SDK:
 override.cfg
-/addons/astropolis_core/
-/addons/astropolis_assets/
+ivoyager_override2.cfg
+/astropolis_core/
+/astropolis_assets/

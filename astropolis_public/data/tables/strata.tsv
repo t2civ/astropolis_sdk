@@ -1,0 +1,32 @@
+	is_free_resources	is_deposits	#comments
+Type	BOOL	BOOL	
+Prefix/STRATUM_			
+UNDIFFERENTIATED			
+ATMOSPHERE	x		
+OCEAN			
+OCEAN_FLOOR		x	
+OCEAN_CRUST		x	
+CONT_FRESH_WATER	x		
+CONT_SURFACE		x	On Earth, +0.8 km (ave continental elevation) to 0 km (sea level)
+CONT_SURFACE_ANTARCTICA		x	
+CONT_SUBSURF		x	On Earth, 0 km (sea level) to 4 km
+CONT_SUBSURF_ANTARCTICA		x	
+CONT_4KM_8KM		x	On Earth, 4 to 8 km
+CONT_4KM_8KM_ANTARCTICA		x	
+CONT_8KM_28KM		x	On Earth, 8 to 28 km
+CONT_8KM_28KM_ANTARCTICA		x	
+LOWER_CONT_CRUST		x	On Earth 28 to 40 km
+REGOLITH		x	
+POLAR_SHADED_REGOLITH		x	
+SURFACE		x	
+CRUST		x	
+UPPER_CRUST		x	
+LOWER_CRUST		x	
+LOWER_CRUST_INTER_LAYER		x	
+MANTLE		x	
+UPPER_MANTLE		x	
+LOWER_MANTLE		x	
+MANTLE_CORE		x	
+CORE			
+OUTER_CORE			
+INNER_CORE			
