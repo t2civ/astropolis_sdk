@@ -1,0 +1,382 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6r8oclclur5a"]
+
+[ext_resource type="Script" path="res://public/gui_panels/itab_markets.gd" id="1"]
+
+[node name="Markets" type="MarginContainer"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 568.0
+offset_bottom = 347.0
+script = ExtResource("1")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 2
+
+[node name="Energy" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Energy"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Energy/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Energy/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Energy/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Energy/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Energy/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Energy/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Energy/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Energy"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnergyVBox" type="VBoxContainer" parent="TabContainer/Energy/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Ores" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Ores"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Ores/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Ores/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Ores/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Ores/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Ores/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Ores/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Ores/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Ores"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OresVBox" type="VBoxContainer" parent="TabContainer/Ores/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Volatiles" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Volatiles"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Volatiles/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Volatiles/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Volatiles"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VolatilesVBox" type="VBoxContainer" parent="TabContainer/Volatiles/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Materials" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Materials"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Materials/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Materials/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Materials/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Materials/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Materials/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Materials/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Materials/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Materials"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MaterialsVBox" type="VBoxContainer" parent="TabContainer/Materials/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Manufactured" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Manufactured"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Manufactured/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Manufactured/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Manufactured"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ManufacturedVBox" type="VBoxContainer" parent="TabContainer/Manufactured/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Biologicals" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Biologicals"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Biologicals/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Biologicals/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Biologicals"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BiologicalsVBox" type="VBoxContainer" parent="TabContainer/Biologicals/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cyber" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Hdrs" type="HBoxContainer" parent="TabContainer/Cyber"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="TabContainer/Cyber/Hdrs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hdr1" type="Label" parent="TabContainer/Cyber/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Price"
+
+[node name="Hdr2" type="Label" parent="TabContainer/Cyber/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bids"
+
+[node name="Hdr3" type="Label" parent="TabContainer/Cyber/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Asks"
+
+[node name="Hdr4" type="Label" parent="TabContainer/Cyber/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Hdr5" type="Label" parent="TabContainer/Cyber/Hdrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contracts"
+
+[node name="Spacer2" type="Control" parent="TabContainer/Cyber/Hdrs"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Cyber"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CyberVBox" type="VBoxContainer" parent="TabContainer/Cyber/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NoMarkets" type="Label" parent="."]
+visible = false
+layout_mode = 2
+text = "LABEL_NO_MARKETS"
+horizontal_alignment = 1

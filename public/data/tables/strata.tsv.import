@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://bfqd67jgr6rlu"
+path="res://.godot/imported/strata.tsv-e83380294d2ccb851fab0a19dd9ddf5c.tres"
+
+[deps]
+
+source_file="res://public/data/tables/strata.tsv"
+dest_files=["res://.godot/imported/strata.tsv-e83380294d2ccb851fab0a19dd9ddf5c.tres"]
+
+[params]
+
