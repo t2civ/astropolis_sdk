@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://bw5kil8sp58aa"
+path="res://.godot/imported/zzz_processes.tsv-a5418d396350582efe2634dcff730767.tres"
+
+[deps]
+
+source_file="res://public/data/tables/zzz_processes.tsv"
+dest_files=["res://.godot/imported/zzz_processes.tsv-a5418d396350582efe2634dcff730767.tres"]
+
+[params]
+

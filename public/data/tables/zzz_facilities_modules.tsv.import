@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.table_importer"
+type="IVTableResource"
+uid="uid://ciknilccjuvrn"
+path="res://.godot/imported/zzz_facilities_modules.tsv-1a12e484e2ba351b4e86bffb32de4c83.tres"
+
+[deps]
+
+source_file="res://public/data/tables/zzz_facilities_modules.tsv"
+dest_files=["res://.godot/imported/zzz_facilities_modules.tsv-1a12e484e2ba351b4e86bffb32de4c83.tres"]
+
+[params]
+

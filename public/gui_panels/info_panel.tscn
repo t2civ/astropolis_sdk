@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5n3nwrrxe07r"]
+
+[ext_resource type="Script" path="res://public/gui_panels/info_panel.gd" id="1"]
+[ext_resource type="PackedScene" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bk1wcjtaqcyyd" path="res://addons/ivoyager_core/gui_widgets/selection_buttons.tscn" id="4"]
+
+[node name="InfoPanel" type="PanelContainer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -287.5
+offset_top = -354.0
+offset_right = 287.5
+script = ExtResource("1")
+
+[node name="SelectionButtons" parent="." instance=ExtResource("4")]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="TRButtons" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="Pin" type="Button" parent="TRButtons"]
+layout_mode = 2
+tooltip_text = "LABEL_CLONE_AND_PIN"
+text = "*"
+
+[node name="Close" type="Button" parent="TRButtons"]
+layout_mode = 2
+tooltip_text = "LABEL_CLOSE"
+text = "x"
+
+[node name="ControlMod" parent="." instance=ExtResource("2")]
