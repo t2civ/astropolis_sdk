@@ -11,5 +11,9 @@ export_presets.cfg
 # Astropolis SDK:
 override.cfg
 ivoyager_override2.cfg
+/assets/
+/core/
+
+# Remove below...
 /astropolis_core/
 /astropolis_assets/
