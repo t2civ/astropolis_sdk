@@ -110,6 +110,8 @@ var persist := [
 var use_this_ai := false # read-only
 
 # localized globals
+static var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+
 @warning_ignore("unused_private_class_variable")
 static var _times: Array = IVGlobal.times # [time (s, J2000), engine_time (s), solar_day (d)] (floats)
 @warning_ignore("unused_private_class_variable")

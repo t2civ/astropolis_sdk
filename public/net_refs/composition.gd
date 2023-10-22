@@ -106,8 +106,8 @@ func _init(is_new := false, is_server := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_resource_maybe_free = _tables[&"resources"][&"maybe_free"]
-		_extraction_resources = _tables[&"extraction_resources"]
-		_resource_extractions = _tables[&"resource_extractions"]
+		_extraction_resources = tables_aux[&"extraction_resources"]
+		_resource_extractions = tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
 		_survey_masses_errors = _tables[&"surveys"][&"masses_error"]
 		_survey_deposits_sds = _tables[&"surveys"][&"deposits_sigma"]

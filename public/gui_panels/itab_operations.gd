@@ -43,9 +43,10 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _tables: Dictionary = IVTableData.tables
-var _op_classes_op_groups: Array = _tables.op_classes_op_groups
+var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+var _op_classes_op_groups: Array = _tables_aux.op_classes_op_groups
 var _op_group_names: Array = _tables.op_groups.name
-var _op_groups_operations: Array = _tables.op_groups_operations
+var _op_groups_operations: Array = _tables_aux.op_groups_operations
 var _operation_names: Array = _tables.operations.name
 var _operation_flow_units: Array = _tables.operations.flow_unit
 

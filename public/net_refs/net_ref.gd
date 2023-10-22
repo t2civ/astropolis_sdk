@@ -32,6 +32,8 @@ var _float_offset: int
 var _int_offset: int
 
 # indexing & localized
+static var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+
 @warning_ignore("unused_private_class_variable")
 static var _tables: Dictionary = IVTableData.tables
 @warning_ignore("unused_private_class_variable")

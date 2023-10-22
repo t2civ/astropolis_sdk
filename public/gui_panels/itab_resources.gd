@@ -20,7 +20,8 @@ const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
 var _tables: Dictionary = IVTableData.tables
-var _is_extraction_resources: Array = _tables.extraction_resources
+var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+var _is_extraction_resources: Array = _tables_aux[&"extraction_resources"]
 var _n_is_extraction_resources := _is_extraction_resources.size()
 var _resource_sort_overrides: Array = _tables.resources.sort_override
 var _init_opens: Array = _tables.compositions.init_open

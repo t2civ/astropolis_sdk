@@ -42,10 +42,11 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _tables: Dictionary = IVTableData.tables
+var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _resource_names: Array[StringName] = _tables.resources.name
 var _trade_classes: Array[int] = _tables.resources.trade_class
 var _trade_units: Array[StringName] = _tables.resources.trade_unit
-var _resource_classes_resources: Array = _tables.resource_classes_resources # array of arrays
+var _resource_classes_resources: Array = _tables_aux.resource_classes_resources # array of arrays
 
 
 @onready var _no_markets_label: Label = $NoMarkets

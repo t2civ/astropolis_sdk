@@ -149,7 +149,7 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
-		_op_groups_operations = _tables[&"op_groups_operations"]
+		_op_groups_operations = tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
 	has_financials = has_financials_
@@ -246,7 +246,7 @@ func get_mass_flow(type: int) -> float:
 func get_total_manufacturing() -> float:
 	var mass_flows: Array = _table_operations.mass_flow
 	var sum := 0.0
-	for type in _tables.is_manufacturing_operations:
+	for type in tables_aux.is_manufacturing_operations:
 		sum += rates[type] * mass_flows[type]
 	return sum
 
