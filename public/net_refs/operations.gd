@@ -5,6 +5,10 @@
 class_name Operations
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Arrays indexed by operation_type, except where noted.
 #
 # 'public_capacities' and 'est_' financials are Facility & Player only.
@@ -308,14 +312,6 @@ func get_group_electricity(op_group: int) -> float:
 	for type in _op_groups_operations[op_group]:
 		sum += rates[type] * electricities[type]
 	return sum
-
-
-#func get_group_gui_flow(op_group: int) -> float:
-	#var gui_flows: Array = _table_operations.gui_flow
-	#var sum := 0.0
-	#for type in _op_groups_operations[op_group]:
-		#sum += rates[type] * gui_flows[type]
-	#return sum
 
 
 func get_group_est_revenue(op_group: int) -> float:

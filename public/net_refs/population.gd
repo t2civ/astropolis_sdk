@@ -5,6 +5,10 @@
 class_name Population
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Arrays indexed by population_type unless noted otherwise.
 
 # save/load persistence for server only

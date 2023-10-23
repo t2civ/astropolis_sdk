@@ -5,7 +5,11 @@
 class_name Interface
 extends RefCounted
 
-# DO NOT MODIFY THIS FILE! To modify AI, see comments in '_base_ai.gd' files.
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
+# To modify AI, see comments in '_base_ai.gd' files.
 #
 # Warning! This object lives and dies on the AI thread! Containers and many
 # methods are not threadsafe. Accessing non-container properties is safe.

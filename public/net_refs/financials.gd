@@ -5,6 +5,10 @@
 class_name Financials
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Changes propagate from Facility to Player only.
 #
 # Income and cash flow items are cummulative for current quarter.

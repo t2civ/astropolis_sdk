@@ -5,6 +5,10 @@
 class_name Biome
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 
 enum { # _dirty
 	DIRTY_BIOPRODUCTIVITY = 1,

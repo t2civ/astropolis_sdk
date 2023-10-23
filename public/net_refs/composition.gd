@@ -5,7 +5,11 @@
 class_name Composition
 extends NetRef
 
-# Follows "Net Ref" pattern for holding and syncing data. DON'T MODIFY!
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
+# Follows "Net Ref" pattern for holding and syncing data.
 # This is a replacement (NOT a subclass) for I, Voyager's IVComposition class.
 #
 # AI and GUI have access to estimated values only; server has actual.

@@ -5,6 +5,10 @@
 class_name Inventory
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Arrays indexed by resource_type. Facility and (sometimes) Proxy have an
 # Inventory. 'prices', 'bids' and 'asks' are common for polity at specific body.
 
