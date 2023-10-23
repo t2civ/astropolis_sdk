@@ -224,6 +224,110 @@ func get_facilities() -> Array[Interface]:
 	# AI thread only!
 	return []
 
+# Operations
+
+func get_operation_utilization(operation_type: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_utilization(operation_type)
+
+
+func get_operation_electricity(operation_type: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_electricity(operation_type)
+
+
+func get_operation_gui_flow(operation_type: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_gui_flow(operation_type)
+
+
+func get_operation_est_revenue(operation_type: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return NAN
+	return operations.get_est_revenue(operation_type)
+
+
+func get_operation_est_gross_margin(operation_type: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return NAN
+	return operations.get_est_gross_margin(operation_type)
+
+
+func get_op_group_utilization(op_group: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_group_utilization(op_group)
+
+
+func get_op_group_electricity(op_group: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_group_electricity(op_group)
+
+
+func get_op_group_est_revenue(op_group: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_group_est_revenue(op_group)
+
+
+func get_op_group_est_gross_margin(op_group: int) -> float:
+	var operations: Operations = get(&"operations")
+	if !operations:
+		return 0.0
+	return operations.get_group_est_gross_margin(op_group)
+
+# Inventory
+
+func get_resource_price(resource_type: int) -> float:
+	var inventory: Inventory = get(&"inventory")
+	if !inventory:
+		return NAN
+	return inventory.get_price(resource_type)
+
+
+func get_resource_bid(resource_type: int) -> float:
+	var inventory: Inventory = get(&"inventory")
+	if !inventory:
+		return NAN
+	return inventory.get_bid(resource_type)
+
+
+func get_resource_ask(resource_type: int) -> float:
+	var inventory: Inventory = get(&"inventory")
+	if !inventory:
+		return NAN
+	return inventory.get_ask(resource_type)
+
+
+func get_resource_contracted(resource_type: int) -> float:
+	var inventory: Inventory = get(&"inventory")
+	if !inventory:
+		return NAN
+	return inventory.get_contracted(resource_type)
+
+
+func get_resource_in_stock(resource_type: int) -> float:
+	var inventory: Inventory = get(&"inventory")
+	if !inventory:
+		return NAN
+	return inventory.get_in_stock(resource_type)
+
+# Financials
+
+func has_financials() -> bool:
+	return get(&"financials") != null
 
 
 # *****************************************************************************

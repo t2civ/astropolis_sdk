@@ -44,11 +44,11 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 # table indexing
 var _tables: Dictionary = IVTableData.tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _op_classes_op_groups: Array = _tables_aux.op_classes_op_groups
-var _op_group_names: Array = _tables.op_groups.name
-var _op_groups_operations: Array = _tables_aux.op_groups_operations
-var _operation_names: Array = _tables.operations.name
-var _operation_flow_units: Array = _tables.operations.flow_unit
+var _op_classes_op_groups: Array = _tables_aux[&"op_classes_op_groups"]
+var _op_group_names: Array = _tables[&"op_groups"][&"name"]
+var _op_groups_operations: Array = _tables_aux[&"op_groups_operations"]
+var _operation_names: Array = _tables[&"operations"][&"name"]
+var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
 
 @onready var _multipliers := IVUnits.unit_multipliers
 @warning_ignore("unsafe_property_access")
@@ -156,9 +156,7 @@ func _get_ai_data(target_name: StringName) -> void:
 		return
 	
 	var tab := current_tab
-	var operations: Operations = interface.get(&"operations")
-	assert(operations)
-	var has_financials := operations.has_financials
+	var has_financials := interface.has_financials()
 	var op_groups: Array = _op_classes_op_groups[tab]
 	var n_op_groups := op_groups.size()
 	var i := 0
@@ -166,11 +164,11 @@ func _get_ai_data(target_name: StringName) -> void:
 		var op_group_type: int = op_groups[i]
 		var group_data := [
 			_op_group_names[op_group_type],
-			operations.get_group_utilization(op_group_type),
-			operations.get_group_energy(op_group_type),
+			interface.get_op_group_utilization(op_group_type),
+			interface.get_op_group_electricity(op_group_type),
 			NAN,
-			operations.get_group_est_revenue(op_group_type) if has_financials else NAN,
-			operations.get_group_est_gross_margin(op_group_type) if has_financials else NAN,
+			interface.get_op_group_est_revenue(op_group_type),
+			interface.get_op_group_est_gross_margin(op_group_type),
 		]
 		data.append(group_data)
 		
@@ -186,19 +184,16 @@ func _get_ai_data(target_name: StringName) -> void:
 		var j := 0
 		while j < n_ops:
 			var operation_type: int = ops[j]
-			var flow: float = operations.get_gui_flow(operation_type)
+			var flow: float = interface.get_operation_gui_flow(operation_type)
 			if !is_nan(flow):
 				flow /= _multipliers[_operation_flow_units[operation_type]]
 			var op_data := [
 				_operation_names[operation_type],
-				operations.get_utilization(operation_type),
-				
-				# FIXME: Below should be electricity
-				
-				operations.get_electricity(operation_type),
+				interface.get_operation_utilization(operation_type),
+				interface.get_operation_electricity(operation_type),
 				flow,
-				operations.get_est_revenue(operation_type) if has_financials else NAN,
-				operations.get_est_gross_margin(operation_type) if has_financials else NAN,
+				interface.get_operation_est_revenue(operation_type),
+				interface.get_operation_est_gross_margin(operation_type),
 			]
 			ops_data.append(op_data)
 			j += 1
