@@ -5,6 +5,10 @@
 class_name Inventory
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Arrays indexed by resource_type. Facility and (sometimes) Proxy have an
 # Inventory. 'prices', 'bids' and 'asks' are common for polity at specific body.
 
@@ -79,6 +83,22 @@ func _init(is_new := false) -> void:
 
 # ********************************** READ *************************************
 # all threadsafe
+
+func get_price(type: int) -> float:
+	return prices[type]
+
+
+func get_bid(type: int) -> float:
+	return bids[type]
+
+
+func get_ask(type: int) -> float:
+	return asks[type]
+
+
+func get_contracted(type: int) -> float:
+	return contracteds[type]
+
 
 func get_in_stock(type: int) -> float:
 	return reserves[type] + markets[type]

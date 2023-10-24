@@ -60,8 +60,7 @@ func set_build_subpanels(build_subpanels: bool) -> void:
 func _init_after_system(_dummy := false) -> void:
 	if !selection_manager:
 		# This is the original (non-cloned) InfoPanel and a new game!
-		@warning_ignore("unsafe_property_access")
-		selection_manager = get_parent().get_parent().selection_manager # FIXME: Needs function
+		selection_manager = IVSelectionManager.get_selection_manager(self)
 	selection_manager.selection_changed.connect(_update_selection)
 	IVGlobal.update_gui_requested.connect(_update_selection)
 	visibility_changed.connect(_update_selection)

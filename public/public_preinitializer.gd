@@ -119,35 +119,36 @@ func _on_project_objects_instantiated() -> void:
 	# table additions (subtables, re-indexings, or other useful table items)
 	var tables: Dictionary = IVTableData.tables
 	var table_n_rows: Dictionary = IVTableData.table_n_rows
+	var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 	
 	# unique items
-	tables[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type", &"electricity")
-	assert(tables[&"resource_type_electricity"] != -1)
+	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type", &"electricity")
+	assert(tables_aux[&"resource_type_electricity"] != -1)
 	# table row subsets (arrays of row_types)
 	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
-	tables[&"extraction_resources"] = extraction_resources
-	tables[&"maybe_free_resources"] = IVTableData.get_db_true_rows(&"resources", &"maybe_free")
-	tables[&"is_manufacturing_operations"] = IVTableData.get_db_true_rows(&"operations", &"is_manufacturing")
+	tables_aux[&"extraction_resources"] = extraction_resources
+	tables_aux[&"maybe_free_resources"] = IVTableData.get_db_true_rows(&"resources", &"maybe_free")
+	tables_aux[&"is_manufacturing_operations"] = IVTableData.get_db_true_rows(&"operations", &"is_manufacturing")
 	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"op_process_group",
 			Enums.OpProcessGroup.OP_PROCESS_GROUP_EXTRACTION)
-	tables[&"extraction_operations"] = extraction_operations
+	tables_aux[&"extraction_operations"] = extraction_operations
 	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
 	var n_resources: int = table_n_rows[&"resources"]
-	tables[&"resource_extractions"] = Utils.invert_subset_indexing(extraction_resources, n_resources)
+	tables_aux[&"resource_extractions"] = Utils.invert_subset_indexing(extraction_resources, n_resources)
 	var n_operations: int = table_n_rows[&"operations"]
-	tables[&"operation_extractions"] = Utils.invert_subset_indexing(extraction_operations, n_operations)
+	tables_aux[&"operation_extractions"] = Utils.invert_subset_indexing(extraction_operations, n_operations)
 	# one-to-many indexing (arrays of arrays)
 	var op_group_op_classes: Array[int] = tables[&"op_groups"][&"op_class"]
 	var n_op_classes: int = table_n_rows[&"op_classes"]
-	tables[&"op_classes_op_groups"] = Utils.invert_many_to_one_indexing(op_group_op_classes,
+	tables_aux[&"op_classes_op_groups"] = Utils.invert_many_to_one_indexing(op_group_op_classes,
 			n_op_classes) # an array of op_groups for each op_class
 	var operation_op_groups: Array[int] = tables[&"operations"][&"op_group"]
 	var n_op_groups: int = table_n_rows[&"op_groups"]
-	tables[&"op_groups_operations"] = Utils.invert_many_to_one_indexing(operation_op_groups,
+	tables_aux[&"op_groups_operations"] = Utils.invert_many_to_one_indexing(operation_op_groups,
 			n_op_groups) # an array of operations for each op_group
 	var resource_resource_classes: Array[int] = tables[&"resources"][&"resource_class"]
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
-	tables[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
+	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
 			resource_resource_classes, n_resource_classes) # an array of resources for each resource_class
 	
 	# tests

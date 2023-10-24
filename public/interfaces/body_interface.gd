@@ -5,7 +5,11 @@
 class_name BodyInterface
 extends Interface
 
-# DO NOT MODIFY THIS FILE! To modify AI, see comments in '_base_ai.gd' files.
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
+# To modify AI, see comments in '_base_ai.gd' files.
 #
 # Warning! This object lives and dies on the AI thread! Containers and many
 # methods are not threadsafe. Accessing non-container properties is safe.
@@ -140,6 +144,73 @@ func get_biodiversity() -> float:
 		return biome.get_biodiversity()
 	return 0.0
 
+
+# Body specific
+
+func has_compositions() -> bool:
+	return !compositions.is_empty()
+
+
+func get_n_compositions() -> int:
+	return compositions.size()
+
+
+func get_composition_name(index: int) -> StringName:
+	return compositions[index].name
+
+
+func get_composition_polity(index: int) -> StringName:
+	return compositions[index].polity_name
+
+
+func get_composition_density(index: int) -> float:
+	return compositions[index].density
+
+
+func get_composition_stratum_type(index: int) -> int:
+	return compositions[index].stratum_type
+
+
+func get_compostion_thickness(index: int) -> float:
+	return compositions[index].thickness
+
+
+func get_composition_volume(index: int) -> float:
+	return compositions[index].get_volume()
+
+
+func get_composition_total_mass(index: int) -> float:
+	return compositions[index].get_total_mass()
+
+
+func get_compostion_body_radius(index: int) -> float:
+	# TODO: depreciate this after we have access to IVBody properties
+	return compositions[index].body_radius
+
+
+func get_composition_masses(index: int) -> Array[float]:
+	return compositions[index].masses
+
+
+func get_composition_heterogeneities(index: int) -> Array[float]:
+	return compositions[index].heterogeneities
+
+
+func get_composition_survey_type(index: int) -> int:
+	return compositions[index].survey_type
+
+
+func get_composition_fractional_mass_uncertainty(index: int, resource_type: int) -> float:
+	return compositions[index].get_fractional_mass_uncertainty(resource_type)
+
+
+func get_composition_fractional_heterogeneity(index: int, resource_type: int) -> float:
+	return compositions[index].get_fractional_heterogeneity(resource_type)
+
+
+func get_composition_fractional_deposits(index: int, resource_type: int, zero_if_no_boost := false
+		) -> float:
+	return compositions[index].get_fractional_deposits(resource_type, zero_if_no_boost)
 
 
 # *****************************************************************************

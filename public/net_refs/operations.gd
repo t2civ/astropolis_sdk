@@ -5,6 +5,10 @@
 class_name Operations
 extends NetRef
 
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
 # Arrays indexed by operation_type, except where noted.
 #
 # 'public_capacities' and 'est_' financials are Facility & Player only.
@@ -149,7 +153,7 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
-		_op_groups_operations = _tables[&"op_groups_operations"]
+		_op_groups_operations = tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
 	has_financials = has_financials_
@@ -246,7 +250,7 @@ func get_mass_flow(type: int) -> float:
 func get_total_manufacturing() -> float:
 	var mass_flows: Array = _table_operations.mass_flow
 	var sum := 0.0
-	for type in _tables.is_manufacturing_operations:
+	for type in tables_aux.is_manufacturing_operations:
 		sum += rates[type] * mass_flows[type]
 	return sum
 
@@ -275,18 +279,18 @@ func get_est_gross_margin(type: int) -> float:
 
 func get_n_operations_in_same_group(type: int) -> int:
 	var op_group: int = _table_operations.op_group[type]
-	var op_group_ops: Array = _op_groups_operations[op_group]
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	return op_group_ops.size()
 
 
 func is_singular(type: int) -> bool:
 	var op_group: int = _table_operations.op_group[type]
-	var op_group_ops: Array = _op_groups_operations[op_group]
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	return op_group_ops.size() == 1
 
 
 func get_n_operations_in_group(op_group: int) -> int:
-	var op_group_ops: Array = _op_groups_operations[op_group]
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	return op_group_ops.size()
 
 
@@ -302,19 +306,11 @@ func get_group_utilization(op_group: int) -> float:
 	return sum_rates / sum_capacities
 
 
-func get_group_energy(op_group: int) -> float:
-	var energies: Array = _table_operations[&"energy"]
+func get_group_electricity(op_group: int) -> float:
+	var electricities: Array[float] = _table_operations[&"energy"]
 	var sum := 0.0
 	for type in _op_groups_operations[op_group]:
-		sum += rates[type] * energies[type]
-	return sum
-
-
-func get_group_gui_flow(op_group: int) -> float:
-	var gui_flows: Array = _table_operations.gui_flow
-	var sum := 0.0
-	for type in _op_groups_operations[op_group]:
-		sum += rates[type] * gui_flows[type]
+		sum += rates[type] * electricities[type]
 	return sum
 
 

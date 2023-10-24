@@ -20,13 +20,14 @@ const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
 var _tables: Dictionary = IVTableData.tables
-var _is_extraction_resources: Array = _tables.extraction_resources
+var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+var _is_extraction_resources: Array = _tables_aux[&"extraction_resources"]
 var _n_is_extraction_resources := _is_extraction_resources.size()
-var _resource_sort_overrides: Array = _tables.resources.sort_override
-var _init_opens: Array = _tables.compositions.init_open
-var _hide_variances: Array = _tables.resources.hide_variances
-var _stratum_names: Array = _tables.strata.name
-var _survey_names: Array = _tables.surveys.name
+var _resource_sort_overrides: Array = _tables[&"resources"][&"sort_override"]
+var _init_opens: Array = _tables[&"compositions"][&"init_open"]
+var _hide_variances: Array = _tables[&"resources"][&"hide_variances"]
+var _stratum_names: Array = _tables[&"strata"][&"name"]
+var _survey_names: Array = _tables[&"surveys"][&"name"]
 var _composition_types: Dictionary # table name enumeration
 
 var _state: Dictionary = IVGlobal.state
@@ -75,8 +76,7 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		_update_no_resources.call_deferred()
 		return
 	
-	var compositions := body_interface.compositions
-	if !compositions:
+	if !body_interface.has_compositions():
 		var is_unknown := not body_interface.body_flags & IS_SPACECRAFT
 		_update_no_resources.call_deferred(is_unknown)
 		return
@@ -84,11 +84,10 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 	var composition_polities := []
 	var open_at_init: Array[bool] = []
 	
-	var n_compositions := compositions.size()
+	var n_compositions := body_interface.get_n_compositions()
 
 	for i in n_compositions:
-		var composition: Composition = compositions[i]
-		var composition_polity := composition.polity_name
+		var composition_polity := body_interface.get_composition_polity(i)
 		if polity_name and composition_polity and polity_name != composition_polity:
 			continue
 		var init_open: bool
@@ -96,15 +95,13 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			composition_polities.append(composition_polity)
 			init_open = polity_name == composition_polity # "" == "" at body for commons
 			open_at_init.append(init_open)
-		var masses := composition.masses
-		var heterogeneities := composition.heterogeneities
-		var total_mass := composition.get_total_mass()
-		var survey_type := composition.survey_type
+		var masses := body_interface.get_composition_masses(i)
+		var heterogeneities := body_interface.get_composition_heterogeneities(i)
+		var total_mass := body_interface.get_composition_total_mass(i)
+		var survey_type := body_interface.get_composition_survey_type(i)
 		
 		var resources_data := []
-		# We're bypassing some Compsition API for efficiency here, which makes
-		# it more complicated. Composition resource indexes must be converted
-		# to resource_type.
+		# Composition resource indexes must be converted to resource_type.
 		for j in _n_is_extraction_resources:
 			var mass: float = masses[j]
 			if mass == 0.0:
@@ -115,11 +112,14 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			var heterogeneity := 0.0
 			var deposits := 0.0
 			if !_hide_variances[resource_type]:
-				uncertainty = 100.0 * composition.get_fractional_mass_uncertainty(resource_type)
+				uncertainty = 100.0 * body_interface.get_composition_fractional_mass_uncertainty(
+						i, resource_type)
 				if heterogeneities[j]:
-					heterogeneity = 100.0 * composition.get_fractional_heterogeneity(resource_type)
+					heterogeneity = 100.0 * body_interface.get_composition_fractional_heterogeneity(
+							i, resource_type)
 					if heterogeneity:
-						deposits = 100.0 * composition.get_fractional_deposits(resource_type, true)
+						deposits = 100.0 * body_interface.get_composition_fractional_deposits(
+								i, resource_type, true)
 			
 			var resource_data := [resource_type, mean, uncertainty, heterogeneity, deposits]
 			resources_data.append(resource_data)
@@ -128,17 +128,18 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		
 		var evidence: StringName = _survey_names[survey_type]
 		init_open = true
-		var composition_type: int = _composition_types.get(composition.name, -1)
+		var composition_name := body_interface.get_composition_name(i)
+		var composition_type: int = _composition_types.get(composition_name, -1)
 		if composition_type != -1:
 			init_open = _init_opens[composition_type]
 		
 		resources_data.append(total_mass)
-		resources_data.append(composition.density)
-		resources_data.append(composition.get_volume())
-		resources_data.append(composition.thickness)
-		resources_data.append(composition.body_radius)
+		resources_data.append(body_interface.get_composition_density(i))
+		resources_data.append(body_interface.get_composition_volume(i))
+		resources_data.append(body_interface.get_compostion_thickness(i))
+		resources_data.append(body_interface.get_compostion_body_radius(i))
 		resources_data.append(evidence)
-		resources_data.append(composition.stratum_type)
+		resources_data.append(body_interface.get_composition_stratum_type(i))
 		resources_data.append(init_open)
 		resources_data.append(composition_polity)
 		

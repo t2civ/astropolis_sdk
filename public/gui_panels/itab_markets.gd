@@ -42,10 +42,11 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _tables: Dictionary = IVTableData.tables
-var _resource_names: Array[StringName] = _tables.resources.name
-var _trade_classes: Array[int] = _tables.resources.trade_class
-var _trade_units: Array[StringName] = _tables.resources.trade_unit
-var _resource_classes_resources: Array = _tables.resource_classes_resources # array of arrays
+var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+var _resource_names: Array[StringName] = _tables[&"resources"][&"name"]
+var _trade_classes: Array[int] = _tables[&"resources"][&"trade_class"]
+var _trade_units: Array[StringName] = _tables[&"resources"][&"trade_unit"]
+var _resource_classes_resources: Array = _tables_aux[&"resource_classes_resources"] # array of arrays
 
 
 @onready var _no_markets_label: Label = $NoMarkets
@@ -138,10 +139,6 @@ func _get_ai_data(target_name: StringName) -> void:
 	if !interface:
 		_update_no_markets.call_deferred()
 		return
-	var inventory: Inventory = interface.get(&"inventory")
-	if !inventory:
-		_update_no_markets.call_deferred()
-		return
 	var tab := current_tab
 	var resource_class_resources: Array = _resource_classes_resources[tab]
 	var data := []
@@ -150,11 +147,11 @@ func _get_ai_data(target_name: StringName) -> void:
 	while i < n_resources:
 		var resource_type: int = resource_class_resources[i]
 		data.append(resource_type)
-		data.append(inventory.prices[resource_type])
-		data.append(inventory.bids[resource_type])
-		data.append(inventory.asks[resource_type])
-		data.append(inventory.get_in_stock(resource_type))
-		data.append(inventory.contracteds[resource_type])
+		data.append(interface.get_resource_price(resource_type))
+		data.append(interface.get_resource_bid(resource_type))
+		data.append(interface.get_resource_ask(resource_type))
+		data.append(interface.get_resource_in_stock(resource_type))
+		data.append(interface.get_resource_contracted(resource_type))
 		i += 1
 	
 	_update_tab_display.call_deferred(tab, n_resources, data)

@@ -5,7 +5,11 @@
 class_name Composition
 extends NetRef
 
-# Follows "Net Ref" pattern for holding and syncing data. DON'T MODIFY!
+# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+# will have access to API (just like any Godot class) but the GDScript class
+# will be removed.
+#
+# Follows "Net Ref" pattern for holding and syncing data.
 # This is a replacement (NOT a subclass) for I, Voyager's IVComposition class.
 #
 # AI and GUI have access to estimated values only; server has actual.
@@ -16,8 +20,6 @@ extends NetRef
 # All resource indexing here is for the 'is_extraction = true' subset.
 # Arrays are never resized after init, so they are threadsafe to read.
 # All data in this Net Ref flows server -> interface.
-
-
 
 enum { # _dirty bit flags
 	DIRTY_HEADERS = 1,
@@ -41,8 +43,6 @@ const PERSIST_PROPERTIES2: Array[StringName] = [
 	&"spherical_fraction",
 	&"area",
 	&"density",
-	&"volume",
-	&"total_mass",
 	&"masses",
 	&"heterogeneities",
 	&"survey_type",
@@ -50,6 +50,8 @@ const PERSIST_PROPERTIES2: Array[StringName] = [
 	&"density_bias",
 	&"masses_biases",
 	&"heterogeneities_biases",
+	&"_volume",
+	&"_total_mass",
 	&"_dirty_masses",
 	&"_dirty_heterogeneities",
 ]
@@ -64,8 +66,6 @@ var thickness := 0.0 # of the strata, =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
 var area := 0.0 # determined by spherical_fraction (or visa versa)
 var density := 0.0
-var volume := 0.0 # calculated! Use API to get refreshed value!
-var total_mass := 0.0 # calculated! Use API to get refreshed value!
 
 var masses: Array[float]
 var heterogeneities: Array[float] # variation within; this is good for mining!
@@ -78,6 +78,11 @@ var may_have_free_resources: bool # from strata.tsv
 var density_bias := 1.0 # the server is lying to you...
 var masses_biases: Array[float]
 var heterogeneities_biases: Array[float]
+
+# calculated
+var _volume := 0.0
+var _total_mass := 0.0
+
 
 # dirty data
 var _dirty_masses := 0 # dirty indexes as bit flags (max index 63)
@@ -106,8 +111,8 @@ func _init(is_new := false, is_server := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_resource_maybe_free = _tables[&"resources"][&"maybe_free"]
-		_extraction_resources = _tables[&"extraction_resources"]
-		_resource_extractions = _tables[&"resource_extractions"]
+		_extraction_resources = tables_aux[&"extraction_resources"]
+		_resource_extractions = tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
 		_survey_masses_errors = _tables[&"surveys"][&"masses_error"]
 		_survey_deposits_sds = _tables[&"surveys"][&"deposits_sigma"]
@@ -126,16 +131,17 @@ func _init(is_new := false, is_server := false) -> void:
 # ********************************** READ *************************************
 # all threadsafe
 
+
 func get_volume() -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	return volume
+	return _volume
 
 
 func get_total_mass() -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	return total_mass
+	return _total_mass
 
 
 func is_free_resource(resource_type: int) -> bool:
@@ -147,7 +153,7 @@ func is_free_resource(resource_type: int) -> bool:
 	assert(index != -1, "resource_type must have is_extraction == true")
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	return masses[index] / total_mass >= FREE_RESOURCE_MIN_FRACTION
+	return masses[index] / _total_mass >= FREE_RESOURCE_MIN_FRACTION
 
 
 func get_mass(resource_type: int) -> float:
@@ -161,7 +167,7 @@ func get_mass_fraction(resource_type: int) -> float:
 	assert(index != -1, "resource_type must have is_extraction == true")
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	return masses[index] / total_mass
+	return masses[index] / _total_mass
 
 
 func get_heterogeneity(resource_type: int) -> float:
@@ -177,7 +183,7 @@ func get_fractional_heterogeneity(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	# fractional_heterogeneity vanishes as mass approaches 0 or 100% of the total
-	var p := mass / total_mass
+	var p := mass / _total_mass
 	return p * (1.0 - p) * heterogeneities[index]
 
 
@@ -201,7 +207,7 @@ func get_fractional_mass_uncertainty(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	# fraction error vanishes as mass approaches 0 or 100% of the total
-	var p := mass / total_mass
+	var p := mass / _total_mass
 	return p * (1.0 - p) * error # tested on example data
 
 
@@ -222,9 +228,9 @@ func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> f
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	if deposits_boost == 0.0:
-		return mass / total_mass # what we would get below if calculated
+		return mass / _total_mass # what we would get below if calculated
 	# boost vanishes as mass approaches 0 or 100% of the total
-	var p := mass / total_mass
+	var p := mass / _total_mass
 	var fractional_deposits := p + p * (1.0 - p) * deposits_boost
 	if fractional_deposits > 1.0:
 		fractional_deposits = 1.0
@@ -388,17 +394,17 @@ func calculate_volume_and_total_mass() -> void:
 		# v = spherical_fraction * 4/3 PI r^3
 		# v = a / (4 PI r^2)     * 4/3 PI r^3
 		# simplify:
-		volume =  area * body_radius / 3.0
+		_volume =  area * body_radius / 3.0
 	else:
 		if thickness / body_radius < 0.01: # thin layer approximation
-			volume = area * thickness
+			_volume = area * thickness
 		else:
 			var outer_radius := body_radius - outer_depth
 			var inner_radius := outer_radius - thickness
-			volume = spherical_fraction * FOUR_THIRDS_PI * (
+			_volume = spherical_fraction * FOUR_THIRDS_PI * (
 					outer_radius * outer_radius * outer_radius
 					- inner_radius * inner_radius * inner_radius)
 	
-	total_mass = volume * density
+	_total_mass = _volume * density
 	_needs_volume_mass_calculation = false
 
