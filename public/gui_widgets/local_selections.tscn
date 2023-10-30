@@ -1,11 +1,22 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://bjf4qy5fngcu6"]
 
-[ext_resource path="res://public/gui_widgets/local_selections.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://public/gui_widgets/local_selections.gd" id="1"]
 
-[node name="LocalSelections" type="ScrollContainer"]
+[node name="LocalSelections" type="MarginContainer"]
 offset_right = 12.0
 offset_bottom = 12.0
-scroll_horizontal_enabled = false
-script = ExtResource( 1 )
+script = ExtResource("1")
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="NoFacilities" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+text = "(No Facilities)"
+horizontal_alignment = 1
+vertical_alignment = 1
