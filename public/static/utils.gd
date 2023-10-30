@@ -92,25 +92,6 @@ static func invert_subset_indexing(base: Array[int], size: int) -> Array[int]:
 	return result
 
 
-static func replace_array_contents(base: Array, with: Array) -> void:
-	base.clear()
-	for item in with:
-		base.append(item)
-
-
-static func replace_dict_contents(base: Dictionary, with: Dictionary) -> void:
-	base.clear()
-	for key in with:
-		base[key] = with[key]
-
-
-static func fill_array(base: Array, fill: Array) -> void:
-	var i := base.size()
-	while i > 0:
-		i -= 1
-		base[i] = fill[i]
-
-
 static func get_weighted_averages(data1: Array[float], weights1: Array[float],
 		data2: Array[float], weights2: Array[float]) -> Array[float]:
 	# assumes float arrays of equal sizes
@@ -296,18 +277,17 @@ static func get_diversity_index(diversity_model: Dictionary, q := 1.0) -> float:
 	#   (Probably all keys will end 0x but just maybe we'll see 1x.)
 	#
 	# All diversity_model values are integral floats >= 1.0.
-	# (Interesting programming note: base Homo sapiens has key = 0.)
 	
 	if diversity_model.is_empty():
 		return 0.0 # not exactly correct but intuitive
 	if q == 1.0:
 		return exp(get_shannon_entropy(diversity_model, false)) # limit as q -> 1
 	var n_individuals := 0.0
-	for key in diversity_model:
+	for key: int in diversity_model:
 		var mod100: int = key % 100 # 0, 1, ..., 99
 		n_individuals += diversity_model[key] * pow(10.0, mod100) # x 1, 10, ..., 1e99 sp
 	var summation := 0.0
-	for key in diversity_model:
+	for key: int in diversity_model:
 		var mod100: int = key % 100 # 0, 1, ..., 99
 		var p: float = diversity_model[key] / n_individuals
 		summation += pow(p, q) * pow(10.0, mod100)
@@ -321,11 +301,11 @@ static func get_shannon_entropy(diversity_model: Dictionary, in_bits := true) ->
 	if diversity_model.is_empty():
 		return 0.0 # not exactly correct but intuitive
 	var n_individuals := 0.0
-	for key in diversity_model:
+	for key: int in diversity_model:
 		var mod100: int = key % 100 # 0, 1, ..., 99
 		n_individuals += diversity_model[key] * pow(10.0, mod100) # x 1, 10, ..., 1e99 sp
 	var summation := 0.0
-	for key in diversity_model:
+	for key: int in diversity_model:
 		var mod100: int = key % 100 # 0, 1, ..., 99
 		var p: float = diversity_model[key] / n_individuals
 		summation += p * log(p) * pow(10.0, mod100) # log() is natural logarithm
@@ -337,7 +317,7 @@ static func get_shannon_entropy(diversity_model: Dictionary, in_bits := true) ->
 static func get_species_richness(diversity_model: Dictionary) -> float:
 	# total number of species
 	var species := 0.0
-	for key in diversity_model: # model keys always removed when value == 0.0
+	for key: int in diversity_model: # model keys always removed when value == 0.0
 		var mod100: int = key % 100 # 0, 1, ..., 99
 		species += pow(10.0, mod100) # 1, 10, ..., 1e99 sp
 	return species
@@ -345,7 +325,7 @@ static func get_species_richness(diversity_model: Dictionary) -> float:
 
 static func add_to_diversity_model(base: Dictionary, add: Dictionary) -> void:
 	# modifies 'base' diversity model; adds could be negative changes
-	for key in add:
+	for key: int in add:
 		if base.has(key):
 			base[key] += add[key]
 			if base[key] == 0.0:

@@ -272,13 +272,13 @@ func get_est_gross_margin(type: int) -> float:
 
 
 func get_n_operations_in_same_group(type: int) -> int:
-	var op_group: int = _table_operations.op_group[type]
+	var op_group: int = _table_operations[&"op_group"][type]
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	return op_group_ops.size()
 
 
 func is_singular(type: int) -> bool:
-	var op_group: int = _table_operations.op_group[type]
+	var op_group: int = _table_operations[&"op_group"][type]
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	return op_group_ops.size() == 1
 
@@ -289,21 +289,23 @@ func get_n_operations_in_group(op_group: int) -> int:
 
 
 func get_group_utilization(op_group: int) -> float:
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum_capacities := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum_capacities += capacities[type]
 	if sum_capacities == 0.0:
 		return 0.0
 	var sum_rates := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum_rates += rates[type]
 	return sum_rates / sum_capacities
 
 
 func get_group_electricity(op_group: int) -> float:
-	var electricities: Array[float] = _table_operations[&"energy"]
+	var electricities: Array[float] = _table_operations[&"dev_energy"]
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum += rates[type] * electricities[type]
 	return sum
 
@@ -311,8 +313,9 @@ func get_group_electricity(op_group: int) -> float:
 func get_group_est_revenue(op_group: int) -> float:
 	if !has_financials:
 		return NAN
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum += est_revenues[type]
 	return sum
 
@@ -320,8 +323,9 @@ func get_group_est_revenue(op_group: int) -> float:
 func get_group_est_gross_income(op_group: int) -> float:
 	if !has_financials:
 		return NAN
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum += est_gross_incomes[type]
 	return sum
 
@@ -329,9 +333,10 @@ func get_group_est_gross_income(op_group: int) -> float:
 func get_group_est_gross_margin(op_group: int) -> float:
 	if !has_financials:
 		return NAN
+	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum_income := 0.0
 	var sum_revenue := 0.0
-	for type in _op_groups_operations[op_group]:
+	for type in op_group_ops:
 		sum_income += est_gross_incomes[type]
 		sum_revenue += est_revenues[type]
 	if sum_revenue == 0.0:

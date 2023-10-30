@@ -10,7 +10,7 @@ extends MarginContainer
 #     1.23 x 10^15
 #     1,234,567,890,123,456
 
-signal has_stats_changed(has_stats)
+signal has_stats_changed(has_stats: bool)
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 
@@ -24,7 +24,7 @@ var min_columns := 3 # inclues row labels
 var required_component := &"operations"
 
 
-var content := [
+var content: Array[Array] = [
 	# label_txt, target_path
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number],
 	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.prefixed_named_number.bind("$")],
@@ -123,7 +123,7 @@ func _set_data() -> void:
 		var values := []
 		var is_data := false
 		for interface in interfaces:
-			var value = 0.0
+			var value: Variant = 0.0
 			if interface:
 				value = interface.call(method)
 				if value != null:
@@ -140,7 +140,7 @@ func _set_data() -> void:
 		var format_callable: Callable = line_array[2]
 		
 		# add values
-		for value in values:
+		for value: Variant in values:
 			var value_text: String
 			if value != null and (value or !zero_value):
 				value_text = format_callable.call(value)

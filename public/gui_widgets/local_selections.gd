@@ -40,7 +40,7 @@ var _companies: Array[String] = []
 var _offworld: Array[String] = []
 var _system: Array[String] = []
 
-var _section_arrays := [_polities, _agencies, _companies, _offworld, _system]
+var _section_arrays: Array[Array] = [_polities, _agencies, _companies, _offworld, _system]
 var _n_sections := section_names.size()
 
 var _is_busy := false # don't update if getting data on ai thread (cheap mutex)
@@ -160,7 +160,7 @@ func _update_labels() -> void:
 	var section := 0
 	var has_facilities := false
 	while section < _n_sections:
-		var section_data: Array = _section_arrays[section]
+		var section_data: Array[String] = _section_arrays[section]
 		var n_items := section_data.size()
 		if n_items > 0:
 			has_facilities = true
@@ -207,7 +207,7 @@ func _on_gui_input(event: InputEvent, label: Label) -> void:
 	if event_mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 	# 'lookup' will either be an integer (section index) or string (selection target)
-	var lookup = _pressed_lookup.get(label.text)
+	var lookup: Variant = _pressed_lookup.get(label.text)
 	if typeof(lookup) == TYPE_INT: # toggle section
 		if !_is_busy:
 			var section: int = lookup

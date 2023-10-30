@@ -15,10 +15,10 @@ extends RefCounted
 # methods are not threadsafe. Accessing non-container properties is safe.
 
 
-signal interface_changed(entity_type, entity_id, data) # on ai thread only!
+signal interface_changed(entity_type: int, entity_id: int, data: Array) # on ai thread only!
 
 # don't emit these directly; use API below
-signal persist_data_changed(network_id, data)
+signal persist_data_changed(network_id: int, data: Array)
 
 
 enum DirtyFlags {

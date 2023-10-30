@@ -11,10 +11,10 @@ extends Node
 # To call Main thread from AI thread, use call_deferred().
 
 # emit on ai thread only!
-signal interface_added(interface)
-signal interface_changed(entity_type, entity_id, data)
+signal interface_added(interface: Interface)
+signal interface_changed(entity_type: int, entity_id: int, data: Array)
 
-signal player_owner_changed(fixme) # FIXME - added for NetworkLobby; not hooked up anywhere else
+signal player_owner_changed(fixme: Variant) # FIXME - added for NetworkLobby; not hooked up anywhere else
 
 
 var verbose := false

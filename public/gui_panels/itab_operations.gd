@@ -55,7 +55,7 @@ var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
 @onready var _memory: Dictionary = get_parent().memory # open states
 @onready var _no_ops_label: Label = $NoOpsLabel
 @onready var _tab_container: TabContainer = $TabContainer
-@onready var _vboxes := [
+@onready var _vboxes: Array[VBoxContainer] = [
 	$"%EnergyVBox",
 	$"%ExtractionVBox",
 	$"%RefiningVBox",
@@ -63,7 +63,7 @@ var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
 	$"%BiomesVBox",
 	$"%ServicesVBox",
 ]
-@onready var _col0_spacers := [
+@onready var _col0_spacers: Array[Control] = [
 	$TabContainer/Energy/Hdrs/Spacer,
 	$TabContainer/Extraction/Hdrs/Spacer,
 	$TabContainer/Refining/Hdrs/Spacer,
@@ -71,7 +71,7 @@ var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
 	$TabContainer/Biomes/Hdrs/Spacer,
 	$TabContainer/Services/Hdrs/Spacer,
 ]
-@onready var _revenue_hdrs := [
+@onready var _revenue_hdrs: Array[Label] = [
 	$TabContainer/Energy/Hdrs/Hdr4,
 	$TabContainer/Extraction/Hdrs/Hdr4,
 	$TabContainer/Refining/Hdrs/Hdr4,
@@ -79,7 +79,7 @@ var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
 	$TabContainer/Biomes/Hdrs/Hdr4,
 	$TabContainer/Services/Hdrs/Hdr4,
 ]
-@onready var _margin_hdrs := [
+@onready var _margin_hdrs: Array[Label] = [
 	$TabContainer/Energy/Hdrs/Hdr5,
 	$TabContainer/Extraction/Hdrs/Hdr5,
 	$TabContainer/Refining/Hdrs/Hdr5,

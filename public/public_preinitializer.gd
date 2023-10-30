@@ -11,7 +11,7 @@ const IVOYAGER_VERBOSE := false
 const USE_THREADS := false
 
 
-func _init():
+func _init() -> void:
 	
 	var version: String = ProjectSettings.get_setting("application/config/version")
 	print("Astropolis %s - https://t2civ.com" % version)
