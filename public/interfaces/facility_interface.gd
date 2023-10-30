@@ -93,63 +93,56 @@ func get_polity_name() -> StringName:
 	return polity_name
 
 
-func get_total_population() -> float:
-	var total_population := operations.get_crew_total()
+func get_development_population(population_type := -1) -> float:
+	var total := operations.get_crew(population_type)
 	if population:
-		total_population += population.get_number_total()
-	return total_population
+		total += population.get_number(population_type)
+	return total
 
 
-func get_total_population_by_type(population_type: int) -> float:
-	var total_population := operations.get_crew(population_type)
-	if population:
-		total_population += population.get_number(population_type)
-	return total_population
-
-
-func get_lfq_gross_output() -> float:
+func get_development_economy() -> float:
 	return operations.lfq_gross_output
 
 
-func get_total_energy() -> float:
-	return operations.get_total_energy()
+func get_development_energy() -> float:
+	return operations.get_development_energy()
 
 
-func get_total_manufacturing() -> float:
-	return operations.get_total_manufacturing()
+func get_development_manufacturing() -> float:
+	return operations.get_development_manufacturing()
 
 
-func get_total_constructions() -> float:
+func get_development_constructions() -> float:
 	return operations.constructions
 
 
-func get_total_computations() -> float:
+func get_development_computations() -> float:
 	if metaverse:
 		return metaverse.computations
 	return 0.0
 
 
-func get_information() -> float:
+func get_development_information() -> float:
 	if metaverse:
-		return metaverse.get_information()
+		return metaverse.get_development_information()
 	return 0.0
 
 
-func get_total_bioproductivity() -> float:
+func get_development_bioproductivity() -> float:
 	if biome:
 		return biome.bioproductivity
 	return 0.0
 
 
-func get_total_biomass() -> float:
+func get_development_biomass() -> float:
 	if biome:
 		return biome.biomass
 	return 0.0
 
 
-func get_biodiversity() -> float:
+func get_development_biodiversity() -> float:
 	if biome:
-		return biome.get_biodiversity()
+		return biome.get_development_biodiversity()
 	return 0.0
 
 

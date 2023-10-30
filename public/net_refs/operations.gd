@@ -178,12 +178,10 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 # all threadsafe
 
 
-func get_crew(population_type: int) -> float:
+func get_crew(population_type := -1) -> float:
+	if population_type == -1:
+		return utils.get_float_array_sum(crews)
 	return crews[population_type]
-
-
-func get_crew_total() -> float:
-	return utils.get_float_array_sum(crews)
 
 
 func get_capacity(type: int) -> float:
@@ -208,7 +206,7 @@ func get_electricity(type: int) -> float:
 
 
 func get_total_electricity() -> float:
-	var operation_electricities: Array = _table_operations[&"electricity"]
+	var operation_electricities: Array[float] = _table_operations[&"electricity"]
 	var sum := 0.0
 	var i := 0
 	while i < _n_operations:
@@ -217,40 +215,36 @@ func get_total_electricity() -> float:
 	return sum
 
 
-func get_energy(type: int) -> float:
-	return rates[type] * _table_operations[&"energy"][type]
-
-
-func get_total_energy() -> float:
-	var operation_energies: Array = _table_operations[&"energy"]
+func get_development_energy() -> float:
+	var dev_energies: Array[float] = _table_operations[&"dev_energy"]
 	var sum := 0.0
 	var i := 0
 	while i < _n_operations:
-		sum += rates[i] * operation_energies[i]
+		sum += rates[i] * dev_energies[i]
 		i += 1
 	return sum
 
 
 func get_gui_flow(type: int) -> float:
-	return rates[type] * _table_operations.gui_flow[type]
+	return rates[type] * _table_operations[&"gui_flow"][type]
 
 
 func get_fuel_burn(type: int) -> float:
-	return rates[type] * _table_operations.fuel_burn[type]
+	return rates[type] * _table_operations[&"fuel_burn"][type]
 
 
 func get_extraction_rate(type: int) -> float:
-	return rates[type] * _table_operations.extraction_rate[type]
+	return rates[type] * _table_operations[&"extraction_rate"][type]
 
 
 func get_mass_flow(type: int) -> float:
-	return rates[type] * _table_operations.mass_flow[type]
+	return rates[type] * _table_operations[&"mass_flow"][type]
 
 
-func get_total_manufacturing() -> float:
-	var mass_flows: Array = _table_operations.mass_flow
+func get_development_manufacturing() -> float:
+	var mass_flows: Array[float] = _table_operations[&"mass_flow"]
 	var sum := 0.0
-	for type in tables_aux.is_manufacturing_operations:
+	for type: int in tables_aux[&"is_manufacturing_operations"]:
 		sum += rates[type] * mass_flows[type]
 	return sum
 

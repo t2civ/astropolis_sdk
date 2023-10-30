@@ -26,16 +26,16 @@ var required_component := &"operations"
 
 var content := [
 	# label_txt, target_path
-	[&"LABEL_POPULATION", &"get_total_population", IVQFormat.named_number],
-	[&"LABEL_ECONOMY", &"get_lfq_gross_output", IVQFormat.prefixed_named_number.bind("$")],
-	[&"LABEL_ENERGY", &"get_total_energy", IVQFormat.prefixed_unit.bind(&"W")],
-	[&"LABEL_MANUFACTURING", &"get_total_manufacturing", IVQFormat.prefixed_unit.bind(&"t/d")],
-	[&"LABEL_CONSTRUCTIONS", &"get_total_constructions", IVQFormat.prefixed_unit.bind(&"t")],
-	[&"LABEL_COMPUTATIONS", &"get_total_computations", IVQFormat.prefixed_unit.bind(&"flops")],
-	[&"LABEL_INFORMATION", &"get_information", IVQFormat.prefixed_unit.bind(&"bits")],
-	[&"LABEL_BIOPRODUCTIVITY", &"get_total_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/d")],
-	[&"LABEL_BIOMASS", &"get_total_biomass", IVQFormat.prefixed_unit.bind(&"t")],
-	[&"LABEL_BIODIVERSITY", &"get_biodiversity", IVQFormat.fixed_unit.bind(&"species")],
+	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number],
+	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.prefixed_named_number.bind("$")],
+	[&"LABEL_ENERGY", &"get_development_energy", IVQFormat.prefixed_unit.bind(&"W")],
+	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/d")],
+	[&"LABEL_CONSTRUCTIONS", &"get_development_constructions", IVQFormat.prefixed_unit.bind(&"t")],
+	[&"LABEL_COMPUTATIONS", &"get_development_computations", IVQFormat.prefixed_unit.bind(&"flops")],
+	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bits")],
+	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/d")],
+	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
+	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.fixed_unit.bind(&"species")],
 ]
 
 var targets: Array[StringName] = [&"PLANET_EARTH", &"PROXY_OFF_EARTH"]

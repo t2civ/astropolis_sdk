@@ -24,7 +24,7 @@ const PERSIST_PROPERTIES2: Array[StringName] = [
 var computations := 0.0
 var diversity_model: Dictionary # see comments in static/utils.gd, get_diversity_index()
 
-# TODO: histories including information using get_information()
+# TODO: histories including information using get_development_information()
 
 
 
@@ -37,7 +37,7 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # NOT all threadsafe!
 
-func get_information() -> float:
+func get_development_information() -> float:
 	# NOT THREADSAFE !!!!
 	return utils.get_shannon_entropy(diversity_model) # in 'bits'
 

@@ -76,12 +76,10 @@ func _init(is_new := false, is_facility := false) -> void:
 # ********************************* READ **************************************
 
 
-func get_number(population_type: int) -> float:
+func get_number(population_type := -1) -> float:
+	if population_type == -1:
+		return utils.get_float_array_sum(numbers)
 	return numbers[population_type]
-
-
-func get_number_total() -> float:
-	return utils.get_float_array_sum(numbers)
 
 
 func get_carrying_capacity_for_population(population_type: int) -> float:
