@@ -2,7 +2,7 @@
 
 ## Contents:
 
-[Notes](#notes)   
+[Notes](#notes)  
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)   
 [carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)   
 [compositions.tsv](#compositionstsv)  
@@ -51,9 +51,11 @@ Incomplete list of abstrations (i.e., intentionally unrealistic elements):
 * Ores always have the same percent target metal or mineral. E.g., Iron ores are 70%  iron; precious metal ores are 1% precious metals, etc. We assume benification occurs at the mine to produce exactly consistent "ore" commodities.
 
 ## asset_adjustments_mod.tsv
+
 Modifies ivoyager/data/solar_system/asset_adjustments.tsv.
 
 ## carrying_capacity_groups.tsv
+
 Enumeration table that defines different population categories for carrying capacity.
 
 ## compositions.tsv
@@ -200,6 +202,7 @@ Capacity is "peak" operation potential. Capacity x utilization = operation_rate.
 Note: This table is here for development convenience. Capacities are actually determined by modules. However, game start code will set appropriate module number in each game start facility to achieve capacities defined in this table.
 
 #### SOLAR_POWER
+
 World GWp (=capacity): ~40 in 2010, ~640 in 2019, ~1000 in 2022, roughly from charts at https://en.wikipedia.org/wiki/Solar_power.
 
 2016 & 2020 from https://en.wikipedia.org/wiki/Solar_power_by_country:
