@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # Copyright 2019-2023 Charlie Whitfield, all rights reserved
 # *****************************************************************************
-extends ScrollContainer
+extends MarginContainer
 
 # Contains local selections for info panel navigation:
 #    Spacefaring Polities (-> polity at body proxy)
@@ -16,8 +16,7 @@ const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
 const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY
 const IS_STAR := IVEnums.BodyFlags.IS_STAR
 
-var section_names := [
-	# FIXME
+var section_names: Array[String] = [
 	tr(&"LABEL_SPACEFARING_POLITIES"),
 	tr(&"LABEL_SPACE_AGENCIES"),
 	tr(&"LABEL_SPACE_COMPANIES"),
@@ -28,7 +27,7 @@ var section_names := [
 var open_prefix := "\u2304   "
 var closed_prefix := ">   "
 var sub_prefix := "       "
-var is_open_sections := [false, false, false, true, true]
+var is_open_sections: Array[bool] = [false, false, false, true, true]
 
 var _state: Dictionary = IVGlobal.state
 
@@ -41,13 +40,14 @@ var _companies: Array[String] = []
 var _offworld: Array[String] = []
 var _system: Array[String] = []
 
-var _section_arrays := [_polities, _agencies, _companies, _offworld, _system]
+var _section_arrays: Array[Array] = [_polities, _agencies, _companies, _offworld, _system]
 var _n_sections := section_names.size()
 
 var _is_busy := false # don't update if getting data on ai thread (cheap mutex)
 
 
-@onready var _vbox: VBoxContainer = $VBox
+@onready var _vbox: VBoxContainer = $ScrollContainer/VBox
+@onready var _no_facilities: Label = $NoFacilities
 
 
 func _ready() -> void:
@@ -73,7 +73,7 @@ func _init_after_system_built() -> void:
 	_selection_manager.selection_changed.connect(_update)
 	var section := 0
 	while section < _n_sections:
-		var section_text: String = section_names[section]
+		var section_text := section_names[section]
 		_pressed_lookup[open_prefix + section_text] = section
 		_pressed_lookup[closed_prefix + section_text] = section
 		section += 1
@@ -158,16 +158,19 @@ func _update_labels() -> void:
 	var label: Label
 	var child_index := 0
 	var section := 0
+	var has_facilities := false
 	while section < _n_sections:
-		var section_data: Array = _section_arrays[section]
+		var section_data: Array[String] = _section_arrays[section]
 		var n_items := section_data.size()
+		if n_items > 0:
+			has_facilities = true
 		while n_labels <= n_items + child_index: # enough if open
 			label = Label.new()
 			label.mouse_filter = MOUSE_FILTER_PASS
 			label.gui_input.connect(_on_gui_input.bind(label))
 			_vbox.add_child(label)
 			n_labels += 1
-		var is_open: bool = is_open_sections[section]
+		var is_open := is_open_sections[section]
 		label = _vbox.get_child(child_index)
 		child_index += 1
 		if n_items == 0:
@@ -187,6 +190,8 @@ func _update_labels() -> void:
 	
 	_is_busy = false # safe to call again
 	
+	_no_facilities.visible = !has_facilities
+	
 	while child_index < n_labels:
 		label = _vbox.get_child(child_index)
 		label.hide()
@@ -202,7 +207,7 @@ func _on_gui_input(event: InputEvent, label: Label) -> void:
 	if event_mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 	# 'lookup' will either be an integer (section index) or string (selection target)
-	var lookup = _pressed_lookup.get(label.text)
+	var lookup: Variant = _pressed_lookup.get(label.text)
 	if typeof(lookup) == TYPE_INT: # toggle section
 		if !_is_busy:
 			var section: int = lookup

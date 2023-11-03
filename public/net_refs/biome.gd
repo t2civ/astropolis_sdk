@@ -28,7 +28,7 @@ var bioproductivity := 0.0
 var biomass := 0.0
 var diversity_model: Dictionary # see comments in static/utils.gd, get_diversity_index()
 
-# TODO: histories including biodiversity using get_biodiversity()
+# TODO: histories including biodiversity using get_development_biodiversity()
 
 
 
@@ -42,7 +42,7 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # NOT all threadsafe!
 
-func get_biodiversity() -> float:
+func get_development_biodiversity() -> float:
 	# NOT THREADSAFE !!!!
 	return utils.get_diversity_index(diversity_model)
 

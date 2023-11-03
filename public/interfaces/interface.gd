@@ -15,10 +15,10 @@ extends RefCounted
 # methods are not threadsafe. Accessing non-container properties is safe.
 
 
-signal interface_changed(entity_type, entity_id, data) # on ai thread only!
+signal interface_changed(entity_type: int, entity_id: int, data: Array) # on ai thread only!
 
 # don't emit these directly; use API below
-signal persist_data_changed(network_id, data)
+signal persist_data_changed(network_id: int, data: Array)
 
 
 enum DirtyFlags {
@@ -160,47 +160,43 @@ func has_markets() -> bool:
 	return false
 
 
-func get_total_population() -> float:
+func get_development_population(_population_type := -1) -> float:
 	return 0.0
 
 
-func get_total_population_by_type(_population_type: int) -> float:
+func get_development_economy() -> float:
 	return 0.0
 
 
-func get_lfq_gross_output() -> float:
+func get_development_energy() -> float:
 	return 0.0
 
 
-func get_total_energy() -> float:
+func get_development_manufacturing() -> float:
 	return 0.0
 
 
-func get_total_manufacturing() -> float:
+func get_development_constructions() -> float:
 	return 0.0
 
 
-func get_total_constructions() -> float:
+func get_development_computations() -> float:
 	return 0.0
 
 
-func get_total_computations() -> float:
+func get_development_information() -> float:
 	return 0.0
 
 
-func get_information() -> float:
+func get_development_bioproductivity() -> float:
 	return 0.0
 
 
-func get_total_bioproductivity() -> float:
+func get_development_biomass() -> float:
 	return 0.0
 
 
-func get_total_biomass() -> float:
-	return 0.0
-
-
-func get_biodiversity() -> float:
+func get_development_biodiversity() -> float:
 	return 0.0
 
 

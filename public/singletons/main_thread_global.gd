@@ -10,9 +10,9 @@ extends Node
 # Note that Interfaces gotten here are not threadsafe. For Interface access on
 # the main thread, use only Interface methods marked 'threadsafe'.
 
-signal interface_added(interface)
-signal interface_removed(interface)
-signal ai_thread_called(callable)
+signal interface_added(interface: Interface)
+signal interface_removed(interface: Interface)
+signal ai_thread_called(callable: Callable)
 
 
 const utils := preload("res://public/static/utils.gd")

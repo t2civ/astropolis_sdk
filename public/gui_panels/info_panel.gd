@@ -6,13 +6,15 @@ class_name InfoPanel
 extends PanelContainer
 const SCENE := "res://public/gui_panels/info_panel.tscn"
 
+# TODO: We could move clone logic here now that self referencing is ok.
+
 # InfoTabMargin, InfoTabContainer, and the subpanels are added procedurally so
 # they can be saved and restored on game load.
 # 'selection_manager' points to AstroGUI.selection_manager if this is the
 # original (unpinned) InfoPanel. If this is a cloned (pinned) InfoPanel, then
 # it has its own SelectionManager instance.
 
-signal clone_and_pin_requested(info_panel)
+signal clone_and_pin_requested(info_panel: InfoPanel)
 
 
 const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL

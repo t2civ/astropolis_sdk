@@ -34,7 +34,7 @@ func _resize() -> void:
 #	_under_moons_spacer.rect_min_size.y = _under_moons_spacer_sizes[gui_size]
 
 
-func _settings_listener(setting: StringName, _value) -> void:
+func _settings_listener(setting: StringName, _value: Variant) -> void:
 	if setting == &"gui_size":
 		_resize()
 

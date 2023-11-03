@@ -75,48 +75,44 @@ func get_facilities() -> Array[Interface]:
 	return facilities
 
 
-func get_total_population() -> float:
-	return population.get_number_total() + operations.get_crew_total()
-
-
-func get_total_population_by_type(population_type: int) -> float:
+func get_development_population(population_type := -1) -> float:
 	return population.get_number(population_type) + operations.get_crew(population_type)
 
 
-func get_lfq_gross_output() -> float:
+func get_development_economy() -> float:
 	return operations.lfq_gross_output
 
 
-func get_total_energy() -> float:
-	return operations.get_total_energy()
+func get_development_energy() -> float:
+	return operations.get_development_energy()
 
 
-func get_total_manufacturing() -> float:
-	return operations.get_total_manufacturing()
+func get_development_manufacturing() -> float:
+	return operations.get_development_manufacturing()
 
 
-func get_total_constructions() -> float:
+func get_development_constructions() -> float:
 	return operations.constructions
 
 
-func get_total_computations() -> float:
+func get_development_computations() -> float:
 	return metaverse.computations
 
 
-func get_information() -> float:
-	return metaverse.get_information()
+func get_development_information() -> float:
+	return metaverse.get_development_information()
 
 
-func get_total_bioproductivity() -> float:
+func get_development_bioproductivity() -> float:
 	return biome.bioproductivity
 
 
-func get_total_biomass() -> float:
+func get_development_biomass() -> float:
 	return biome.biomass
 
 
-func get_biodiversity() -> float:
-	return biome.get_biodiversity()
+func get_development_biodiversity() -> float:
+	return biome.get_development_biodiversity()
 
 
 

@@ -46,12 +46,12 @@ var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _resource_names: Array[StringName] = _tables[&"resources"][&"name"]
 var _trade_classes: Array[int] = _tables[&"resources"][&"trade_class"]
 var _trade_units: Array[StringName] = _tables[&"resources"][&"trade_unit"]
-var _resource_classes_resources: Array = _tables_aux[&"resource_classes_resources"] # array of arrays
+var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_resources"]
 
 
 @onready var _no_markets_label: Label = $NoMarkets
 @onready var _tab_container: TabContainer = $TabContainer
-@onready var _vboxes := [
+@onready var _vboxes: Array[VBoxContainer] = [
 	$"%EnergyVBox",
 	$"%OresVBox",
 	$"%VolatilesVBox",
@@ -60,7 +60,7 @@ var _resource_classes_resources: Array = _tables_aux[&"resource_classes_resource
 	$"%BiologicalsVBox",
 	$"%CyberVBox",
 ]
-@onready var _col0_spacers := [
+@onready var _col0_spacers: Array[Control] = [
 	$TabContainer/Energy/Hdrs/Spacer,
 	$TabContainer/Ores/Hdrs/Spacer,
 	$TabContainer/Volatiles/Hdrs/Spacer,

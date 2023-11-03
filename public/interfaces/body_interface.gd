@@ -73,75 +73,66 @@ func get_facilities() -> Array[Interface]:
 	return facilities
 
 
-func get_total_population() -> float:
-	var total_population := 0.0
+func get_development_population(population_type := -1) -> float:
+	var total := 0.0
 	if population:
-		total_population = population.get_number_total()
+		total = population.get_number(population_type)
 	if operations:
-		total_population += operations.get_crew_total()
-	return total_population
+		total += operations.get_crew(population_type)
+	return total
 
 
-func get_total_population_by_type(population_type: int) -> float:
-	var total_population := 0.0
-	if population:
-		total_population = population.get_number(population_type)
-	if operations:
-		total_population += operations.get_crew(population_type)
-	return total_population
-
-
-func get_lfq_gross_output() -> float:
+func get_development_economy() -> float:
 	if operations:
 		return operations.lfq_gross_output
 	return 0.0
 
 
-func get_total_energy() -> float:
+func get_development_energy() -> float:
 	if operations:
-		return operations.get_total_energy()
+		return operations.get_development_energy()
 	return 0.0
 
 
-func get_total_manufacturing() -> float:
+func get_development_manufacturing() -> float:
 	if operations:
-		return operations.get_total_manufacturing()
+		return operations.get_development_manufacturing()
 	return 0.0
 
 
-func get_total_constructions() -> float:
+func get_development_constructions() -> float:
 	if operations:
 		return operations.constructions
 	return 0.0
 
 
-func get_total_computations() -> float:
+func get_development_computations() -> float:
 	if metaverse:
 		return metaverse.computations
 	return 0.0
 
 
-func get_information() -> float:
+func get_development_information() -> float:
 	if metaverse:
-		return metaverse.get_information()
+		return metaverse.get_development_information()
 	return 0.0
 
 
-func get_total_bioproductivity() -> float:
+func get_development_bioproductivity() -> float:
 	if biome:
 		return biome.bioproductivity
 	return 0.0
 
 
-func get_total_biomass() -> float:
+func get_development_biomass() -> float:
 	if biome:
 		return biome.biomass
 	return 0.0
 
 
-func get_biodiversity() -> float:
+func get_development_biodiversity() -> float:
 	if biome:
-		return biome.get_biodiversity()
+		return biome.get_development_biodiversity()
 	return 0.0
 
 

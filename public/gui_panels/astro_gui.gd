@@ -10,7 +10,7 @@ const SCENE := "res://public/gui_panels/astro_gui.tscn"
 const PERSIST_MODE := IVEnums.PERSIST_PROPERTIES_ONLY # child GUIs are persisted
 
 
-func _ready():
+func _ready() -> void:
 	IVGlobal.system_tree_built_or_loaded.connect(_on_system_tree_built_or_loaded)
 	IVGlobal.simulator_started.connect(show)
 	IVGlobal.about_to_free_procedural_nodes.connect(hide)
