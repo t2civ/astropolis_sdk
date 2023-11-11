@@ -35,19 +35,6 @@ static func get_lsb_index(flags: int) -> int:
 	return LOG2_64[flags]
 
 
-static func binary_str(flags: int) -> String:
-	# returns 64 bit string
-	var result := ""
-	var index := 0
-	while index < 64:
-		if index % 8 == 0 and index != 0:
-			result = "_" + result
-		result = "1" + result if flags & 1 else "0" + result
-		flags >>= 1
-		index += 1
-	return result
-
-
 static func get_n_bits(n: int) -> int:
 	# max 64
 	if n < 64:
