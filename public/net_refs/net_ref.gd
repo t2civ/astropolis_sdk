@@ -46,11 +46,11 @@ static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 
 
 func get_server_init() -> Array:
-	return IVSaveBuilder.get_persist_properties(self)
+	return IVSaveUtils.get_persist_properties(self)
 
 
 func set_server_init(data: Array) -> void:
-	IVSaveBuilder.set_persist_properties(self, data)
+	IVSaveUtils.set_persist_properties(self, data)
 
 
 func take_server_delta(_data: Array) -> void:

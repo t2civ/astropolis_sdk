@@ -37,10 +37,10 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	var subpanel_clones := itc_clone.subpanels
 	var n_subpanels := subpanels.size()
 	assert(subpanel_clones.size() == n_subpanels)
-	IVSaveBuilder.clone_persist_properties(itc, itc_clone)
+	IVSaveUtils.clone_persist_properties(itc, itc_clone)
 	var i := 0
 	while i < n_subpanels:
-		IVSaveBuilder.clone_persist_properties(subpanels[i], subpanel_clones[i])
+		IVSaveUtils.clone_persist_properties(subpanels[i], subpanel_clones[i])
 		i += 1
 	
 	# clone InfoPanel (no persist properties we need to worry about)
