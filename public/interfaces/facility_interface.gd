@@ -101,7 +101,7 @@ func get_development_population(population_type := -1) -> float:
 
 
 func get_development_economy() -> float:
-	return operations.lfq_gross_output
+	return operations.get_lfq_gross_output()
 
 
 func get_development_energy() -> float:
@@ -113,12 +113,12 @@ func get_development_manufacturing() -> float:
 
 
 func get_development_constructions() -> float:
-	return operations.constructions
+	return operations.get_constructions()
 
 
 func get_development_computations() -> float:
 	if metaverse:
-		return metaverse.computations
+		return metaverse.get_computations()
 	return 0.0
 
 
@@ -130,13 +130,13 @@ func get_development_information() -> float:
 
 func get_development_bioproductivity() -> float:
 	if biome:
-		return biome.bioproductivity
+		return biome.get_bioproductivity()
 	return 0.0
 
 
 func get_development_biomass() -> float:
 	if biome:
-		return biome.biomass
+		return biome.get_biomass()
 	return 0.0
 
 
@@ -193,41 +193,43 @@ func set_server_init(data: Array) -> void:
 
 func sync_server_dirty(data: Array) -> void:
 	
-	var int_data: Array[int] = data[0]
-	var float_data: Array[float] = data[1]
-	var string_data: Array[String] = data[2]
+	var offsets: Array[int] = data[0]
+	var int_data: Array[int] = data[1]
+	var dirty: int = offsets[0]
+	var k := 1 # offsets offset
 	
-	var int_offset := 14
-	var float_offset := 0
-	
-	var dirty: int = int_data[1]
 	if dirty & DIRTY_BASE:
-		facility_class = data[int_offset]
-		int_offset += 1
-		public_sector = float_data[float_offset]
-		solar_occlusion = float_data[float_offset + 1]
-		float_offset += 2
+		var float_data: Array[float] = data[2]
+		var string_data: Array[String] = data[3]
+		facility_class = int_data[1]
+		public_sector = float_data[0]
+		solar_occlusion = float_data[1]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
 	
 	if dirty & DIRTY_OPERATIONS:
-		operations.add_server_delta(data)
+		operations.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_INVENTORY:
-		inventory.add_server_delta(data)
+		inventory.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_FINANCIALS:
-		financials.add_server_delta(data)
+		financials.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_POPULATION:
 		if !population:
 			population = Population.new(true, true)
-		population.add_server_delta(data)
+		population.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_BIOME:
 		if !biome:
 			biome = Biome.new(true)
-		biome.add_server_delta(data)
+		biome.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_METAVERSE:
 		if !metaverse:
 			metaverse = Metaverse.new(true)
-		metaverse.add_server_delta(data)
+		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
 	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:
@@ -236,11 +238,7 @@ func sync_server_dirty(data: Array) -> void:
 		else:
 			run_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
-	
-	body.propagate_server_delta(data)
-	player.propagate_server_delta(data)
-	for proxy in proxies:
-		proxy.propagate_server_delta(data)
+
 
 
 func _sync_ai_changes() -> void:

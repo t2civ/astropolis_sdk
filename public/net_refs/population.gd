@@ -10,39 +10,42 @@ extends NetRef
 # will be removed.
 #
 # Arrays indexed by population_type unless noted otherwise.
+#
+# TODO: Make interface component w/out server dirty flags & delta accumulators
 
 # save/load persistence for server only
 const PERSIST_PROPERTIES2: Array[StringName] = [
-	&"numbers",
-	&"growth_rates",
-	&"carrying_capacities",
-	&"immigration_attractions",
-	&"emigration_pressures",
-	&"history_numbers",
+	&"_numbers",
+	&"_delta_numbers",
+	&"_intrinsic_growths",
+	&"_carrying_capacities",
+	&"_migration_pressures",
+	&"_history_numbers",
 	&"_is_facility",
 	&"_dirty_numbers",
+	&"_dirty_intrinsic_growths",
 	&"_dirty_carrying_capacities",
-	&"_dirty_growth_rates",
-	&"_dirty_immigration_attractions",
-	&"_dirty_emigration_pressures",
+	&"_dirty_migration_pressures",
 ]
 
-# Interface read-only! All data flows server -> interface.
-var numbers: Array[float]
-var growth_rates: Array[float] # Facility only
-var carrying_capacities: Array[float] # Facility only; indexed by carrying_capacity_group
-var immigration_attractions: Array[float] # Facility only
-var emigration_pressures: Array[float] # Facility only
-var history_numbers: Array[Array] # Array for ea pop type; [..., qrt_before_last, last_qrt]
+# All data flows server -> interface.
+var _numbers: Array[float]
+var _delta_numbers: Array[float]
+var _intrinsic_growths: Array[float] # Facility only
+var _carrying_capacities: Array[float] # Facility only; indexed by carrying_capacity_group
+var _migration_pressures: Array[float] # Facility only; +/- emigration/immigration
+
+var _history_numbers: Array[Array] # Array for ea pop type; [..., qrt_before_last, last_qrt]
 
 var _is_facility := false
 
+# accumulators
+
 # server dirty data (dirty indexes as bit flags; max 64)
 var _dirty_numbers := 0
-var _dirty_growth_rates := 0
+var _dirty_intrinsic_growths := 0
 var _dirty_carrying_capacities := 0
-var _dirty_immigration_attractions := 0
-var _dirty_emigration_pressures := 0
+var _dirty_migration_pressures := 0
 
 static var _n_populations: int
 static var _table_populations: Dictionary
@@ -52,7 +55,7 @@ static var _is_class_instanced := false
 
 
 
-func _init(is_new := false, is_facility := false) -> void:
+func _init(is_new := false, is_facility_ := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_n_populations = _table_n_rows[&"populations"]
@@ -61,45 +64,57 @@ func _init(is_new := false, is_facility := false) -> void:
 		_carrying_capacity_group2s = _table_populations[&"carrying_capacity_group2"]
 	if !is_new: # game load
 		return
-	numbers = ivutils.init_array(_n_populations, 0.0, TYPE_FLOAT)
-	history_numbers = ivutils.init_array(_n_populations, [] as Array[float], TYPE_ARRAY)
-	if !is_facility:
+	_numbers = ivutils.init_array(_n_populations, 0.0, TYPE_FLOAT)
+	_delta_numbers = _numbers.duplicate()
+	_history_numbers = ivutils.init_array(_n_populations, [] as Array[float], TYPE_ARRAY)
+	if !is_facility_:
 		return
 	_is_facility = true
-	growth_rates = numbers.duplicate()
+	_intrinsic_growths = _numbers.duplicate()
 	var n_carrying_capacity_groups: int = _table_n_rows.carrying_capacity_groups
-	carrying_capacities = ivutils.init_array(n_carrying_capacity_groups, 0.0, TYPE_FLOAT)
-	immigration_attractions = numbers.duplicate()
-	emigration_pressures = numbers.duplicate()
+	_carrying_capacities = ivutils.init_array(n_carrying_capacity_groups, 0.0, TYPE_FLOAT)
+	_migration_pressures = _numbers.duplicate()
 
 
 # ********************************* READ **************************************
 
 
-func get_number(population_type := -1) -> float:
-	if population_type == -1:
-		return utils.get_float_array_sum(numbers)
-	return numbers[population_type]
+func get_number(type := -1) -> float:
+	if type == -1:
+		return utils.get_float_array_sum(_numbers) + utils.get_float_array_sum(_delta_numbers)
+	return _numbers[type] + _delta_numbers[type]
 
 
-func get_carrying_capacity_for_population(population_type: int) -> float:
-	# sums the carrying_capacities that this population can occupy
-	var group: int = _carrying_capacity_groups[population_type]
-	var group2: int = _carrying_capacity_group2s[population_type]
-	var carrying_capacity: float = carrying_capacities[group]
+func get_intrinsic_growth(type: int) -> float:
+	assert(_is_facility)
+	return _intrinsic_growths[type]
+
+
+func get_carrying_capacity(carrying_capacity_group: int) -> float:
+	assert(_is_facility)
+	return _carrying_capacities[carrying_capacity_group]
+
+
+func get_carrying_capacity_for_population(type: int) -> float:
+	# sums the _carrying_capacities that this population can occupy
+	assert(_is_facility)
+	var group: int = _carrying_capacity_groups[type]
+	var group2: int = _carrying_capacity_group2s[type]
+	var carrying_capacity: float = _carrying_capacities[group]
 	if group2 != -1:
-		carrying_capacity += carrying_capacities[group2]
+		carrying_capacity += _carrying_capacities[group2]
 	return carrying_capacity
 
 
 func get_number_for_carrying_capacity_group(carrying_capacity_group: int) -> float:
 	# sums all populations that share this carrying_capacity_group
+	assert(_is_facility)
 	var number := 0.0
 	var i := 0
 	while i < _n_populations:
-		if _carrying_capacity_groups[i] == carrying_capacity_group \
-				or _carrying_capacity_group2s[i] == carrying_capacity_group:
-			number += numbers[i]
+		if (_carrying_capacity_groups[i] == carrying_capacity_group
+				or _carrying_capacity_group2s[i] == carrying_capacity_group):
+			number += _numbers[i]
 		i += 1
 	return number
 
@@ -111,23 +126,24 @@ func get_effective_pk_ratio(population_type: int) -> float:
 	# carrying_capacity_group. I.e., they can occupy the same "space", while
 	# either may have alternative spaces to live in.
 	# Returns INF if carrying_capacity == 0.0.
+	assert(_is_facility)
 
 	var carrying_capacity := get_carrying_capacity_for_population(population_type)
 	if carrying_capacity == 0.0:
 		return INF
-	var init_ratio: float = numbers[population_type] / carrying_capacity
+	var init_ratio: float = _numbers[population_type] / carrying_capacity
 	var group: int = _carrying_capacity_groups[population_type]
 	# Sum ratios for populations that share our primary space. This will give
 	# smaller penalty from other populations that have large alternative spaces
 	# (due to large denominator).
 	var pk_ratio := INF
-	if carrying_capacities[group] > 0.0:
+	if _carrying_capacities[group] > 0.0:
 		pk_ratio = init_ratio
 		var i := 0
 		while i < _n_populations:
-			if i != population_type and numbers[i] > 0.0:
+			if i != population_type and _numbers[i] > 0.0:
 				if _carrying_capacity_groups[i] == group or _carrying_capacity_group2s[i] == group:
-					pk_ratio += numbers[i] / get_carrying_capacity_for_population(i)
+					pk_ratio += _numbers[i] / get_carrying_capacity_for_population(i)
 			i += 1
 	
 	var group2: int = _carrying_capacity_group2s[population_type]
@@ -137,13 +153,13 @@ func get_effective_pk_ratio(population_type: int) -> float:
 	# Do sum ratio for populations that share our secondary space. Perhaps this
 	# space is less occupied and will give more favorable ratio.
 	var pk_ratio2 := INF
-	if carrying_capacities[group2] > 0.0:
+	if _carrying_capacities[group2] > 0.0:
 		pk_ratio2 = init_ratio
 		var i := 0
 		while i < _n_populations:
-			if i != population_type and numbers[i] > 0.0:
+			if i != population_type and _numbers[i] > 0.0:
 				if _carrying_capacity_groups[i] == group2 or _carrying_capacity_group2s[i] == group2:
-					pk_ratio2 += numbers[i] / get_carrying_capacity_for_population(i)
+					pk_ratio2 += _numbers[i] / get_carrying_capacity_for_population(i)
 			i += 1
 	
 	if pk_ratio2 < pk_ratio:
@@ -151,22 +167,23 @@ func get_effective_pk_ratio(population_type: int) -> float:
 	return pk_ratio
 
 
-# **************************** SERVER ONNLY !!!! ******************************
+# **************************** SERVER ONLY !!!! ******************************
 
 
-func change_number(population_type: int, change: float) -> void:
+func change_number(type: int, change: float) -> void:
 	assert(change == floor(change), "Expected integral value!")
-	numbers[population_type] += change
-	_dirty_numbers |= 1 << population_type
+	assert(change >= 0.0 or change >= -get_number(type))
+	_delta_numbers[type] += change
+	_dirty_numbers |= 1 << type
 
 
-func change_growth_rate(population_type: int, change: float) -> void:
-	growth_rates[population_type] += change
-	_dirty_growth_rates |= 1 << population_type
+func set_intrinsic_growth(type: int, value: float) -> void:
+	_intrinsic_growths[type] = value
+	_dirty_intrinsic_growths |= 1 << type
 
 
-func change_carrying_capacity(carrying_capacity_group: int, change: float) -> void:
-	carrying_capacities[carrying_capacity_group] += change
+func set_carrying_capacity(carrying_capacity_group: int, value: float) -> void:
+	_carrying_capacities[carrying_capacity_group] = value
 	_dirty_carrying_capacities |= 1 << carrying_capacity_group
 
 
@@ -175,49 +192,48 @@ func change_carrying_capacity(carrying_capacity_group: int, change: float) -> vo
 
 # ********************************* SYNC **************************************
 
-func take_server_delta(data: Array) -> void:
-	# facility accumulator only; zero values and dirty flags
+
+func take_dirty(data: Array) -> void:
+	# save delta in data, apply & zero delta, reset dirty flags
 	
-	_int_data = data[0]
-	_float_data = data[1]
+	_int_data = data[1]
+	_float_data = data[2]
 	
-	_int_data[8] = _int_data.size()
-	_int_data[9] = _float_data.size()
+	_take_floats_delta(_numbers, _delta_numbers, _dirty_numbers)
 	
-	_append_and_zero_dirty_floats(numbers, _dirty_numbers)
 	_dirty_numbers = 0
-	_append_and_zero_dirty_floats(growth_rates, _dirty_growth_rates)
-	_dirty_growth_rates = 0
-	_append_and_zero_dirty_floats(carrying_capacities, _dirty_carrying_capacities)
+	
+	if !_is_facility:
+		return
+	
+	_get_floats_dirty(_intrinsic_growths, _dirty_intrinsic_growths)
+	_get_floats_dirty(_carrying_capacities, _dirty_carrying_capacities)
+	_get_floats_dirty(_migration_pressures, _dirty_migration_pressures)
+	
+	_dirty_intrinsic_growths = 0
 	_dirty_carrying_capacities = 0
-	_append_and_zero_dirty_floats(immigration_attractions, _dirty_immigration_attractions)
-	_dirty_immigration_attractions = 0
-	_append_and_zero_dirty_floats(emigration_pressures, _dirty_emigration_pressures)
-	_dirty_emigration_pressures = 0
+	_dirty_migration_pressures = 0
 
 
-func add_server_delta(data: Array) -> void:
-	# any target; reference safe
-	
-	_int_data = data[0]
-	_float_data = data[1]
-	
-	_int_offset = _int_data[8]
-	_float_offset = _int_data[9]
+func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
+	# apply delta & dirty flags
+	_int_data = data[1]
+	_float_data = data[2]
+	_int_offset = int_offset
+	_float_offset = float_offset
 	
 	var svr_qtr: int = _int_data[0]
 	if run_qtr < svr_qtr:
 		_update_history(svr_qtr) # before new quarter changes
 	
-	_add_dirty_floats(numbers)
+	_dirty_numbers |= _add_floats_delta(_delta_numbers)
 	
 	if !_is_facility:
 		return
 	
-	_add_dirty_floats(growth_rates)
-	_add_dirty_floats(carrying_capacities)
-	_add_dirty_floats(immigration_attractions)
-	_add_dirty_floats(emigration_pressures)
+	_dirty_intrinsic_growths |= _set_floats_dirty(_intrinsic_growths)
+	_dirty_carrying_capacities |= _set_floats_dirty(_carrying_capacities)
+	_dirty_migration_pressures |= _set_floats_dirty(_migration_pressures)
 
 
 func _update_history(svr_qtr: int) -> void:
@@ -227,7 +243,7 @@ func _update_history(svr_qtr: int) -> void:
 	while run_qtr < svr_qtr: # loop in case we missed a quarter
 		var i := 0
 		while i < _n_populations:
-			history_numbers[i].append(numbers[i])
+			_history_numbers[i].append(_numbers[i])
 			i += 1
 		run_qtr += 1
 
