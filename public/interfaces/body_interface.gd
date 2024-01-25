@@ -29,11 +29,11 @@ var parent: BodyInterface # null for top body
 
 var satellites: Array[BodyInterface] = [] # resizable container - not threadsafe!
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
-var compositions: Array[Composition] = [] # resizable container - not threadsafe!
 var operations: Operations # when/if needed
 var population: Population # when/if needed
 var biome: Biome # when/if needed
 var metaverse: Metaverse # when/if needed
+var compositions: Array[Composition] = [] # resizable container - not threadsafe!
 
 
 
@@ -84,7 +84,7 @@ func get_development_population(population_type := -1) -> float:
 
 func get_development_economy() -> float:
 	if operations:
-		return operations.lfq_gross_output
+		return operations.get_lfq_gross_output()
 	return 0.0
 
 
@@ -102,13 +102,13 @@ func get_development_manufacturing() -> float:
 
 func get_development_constructions() -> float:
 	if operations:
-		return operations.constructions
+		return operations.get_constructions()
 	return 0.0
 
 
 func get_development_computations() -> float:
 	if metaverse:
-		return metaverse.computations
+		return metaverse.get_computations()
 	return 0.0
 
 
@@ -120,13 +120,13 @@ func get_development_information() -> float:
 
 func get_development_bioproductivity() -> float:
 	if biome:
-		return biome.bioproductivity
+		return biome.get_bioproductivity()
 	return 0.0
 
 
 func get_development_biomass() -> float:
 	if biome:
-		return biome.biomass
+		return biome.get_biomass()
 	return 0.0
 
 
@@ -217,22 +217,12 @@ func set_server_init(data: Array) -> void:
 	if parent_name:
 		parent = interfaces_by_name[parent_name]
 		parent.add_satellite(self)
-	var compositions_data: Array = data[8]
-	var operations_data: Array = data[9]
-	var population_data: Array = data[10]
-	var biome_data: Array = data[11]
-	var metaverse_data: Array = data[12]
+	var operations_data: Array = data[8]
+	var population_data: Array = data[9]
+	var biome_data: Array = data[10]
+	var metaverse_data: Array = data[11]
+	var compositions_data: Array = data[12]
 	
-	if compositions_data:
-		var n_compositions := compositions_data.size()
-		compositions.resize(n_compositions)
-		var i := 0
-		while i < n_compositions:
-			var composition_data: Array = compositions_data[i]
-			var composition := Composition.new(true)
-			composition.set_server_init(composition_data)
-			compositions[i] = composition
-			i += 1
 	if operations_data:
 		operations = Operations.new(true)
 		operations.set_server_init(operations_data)
@@ -246,47 +236,63 @@ func set_server_init(data: Array) -> void:
 		metaverse = Metaverse.new(true)
 		metaverse.set_server_init(metaverse_data)
 	
-
-func sync_server_dirty(data: Array) -> void:
-	var dirty: int = data[0]
-	var k := 1
-	if dirty & DIRTY_BASE:
-		gui_name = data[k]
-		solar_occlusion = data[k + 1]
-		k += 2
-	if dirty & DIRTY_COMPOSITIONS:
-		var n_compositions: int = data[k]
-		k += 1
-		while n_compositions > compositions.size(): # server added a Composition
-			var composition := Composition.new(true)
-			compositions.append(composition)
+	if compositions_data:
+		var n_compositions := compositions_data.size()
+		compositions.resize(n_compositions)
 		var i := 0
 		while i < n_compositions:
-			var composition: Composition = compositions[i]
-			k = composition.sync_server_dirty(data, k)
+			var composition_data: Array = compositions_data[i]
+			var composition := Composition.new(true)
+			composition.set_server_init(composition_data)
+			compositions[i] = composition
 			i += 1
+	
 
-
-func propagate_server_delta(data: Array) -> void:
-	var int_data: Array[int] = data[0]
-	var dirty: int = int_data[1]
+func sync_server_dirty(data: Array) -> void:
+	
+	var offsets: Array[int] = data[0]
+	var int_data: Array[int] = data[1]
+	var dirty: int = offsets[0]
+	var k := 1 # offsets offset
+	
+	if dirty & DIRTY_BASE:
+		var float_data: Array[float] = data[2]
+		var string_data: Array[String] = data[3]
+		gui_name = string_data[0]
+		solar_occlusion = float_data[0]
+	
 	if dirty & DIRTY_OPERATIONS:
 		if !operations:
 			operations = Operations.new(true)
-		operations.add_server_delta(data)
-	# no inventory or financials
+		operations.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_POPULATION:
 		if !population:
 			population = Population.new(true)
-		population.add_server_delta(data)
+		population.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_BIOME:
 		if !biome:
 			biome = Biome.new(true)
-		biome.add_server_delta(data)
+		biome.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_METAVERSE:
 		if !metaverse:
 			metaverse = Metaverse.new(true)
-		metaverse.add_server_delta(data)
+		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_COMPOSITIONS:
+		var dirty_compositions := offsets[k]
+		k += 1
+		var i := 0
+		while dirty_compositions:
+			if dirty_compositions & 1:
+				var composition: Composition = compositions[i]
+				composition.add_dirty(data, offsets[k], offsets[k + 1])
+				k += 2
+			i += 1
+			dirty_compositions >>= 1
+	
 	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:

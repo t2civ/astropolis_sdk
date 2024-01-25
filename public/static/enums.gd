@@ -3,6 +3,7 @@
 # Copyright 2019-2023 Charlie Whitfield, all rights reserved
 # *****************************************************************************
 class_name Enums
+extends Object
 
 
 enum Objects {
