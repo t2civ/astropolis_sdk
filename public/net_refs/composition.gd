@@ -1,6 +1,9 @@
 # composition.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name Composition
 extends NetRef
@@ -34,6 +37,7 @@ const FOUR_PI := 4.0 * PI
 const FREE_RESOURCE_MIN_FRACTION := 0.1
 
 const PERSIST_PROPERTIES2: Array[StringName] = [
+	&"compositions_index",
 	&"name",
 	&"stratum_type",
 	&"polity_name",
@@ -56,6 +60,7 @@ const PERSIST_PROPERTIES2: Array[StringName] = [
 	&"_dirty_heterogeneities",
 ]
 
+var compositions_index := -1
 var name: StringName
 var stratum_type := -1 # strata.tsv
 var polity_name: StringName # "" for commons
@@ -259,6 +264,7 @@ func get_server_init() -> Array:
 	var est_heterogeneities := heterogeneities.duplicate()
 	utils.multiply_float_array_by_array(est_heterogeneities, heterogeneities_biases)
 	return [
+		compositions_index,
 		name,
 		stratum_type,
 		polity_name,
@@ -277,19 +283,20 @@ func get_server_init() -> Array:
 
 func set_server_init(data: Array) -> void:
 	# NOT reference-safe!
-	name = data[0]
-	stratum_type = data[1]
-	polity_name = data[2]
-	body_radius = data[3]
-	outer_depth = data[4]
-	thickness = data[5]
-	spherical_fraction = data[6]
-	area = data[7]
-	density = data[8]
-	masses = data[9]
-	heterogeneities = data[10]
-	survey_type = data[11]
-	may_have_free_resources = data[12]
+	compositions_index = data[0]
+	name = data[1]
+	stratum_type = data[2]
+	polity_name = data[3]
+	body_radius = data[4]
+	outer_depth = data[5]
+	thickness = data[6]
+	spherical_fraction = data[7]
+	area = data[8]
+	density = data[9]
+	masses = data[10]
+	heterogeneities = data[11]
+	survey_type = data[12]
+	may_have_free_resources = data[13]
 
 
 func get_server_dirty(data: Array) -> void:

@@ -1,6 +1,9 @@
 # proxy_interface.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name ProxyInterface
 extends Interface
@@ -60,7 +63,7 @@ func get_development_population(population_type := -1) -> float:
 
 
 func get_development_economy() -> float:
-	return operations.lfq_gross_output
+	return operations.get_lfq_gross_output()
 
 
 func get_development_energy() -> float:
@@ -72,12 +75,12 @@ func get_development_manufacturing() -> float:
 
 
 func get_development_constructions() -> float:
-	return operations.constructions
+	return operations.get_constructions()
 
 
 func get_development_computations() -> float:
 	if metaverse:
-		return metaverse.computations
+		return metaverse.get_computations()
 	return 0.0
 
 
@@ -89,13 +92,13 @@ func get_development_information() -> float:
 
 func get_development_bioproductivity() -> float:
 	if biome:
-		return biome.bioproductivity
+		return biome.get_bioproductivity()
 	return 0.0
 
 
 func get_development_biomass() -> float:
 	if biome:
-		return biome.biomass
+		return biome.get_biomass()
 	return 0.0
 
 
@@ -137,22 +140,31 @@ func set_server_init(data: Array) -> void:
 		metaverse.set_server_init(metaverse_data)
 
 
-func propagate_server_delta(data: Array) -> void:
-	# only components we already have
-	var int_data: Array[int] = data[0]
-	var dirty: int = int_data[1]
-	if operations and dirty & DIRTY_OPERATIONS:
-		operations.add_server_delta(data)
-	if inventory and dirty & DIRTY_INVENTORY:
-		inventory.add_server_delta(data)
-	if financials and dirty & DIRTY_FINANCIALS:
-		financials.add_server_delta(data)
-	if population and dirty & DIRTY_POPULATION:
-		population.add_server_delta(data)
-	if biome and dirty & DIRTY_BIOME:
-		biome.add_server_delta(data)
-	if metaverse and dirty & DIRTY_METAVERSE:
-		metaverse.add_server_delta(data)
+func sync_server_dirty(data: Array) -> void:
+	
+	var offsets: Array[int] = data[0]
+	var int_data: Array[int] = data[1]
+	var dirty: int = offsets[0]
+	var k := 1 # offsets offset
+	
+	if dirty & DIRTY_OPERATIONS:
+		operations.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_INVENTORY:
+		inventory.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_FINANCIALS:
+		financials.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_POPULATION:
+		population.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_BIOME:
+		biome.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
+	if dirty & DIRTY_METAVERSE:
+		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:
 		if run_qtr == -1:

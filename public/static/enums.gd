@@ -1,8 +1,12 @@
 # enums.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name Enums
+extends Object
 
 
 enum Objects {

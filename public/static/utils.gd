@@ -1,8 +1,12 @@
 # utils.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name Utils
+extends Object
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 
@@ -22,7 +26,6 @@ const LOG2_64 := { # indexed by power-of-2s from 2^0 to 2^63
 	1 << 55 : 55, 1 << 56 : 56, 1 << 57 : 57, 1 << 58 : 58, 1 << 59 : 59,
 	1 << 60 : 60, 1 << 61 : 61, 1 << 62 : 62, 1 << 63 : 63,
 }
-const RECIPROCAL_LN2 := 1.0 / log(2.0) # log() is natural logarithm
 
 # binary
 
@@ -45,9 +48,8 @@ static func get_n_bits(n: int) -> int:
 	return 0
 
 
-
-
 # array & dict utils
+
 
 static func invert_many_to_one_indexing(base: Array[int], size: int) -> Array[Array]:
 	# e.g., ([0, 1, 1, 1, 3, 3], 5)
@@ -233,90 +235,4 @@ static func zero_array_of_float_arrays(array: Array[Array]) -> void:
 		while j > 0:
 			j -= 1
 			array[i][j] = 0.0
-
-
-# diversity / information functions
-
-static func get_diversity_index(diversity_model: Dictionary, q := 1.0) -> float:
-	# Returns Hill number of order q.
-	# https://en.wikipedia.org/wiki/Diversity_index
-	#
-	# If all species are equally represented, then index = number of species.
-	# The purpose of the index is to discount low abundance species (larger
-	# values of q give greater discount). The unit of measure is 'species'.
-	# 
-	# For q = 1, diversity index equals the exponential of the Shannon Entropy
-	# calculated in 'natural units' (base e). See get_shannon_entropy() below.
-	#
-	# How 'diversity_model' works:
-	#
-	# In a perfect simulation, we would have a dictionary key for every species
-	# with dict[key] equal to number of individuals in that species. But that's
-	# a lot of keys! We approximate this using integer keys that represent
-	# individual species or groups of species. The last two digits of the key
-	# (ie, key mod 100) tells us the number of species that the key represents:
-	#
-	#   00, -> key represents 1 unique species (value is number of individuals)
-	#   01, -> key represents 10 unique species (value is number of individuals in each)
-	#   02, -> key represents 100 unique species (value is number of individuals in each)
-	#   ...
-	#   99, -> key represents 1e99 unique species (value is number of individuals in each)
-	#   (Probably all keys will end 0x but just maybe we'll see 1x.)
-	#
-	# All diversity_model values are integral floats >= 1.0.
-	
-	if diversity_model.is_empty():
-		return 0.0 # not exactly correct but intuitive
-	if q == 1.0:
-		return exp(get_shannon_entropy(diversity_model, false)) # limit as q -> 1
-	var n_individuals := 0.0
-	for key: int in diversity_model:
-		var mod100: int = key % 100 # 0, 1, ..., 99
-		n_individuals += diversity_model[key] * pow(10.0, mod100) # x 1, 10, ..., 1e99 sp
-	var summation := 0.0
-	for key: int in diversity_model:
-		var mod100: int = key % 100 # 0, 1, ..., 99
-		var p: float = diversity_model[key] / n_individuals
-		summation += pow(p, q) * pow(10.0, mod100)
-	return pow(summation, 1.0 / (1.0 - q))
-
-
-static func get_shannon_entropy(diversity_model: Dictionary, in_bits := true) -> float:
-	# see comments above
-	# The unit of measure is 'bits' by default (base 2). If in_bits == false,
-	# then the unit of measure is 'natural units' (base e).
-	if diversity_model.is_empty():
-		return 0.0 # not exactly correct but intuitive
-	var n_individuals := 0.0
-	for key: int in diversity_model:
-		var mod100: int = key % 100 # 0, 1, ..., 99
-		n_individuals += diversity_model[key] * pow(10.0, mod100) # x 1, 10, ..., 1e99 sp
-	var summation := 0.0
-	for key: int in diversity_model:
-		var mod100: int = key % 100 # 0, 1, ..., 99
-		var p: float = diversity_model[key] / n_individuals
-		summation += p * log(p) * pow(10.0, mod100) # log() is natural logarithm
-	if in_bits:
-		summation *= RECIPROCAL_LN2
-	return -summation
-
-
-static func get_species_richness(diversity_model: Dictionary) -> float:
-	# total number of species
-	var species := 0.0
-	for key: int in diversity_model: # model keys always removed when value == 0.0
-		var mod100: int = key % 100 # 0, 1, ..., 99
-		species += pow(10.0, mod100) # 1, 10, ..., 1e99 sp
-	return species
-
-
-static func add_to_diversity_model(base: Dictionary, add: Dictionary) -> void:
-	# modifies 'base' diversity model; adds could be negative changes
-	for key: int in add:
-		if base.has(key):
-			base[key] += add[key]
-			if base[key] == 0.0:
-				base.erase(key)
-		else:
-			base[key] = add[key]
 

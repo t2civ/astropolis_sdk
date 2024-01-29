@@ -1,6 +1,9 @@
 # financials.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name Financials
 extends NetRef
@@ -13,26 +16,32 @@ extends NetRef
 #
 # Income and cash flow items are cummulative for current quarter.
 # Balance items are running.
+#
+# TODO: Make interface component w/out server dirty flags & delta accumulators
 
 enum { # _dirty
 	DIRTY_REVENUE = 1,
 }
 
 const PERSIST_PROPERTIES2: Array[StringName] = [
-	&"revenue",
-	&"accountings",
+	&"_revenue",
+	&"_delta_revenue",
+	&"_accountings",
+	&"_delta_accountings",
+	
 	&"_dirty_accountings",
 ]
 
 # interface sync
-var revenue := 0.0 # positive values of INC_STMT_GROSS
-var accountings: Array[float]
+var _revenue := 0.0 # positive values of INC_STMT_GROSS
+var _delta_revenue := 0.0
+var _accountings: Array[float]
+var _delta_accountings: Array[float]
 
 # TODO:
 # var items: Dictionary # facility only?
 
-
-var _dirty_accountings := 0
+var _dirty_accountings := 0 # max 64
 
 
 func _init(is_new := false) -> void:
@@ -41,46 +50,44 @@ func _init(is_new := false) -> void:
 	
 	# debug dev
 	var n_accountings := 10
-	
-	accountings = ivutils.init_array(n_accountings, 0.0, TYPE_FLOAT)
+	_accountings = ivutils.init_array(n_accountings, 0.0, TYPE_FLOAT)
+	_delta_accountings = _accountings.duplicate()
 
 
-func take_server_delta(data: Array) -> void:
-	# facility accumulator only; zero accumulators and dirty flags
+func take_dirty(data: Array) -> void:
+	# save delta in data, apply & zero delta, reset dirty flags
 	
-	_int_data = data[0]
-	_float_data = data[1]
-	
-	_int_data[6] = _int_data.size()
-	_int_data[7] = _float_data.size()
+	_int_data = data[1]
+	_float_data = data[2]
 	
 	_int_data.append(_dirty)
 	if _dirty & DIRTY_REVENUE:
-		_float_data.append(revenue)
-		revenue = 0.0
-	_dirty = 0
+		_float_data.append(_delta_revenue)
+		_revenue += _delta_revenue
+		_delta_revenue = 0.0
 	
-	_append_and_zero_dirty_floats(accountings, _dirty_accountings)
+	_take_floats_delta(_accountings, _delta_accountings, _dirty_accountings)
+	
+	_dirty = 0
 	_dirty_accountings = 0
 
 
-func add_server_delta(data: Array) -> void:
-	# any target; reference safe
-	
-	_int_data = data[0]
-	_float_data = data[1]
-	
-	_int_offset = _int_data[6]
-	_float_offset = _int_data[7]
+func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
+	# apply delta & dirty flags
+	_int_data = data[1]
+	_float_data = data[2]
+	_int_offset = int_offset
+	_float_offset = float_offset
 	
 	var svr_qtr := _int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	var flags := _int_data[_int_offset]
+	var dirty := _int_data[_int_offset]
 	_int_offset += 1
-	if flags & DIRTY_REVENUE:
-		revenue += _float_data[_float_offset]
+	_dirty |= dirty
+	if dirty & DIRTY_REVENUE:
+		_delta_revenue += _float_data[_float_offset]
 		_float_offset += 1
 	
-	_add_dirty_floats(accountings)
+	_dirty_accountings |= _add_floats_delta(_accountings)
 

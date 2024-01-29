@@ -1,6 +1,9 @@
 # interface.gd
 # This file is part of Astropolis
-# Copyright 2019-2023 Charlie Whitfield, all rights reserved
+# https://t2civ.com
+# *****************************************************************************
+# Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
+# Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name Interface
 extends RefCounted
@@ -87,6 +90,7 @@ const COMPONENT_METAVERSE := ComponentType.COMPONENT_METAVERSE
 const COMPONENT_COMPOSITION := ComponentType.COMPONENT_COMPOSITION
 const N_COMPONENT_TYPES := ComponentType.N_COMPONENT_TYPES
 
+const LOG2_64 := Utils.LOG2_64
 
 const INTERVAL := 7.0 * IVUnits.DAY
 
