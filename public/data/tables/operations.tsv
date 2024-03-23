@@ -1,8 +1,8 @@
-	op_class	op_group	sublabel	module_class	op_process_group	electricity	dev_energy	is_solar	solar_offset	is_manufacturing	stratum	reverse	fuel_burn	extraction_rate	bioproductivity	mass_flow	bit_rate	gui_flow	flow_unit	biological_crew	android_crew	carrying_capacity	carrying_capacity_group	area	input_resources	input_quantities	output_resources	output_quantities
+	op_class	op_group	sublabel	module_class	process_group	electricity	dev_energy	is_solar	solar_offset	is_manufacturing	stratum	reverse	fuel_burn	extraction_rate	bioproductivity	mass_flow	bit_rate	gui_flow	flow_unit	biological_crew	android_crew	carrying_capacity	carrying_capacity_group	area	input_resources	input_quantities	output_resources	output_quantities
 Type	INT	INT	STRING_NAME	INT	INT	FLOAT	FLOAT	BOOL	FLOAT	BOOL	INT	INT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING_NAME	FLOAT	FLOAT	FLOAT	INT	FLOAT	ARRAY[INT]	ARRAY[FLOAT]	ARRAY[INT]	ARRAY[FLOAT]
 Unit						MW	MW						t/d	t/d	t/d	t/d								km^2				
 Default						0	0									0				0	0	0						
-Prefix/OPERATION_	OP_CLASS_	OP_GROUP_	TXT_	MODULE_CLASS_	OP_PROCESS_GROUP_						STRATUM_	OPERATION_											CARRYING_CAPACITY_GROUP_		RESOURCE_		RESOURCE_	
+Prefix/OPERATION_	OP_CLASS_	OP_GROUP_	TXT_	MODULE_CLASS_	PROCESS_GROUP_						STRATUM_	OPERATION_											CARRYING_CAPACITY_GROUP_		RESOURCE_		RESOURCE_	
 SOLAR_POWER	ENERGY	SOLAR_POWER	SOLAR	SOLAR_POWER	RENEWABLE	1	1	x																				
 WIND_POWER	ENERGY	FLUIDIC_THERMAL_POWER	WIND	WIND_INSTALLATIONS	RENEWABLE	1	1																					
 TIDAL_POWER	ENERGY	FLUIDIC_THERMAL_POWER	TIDAL	TIDAL_INSTALLATIONS	RENEWABLE	1	1																					

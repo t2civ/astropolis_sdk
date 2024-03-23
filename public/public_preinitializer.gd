@@ -42,7 +42,7 @@ func _init() -> void:
 	IVCoreSettings.translations.append(path_format % "text.en")
 	
 	# tables
-	IVCoreSettings.table_project_enums.append(Enums.OpProcessGroup)
+	IVCoreSettings.table_project_enums.append(Enums.ProcessGroup)
 	IVCoreSettings.table_project_enums.append(Enums.TradeClasses)
 	IVCoreSettings.table_project_enums.append(Enums.PlayerClasses)
 	
@@ -133,8 +133,8 @@ func _on_project_objects_instantiated() -> void:
 	tables_aux[&"extraction_resources"] = extraction_resources
 	tables_aux[&"maybe_free_resources"] = IVTableData.get_db_true_rows(&"resources", &"maybe_free")
 	tables_aux[&"is_manufacturing_operations"] = IVTableData.get_db_true_rows(&"operations", &"is_manufacturing")
-	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"op_process_group",
-			Enums.OpProcessGroup.OP_PROCESS_GROUP_EXTRACTION)
+	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"process_group",
+			Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION)
 	tables_aux[&"extraction_operations"] = extraction_operations
 	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
 	var n_resources: int = table_n_rows[&"resources"]
