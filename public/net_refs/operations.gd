@@ -419,6 +419,7 @@ func set_rate(type: int, value: float) -> void:
 
 
 func change_capacity(type: int, change: float, keep_utilization := true) -> void:
+	# WARNING: Aggregate minus and plus effects before calling.
 	assert(!is_nan(change))
 	assert(change >= 0.0 or change + get_capacity(type) >= 0.0)
 	if !change:
@@ -429,6 +430,9 @@ func change_capacity(type: int, change: float, keep_utilization := true) -> void
 		set_rate(type, utilization * get_capacity(type))
 	else:
 		_delta_capacities[type] += change
+		var capacity := get_capacity(type)
+		if capacity < get_rate(type):
+			set_rate(type, capacity)
 	if type < 64:
 		_dirty_capacities_1 |= 1 << type
 	else:

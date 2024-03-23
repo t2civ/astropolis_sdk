@@ -47,11 +47,12 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 # table indexing
 var _tables: Dictionary = IVTableData.tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _op_classes_op_groups: Array = _tables_aux[&"op_classes_op_groups"]
-var _op_group_names: Array = _tables[&"op_groups"][&"name"]
-var _op_groups_operations: Array = _tables_aux[&"op_groups_operations"]
-var _operation_names: Array = _tables[&"operations"][&"name"]
-var _operation_flow_units: Array = _tables[&"operations"][&"flow_unit"]
+var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
+var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
+var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
+var _operation_names: Array[StringName] = _tables[&"operations"][&"name"]
+var _operation_sublabels: Array[StringName] = _tables[&"operations"][&"sublabel"]
+var _operation_flow_units: Array[StringName] = _tables[&"operations"][&"flow_unit"]
 
 @onready var _multipliers := IVUnits.unit_multipliers
 @warning_ignore("unsafe_property_access")
@@ -190,8 +191,11 @@ func _get_ai_data(target_name: StringName) -> void:
 			var flow: float = interface.get_operation_gui_flow(operation_type)
 			if !is_nan(flow):
 				flow /= _multipliers[_operation_flow_units[operation_type]]
+			var sublabel := _operation_sublabels[operation_type]
+			if !sublabel:
+				sublabel = _operation_names[operation_type]
 			var op_data := [
-				_operation_names[operation_type],
+				sublabel,
 				interface.get_operation_utilization(operation_type),
 				interface.get_operation_electricity(operation_type),
 				flow,
@@ -218,8 +222,8 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 	# header changes
 	var revenue_hdr: Label = _revenue_hdrs[tab]
 	var margin_hdr: Label = _margin_hdrs[tab]
-	revenue_hdr.text = "Revenue" if has_financials else ""
-	margin_hdr.text = "Margin" if has_financials else ""
+	revenue_hdr.text = "Revenue\n($M)" if has_financials else ""
+	margin_hdr.text = "Margin\n(gr; %)" if has_financials else ""
 	
 	# make GroupBoxes as needed
 	var vbox: VBoxContainer = _vboxes[tab]
