@@ -39,6 +39,7 @@ func _init() -> void:
 	IVCoreSettings.translations.append(path_format % "entities.en")
 	IVCoreSettings.translations.append(path_format % "gui.en")
 	IVCoreSettings.translations.append(path_format % "hints.en")
+	IVCoreSettings.translations.append(path_format % "text.en")
 	
 	# tables
 	IVCoreSettings.table_project_enums.append(Enums.OpProcessGroup)
@@ -55,7 +56,7 @@ func _init() -> void:
 		path_format % "compositions",
 		path_format % "facilities",
 		path_format % "major_strata",
-		path_format % "mod_classes",
+		path_format % "module_classes",
 		path_format % "modules",
 		path_format % "op_classes",
 		path_format % "op_groups",

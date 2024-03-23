@@ -1,8 +1,8 @@
-	mod_class	op_quantity	virtual	earthlike	active_atmos	tidal_hydro	rivers	min_gravity	constant_sun	stratum
+	module_class	op_quantity	virtual	earthlike	active_atmos	tidal_hydro	rivers	min_gravity	constant_sun	stratum
 Type	INT	FLOAT	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	BOOL	INT
 Default										
 Unit										
-Prefix/MODULE_	MOD_CLASS_									STRATUM_
+Prefix/MODULE_	MODULE_CLASS_									STRATUM_
 # Earth-specific (probably)										
 STD_EARTH_WINDMILLS	WIND_INSTALLATIONS				x					
 STD_EARTH_TIDAL_MILLS	TIDAL_INSTALLATIONS					x				
@@ -23,11 +23,10 @@ EARTH_SMALL_CRAFT_FARMS	SMALL_CRAFT_FARMS			x
 EARTH_NATURAL_SPACES	NATURAL_SPACES			x						
 EARTH_SPORTS_GAMING_VENUES	SPORTS_GAMING_VENUES			x						
 # generic										
-SOLAR_ARRAYS	SOLAR_ARRAYS									
+SOLAR_ARRAYS	SOLAR_POWER									
 COMBUSTION_PLANTS	COMBUSTION_PLANTS									
 FISSION_PLANTS	FISSION_PLANTS									
 FUEL_CELL_PLANTS	FUEL_CELL_PLANTS									
-ENERGY_STORAGE_PLANTS	ENERGY_STORAGE_PLANTS									
 AIR_CONDENSERS	AIR_CONDENSERS									
 REFINERIES	REFINERIES									
 GASSIFIERS	GASSIFIERS									

@@ -26,27 +26,37 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Fuel"
+text = "Fuel
+(t/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Energy/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
@@ -79,27 +89,37 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Extraction"
+text = "Extraction
+(t/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Extraction/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
@@ -131,27 +151,37 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Conversion"
+text = "Conversion
+(t/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Refining/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
@@ -183,27 +213,37 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Production"
+text = "Production
+(t/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Manufacturing/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
@@ -235,27 +275,37 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Biomes/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Biomes/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Biomes/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bioprod"
+text = "Bioprod
+(t/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Biomes/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Biomes/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Biomes/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
@@ -287,27 +337,36 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use"
+text = "Capacity
+(%)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Power"
+text = "Power
+(MW)"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Comput"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Revenue"
+text = "Revenue
+($M)"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Margin"
+text = "Margin
+(gr; %)"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Services/Hdrs"]
 custom_minimum_size = Vector2(20, 0)
