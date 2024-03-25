@@ -17,7 +17,7 @@ extends NetRef
 #
 # TODO: Make interface component w/out server dirty flags & delta accumulators
 #
-# In trade units or in internal units????
+# Quantities in internal units; however prices, bids, asks refer to trade_unit.
 
 # save/load persistence for server only
 const PERSIST_PROPERTIES2: Array[StringName] = [

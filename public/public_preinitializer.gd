@@ -65,20 +65,20 @@ func _init() -> void:
 		path_format % "populations",
 		path_format % "resource_classes",
 		path_format % "resources",
-		path_format % "spacecrafts", # replacement!
+		path_format % "spacecrafts", # ivoyager replacement!
 		path_format % "strata",
 		path_format % "surveys",
-		# primary table mods
+		# primary table mods (modify existing ivoyager tables)
 		path_format % "asset_adjustments_mod",
 		path_format % "planets_mod",
 		path_format % "moons_mod",
 		# enum x enum tables
 		path_format % "compositions_resources_heterogeneities",
 		path_format % "compositions_resources_percents",
+		path_format % "facilities_inventories",
 		path_format % "facilities_operations_capacities",
 		path_format % "facilities_operations_utilizations",
 		path_format % "facilities_populations",
-		path_format % "facilities_resources",
 	]
 	IVCoreSettings.postprocess_tables.append_array(postprocess_tables_append)
 	
