@@ -9,7 +9,7 @@ COAL_POWER
 REFINED_FUELS_POWER																		
 ETHANOL_POWER																		
 METHANE_POWER																		
-FISSION_POWER																		
+URANIUM_FISSION_POWER																		
 HYDROGEN_POWER																		
 OIL_NEAR_SURFACE_DRILLING																		
 GAS_NEAR_SURFACE_DRILLING																		
@@ -22,13 +22,13 @@ INDUST_METALS_NEAR_SURFACE_MINING
 RARE_EARTHS_NEAR_SURFACE_MINING																		
 INDUST_MINERALS_NEAR_SURFACE_MINING																		
 COAL_NEAR_SURFACE_MINING																		
-FISSILE_FUELS_NEAR_SURFACE_MINING																		
+URANIUM_NEAR_SURFACE_MINING																		
 IRON_SUBSURFACE_MINING																		
 INDUST_METALS_SUBSURFACE_MINING																		
 RARE_EARTHS_SUBSURFACE_MINING																		
 INDUST_MINERALS_SUBSURFACE_MINING																		
 COAL_SUBSURFACE_MINING																		
-FISSILE_FUELS_SUBSURFACE_MINING																		
+URANIUM_SUBSURFACE_MINING																		
 STONE_QUARRYING																		
 GRAVEL_CONGLOMERATE_QUARRYING																		
 AIR_EXTRACTION																		
