@@ -260,9 +260,8 @@ Other sources:
 https://en.wikipedia.org/wiki/List_of_countries_by_population_in_2010  
 https://en.wikipedia.org/wiki/Demographics_of_the_European_Union
 
-"Population" of space agency players on Earth is employees:
-
-I think Claude might be combining CNSA and CASC (but that's ok).  
+"Population" of space agency players on Earth is employees.
+I think Haiku response might be combining CNSA and CASC (but that's ok).  
 NASA actual numbers for fy 2010, 2020: https://en.wikipedia.org/wiki/NASA#cite_note-3
 
 ## major_strata.tsv
@@ -277,7 +276,7 @@ Enumeration table for module classes.
 
 ## modules.tsv
 
-_Not yet implemented._
+_Not yet implemented._ (Operation capacity is currently added directly without Modules.)
 
 Modules usually represent real physical components (e.g., a nuclear plant) and
 (mostly) have integral quantities. But we can have different modules that allow
@@ -286,7 +285,7 @@ for example, we can have small portable nuclear reactors appropriate for small
 space facilities. (But some of this gets a little weird with service economy
 and intangible resources.)
 
-See "one operation unit" as defined for different op classes (above).
+See "operation unit" as defined for different op classes (above).
 
 
 
@@ -362,21 +361,31 @@ Op groups define operation subgrouping within a class. Only used for GUI.
 
 ## operations.tsv
 
-Operations define most of the things that happen on Bodies with Facilities: resource extraction, conversion, etc. Operations are allowed by Modules.
+Operations define most of the things that happen at Facilities: power generation, resource extraction, etc. Operations are allowed by Modules.
  
 Internally in the 'Operations' object we have arrays 'capacities' and 'rates'. We are at 100% utilization when rate == capacity. 
 
 One "operation unit" corresponds to quantities in the operations.tsv row. In general, rate = 1.0 means:
 
     ENERGY        - 1 MW electrical output (ie, MWe)
-    EXTRACTION    - 1 t/h extracted ore, multiplied by "mass fraction" or "deposits fraction" (<= 1.0; a function of
-                    mass fraction, heterogeneity and survey level). 
+    EXTRACTION    - 1 t/h extracted target substance, multiplied by "mass fraction" or "deposits fraction"*
     REFINING      - 1 t/h total mass conversion (=input or output, always same)
     MANUFACTURING - 1 t/h total production (= mass conversion as above)
     BIOME         - ??? 1 km^2 equivilant Earth area
     SERVICES      - Varies; sometimes 1 unit/h of whatever intangible resource is produced
 
-Use of 1 t/h is convenient for energy data, as that is often obtained in untis "MWh per tonne".
+    * "Deposits Fraction" represents the highest fractions of ore or target substance (versus gravel/conglomerate)
+      that can be found for mining. It is a fuction of mass fraction, heterogeneity and survey level.
+
+Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne extraction converts to 1.4 MW in the `electricity` field and one tonne in the `output_quantities` field.
+
+Fields:
+* `op_class`, `op_group`, `module_class` and `stratum` refer to entities from the corresponding tables.
+* `sub_label` is for GUI dispaly within an op_group.
+* `process_group` is an internal enum used in the process code. (Leave blank to safely disable.)
+* `electricity` is in most cases all of the output or input energy (+ or -, respectively). See General Notes, simplifications.
+* `dev_xxxx` fields correspond to total values that contribute to the major dev metrics: Energy, Manufacturing, Computation and Bioproduction.
+* `input_resources`, `input_quantities`, `output_resources` and `output_quantities` refer to all of the resources (other than Electricity) that are used or generated. Quantities are specified in resource `trade_unit` (see [resources.tsv](#resourcestsv)) _per hour_.
 
 #### SOLAR_POWER, WIND_POWER, TIDAL_POWER, HYDROPOWER, GEOTHERMAL_POWER
 
@@ -384,7 +393,7 @@ See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/ta
 
 Rate unit is 1 MW by definition. Utilization is subject to the environment.  
 See comments in [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv).  
-For solar, utilization is a function of disance from sun and solar_occlusion (from bodies.tsv or override value from facilities.tsv).   
+For solar, utilization is a function of disance from sun and `solar_occlusion` (from bodies.tsv or override value from facilities.tsv).   
 For other renewables, table value in facilities_operations_utilizations.tsv never changes.
 
 #### COAL_POWER
@@ -466,31 +475,45 @@ https://en.wikipedia.org/wiki/Nuclear_power
 -> 4.68 kg / 1000 GJ   
 Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.   
 
-#### **** Extraction depths for drilling and mining
+#### **** Drilling and Mining Notes ****
 * `_NEAR_SURFACE_` -0.8 to 0 km (this covers average continental altitude above sea level, and covers the majority of "pit" or "surface" in the case of mining)
 * `_SUBSURFACE_` 0 to 4 km (this covers modern subsurface mining and most drilling)
 * `_DEEP_` 4 to 8 km (drilling only using contemporary engineering)
-* (TODO: `_EXTREME_DEEP_`? `_ULTRA_DEEP_`? ..., using future engineering)
+* `_EXTREME_DEEP_` 8 to 12 km (drilling only using contemporary engineering)
+* `_ULTRA_DEEP_` 12 to 16 km (drilling only using contemporary engineering; rare)
+* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental subsurface or deeper drilling.
 
 #### OIL_xxxx_DRILLING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-gas-extraction).
 
+We use "conventional oil" input energy (0.58 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional oil" figures would be simulated by deposits on the order of 16% and 8%. (Note: use these deposits to tune Earth nation Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+
+x0.8 -> 0.46 MW near-surface & subsurface; x2, x4, x8 -> 0.93 MW deep, 1.9 extreme deep, 3.7 ultra deep.
+
+Output is 100% Oil.
+
 #### GAS_xxxx_DRILLING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-gas-extraction).
+
+We use the smaller "conventional gas" input energy (0.14 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional gas" figures would be simulated by deposits on the order of 20% and 8%. (Note: use these deposits to tune Earth territorial Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+
+x0.8 -> 0.11 MW near-surface & subsurface; x2, x4, x8 -> 0.22 MW deep, 0.45 extreme deep, 0.90 ultra deep.
+
+We simplify and output separated products from drilling: 90% Methane, 9.975% Ethane and 0.025% Helium.
 
 #### COAL_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-mining).
 
-Table notes:
-* 1.0 MWh per tonne x 1.0 t/h operation rate = 1.0 MW electricity. (All input energy is electricty.)
-* We use the lower energy values from the 2020 China figures (1.40 MWh per tonne surface, 2.90 MWh per tonne) for the case where we have 100% deposits. "Deposits" is a function of concentration, heterogeneity and survey level, and will go down with extraction (or up with better surveys).
-* Assume output is 0.82 coal (recovery ratio) and 0.18 gravel/conglomerate.
-* Table values are China figures times recover ratio: 1.15 MW (near-surface) and 2.38 (subsurface).
+We use the smaller energy values from the 2020 China figures (1.40 MWh per tonne surface, 2.90 MWh per tonne subsurface) for the case where we have 80% deposits. Larger values cited in the 2010 USDE would be simulated by deposits on the order of 50%. (Note: use these deposits to tune Earth territorial Compositions.) Assume 82% recovery ratio.
 
-Per US 2000 study (mostly Exhibit 5 & 14) https://www.energy.gov/sites/default/files/2013/11/f4/mining_bandwidth.pdf,
+x 0.8 x 0.82 -> 0.92 MW near-surface, 1.9 MW subsurface.
+
+Output is 0.82 t/h coal (recovery ratio) and 0.18 t/h gravel/conglomerate.
+
+Per US 2000 study https://www.energy.gov/sites/default/files/2013/11/f4/mining_bandwidth.pdf,
 
 Coal Recovery ratio: 82%  
 Coal Btu/Ton mined: 370,628  
@@ -499,9 +522,40 @@ Per t mined:
 
 (I think this is per ton of extracted material, but still >10x different than Opus. Need to investigate!)
 
-#### FISSILE_FUELS_xxxx_MINING
+#### URANIUM_xxxx_MINING
 
-#### IRON_xxxx_MINING, INDUST_METALS_xxxx_MINING, PRECIOUS_METALS_xxxx_MINING
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-mining).
+
+We make a huge simplification here by ignoring in-sutu leaching and assuming all mining is for uranium ore. This let's us skip yellowcake as an intermediate commodity. However, it makes the energy cost of extraction higher than reality.
+
+Parlty to compensate for above, we use a high value of 1% Uranium Fuel (=UO2) content in Uranium Ore (see resources.tsv), and the lower energy values for ore extraction, 25 MWh/t open pit (= near-surface) and 90 MWh/t underground (= subsurface), for the case of 20% deposits. Assume 82% recovery ratio.
+
+x 0.2 x 0.82 -> 4.1 MW near-surface, 14.8 MW subsurface.
+
+Output is 0.82 t/h Uranium Ore and 0.18 t/h Gravel/Conglomerate.
+
+#### IRON_xxxx_MINING
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+Assuming 50% "deposits".
+
+
+
+#### ALUMINIUM_xxxx_MINING
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+
+#### INDUST_METALS_xxxx_MINING
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+#### PRECIOUS_METALS_xxxx_MINING
+
+
+
+_Old research below..._
 
 Source for energy/t for gold, copper, nickle, iron (download pdf report): https://www.ceecthefuture.org/resources/mining-energy-consumption-2021.
 
@@ -567,12 +621,15 @@ Different kinds of humans or non-humans, corporeal or virtual, that we want to c
 
 ## resource_classes.tsv
 
-Categories for GUI tabs: Energy, Ores, Volatiles, etc.
+Categories for GUI sub-subpanel tabs in the Markets subpanel: Energy, Ores, Volatiles, etc.
 
 ## resources.tsv
 
-'trade_unit' is the quantity for 'price', the unit used for GUI display and the unit for internal representation in the Inventory object.   
-'start_price' is on Earth only.
+Fields:
+* `resource_class` See associated table.
+* `trade_class` Internal enum that affects physical transport mechanics.
+* `trade_unit` is the quantity for `start_price` and related GUI items (price, bid, ask), and sets the minimum quantity in internal trade mechanics.   
+* `start_price` Rough Earth values in 2010 for sim start.
 
 
 #### ELECTRICITY
@@ -599,32 +656,40 @@ $4/MMBtu, ~$4/1000ft3, ~$4/GJ x 0.049 GJ/kg x 1000 kg/t = $196/t
 #### HYDROGEN
 $1390/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
-#### FISSILE_FUELS
+#### URANIUM_FUELS
 Prices for uranium oxide "yellowcake" bottomed in 2001 at $7/lb and topped in
 2007 at $137/lb;
 https://en.wikipedia.org/wiki/Uranium_market
 Found recent price $42.43/lb U3O8e (source?)
 x 2.20462 lb/t -> $93.54/kg
 
-
-
-#### DEUTERIUM
-?
-
 #### HELIUM3
 Wiki - "historically about $100/liter" (gas?? Presure?) "59 gram per liter at 1 atm".
 Assume price is at 1atm. Then, $100/59g.
 
 #### IRON_ORES
-Defined as 70% Fe by weight (e.g., magnatite). We assume benefacation to this
-grade, with resource proportion being our abstraction for mine quality.
-$150/t, typical market pr, 2/22; .
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+Defined as 70% Fe by weight. This is a small bump from contemporary 62%.
+
+2010 price: $150/t x 70/62 -> $169/t.
+
+#### ALUMINIUM_ORES
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+Defined as 20% aluminium (primary). This is less than half the bauxite value (the main ore commodity on Earth) but is at the high end of concentrations in non-sedementary ores, so perhaps a better expectation for a future space economy.
+
+2010 price: $2500/t x 20/45 -> $1111/t.
 
 #### INDUSTRIAL_METAL_ORES
-Defined as 1% Industrial Metals by weight (Ni ores typically ~1%). (See
-_IRON_ORES note on grade and benefication.)
-Represents Al, Cu, Ni, etc. Using Ni as proxy.
-Nickle ore market pr $30 ("low grade") to $90, 2/22.
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+
+Catch-all for dozens of others besides iron & aluminium. We're using copper, nickle, zinc & lead for inspiration, although I'd guess that others are mostly lower concentrations and higher prices. These four range from 1-15% metal by content, w/ 2010 prices $800-2000/t.
+
+Defined as 5% industrial metals by weight at 2010 price $1500/t.
 
 #### PRECIOUS_METAL_ORES
 Defined as 0.003% Precious Metals by weight (the high end of Earth Au ores,
