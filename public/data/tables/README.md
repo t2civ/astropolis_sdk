@@ -4,30 +4,31 @@
 [achievements.tsv](#achievementstsv)  
 [advancements.tsv](#advancementstsv)  
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)  
-[carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)   
+[carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)  
 [compositions.tsv](#compositionstsv)  
-[compositions_resources_heterogeneities.tsv](#compositions_resources_heterogeneitiestsv)   
-[compositions_resources_percents.tsv](#compositions_resources_percentstsv)   
+[compositions_resources_heterogeneities.tsv](#compositions_resources_heterogeneitiestsv)  
+[compositions_resources_percents.tsv](#compositions_resources_percentstsv)  
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
-[facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)   
+[facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)  
 [facilities_populations.tsv](#facilities_populationstsv)  
-[major_strata.tsv](#major_stratatsv)   
-[mod_classes.tsv](#mod_classestsv)   
-[modules.tsv](#modulestsv)   
-[moons_mod.tsv](#moons_modtsv)   
-[op_classes.tsv](#op_classestsv)   
-[op_groups.tsv](#op_groupstsv)   
+[major_strata.tsv](#major_stratatsv)  
+[mod_classes.tsv](#mod_classestsv)  
+[modules.tsv](#modulestsv)  
+[moons_mod.tsv](#moons_modtsv)  
+[op_classes.tsv](#op_classestsv)  
+[op_groups.tsv](#op_groupstsv)  
 [operations.tsv](#operationstsv)  
-[planets_mod.tsv](#planets_modtsv)   
-[players.tsv](#playerstsv)   
-[populations.tsv](#populationstsv)   
-[resource_classes.tsv](#resource_classestsv)   
-[resources.tsv](#resourcestsv)   
-[spacecrafts.tsv](#spacecraftstsv)   
-[strata.tsv](#stratatsv)   
-[surveys.tsv](#surveystsv)   
-[technologies.tsv](#technologiestsv)   
+[planets_mod.tsv](#planets_modtsv)  
+[players.tsv](#playerstsv)  
+[populations.tsv](#populationstsv)  
+[processes.tsv](#processestsv)  
+[resource_classes.tsv](#resource_classestsv)  
+[resources.tsv](#resourcestsv)  
+[spacecrafts.tsv](#spacecraftstsv)  
+[strata.tsv](#stratatsv)  
+[surveys.tsv](#surveystsv)  
+[technologies.tsv](#technologiestsv)  
 
 ## General Notes
 
@@ -368,14 +369,16 @@ Internally in the 'Operations' object we have arrays 'capacities' and 'rates'. W
 One "operation unit" corresponds to quantities in the operations.tsv row. In general, rate = 1.0 means:
 
     ENERGY        - 1 MW electrical output (ie, MWe)
-    EXTRACTION    - 1 t/h extracted target substance, multiplied by "mass fraction" or "deposits fraction"*
-    REFINING      - 1 t/h total mass conversion (=input or output, always same)
-    MANUFACTURING - 1 t/h total production (= mass conversion as above)
+    EXTRACTION    - 1 t/h extracted material*
+    REFINING      - 1 t/h total mass conversion
+    MANUFACTURING - 1 t/h total production
     BIOME         - ??? 1 km^2 equivilant Earth area
-    SERVICES      - Varies; sometimes 1 unit/h of whatever intangible resource is produced
+    SERVICES      - Varies; often 1 unit/h of some intangible resource
 
-    * "Deposits Fraction" represents the highest fractions of ore or target substance (versus gravel/conglomerate)
-      that can be found for mining. It is a fuction of mass fraction, heterogeneity and survey level.
+    * For differentiated solids, output is multiplied by a 'deposits' fraction (shown
+      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource heterogeneity
+      and a 'survey factor'.
+
 
 Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne extraction converts to 1.4 MW in the `electricity` field and one tonne in the `output_quantities` field.
 
@@ -386,6 +389,9 @@ Fields:
 * `electricity` is in most cases all of the output or input energy (+ or -, respectively). See General Notes, simplifications.
 * `dev_xxxx` fields correspond to total values that contribute to the major dev metrics: Energy, Manufacturing, Computation and Bioproduction.
 * `input_resources`, `input_quantities`, `output_resources` and `output_quantities` refer to all of the resources (other than Electricity) that are used or generated. Quantities are specified in resource `trade_unit` (see [resources.tsv](#resourcestsv)) _per hour_.
+
+Notes:
+* Extractable resources in differentiated solids (which have heterogeneity > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, heterogeneity, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and heterogeneity, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
 
 #### SOLAR_POWER, WIND_POWER, TIDAL_POWER, HYDROPOWER, GEOTHERMAL_POWER
 
@@ -485,7 +491,7 @@ Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.
 
 #### OIL_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-gas-extraction).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
 
 We use "conventional oil" input energy (0.58 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional oil" figures would be simulated by deposits on the order of 16% and 8%. (Note: use these deposits to tune Earth nation Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
 
@@ -495,7 +501,7 @@ Output is 100% Oil.
 
 #### GAS_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-gas-extraction).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
 
 We use the smaller "conventional gas" input energy (0.14 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional gas" figures would be simulated by deposits on the order of 20% and 8%. (Note: use these deposits to tune Earth territorial Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
 
@@ -505,7 +511,7 @@ We simplify and output separated products from drilling: 90% Methane, 9.975% Eth
 
 #### COAL_xxxx_MINING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-mining).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining).
 
 We use the smaller energy values from the 2020 China figures (1.40 MWh per tonne surface, 2.90 MWh per tonne subsurface) for the case where we have 80% deposits. Larger values cited in the 2010 USDE would be simulated by deposits on the order of 50%. (Note: use these deposits to tune Earth territorial Compositions.) Assume 82% recovery ratio.
 
@@ -524,7 +530,7 @@ Per t mined:
 
 #### URANIUM_xxxx_MINING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-mining).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Mining).
 
 We make a huge simplification here by ignoring in-sutu leaching and assuming all mining is for uranium ore. This let's us skip yellowcake as an intermediate commodity. However, it makes the energy cost of extraction higher than reality.
 
@@ -536,7 +542,7 @@ Output is 0.82 t/h Uranium Ore and 0.18 t/h Gravel/Conglomerate.
 
 #### IRON_xxxx_MINING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 Assuming 50% "deposits".
 
@@ -544,12 +550,12 @@ Assuming 50% "deposits".
 
 #### ALUMINIUM_xxxx_MINING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 
 #### INDUST_METALS_xxxx_MINING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 #### PRECIOUS_METALS_xxxx_MINING
 
@@ -619,6 +625,13 @@ Game start only.
 
 Different kinds of humans or non-humans, corporeal or virtual, that we want to count in total Population. Mostly sentient but for game flavor we also have sub-sentient androids.
 
+## processes.tsv
+
+_TODO_
+
+Processes are very similar to operations, but do not directly involve modules. These handle non-operation changes in body compositions or characteristics, such as restoration of the fresh water hydrosphere and climate change in response to atmospheric changes.
+
+
 ## resource_classes.tsv
 
 Categories for GUI sub-subpanel tabs in the Markets subpanel: Energy, Ores, Volatiles, etc.
@@ -669,7 +682,7 @@ Assume price is at 1atm. Then, $100/59g.
 
 #### IRON_ORES
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 Defined as 70% Fe by weight. This is a small bump from contemporary 62%.
 
@@ -677,7 +690,7 @@ Defined as 70% Fe by weight. This is a small bump from contemporary 62%.
 
 #### ALUMINIUM_ORES
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 Defined as 20% aluminium (primary). This is less than half the bauxite value (the main ore commodity on Earth) but is at the high end of concentrations in non-sedementary ores, so perhaps a better expectation for a future space economy.
 
@@ -685,7 +698,7 @@ Defined as 20% aluminium (primary). This is less than half the bauxite value (th
 
 #### INDUSTRIAL_METAL_ORES
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-metals).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 Catch-all for dozens of others besides iron & aluminium. We're using copper, nickle, zinc & lead for inspiration, although I'd guess that others are mostly lower concentrations and higher prices. These four range from 1-15% metal by content, w/ 2010 prices $800-2000/t.
 
