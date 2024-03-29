@@ -3,10 +3,13 @@
 * [World population and agency employees](#World-population-and-agency-employees)
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
-* [Oil and gas extraction](#Oil-and-gas-extraction)
-* [Coal mining](#Coal-mining)
-* [Uranium mining](#Uranium-mining)
-* [Industrial metals](#Industrial-metals)
+* [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
+* [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
+* [Coal Mining](#Coal-Mining)
+* [Uranium Mining](#Uranium-Mining)
+* [Industrial Metals Mining](#Industrial-Metals-Mining)
+* [Precious Metals and Rare Earths Mining](#Precious-Metals-and-Rare-Earths-Mining)
+* [Industrial Minerals Mining](#Industrial-Minerals-Mining)
 
 ## General Notes
 
@@ -291,8 +294,269 @@ It's worth noting that the power generation of the Tiangong Space Station is sig
 
 As the construction of the Tiangong Space Station progresses and more modules are added, we can expect to have more accurate data on its actual power generation capabilities.
 
+****
 
-## Oil and gas extraction
+The International Space Station (ISS) is constructed using various materials, each serving specific purposes based on their properties. Here's a breakdown of the main bulk constituents of the ISS by weight percentage:
+
+1. Aluminum: Approximately 20% of the ISS by weight is made up of aluminum. Aluminum is used extensively in the ISS due to its lightweight nature, strength, and resistance to corrosion.
+
+2. Steel: Steel makes up around 10% of the ISS by weight. It is used in areas that require high strength and durability, such as trusses, modules, and pressure vessels.
+
+3. Multi-Layer Insulation (MLI): MLI accounts for about 10% of the ISS weight. It is used to insulate the station from extreme temperature fluctuations and to protect against micrometeoroids and orbital debris.
+
+4. Internal Equipment and Payloads: A significant portion of the ISS weight, approximately 30%, comes from the various internal equipment, experiments, and payloads housed within the station.
+
+5. Solar Arrays and Batteries: The solar arrays and batteries, which provide power to the ISS, make up around 5% of the total weight.
+
+6. Other Materials: The remaining 25% of the ISS weight is made up of various other materials, including:
+   - Titanium: Used in high-temperature areas and for structural reinforcement.
+   - Kevlar: Used in shielding and protection against micrometeoroids and orbital debris.
+   - Teflon: Used for insulation and as a lubricant in moving parts.
+   - Glass: Used in windows and other transparent components.
+   - Plastic: Used in a variety of applications, such as insulation and packaging.
+
+It's important to note that these percentages are approximate and may vary depending on the specific modules and components being considered. Additionally, as the ISS continues to evolve and new modules and equipment are added, the overall composition percentages may change over time.
+
+## Kerogen and Fossil Fuels Deposits
+
+The distribution and abundance of fossil fuels (coal, oil, and gas) in Earth's crust is a complex topic that depends on various geological factors. Here's a detailed overview:
+
+Coal Deposits:
+Known coal deposits are found in sedimentary basins worldwide, typically in layers called coal seams within the stratigraphic column. Major coal deposits are located in:
+1. Asia (China, India, Indonesia, Kazakhstan)
+2. North America (USA, Canada)
+3. Europe (Russia, Germany, Poland, Ukraine)
+4. Australia
+5. South Africa
+
+Coal seams can be found at depths ranging from surface mining to over 1 km underground. The total global proven coal reserves are estimated at 1.1 trillion tonnes, with the majority located in the USA, Russia, Australia, China, and India.
+
+Oil and Gas Deposits:
+Oil and gas deposits are found in sedimentary basins, typically in porous and permeable reservoir rocks such as sandstones and carbonates. These reservoirs are usually capped by impermeable rocks like shales, which trap the hydrocarbons. Major oil and gas deposits are located in:
+1. Middle East (Saudi Arabia, Iran, Iraq, Kuwait, UAE)
+2. Russia
+3. North America (USA, Canada, Mexico)
+4. South America (Venezuela, Brazil)
+5. Africa (Nigeria, Angola, Algeria)
+
+Oil and gas reservoirs can be found at depths ranging from less than 1 km to over 10 km. The world's total proven oil reserves are estimated at 1.7 trillion barrels, while proven natural gas reserves are around 7 quadrillion cubic feet.
+
+Unknown Deposits and Abundance as a Function of Depth:
+Probable locations of unknown fossil fuel deposits are in underexplored sedimentary basins, such as:
+1. Arctic regions (e.g., Alaska, Siberia, and offshore Arctic)
+2. Deep-water offshore basins (e.g., Gulf of Mexico, Brazil, West Africa)
+3. Remote onshore basins (e.g., East Africa, Central Asia)
+
+The abundance of fossil fuels generally decreases with depth due to increasing temperature and pressure, which can lead to the degradation of organic matter. However, the relationship between depth and abundance is not linear and varies depending on the specific geological context.
+
+Estimated undiscovered technically recoverable resources:
+- Oil: 565 billion barrels (mostly in the Middle East, Arctic, and deep-water offshore basins)
+- Natural Gas: 5,606 trillion cubic feet (mostly in the Middle East, Asia-Pacific, and Arctic regions)
+- Coal: 3.4 trillion tonnes (mostly in Asia, North America, and the Arctic)
+
+These estimates are based on current geological knowledge and technological capabilities. As exploration and technology advance, more deposits may be discovered, and the estimated abundances may change. It's important to note that the distribution and abundance of fossil fuels are the result of complex geological processes occurring over millions of years, and significant uncertainties remain in our understanding of the Earth's crust.
+
+****
+
+I apologize for the confusion in my previous response. To address your question about the absolute geological abundance of fossil fuels, whether recoverable or not, we need to consider the total amount of organic carbon stored in the Earth's crust.
+
+Estimates suggest that the total amount of organic carbon in the Earth's crust is approximately 1,250,000 billion tonnes (1.25 x 10^15 tonnes). This includes all forms of organic carbon, such as kerogen, coal, oil, and gas, regardless of their recoverability.
+
+The distribution of this organic carbon is roughly as follows:
+1. Kerogen (the precursor to oil and gas): 1,000,000 billion tonnes
+2. Coal: 200,000 billion tonnes
+3. Oil: 30,000 billion tonnes
+4. Gas: 20,000 billion tonnes
+
+When comparing these absolute abundances to the "proven" and "undiscovered technically recoverable" resources mentioned earlier:
+
+- Proven coal reserves (1.1 trillion tonnes) represent about 0.55% of the total coal abundance.
+- Proven oil reserves (1.7 trillion barrels, or about 230 billion tonnes) represent about 0.77% of the total oil abundance.
+- Proven natural gas reserves (7 quadrillion cubic feet, or about 180 billion tonnes) represent about 0.90% of the total gas abundance.
+
+The "undiscovered technically recoverable" resources mentioned earlier (565 billion barrels of oil, 5,606 trillion cubic feet of natural gas, and 3.4 trillion tonnes of coal) would account for an additional small fraction of the total absolute abundances.
+
+It's important to note that these estimates are based on current knowledge and may have significant uncertainties. The vast majority of the organic carbon in the Earth's crust is not technically or economically recoverable with current technologies, and much of it may never be recoverable due to geological constraints, such as depth, dispersion, or low concentration.
+
+****
+
+Quantifying the total organic carbon (TOC) content as a percent by weight of geological material at different depths is challenging due to the heterogeneous distribution of organic matter in the Earth's crust. However, I can provide a general overview based on available data and estimates.
+
+The Earth's crust has an average thickness of about 35 km for the continental crust and 7 km for the oceanic crust. The average density of the crust is approximately 2.7 g/cm^3. Using these values and the total organic carbon estimate of 1.25 x 10^15 tonnes, we can calculate a rough average TOC content for the entire crust:
+
+TOC (wt%) = (1.25 x 10^15 tonnes / (5.1 x 10^17 m^3 * 2.7 tonnes/m^3)) * 100 ≈ 0.091%
+
+This suggests that, on average, the Earth's crust contains about 0.091% TOC by weight. However, this value varies significantly with depth and location.
+
+Near the surface (< 1 km):
+Sedimentary rocks near the surface tend to have higher TOC content than the average crust. Some organic-rich shales can contain up to 20% TOC by weight, while most sedimentary rocks have TOC contents ranging from 0.1% to 5%. Coal seams can have TOC contents of 50% to 90%.
+
+At 1-5 km depth:
+At these depths, the TOC content generally decreases as organic matter is subjected to increasing temperature and pressure, leading to the generation of oil and gas. The average TOC content in this depth range may be around 0.1% to 1%, with some exceptions in deep, high-quality source rocks.
+
+At 5-10 km depth:
+The TOC content further decreases at these depths due to the continued thermal maturation of organic matter. The average TOC content may be around 0.01% to 0.1%, with rare exceptions in very deep, high-quality source rocks.
+
+Below 10 km depth:
+At depths greater than 10 km, the TOC content is likely to be very low (<0.01%) due to the extreme temperature and pressure conditions that destroy most organic matter.
+
+It's important to note that these values are rough estimates and can vary significantly depending on the specific geological setting, such as the type of sedimentary basin, the geothermal gradient, and the burial history of the organic matter. Additionally, these estimates are based on the assumption that the distribution of organic carbon is relatively constant across the Earth's crust, which is a simplification of the complex geological reality.
+
+****
+
+Thank you for pointing that out. You are correct that the calculation in my previous response assumed a similar TOC content in both continental and oceanic crust, which is an oversimplification.
+
+In reality, there is a significant difference in the TOC content between continental and oceanic crust:
+
+Continental crust:
+The continental crust is generally thicker (average 35 km) and older than the oceanic crust. It contains most of the Earth's sedimentary basins, where organic matter can accumulate and be preserved. As a result, the continental crust has a higher average TOC content than the oceanic crust. Most of the world's coal, oil, and gas deposits are found in the continental crust.
+
+Oceanic crust:
+The oceanic crust is thinner (average 7 km) and younger than the continental crust. It is primarily composed of basaltic rocks derived from the mantle, which have very low TOC contents. Sedimentary deposits on the oceanic crust are generally thinner and less extensive than those on the continental crust, resulting in a lower average TOC content.
+
+Considering these differences, let's recalculate the average TOC content for the continental and oceanic crust separately:
+
+Continental crust:
+Assuming that the continental crust contains most of the Earth's organic carbon (estimated at 1.25 x 10^15 tonnes) and has an average thickness of 35 km and density of 2.7 g/cm^3, the average TOC content of the continental crust would be:
+
+TOC (wt%) = (1.25 x 10^15 tonnes / (2.1 x 10^17 m^3 * 2.7 tonnes/m^3)) * 100 ≈ 0.22%
+
+Oceanic crust:
+The oceanic crust, with an average thickness of 7 km and density of 3.0 g/cm^3, would have a much lower TOC content. Assuming that the oceanic crust contains a negligible amount of the Earth's total organic carbon, the average TOC content of the oceanic crust would be close to 0%.
+
+These revised calculations show that the continental crust has a significantly higher average TOC content (around 0.22%) compared to the oceanic crust (close to 0%). However, it's important to keep in mind that these are still rough estimates and that the actual TOC content can vary greatly depending on the specific location and geological context within the continental and oceanic crust.
+
+****
+
+Yes, there is a strong correlation between TOC content and proven and estimated undiscovered technically recoverable fossil fuel deposits. Regions with high fossil fuel production generally have higher geological TOC content in their sedimentary basins.
+
+The relationship between TOC content and fossil fuel deposits can be explained by the following factors:
+
+1. Source rock quality: Sedimentary rocks with high TOC content (typically >2% for oil and >0.5% for gas) are considered good source rocks. These rocks, when subjected to appropriate temperature and pressure conditions, can generate significant amounts of oil and gas.
+
+2. Thermal maturity: The TOC content in source rocks decreases as they undergo thermal maturation. As temperature and pressure increase with burial depth, organic matter is converted into oil, gas, and residual carbon. Thus, areas with high fossil fuel production often have source rocks that have experienced optimal thermal maturation.
+
+3. Migration and accumulation: Oil and gas generated from source rocks migrate through permeable rocks and accumulate in traps, forming reservoirs. The presence of high-quality source rocks with high TOC content increases the likelihood of significant hydrocarbon accumulations in nearby reservoirs.
+
+Examples of regions with high fossil fuel production and corresponding high TOC content in their source rocks include:
+
+1. Middle East: The Persian Gulf region has some of the world's largest oil reserves. The source rocks in this area, such as the Jurassic Hanifa Formation and the Cretaceous Diyab Formation, have TOC contents ranging from 1% to 14%.
+
+2. Western Siberia, Russia: This region is a major oil and gas producer, with source rocks like the Bazhenov Formation having TOC contents up to 20%.
+
+3. Permian Basin, USA: This prolific oil and gas basin in Texas and New Mexico has source rocks, such as the Wolfcamp Formation, with TOC contents ranging from 1% to 8%.
+
+In contrast, regions with low fossil fuel production generally have lower TOC content in their sedimentary rocks. However, it is important to note that the presence of high TOC content alone does not guarantee the presence of economically viable fossil fuel deposits. Other factors such as thermal maturity, migration pathways, and the presence of suitable traps and reservoirs also play crucial roles in the formation and accumulation of fossil fuels.
+
+****
+
+Here is a table indicating the total predicted abundance (combining proven and estimated undiscovered technically recoverable deposits) of coal, oil, and gas by region, with abundance shown as a percentage of the total worldwide:
+
+| Region           | Coal (%) | Oil (%) | Gas (%) |
+|------------------|----------|---------|---------|
+| USA              | 22.1%    | 10.8%   | 11.7%   |
+| Russia           | 15.5%    | 6.1%    | 23.7%   |
+| EU plus UK       | 6.2%     | 1.1%    | 1.8%    |
+| China            | 13.3%    | 1.5%    | 3.4%    |
+| India            | 9.4%     | 0.3%    | 0.7%    |
+| Japan            | 0.1%     | 0.1%    | 0.1%    |
+| Antarctica       | 0.0%     | 0.0%    | 0.0%    |
+| Other            | 33.4%    | 80.1%   | 58.6%   |
+| Total Worldwide  | 100%     | 100%    | 100%    |
+
+Please note that these percentages are based on estimates from various sources and may have some uncertainties. The "Other" category includes regions such as the Middle East, Africa, South America, and other countries not specifically listed in the table.
+
+Key observations:
+1. The USA has significant shares of coal, oil, and gas resources.
+2. Russia has the largest share of gas resources and significant shares of coal and oil.
+3. China and India have significant shares of coal resources but relatively smaller shares of oil and gas.
+4. The "Other" category, which includes regions like the Middle East, has the largest share of oil resources and a significant share of gas resources.
+5. The EU plus UK, Japan, and Antarctica have relatively small shares of fossil fuel resources compared to the other regions listed.
+
+****
+
+Antarctica is a vast continent that remains largely unexplored for fossil fuel resources due to its remote location, harsh climate, and the presence of thick ice sheets. While there is limited survey data available, there are several reasons to believe that Antarctica might have significant fossil fuel resources, potentially similar to other continents.
+
+Geological factors:
+1. Antarctica was once part of the supercontinent Gondwana, which also included Australia, India, Africa, and South America. These continents share similar geological histories and have significant fossil fuel deposits.
+
+2. The Transantarctic Mountains, which divide East and West Antarctica, have exposed sedimentary rocks that are similar in age and composition to those found in other fossil fuel-bearing regions of Gondwana.
+
+3. Permian-Triassic coal deposits have been found in the Transantarctic Mountains, suggesting the presence of coal resources.
+
+4. The presence of sedimentary basins, such as the Wilkes Subglacial Basin in East Antarctica and the Weddell Sea Basin in West Antarctica, indicates the potential for oil and gas accumulations.
+
+Assuming that Antarctica has similar fossil fuel abundances to other continents, we can make a rough estimate of its potential resources:
+
+1. Coal: If Antarctica's coal resources are proportional to its land area (8.7% of the world's total land area), it could contain around 8.7% of the world's total coal resources.
+
+2. Oil and Gas: Applying a similar land area proportion to global oil and gas resources, Antarctica could potentially contain around 8.7% of the world's oil and gas resources.
+
+However, it is important to note that these estimates are highly speculative and based on the assumption that Antarctica's fossil fuel abundances are similar to those of other continents. The actual abundances could be significantly different due to various factors, such as the continent's unique geological history, the presence of ice sheets, and the limited exploration data available.
+
+Additionally, the Antarctic Treaty System, which came into force in 1961, prohibits mineral resource activities in Antarctica other than for scientific research. This treaty, along with the Protocol on Environmental Protection to the Antarctic Treaty (1991), effectively puts a moratorium on the exploration and exploitation of fossil fuels in Antarctica, making it unlikely that these resources will be developed in the foreseeable future.
+
+****
+
+Here is a speculative table indicating the total amount of organic carbon (TOC) in the form of Kerogen, Coal, Oil, and Gas in tonnes by region, based on the assumptions you provided:
+
+| Region           | Kerogen (tonnes) | Coal (tonnes)   | Oil (tonnes)    | Gas (tonnes)    |
+|------------------|------------------|-----------------|-----------------|-----------------|
+| USA              | 2.21 × 10^14     | 4.42 × 10^13    | 2.48 × 10^12    | 2.11 × 10^12    |
+| Russia           | 1.55 × 10^14     | 3.10 × 10^13    | 1.40 × 10^12    | 4.27 × 10^12    |
+| EU plus UK       | 6.20 × 10^13     | 1.24 × 10^13    | 2.53 × 10^11    | 3.24 × 10^11    |
+| China            | 1.33 × 10^14     | 2.66 × 10^13    | 3.45 × 10^11    | 6.12 × 10^11    |
+| India            | 9.40 × 10^13     | 1.88 × 10^13    | 6.90 × 10^10    | 1.26 × 10^11    |
+| Japan            | 1.00 × 10^12     | 2.00 × 10^11    | 2.30 × 10^10    | 1.80 × 10^10    |
+| Antarctica       | 8.70 × 10^13     | 1.74 × 10^13    | 2.00 × 10^12    | 1.57 × 10^12    |
+| Other            | 3.34 × 10^14     | 6.68 × 10^13    | 1.84 × 10^13    | 1.06 × 10^13    |
+| Total Worldwide  | 1.00 × 10^15     | 2.00 × 10^14    | 2.30 × 10^13    | 1.80 × 10^13    |
+
+Assumptions and caveats:
+1. The total amount of organic carbon (TOC) in the Earth's crust is assumed to be 1.25 × 10^15 tonnes, with the following distribution:
+   - Kerogen: 1.00 × 10^15 tonnes
+   - Coal: 2.00 × 10^14 tonnes
+   - Oil: 3.00 × 10^13 tonnes
+   - Gas: 2.00 × 10^13 tonnes
+
+2. The regional distribution of TOC is assumed to be proportional to the regional distribution of proven and estimated undiscovered technically recoverable fossil fuel deposits.
+
+3. Antarctica is assumed to contain 8.7% of the world's total fossil fuel resources, based on its proportion of the world's total land area.
+
+4. The "Other" category includes regions such as the Middle East, Africa, South America, and other countries not specifically listed in the table.
+
+5. These estimates are highly speculative and based on simplified assumptions. The actual distribution of TOC may differ significantly due to factors such as geological history, burial depth, and the presence of ice sheets (in the case of Antarctica).
+
+6. The values in the table are expressed in tonnes and have been rounded to three significant figures.
+
+Please note that this table is a rough estimate based on the given assumptions and should not be considered as a definitive assessment of the regional distribution of TOC in the Earth's crust.
+
+****
+
+Here is a table showing the calculated percent by weight of geological material for each region, based on the assumptions you provided:
+
+| Region           | Land Area (m^2) | Continental Crust Mass (0-5 km) (tonnes) | TOC (tonnes)    | TOC (wt%) | Kerogen (wt%) | Coal (wt%) | Oil (wt%) | Gas (wt%) |
+|------------------|-----------------|------------------------------------------|-----------------|-----------|---------------|------------|-----------|-----------|
+| USA              | 9.83 × 10^12    | 1.33 × 10^17                             | 2.69 × 10^14    | 0.202%    | 0.167%        | 0.0333%    | 0.00186%  | 0.00158%  |
+| Russia           | 1.71 × 10^13    | 2.31 × 10^17                             | 1.90 × 10^14    | 0.0823%   | 0.0671%       | 0.0134%    | 0.000606% | 0.00185%  |
+| EU plus UK       | 4.48 × 10^12    | 6.05 × 10^16                             | 7.54 × 10^13    | 0.125%    | 0.103%        | 0.0205%    | 0.000418% | 0.000536% |
+| China            | 9.60 × 10^12    | 1.30 × 10^17                             | 1.62 × 10^14    | 0.125%    | 0.102%        | 0.0205%    | 0.000266% | 0.000471% |
+| India            | 3.29 × 10^12    | 4.44 × 10^16                             | 1.14 × 10^14    | 0.257%    | 0.212%        | 0.0423%    | 0.000155% | 0.000284% |
+| Japan            | 3.78 × 10^11    | 5.10 × 10^15                             | 1.22 × 10^12    | 0.0239%   | 0.0196%       | 0.00392%   | 0.000451% | 0.000353% |
+| Antarctica       | 1.40 × 10^13    | 1.89 × 10^17                             | 1.06 × 10^14    | 0.0561%   | 0.0460%       | 0.00920%   | 0.00106%  | 0.000831% |
+| Other            | 8.10 × 10^13    | 1.09 × 10^18                             | 4.07 × 10^14    | 0.0373%   | 0.0306%       | 0.00613%   | 0.00169%  | 0.000972% |
+| Total Worldwide  | 1.49 × 10^14    | 2.01 × 10^18                             | 1.22 × 10^15    | 0.0608%   | 0.0498%       | 0.00995%   | 0.00114%  | 0.000896% |
+
+Assumptions:
+1. All TOC is assumed to be in the continental crust at depths from 0 to 5 km.
+2. The density of the continental crust is assumed to be 2.7 tonnes/m^3.
+3. The continental crust mass for each region is calculated by multiplying the land area by the depth (5 km) and the density (2.7 tonnes/m^3).
+4. TOC, Kerogen, Coal, Oil, and Gas percentages by weight are calculated by dividing the respective masses by the continental crust mass for each region.
+
+Please note that these calculations are based on the speculative estimates from the previous table and the additional assumptions stated above. The actual distribution and percentages of TOC, Kerogen, Coal, Oil, and Gas in the continental crust may vary significantly from these estimates.
+
+
+## Oil and Gas Drilling
 
 The energy required to extract oil and gas can vary significantly depending on the location, method of extraction, and the specific characteristics of the reservoir. However, I can provide you with some general information and estimates.
 
@@ -443,7 +707,7 @@ For example, a study by the U.S. Energy Information Administration (EIA) found t
 
 In summary, while the exact relationship between depth and energy input varies, deeper oil and gas wells generally require significantly more energy to drill and extract compared to shallower wells.
 
-## Coal mining
+## Coal Mining
 
 The economics of coal mining involve a range of inputs and costs that can vary based on factors such as the type of mine (surface or underground), geological conditions, labor costs, and regulatory requirements in the region of operation. Here's a general breakdown of the main inputs and costs involved in extracting one tonne of coal:
 
@@ -503,7 +767,7 @@ Byproducts:
 
 It's important to note that these figures are rough estimates and can vary significantly depending on the specific conditions at each mine. Additionally, the management and disposal of these byproducts can have significant environmental impacts, such as air and water pollution, greenhouse gas emissions, and land disturbance.
 
-## Uranium mining
+## Uranium Mining
 
 Here is a table showing worldwide uranium mining methods, quantities, concentrations, and energy requirements:
 
@@ -631,7 +895,7 @@ Secondary Products:
 
 It is important to note that the actual quantities of these secondary products recovered from uranium ore mining depend on various factors, such as the specific composition of the ore, the mining and processing methods employed, and the economic viability of extracting these byproducts.
 
-## Industrial metals
+## Industrial Metals Mining
 
 Here is a table summarizing worldwide mining data for some of the most important industrial metals:
 
@@ -995,6 +1259,470 @@ Yes, the prices mentioned in the table generally assume a specific grade or qual
 It's important to note that the prices for concentrates, intermediate products, and refined metals are based on the metal content rather than the grade of the input ore. For example, copper concentrate prices are based on the copper content in the concentrate, which is typically around 20% to 30% copper.
 
 In practice, the actual prices may vary depending on the specific grade, impurities, and other factors. Higher-grade ores or concentrates may command a premium over the benchmark prices, while lower-grade materials may be discounted.
+
+## Precious Metals and Rare Earths Mining
+
+Here is a list of some common precious metals, rare earth elements, and the ores from which they are obtained, along with typical grades:
+
+Precious Metals:
+1. Gold (Au)
+   - Ores: Native gold, electrum, tellurides, auriferous pyrite
+   - Typical grade: 1-20 g/t (grams per tonne)
+
+2. Silver (Ag)
+   - Ores: Native silver, argentite, cerargyrite, proustite, pyrargyrite
+   - Typical grade: 50-500 g/t
+
+3. Platinum (Pt)
+   - Ores: Sperrylite, cooperite, braggite
+   - Typical grade: 3-10 g/t
+
+4. Palladium (Pd)
+   - Ores: Braggite, cooperite, vysotskite
+   - Typical grade: 2-10 g/t
+
+Rare Earth Elements (REEs):
+1. Lanthanum (La), Cerium (Ce), Praseodymium (Pr), Neodymium (Nd)
+   - Ores: Monazite, bastnaesite, xenotime
+   - Typical grade: 0.1-10% REO (Rare Earth Oxides)
+
+2. Samarium (Sm), Europium (Eu), Gadolinium (Gd)
+   - Ores: Monazite, bastnaesite, xenotime
+   - Typical grade: 0.1-1% REO
+
+3. Terbium (Tb), Dysprosium (Dy), Holmium (Ho), Erbium (Er), Thulium (Tm), Ytterbium (Yb), Lutetium (Lu)
+   - Ores: Xenotime, ion-adsorption clays
+   - Typical grade: 0.1-1% REO
+
+4. Yttrium (Y)
+   - Ores: Xenotime, ion-adsorption clays
+   - Typical grade: 0.1-1% Y2O3
+
+5. Scandium (Sc)
+   - Ores: Thortveitite, kolbeckite, bazzite
+   - Typical grade: 20-200 ppm (parts per million)
+
+These grades represent the typical ranges for economically viable extraction, but actual grades can vary significantly depending on the specific deposit and mining operation. The rare earth elements are often grouped together as light rare earth elements (LREE) and heavy rare earth elements (HREE) based on their atomic numbers.
+
+****
+
+Precious metal ores and rare earth ores occur in various geological settings, and their distribution and extraction methods can vary significantly depending on the specific deposit type. Here's a detailed breakdown of the occurrence and extraction of these ores:
+
+Precious Metal Ores:
+1. Gold:
+   - Placer deposits (alluvial, eluvial, beach): 10-15% of global production
+     - Overburden: gravel, sand, clay (95-99% by weight)
+     - Ore: gold-bearing sands and gravels (1-5% by weight)
+   - Vein (lode) deposits: 80-85% of global production
+     - Host rock: quartz, carbonates, sulfides (95-99% by weight)
+     - Ore: gold-bearing veins (1-5% by weight)
+   - Carlin-type deposits: 5-10% of global production
+     - Host rock: carbonaceous sedimentary rocks (95-99% by weight)
+     - Ore: disseminated gold in sedimentary rocks (1-5% by weight)
+
+2. Silver:
+   - Vein (lode) deposits: 60-70% of global production
+     - Host rock: quartz, carbonates, sulfides (95-99% by weight)
+     - Ore: silver-bearing veins (1-5% by weight)
+   - Epithermal deposits: 20-25% of global production
+     - Host rock: volcanic rocks (95-99% by weight)
+     - Ore: silver-bearing minerals in volcanic rocks (1-5% by weight)
+   - Sedimentary exhalative (SEDEX) deposits: 10-15% of global production
+     - Host rock: sedimentary rocks (95-99% by weight)
+     - Ore: silver-bearing sulfides in sedimentary rocks (1-5% by weight)
+
+3. Platinum Group Metals (PGMs):
+   - Layered mafic-ultramafic intrusions: 90-95% of global production
+     - Host rock: mafic-ultramafic rocks (95-99% by weight)
+     - Ore: PGM-bearing sulfides (1-5% by weight)
+   - Placer deposits: 5-10% of global production
+     - Overburden: gravel, sand, clay (95-99% by weight)
+     - Ore: PGM-bearing sands and gravels (1-5% by weight)
+
+Rare Earth Ores:
+1. Carbonatites: 40-50% of global production
+   - Host rock: carbonatite intrusions (95-99% by weight)
+   - Ore: rare earth-bearing minerals (1-5% by weight)
+
+2. Ion-adsorption clays: 30-40% of global production
+   - Host rock: weathered granitic rocks (95-99% by weight)
+   - Ore: rare earth-bearing clays (1-5% by weight)
+
+3. Placer deposits: 10-20% of global production
+   - Overburden: gravel, sand, clay (95-99% by weight)
+   - Ore: rare earth-bearing sands and gravels (1-5% by weight)
+
+4. Alkaline igneous rocks: 5-10% of global production
+   - Host rock: alkaline igneous intrusions (95-99% by weight)
+   - Ore: rare earth-bearing minerals (1-5% by weight)
+
+In general, the economically useful deposits of precious metal ores and rare earth ores constitute a small percentage (usually 1-5% by weight) of the total material extracted during mining. The remaining material, such as overburden and waste rock, is typically stored in tailings ponds or used as backfill in underground mines. The specific percentages can vary depending on the deposit type, grade, and mining method employed.
+
+****
+
+Here is the updated table with the requested changes:
+
+| Commodity                                  | Assumed Grade        | Price in 2000 (USD/kg) | Price in 2010 (USD/kg) | Price in 2020 (USD/kg) | Price in 2030 (projected) (USD/kg) | Worldwide Production (2020) |
+|--------------------------------------------|--------------------|------------------------|------------------------|------------------------|------------------------------------|-----------------------------|
+| Gold (Au)                                  | 99.5% purity       | $8,975                 | $39,362                | $56,889                | $70,728                            | 3,400 tonnes                |
+| Silver (Ag)                                | 99.9% purity       | $159                   | $649                   | $661                   | $900                               | 25,000 tonnes               |
+| Platinum (Pt)                              | 99.95% purity      | $17,523                | $51,795                | $28,388                | $38,581                            | 180 tonnes                  |
+| Palladium (Pd)                             | 99.95% purity      | $21,893                | $16,871                | $70,486                | $90,000                            | 210 tonnes                  |
+| Rhodium (Rh)                               | 99.9% purity       | $63,966                | $79,046                | $369,677               | $482,261                           | 30 tonnes                   |
+| Gold ore (Auriferous pyrite)               | 5-30 g/t Au        | $0.45-2.69             | $1.97-11.81            | $2.84-17.07            | $3.54-21.22                        | N/A                         |
+| Rare Earth Oxides (REO) - Bastnasite       | 60% REO            | $5.50                  | $20                    | $10                    | $18                                | 240,000 tonnes REO          |
+| Rare Earth Oxides (REO) - Monazite         | 55% REO            | $5.25                  | $18                    | $9                     | $16                                | 30,000 tonnes REO           |
+| Rare Earth Oxides (REO) - Xenotime         | 25% REO            | $6.00                  | $22                    | $12                    | $20                                | 10,000 tonnes REO           |
+| Rare Earth Oxides (REO) - Ion-adsorbed clay| 0.05-0.3% REO      | $7.50                  | $25                    | $15                    | $25                                | 80,000 tonnes REO           |
+| Yttrium Oxide (Y2O3)                       | 99.999% purity     | $85                    | $50                    | $30                    | $45                                | 8,000 tonnes                |
+| Scandium Oxide (Sc2O3)                     | 99.99% purity      | $1,300                 | $5,400                 | $3,800                 | $5,000                             | 15 tonnes                   |
+
+Note: Gold ore prices are based on the contained gold value, assuming a range of grades from 5 to 30 grams per tonne (g/t). The worldwide production figures are estimates based on available data and may not include all sources. Some values are approximated due to limited data availability.
+
+****
+
+The energy input required for mining extraction and refining of gold ore and rare earth ores varies depending on factors such as ore grade, mining method, and processing technology. However, here are some approximate values:
+
+Gold:
+- Mining extraction (underground): 0.2-0.6 MWh/tonne of ore
+- Mining extraction (open pit): 0.1-0.4 MWh/tonne of ore
+- Refining (from ore to 99.5% purity): 10-15 MWh/kg of gold
+
+Rare Earth Ores:
+- Mining extraction (Bastnasite): 0.1-0.3 MWh/tonne of ore
+- Mining extraction (Monazite): 0.1-0.3 MWh/tonne of ore
+- Mining extraction (Xenotime): 0.1-0.3 MWh/tonne of ore
+- Mining extraction (Ion-adsorbed clay): 0.05-0.2 MWh/tonne of ore
+- Refining (from ore to individual rare earth oxides): 1-5 MWh/kg of REO
+
+Yttrium:
+- Refining (from REO to 99.999% purity): 3-7 MWh/kg of yttrium oxide
+
+Scandium:
+- Refining (from REO to 99.99% purity): 5-10 MWh/kg of scandium oxide
+
+Please note that these values are rough estimates and can vary significantly depending on the specific mine, ore characteristics, and processing methods employed. In general, the energy input for refining is much higher than for mining extraction, especially for high-purity products like gold, yttrium, and scandium. The energy intensity of rare earth element production is relatively high compared to other metals due to the complex processing required to separate individual rare earth elements from the mixed ores.
+
+****
+
+Here is a table showing the estimated total content of precious metals and rare earths in Earth's layers and other celestial bodies in our solar system:
+
+| Celestial Body / Layer | Gold (ppb) | Silver (ppb) | Platinum (ppb) | Palladium (ppb) | Total Precious Metals (ppb) | Rare Earths (ppm) | Yttrium (ppm) | Scandium (ppm) |
+|------------------------|------------|--------------|----------------|-----------------|-----------------------------|--------------------|---------------|----------------|
+| Earth's Upper Crust    | 1.3        | 53           | 0.4            | 0.4             | 55.1                        | 150                | 31            | 22             |
+| Earth's Lower Crust    | 0.2        | 25           | 0.2            | 0.2             | 25.6                        | 20                 | 8             | 30             |
+| Earth's Mantle         | 0.1-1      | 5-50         | 1-10           | 1-10            | 7.1-71                      | 1-10               | 2-5           | 10-30          |
+| Earth's Core           | 0.5-5      | 100-1000     | 2-20           | 2-20            | 104.5-1045                  | <0.1               | <0.1          | <0.1           |
+| Moon (Regolith)        | 0.1-1      | 10-100       | 0.1-1          | 0.1-1           | 10.3-103                    | 50-300             | 10-150        | 30-100         |
+| Moon (Crust)           | 0.01-0.1   | 1-10         | 0.01-0.1       | 0.01-0.1        | 1.03-10.3                   | 1-10               | 1-5           | 1-10           |
+| Mars (Crust)           | 0.1-1      | 10-100       | 0.1-1          | 0.1-1           | 10.3-103                    | 1-10               | 1-5           | 1-10           |
+| Venus (Crust)          | 0.1-1      | 10-100       | 0.1-1          | 0.1-1           | 10.3-103                    | 1-10               | 1-5           | 1-10           |
+| Mercury (Crust)        | 0.01-0.1   | 1-10         | 0.01-0.1       | 0.01-0.1        | 1.03-10.3                   | 0.1-1              | 0.1-1         | 0.1-1          |
+| C-type Asteroids       | 100-1000   | 1000-10000   | 100-1000       | 100-1000        | 1300-13000                  | 10-100             | 10-100        | 10-100         |
+| S-type Asteroids       | 10-100     | 100-1000     | 10-100         | 10-100          | 130-1300                    | 1-10               | 1-10          | 1-10           |
+| M-type Asteroids       | 1000-10000 | 10000-100000 | 1000-10000     | 1000-10000      | 13000-130000                | 0.1-1              | 0.1-1         | 0.1-1          |
+
+Note: ppb = parts per billion, ppm = parts per million. The values provided are rough estimates based on limited available data and can vary significantly depending on the specific location and sample. The data for celestial bodies other than Earth are based on remote sensing, meteorite analysis, and theoretical models.
+
+****
+
+_(Metal "ores" here are obviously the metal, not the ore.)_
+
+Here are the four tables showing the total ore output and total refined product output by region for years 2000, 2010, 2020, and 2030 (projected) in tonnes per year:
+
+Year 2000:
+| Region     | Gold Ore | Gold | Silver Ore | Silver | Platinum Ore | Platinum | Palladium Ore | Palladium | REO Ore | REO  | Yttrium Oxide | Scandium Oxide |
+|------------|----------|------|------------|--------|--------------|----------|---------------|-----------|---------|------|---------------|----------------|
+| USA        | 330      | 335  | 2,000      | 1,860  | 3.5          | 3.3      | 14            | 13        | 5,000   | 72   | 360           | 0.2            |
+| Russia     | 120      | 115  | 1,200      | 1,100  | 25           | 23       | 98            | 90        | 2,000   | 20   | 100           | 0.1            |
+| EU + UK    | 50       | 45   | 1,500      | 1,400  | 0.5          | 0.4      | 2             | 1.8       | 500     | 8    | 40            | 0.05           |
+| China      | 200      | 180  | 2,500      | 2,300  | 1.5          | 1.3      | 6             | 5.4       | 73,000  | 890  | 4,450         | 5              |
+| India      | 30       | 25   | 100        | 90     | 0.1          | 0.1      | 0.4           | 0.3       | 2,700   | 35   | 175           | 0.2            |
+| Japan      | 10       | 8    | 300        | 280    | 0.05         | 0.04     | 0.2           | 0.2       | 200     | 3    | 15            | 0.02           |
+| Other      | 260      | 242  | 2,400      | 2,220  | 4.4          | 4.1      | 17.4          | 16        | 16,600  | 222  | 1,110         | 1.3            |
+| Total      | 1,000    | 950  | 10,000     | 9,250  | 35           | 32.2     | 138           | 126.7     | 100,000 | 1250 | 6,250         | 6.87           |
+
+Year 2010:
+| Region     | Gold Ore | Gold | Silver Ore | Silver | Platinum Ore | Platinum | Palladium Ore | Palladium | REO Ore | REO  | Yttrium Oxide | Scandium Oxide |
+|------------|----------|------|------------|--------|--------------|----------|---------------|-----------|---------|------|---------------|----------------|
+| USA        | 230      | 235  | 1,100      | 1,020  | 3.6          | 3.4      | 14.4          | 13.2      | 1,000   | 13   | 65            | 0.1            |
+| Russia     | 200      | 190  | 1,300      | 1,200  | 26           | 24       | 102           | 93.6      | 1,500   | 16   | 80            | 0.1            |
+| EU + UK    | 30       | 25   | 1,400      | 1,300  | 0.3          | 0.2      | 1.2           | 1.1       | 300     | 5    | 25            | 0.03           |
+| China      | 345      | 320  | 3,500      | 3,250  | 2.5          | 2.3      | 10            | 9.2       | 120,000 | 1480 | 7,400         | 8.3            |
+| India      | 15       | 12   | 200        | 180    | 0.2          | 0.2      | 0.8           | 0.7       | 3,000   | 39   | 195           | 0.2            |
+| Japan      | 8        | 7    | 280        | 260    | 0.04         | 0.03     | 0.16          | 0.15      | 150     | 2    | 10            | 0.01           |
+| Other      | 172      | 161  | 2,220      | 2,040  | 2.4          | 2.2      | 9.44          | 8.65      | 24,050  | 320  | 1,600         | 1.8            |
+| Total      | 1,000    | 950  | 10,000     | 9,250  | 35           | 32.3     | 138           | 126.6     | 150,000 | 1875 | 9,375         | 10.54          |
+
+Year 2020:
+| Region     | Gold Ore | Gold | Silver Ore | Silver | Platinum Ore | Platinum | Palladium Ore | Palladium | REO Ore | REO  | Yttrium Oxide | Scandium Oxide |
+|------------|----------|------|------------|--------|--------------|----------|---------------|-----------|---------|------|---------------|----------------|
+| USA        | 200      | 205  | 900        | 840    | 3.8          | 3.6      | 15.2          | 14        | 38,000  | 520  | 2,600         | 2.9            |
+| Russia     | 295      | 280  | 1,400      | 1,300  | 22           | 20       | 86            | 79        | 2,600   | 28   | 140           | 0.2            |
+| EU + UK    | 20       | 17   | 1,300      | 1,200  | 0.2          | 0.1      | 0.8           | 0.7       | 200     | 4    | 20            | 0.02           |
+| China      | 380      | 360  | 3,800      | 3,550  | 3.5          | 3.2      | 14            | 12.8      | 140,000 | 1720 | 8,600         | 9.6            |
+| India      | 12       | 10   | 250        | 230    | 0.3          | 0.3      | 1.2           | 1.1       | 4,000   | 52   | 260           | 0.3            |
+| Japan      | 6        | 5    | 250        | 230    | 0.03         | 0.02     | 0.12          | 0.11      | 100     | 1    | 5             | 0.01           |
+| Other      | 87       | 83   | 2,100      | 1,900  | 0.2          | 0.2      | 0.68          | 0.62      | 55,100  | 735  | 3,675         | 4.1            |
+| Total      | 1,000    | 960  | 10,000     | 9,250  | 30           | 27.4     | 118           | 108.3     | 240,000 | 3060 | 15,300        | 17.13          |
+
+Year 2030 (projected):
+| Region     | Gold Ore | Gold | Silver Ore | Silver | Platinum Ore | Platinum | Palladium Ore | Palladium | REO Ore | REO  | Yttrium Oxide | Scandium Oxide |
+|------------|----------|------|------------|--------|--------------|----------|---------------|-----------|---------|------|---------------|----------------|
+| USA        | 180      | 185  | 800        | 750    | 4.2          | 4.0      | 16.8          | 15.4      | 42,000  | 575  | 2,875         | 3.2            |
+| Russia     | 320      | 305  | 1,500      | 1,400  | 20           | 18       | 78            | 71.6      | 3,000   | 32   | 160           | 0.2            |
+| EU + UK    | 15       | 13   | 1,200      | 1,100  | 0.1          | 0.1      | 0.4           | 0.4       | 150     | 3    | 15            | 0.02           |
+| China      | 400      | 385  | 4,000      | 3,750  | 4.0          | 3.7      | 16            | 14.7      | 160,000 | 1960 | 9,800         | 11             |
+| India      | 10       | 8    | 300        | 280    | 0.4          | 0.4      | 1.6           | 1.5       | 5,000   | 65   | 325           | 0.4            |
+| Japan      | 5        | 4    | 200        | 180    | 0.02         | 0.01     | 0.08          | 0.07      | 80      | 1    | 5             | 0.01           |
+| Other      | 70       | 67   | 2,000      | 1,790  | 0.1          | 0.1      | 0.32          | 0.29      | 64,770  | 864  | 4,320         | 4.8            |
+| Total      | 1,000    | 967  | 10,000     | 9,250  | 28.8         | 26.3     | 113.2         | 104       | 275,000 | 3500 | 17,500        | 19.63          |
+
+These projections are based on current trends and estimates, but actual numbers may vary depending on various factors such as changes in demand, technological advancements, new discoveries, and geopolitical situations.
+
+## Industrial Minerals Mining
+
+Here is a list of some key industrial minerals and other non-metal, non-coal mined substances, along with information on their ores, grades, mining, and occurrence:
+
+1. Phosphate 
+- Ores: Phosphate rock (sedimentary marine phosphorites), grades of 15-30% P2O5
+- Mining: Strip mining, 90% from surface mines
+- Overburden/waste: 30-40% of mined material 
+- Occurrence: 75% of reserves in Morocco and Western Sahara, also deposits in China, Algeria, Syria, Brazil, South Africa
+
+2. Potash (Potassium)
+- Ores: Sylvinite (KCl), grades of 25-30% K2O 
+- Mining: Underground mining, solution mining
+- Overburden/waste: Salt tailings 
+- Occurrence: Canada (Saskatchewan) has 50% of global reserves, Russia, Belarus, China, Germany also major
+
+3. Sulfur
+- Ores: Elemental sulfur deposits (cap rock), hydrogen sulfide from sour gas/oil 
+- Mining: Frasch process on sulfur deposits, recovery from oil/gas
+- Occurrence: Widespread, U.S. (Texas, Louisiana), Mexico, Poland, Russia, China
+
+4. Limestone 
+- Ores: Sedimentary limestone/dolomite
+- Mining: Quarrying, 80% surface mined  
+- Overburden/waste: 20-30% 
+- Occurrence: Widely distributed
+
+5. Borates
+- Ores: Borax, kernite, ulexite; grades of 25-35% B2O3
+- Mining: Open pit mining 
+- Overburden/waste: 40-60%
+- Occurrence: Concentrated in arid regions; Turkey has 70% of reserves, U.S., Argentina, Chile, Russia, China
+
+6. Kaolin (China Clay)
+- Ores: Kaolinite clay deposits
+- Mining: Open pit mining, hydraulic mining
+- Overburden/waste: 30-50% 
+- Occurrence: U.S. (Georgia), Brazil, UK, Iran, Germany, China, India
+
+7. Barite
+- Ores: Barite (BaSO4), typical grades of 95% barite
+- Mining: Underground and surface mining
+- Overburden/waste: 40-60%
+- Occurrence: China, India, U.S., Morocco, Mexico, Iran
+
+8. Industrial Sand
+- Ores: Silica sand deposits, >95% SiO2 
+- Mining: Surface mining, 40% dredging/hydraulic mining
+- Overburden/waste: 20-30%
+- Occurrence: Widespread; U.S., Germany, UK, Australia
+
+On other planetary bodies, there is evidence for useful mineral deposits but little detailed information compared to Earth. Mars likely has sulfur and silica sand deposits. The Moon has anorthite deposits (aluminum silicate). Some asteroids are rich in clays and hydrated silicate minerals.
+
+This covers some of the key industrial minerals mined globally. The exact overburden ratios, waste percentages, and ore grades can vary significantly between individual deposits. Mining and processing methods also differ based on the specific mineral and deposit characteristics. Let me know if you need any clarification or have additional questions!
+
+****
+
+Here is the approximate energy input required for mining and refining the ores into purified industrial substances, in units of MWh per tonne:
+
+1. Phosphate
+- Mining: 0.01-0.03 MWh/tonne of ore
+- Refining (to phosphoric acid): 0.2-0.3 MWh/tonne of phosphate rock
+
+2. Potash (Potassium)
+- Mining: 0.03-0.05 MWh/tonne of ore
+- Refining (to potassium chloride): 0.1-0.2 MWh/tonne of potash ore
+
+3. Sulfur
+- Frasch process: 1.5-2.5 MWh/tonne of sulfur
+- Recovery from oil/gas: 0.1-0.2 MWh/tonne of sulfur
+
+4. Limestone
+- Mining: 0.01-0.02 MWh/tonne of ore
+- Processing (to quicklime): 0.1-0.2 MWh/tonne of limestone
+
+5. Borates
+- Mining: 0.02-0.04 MWh/tonne of ore
+- Refining (to boric acid): 0.5-0.8 MWh/tonne of borate ore
+
+6. Kaolin (China Clay)
+- Mining: 0.02-0.04 MWh/tonne of ore
+- Processing (to refined kaolin): 0.3-0.5 MWh/tonne of kaolin
+
+7. Barite
+- Mining: 0.02-0.03 MWh/tonne of ore
+- Processing (to drilling-grade barite): 0.05-0.1 MWh/tonne of barite
+
+8. Industrial Sand
+- Mining: 0.01-0.02 MWh/tonne of ore
+- Processing (to silica sand): 0.05-0.1 MWh/tonne of sand
+
+Please note that these figures are rough estimates and can vary significantly depending on factors such as the specific deposit characteristics, mining methods, processing technologies, and energy sources used. The energy requirements for refining generally exceed those for mining, as the refining processes often involve energy-intensive steps like heating, calcination, or electrolysis.
+
+Additionally, there are indirect energy inputs associated with the production and transportation of reagents, the manufacture and maintenance of equipment, and the transportation of the mined and refined products to their end-use locations. These indirect energy inputs can be significant but are difficult to quantify on a per-tonne basis.
+
+****
+
+Here is a table of target substances and ores traded as commodities, including their assumed grade or quality, total worldwide production, and market prices (in USD per tonne) for 2000, 2010, 2020, and 2030 (projected):
+
+| Substance/Ore | Grade/Quality | World Production (Mt/yr) | Price 2000 (USD/t) | Price 2010 (USD/t) | Price 2020 (USD/t) | Price 2030 (USD/t, proj.) |
+|---------------|---------------|--------------------------|--------------------|--------------------|--------------------|-----------------------------|
+| Phosphate Rock | 30% P2O5     | 240                      | 33                 | 125                | 76                 | 95                          |
+| Phosphoric Acid | 70% P2O5    | 45                       | 470                | 885                | 690                | 850                         |
+| Potash (KCl)   | 60% K2O      | 75                       | 115                | 335                | 230                | 300                         |
+| Sulfur         | 99.5% S      | 80                       | 30                 | 165                | 65                 | 90                          |
+| Limestone      | 95% CaCO3    | 5,000                    | 7                  | 10                 | 12                 | 15                          |
+| Quicklime      | 95% CaO      | 430                      | 60                 | 100                | 120                | 150                         |
+| Borates        | 35% B2O3     | 6                        | 370                | 570                | 730                | 900                         |
+| Boric Acid     | 99.5% H3BO3  | 2                        | 900                | 1,250              | 1,500              | 1,800                       |
+| Kaolin         | 85% Kaolinite| 40                       | 100                | 140                | 180                | 230                         |
+| Barite         | 95% BaSO4    | 9                        | 50                 | 85                 | 120                | 150                         |
+| Silica Sand    | 99.5% SiO2   | 300                      | 20                 | 35                 | 50                 | 70                          |
+
+Please note that the prices and production figures are approximate and can vary based on factors such as market conditions, currency fluctuations, and data sources. The 2030 prices are projections based on historical trends and anticipated market developments, and actual prices may differ from these projections.
+
+The world production figures represent the approximate global annual production of each substance in million tonnes per year (Mt/yr). For some substances (e.g., phosphoric acid, quicklime, boric acid), the production figure represents the amount of the refined product, while for others (e.g., phosphate rock, limestone, barite), it represents the amount of ore mined.
+
+****
+
+Table 1: Total Ore Output by Region (Million Tonnes)
+
+| Ore/Region | USA | Russia | EU+UK | China | India | Japan | Other | Total |
+|------------|-----|--------|-------|-------|-------|-------|-------|-------|
+| Phosphate Rock |    |        |       |       |       |       |       |       |
+| 2000       | 38  | 11     | 2     | 20    | 5     | 0     | 44    | 120   |
+| 2010       | 28  | 11     | 1     | 68    | 5     | 0     | 67    | 180   |
+| Potash (KCl) |    |        |       |       |       |       |       |       |
+| 2000       | 1   | 4      | 5     | 0     | 0     | 0     | 20    | 30    |
+| 2010       | 1   | 6      | 4     | 3     | 0     | 0     | 31    | 45    |
+| Limestone  |     |        |       |       |       |       |       |       |
+| 2000       | 900 | 200    | 800   | 1,000 | 200   | 200   | 700   | 4,000 |
+| 2010       | 800 | 200    | 700   | 1,500 | 300   | 150   | 850   | 4,500 |
+| Borates    |     |        |       |       |       |       |       |       |
+| 2000       | 1   | 0      | 0     | 0     | 0     | 0     | 3     | 4     |
+| 2010       | 1   | 0      | 0     | 0     | 0     | 0     | 4     | 5     |
+| Kaolin     |     |        |       |       |       |       |       |       |
+| 2000       | 10  | 1      | 5     | 3     | 1     | 3     | 7     | 30    |
+| 2010       | 6   | 1      | 4     | 5     | 1     | 3     | 10    | 30    |
+| Barite     |     |        |       |       |       |       |       |       |
+| 2000       | 0.5 | 0.1    | 0.4   | 2     | 0.5   | 0.1   | 1.4   | 5     |
+| 2010       | 0.7 | 0.1    | 0.3   | 4     | 1.4   | 0     | 1.5   | 8     |
+| Silica Sand |    |        |       |       |       |       |       |       |
+| 2000       | 30  | 5      | 50    | 20    | 5     | 5     | 35    | 150   |
+| 2010       | 50  | 10     | 60    | 40    | 10    | 5     | 75    | 250   |
+
+Table 2: Total Refined Product Output by Region (Million Tonnes)
+
+| Product/Region | USA | Russia | EU+UK | China | India | Japan | Other | Total |
+|----------------|-----|--------|-------|-------|-------|-------|-------|-------|
+| Phosphoric Acid |     |        |       |       |       |       |       |       |
+| 2000           | 10  | 3      | 1     | 5     | 2     | 0     | 9     | 30    |
+| 2010           | 8   | 3      | 0.5   | 18    | 2     | 0     | 13.5  | 45    |
+| Sulfur         |     |        |       |       |       |       |       |       |
+| 2000           | 12  | 6      | 8     | 5     | 1     | 3     | 15    | 50    |
+| 2010           | 10  | 7      | 6     | 18    | 2     | 3     | 24    | 70    |
+| Quicklime      |     |        |       |       |       |       |       |       |
+| 2000           | 70  | 20     | 80    | 100   | 20    | 20    | 90    | 400   |
+| 2010           | 60  | 20     | 70    | 150   | 30    | 15    | 105   | 450   |
+| Boric Acid     |     |        |       |       |       |       |       |       |
+| 2000           | 0.5 | 0      | 0     | 0     | 0     | 0     | 0.5   | 1     |
+| 2010           | 0.6 | 0      | 0     | 0     | 0     | 0     | 0.9   | 1.5   |
+
+Please note that these figures are approximate and based on available data and estimates. Actual production values may vary. The "Other" category includes countries not specifically listed, and the "Total" represents the global production for each product or ore.
+
+****
+
+Table 3: Total Ore Output by Region (Million Tonnes)
+
+| Ore/Region | USA | Russia | EU+UK | China | India | Japan | Other | Total |
+|------------|-----|--------|-------|-------|-------|-------|-------|-------|
+| Phosphate Rock |    |        |       |       |       |       |       |       |
+| 2020       | 23  | 14     | 1     | 90    | 6     | 0     | 86    | 220   |
+| 2030 (proj.)| 20  | 15     | 1     | 100   | 8     | 0     | 106   | 250   |
+| Potash (KCl) |    |        |       |       |       |       |       |       |
+| 2020       | 1   | 8      | 3     | 6     | 0     | 0     | 42    | 60    |
+| 2030 (proj.)| 1   | 10     | 3     | 8     | 1     | 0     | 52    | 75    |
+| Limestone  |     |        |       |       |       |       |       |       |
+| 2020       | 700 | 200    | 600   | 2,000 | 400   | 100   | 1,000 | 5,000 |
+| 2030 (proj.)| 650 | 220    | 550   | 2,500 | 500   | 80    | 1,200 | 5,700 |
+| Borates    |     |        |       |       |       |       |       |       |
+| 2020       | 1   | 0      | 0     | 0     | 0     | 0     | 5     | 6     |
+| 2030 (proj.)| 1   | 0      | 0     | 1     | 0     | 0     | 6     | 8     |
+| Kaolin     |     |        |       |       |       |       |       |       |
+| 2020       | 5   | 1      | 3     | 8     | 2     | 3     | 13    | 35    |
+| 2030 (proj.)| 4   | 1      | 2     | 10    | 3     | 2     | 18    | 40    |
+| Barite     |     |        |       |       |       |       |       |       |
+| 2020       | 1   | 0.1    | 0.2   | 5     | 2     | 0     | 1.7   | 10    |
+| 2030 (proj.)| 1.2 | 0.1    | 0.2   | 6     | 2.5   | 0     | 2     | 12    |
+| Silica Sand |    |        |       |       |       |       |       |       |
+| 2020       | 70  | 15     | 70    | 60    | 15    | 5     | 115   | 350   |
+| 2030 (proj.)| 90  | 20     | 80    | 80    | 20    | 5     | 155   | 450   |
+
+Table 4: Total Refined Product Output by Region (Million Tonnes)
+
+| Product/Region | USA | Russia | EU+UK | China | India | Japan | Other | Total |
+|----------------|-----|--------|-------|-------|-------|-------|-------|-------|
+| Phosphoric Acid |     |        |       |       |       |       |       |       |
+| 2020           | 6   | 4      | 0.3   | 24    | 2     | 0     | 18.7  | 55    |
+| 2030 (proj.)   | 5   | 4      | 0.3   | 27    | 3     | 0     | 25.7  | 65    |
+| Sulfur         |     |        |       |       |       |       |       |       |
+| 2020           | 9   | 8      | 5     | 25    | 3     | 3     | 32    | 85    |
+| 2030 (proj.)   | 8   | 9      | 4     | 30    | 4     | 3     | 42    | 100   |
+| Quicklime      |     |        |       |       |       |       |       |       |
+| 2020           | 50  | 20     | 60    | 200   | 40    | 10    | 120   | 500   |
+| 2030 (proj.)   | 45  | 22     | 55    | 250   | 50    | 8     | 140   | 570   |
+| Boric Acid     |     |        |       |       |       |       |       |       |
+| 2020           | 0.7 | 0      | 0     | 0.1   | 0     | 0     | 1.2   | 2     |
+| 2030 (proj.)   | 0.8 | 0      | 0     | 0.2   | 0     | 0     | 1.5   | 2.5   |
+
+Please note that these figures are approximate and based on available data, estimates, and projections. Actual production values may vary. The "Other" category includes countries not specifically listed, and the "Total" represents the global production for each product or ore. The 2030 figures are projections based on current trends and anticipated developments in the industry.
+
+****
+
+Table 5: Total Content of Ores or Related Minerals in Earth's Layers (Percent by Weight)
+
+| Ore/Mineral | Upper Crust | Lower Crust | Mantle | Core |
+|-------------|-------------|-------------|--------|------|
+| Phosphates  | 0.1-0.2     | 0.01-0.05   | <0.01  | -    |
+| Potassium   | 2.8         | 0.5-1.0     | 0.01-0.05 | -    |
+| Sulfur      | 0.05-0.1    | 0.05-0.1    | 0.02-0.05 | 1-2  |
+| Limestone   | 5-10        | 1-3         | 0.1-0.5 | -    |
+| Borates     | 0.001-0.01  | <0.001      | -      | -    |
+| Kaolin      | 1-2         | 0.5-1       | -      | -    |
+| Barite      | 0.05-0.1    | 0.01-0.05   | <0.01  | -    |
+| Silica      | 60-70       | 50-60       | 40-50  | -    |
+
+Table 6: Quantities of Substances in Other Celestial Bodies (Percent by Weight)
+
+| Celestial Body | Phosphates | Potassium | Sulfur | Carbonates | Borates | Clays | Barite | Silica |
+|----------------|------------|-----------|--------|------------|---------|-------|--------|--------|
+| Moon (regolith)| 0.1-0.5    | 0.1-0.3   | 0.05-0.1 | -        | -       | -     | -      | 40-50  |
+| Moon (crust)   | 0.01-0.05  | 0.05-0.1  | 0.01-0.05 | -        | -       | -     | -      | 45-55  |
+| Mars (surface) | 0.5-1      | 0.3-0.6   | 2-5    | 1-2        | -       | 1-2   | -      | 40-50  |
+| Mars (crust)   | 0.1-0.5    | 0.1-0.3   | 1-3    | 0.5-1      | -       | 0.5-1 | -      | 45-55  |
+| Venus (surface)| -          | -         | 0.1-0.5 | -          | -       | -     | -      | 50-60  |
+| Venus (crust)  | -          | -         | 0.05-0.1 | -          | -       | -     | -      | 55-65  |
+| C-type asteroids| 0.1-0.5   | 0.05-0.1  | 1-3    | 1-5        | -       | 5-10  | -      | 20-30  |
+| S-type asteroids| 0.05-0.1  | 0.1-0.3   | 0.5-2  | 0.1-0.5    | -       | 0.5-1 | -      | 40-50  |
+| M-type asteroids| 0.01-0.05 | 0.01-0.05 | 5-10   | -          | -       | -     | -      | 10-20  |
+
+Please note that these figures are approximate and based on available data and estimates. The "-" symbol indicates that the substance is either not present or present in negligible quantities. The data for other celestial bodies is less comprehensive compared to Earth, and actual values may vary.
+
+C-type asteroids are carbonaceous asteroids, S-type are silicaceous asteroids, and M-type are metallic asteroids. The composition of these asteroid types can vary significantly, and the figures provided are rough estimates.
 
 
 
