@@ -42,9 +42,10 @@ func _init() -> void:
 	IVCoreSettings.translations.append(path_format % "text.en")
 	
 	# tables
-	IVCoreSettings.table_project_enums.append(Enums.ProcessGroup)
+	IVCoreSettings.table_project_enums.append(Enums.Types)
 	IVCoreSettings.table_project_enums.append(Enums.TradeClasses)
 	IVCoreSettings.table_project_enums.append(Enums.PlayerClasses)
+	IVCoreSettings.table_project_enums.append(Enums.ProcessGroup)
 	
 	IVCoreSettings.postprocess_tables.erase("res://addons/ivoyager_core/data/solar_system/spacecrafts.tsv")
 	IVCoreSettings.postprocess_tables.erase("res://addons/ivoyager_core/data/solar_system/wiki_extras.tsv")
@@ -126,7 +127,8 @@ func _on_project_objects_instantiated() -> void:
 	var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 	
 	# unique items
-	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type", &"electricity")
+	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type",
+			Enums.Types.ELECTRICITY)
 	assert(tables_aux[&"resource_type_electricity"] != -1)
 	# table row subsets (arrays of row_types)
 	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
