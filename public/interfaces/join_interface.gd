@@ -200,10 +200,6 @@ func sync_server_dirty(data: Array) -> void:
 	if dirty & DIRTY_POPULATION:
 		population.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-		
-		prints(name, population.get_number())
-		
-		
 	if dirty & DIRTY_BIOME:
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2

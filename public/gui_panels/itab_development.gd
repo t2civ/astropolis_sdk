@@ -47,9 +47,6 @@ func _update_selection(_dummy := false) -> void:
 	var selection_name := _selection_manager.get_selection_name()
 	if !selection_name:
 		return
-
-	prints(selection_name)
-	
 	# Selection is either a Facility or Body. It's a Facility if user selected
 	# a player (NASA, USA, etc.), so show auxilary columns accordingly.
 	
