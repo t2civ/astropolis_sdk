@@ -38,7 +38,7 @@ var asks: Array[float]
 # shared from other interfaces
 var facility_interface: FacilityInterface
 
-var inventory: Inventory
+var inventory: InventoryNet
 
 # localized indexing
 var n_resources: int = _table_n_rows[&"resources"]

@@ -1,21 +1,19 @@
-# net_ref.gd
+# net_component.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name NetRef
+class_name NetComponent
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# Abstract base class for data classes that are optimized for network sync.
-# Only changes are synched. Most NetRef changes are synched at Facility level
-# and propagated to Body, Player and Proxies. Exception: Compositions are
-# synched at Body level without propagation.
+## Abstract base class for data components that are optimized for network sync.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 const utils := preload("res://public/static/utils.gd")

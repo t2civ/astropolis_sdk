@@ -64,11 +64,11 @@ extends Interface
 
 static var join_interfaces: Array[JoinInterface] = [] # indexed by join_id
 
-var operations: Operations # always
-var financials: Financials # only player-specific Joins
-var population: Population # always
-var biome: Biome # always
-var metaverse: Metaverse # always
+var operations: OperationsNet # always
+var financials: FinancialsNet # only player-specific Joins
+var population: PopulationNet # always
+var biome: BiomeNet # always
+var metaverse: MetaverseNet # always
 
 # read-only!
 var join_id := -1
@@ -156,16 +156,16 @@ func set_server_init(data: Array) -> void:
 	var population_data: Array = data[7]
 	var biome_data: Array = data[8]
 	var metaverse_data: Array = data[9]
-	operations = Operations.new(true, !financials_data.is_empty())
+	operations = OperationsNet.new(true, !financials_data.is_empty())
 	operations.set_server_init(operations_data)
 	if financials_data:
-		financials = Financials.new(true)
+		financials = FinancialsNet.new(true)
 		financials.set_server_init(financials_data)
-	population = Population.new(true)
+	population = PopulationNet.new(true)
 	population.set_server_init(population_data)
-	biome = Biome.new(true)
+	biome = BiomeNet.new(true)
 	biome.set_server_init(biome_data)
-	metaverse = Metaverse.new(true)
+	metaverse = MetaverseNet.new(true)
 	metaverse.set_server_init(metaverse_data)
 
 

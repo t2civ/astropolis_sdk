@@ -32,10 +32,10 @@ var parent: BodyInterface # null for top body
 
 var satellites: Array[BodyInterface] = [] # resizable container - not threadsafe!
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
-var operations: Operations # when/if needed
-var population: Population # when/if needed
-var biome: Biome # when/if needed
-var metaverse: Metaverse # when/if needed
+var operations: OperationsNet # when/if needed
+var population: PopulationNet # when/if needed
+var biome: BiomeNet # when/if needed
+var metaverse: MetaverseNet # when/if needed
 var compositions: Array[Composition] = [] # resizable container - not threadsafe!
 
 
@@ -227,16 +227,16 @@ func set_server_init(data: Array) -> void:
 	var compositions_data: Array = data[12]
 	
 	if operations_data:
-		operations = Operations.new(true)
+		operations = OperationsNet.new(true)
 		operations.set_server_init(operations_data)
 	if population_data:
-		population = Population.new(true)
+		population = PopulationNet.new(true)
 		population.set_server_init(population_data)
 	if biome_data:
-		biome = Biome.new(true)
+		biome = BiomeNet.new(true)
 		biome.set_server_init(biome_data)
 	if metaverse_data:
-		metaverse = Metaverse.new(true)
+		metaverse = MetaverseNet.new(true)
 		metaverse.set_server_init(metaverse_data)
 	
 	if compositions_data:
@@ -266,22 +266,22 @@ func sync_server_dirty(data: Array) -> void:
 	
 	if dirty & DIRTY_OPERATIONS:
 		if !operations:
-			operations = Operations.new(true)
+			operations = OperationsNet.new(true)
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_POPULATION:
 		if !population:
-			population = Population.new(true)
+			population = PopulationNet.new(true)
 		population.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_BIOME:
 		if !biome:
-			biome = Biome.new(true)
+			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_METAVERSE:
 		if !metaverse:
-			metaverse = Metaverse.new(true)
+			metaverse = MetaverseNet.new(true)
 		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_COMPOSITIONS:

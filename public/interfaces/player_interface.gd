@@ -31,11 +31,11 @@ var is_facilities := true # 'alive' player test
 
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
 
-var operations := Operations.new(true, true)
-var financials := Financials.new(true)
-var population := Population.new(true)
-var biome := Biome.new(true)
-var metaverse := Metaverse.new(true)
+var operations := OperationsNet.new(true, true)
+var financials := FinancialsNet.new(true)
+var population := PopulationNet.new(true)
+var biome := BiomeNet.new(true)
+var metaverse := MetaverseNet.new(true)
 
 
 
