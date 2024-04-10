@@ -151,7 +151,7 @@ func get_development_biodiversity() -> float:
 # *****************************************************************************
 # sync
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	facility_id = data[2]
 	name = data[3]
 	gui_name = data[4]
@@ -177,19 +177,19 @@ func set_server_init(data: Array) -> void:
 	var biome_data: Array = data[17]
 	var metaverse_data: Array = data[18]
 	
-	operations.set_server_init(operations_data)
-	inventory.set_server_init(inventory_data)
-	financials.set_server_init(financials_data)
+	operations.set_network_init(operations_data)
+	inventory.set_network_init(inventory_data)
+	financials.set_network_init(financials_data)
 	
 	if population_data:
 		population = PopulationNet.new(true, true)
-		population.set_server_init(population_data)
+		population.set_network_init(population_data)
 	if biome_data:
 		biome = BiomeNet.new(true)
-		biome.set_server_init(biome_data)
+		biome.set_network_init(biome_data)
 	if metaverse_data:
 		metaverse = MetaverseNet.new(true)
-		metaverse.set_server_init(metaverse_data)
+		metaverse.set_network_init(metaverse_data)
 
 
 func sync_server_dirty(data: Array) -> void:

@@ -161,44 +161,6 @@ func set_price(type: int, value: float) -> void:
 
 # ********************************** SYNC *************************************
 
-
-func take_dirty(data: Array) -> void:
-	# save delta in data, apply & zero delta, reset dirty flags
-	
-	_int_data = data[1]
-	_float_data = data[2]
-	
-	_take_floats_delta(_reserves, _delta_reserves, _dirty_reserves_1)
-	_take_floats_delta(_reserves, _delta_reserves, _dirty_reserves_2, 64)
-	_take_floats_delta(_markets, _delta_markets, _dirty_markets_1)
-	_take_floats_delta(_markets, _delta_markets, _dirty_markets_2, 64)
-	_take_floats_delta(_in_transits, _delta_in_transits, _dirty_in_transits_1)
-	_take_floats_delta(_in_transits, _delta_in_transits, _dirty_in_transits_2, 64)
-	_take_floats_delta(_contracteds, _delta_contracteds, _dirty_contracteds_1)
-	_take_floats_delta(_contracteds, _delta_contracteds, _dirty_contracteds_2, 64)
-	_get_floats_dirty(_prices, _dirty_prices_1)
-	_get_floats_dirty(_prices, _dirty_prices_2, 64)
-	_get_floats_dirty(_bids, _dirty_bids_1)
-	_get_floats_dirty(_bids, _dirty_bids_2, 64)
-	_get_floats_dirty(_asks, _dirty_asks_1)
-	_get_floats_dirty(_asks, _dirty_asks_2, 64)
-	
-	_dirty_reserves_1 = 0
-	_dirty_reserves_2 = 0
-	_dirty_markets_1 = 0
-	_dirty_markets_2 = 0
-	_dirty_in_transits_1 = 0
-	_dirty_in_transits_2 = 0
-	_dirty_contracteds_1 = 0
-	_dirty_contracteds_2 = 0
-	_dirty_prices_1 = 0
-	_dirty_prices_2 = 0
-	_dirty_bids_1 = 0
-	_dirty_bids_2 = 0
-	_dirty_asks_1 = 0
-	_dirty_asks_2 = 0
-
-
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# apply delta & dirty flags
 	_int_data = data[1]

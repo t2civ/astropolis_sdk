@@ -202,16 +202,40 @@ static func multiply_float_array_by_array(base: Array[float], multiply: Array[fl
 		base[i] *= multiply[i]
 
 
+## Returns an array containing element-wise a plus b. Expects float arrays of equal size.
+static func add_float_arrays(a: Array[float], b: Array[float]) -> Array[float]:
+	assert(a.size() == b.size())
+	var sum: Array[float] = []
+	sum.assign(a)
+	var i := a.size()
+	while i > 0:
+		i -= 1
+		sum[i] += b[i]
+	return sum
+
+
+## Returns an array containing element-wise a minus b. Expects float arrays of equal size.
+static func subtract_float_arrays(a: Array[float], b: Array[float]) -> Array[float]:
+	assert(a.size() == b.size())
+	var diff: Array[float] = []
+	diff.assign(a)
+	var i := a.size()
+	while i > 0:
+		i -= 1
+		diff[i] -= b[i]
+	return diff
+
+
+## Modifies 'base' array. Expects float arrays of equal size.
 static func add_to_float_array_with_array(base: Array[float], add: Array[float]) -> void:
-	# modifies 'base'; expects float arrays of equal sizes
 	var i := base.size()
 	while i > 0:
 		i -= 1
 		base[i] += add[i]
 
 
+## Modifies 'base' array. Expects float arrays of equal size.
 static func subtract_from_float_array_with_array(base: Array[float], subtract: Array[float]) -> void:
-	# modifies 'base'; expects float arrays of equal sizes
 	var i := base.size()
 	while i > 0:
 		i -= 1

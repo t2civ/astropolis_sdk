@@ -80,28 +80,6 @@ func change_diversity_model(key: int, change: float) -> void:
 
 # ********************************** SYNC *************************************
 
-
-func take_dirty(data: Array) -> void:
-	# save delta in data, apply & zero delta, reset dirty flags
-	
-	_int_data = data[1]
-	_float_data = data[2]
-	
-	_int_data.append(_dirty)
-	if _dirty & DIRTY_BIOPRODUCTIVITY:
-		_float_data.append(_delta_bioproductivity)
-		_bioproductivity += _delta_bioproductivity
-		_delta_bioproductivity = 0.0
-	if _dirty & DIRTY_BIOMASS:
-		_float_data.append(_delta_biomass)
-		_biomass += _delta_biomass
-		_delta_biomass = 0.0
-	if _dirty & DIRTY_DIVERSITY_MODEL:
-		_take_diversity_model_delta(_diversity_model, _delta_diversity_model)
-	
-	_dirty = 0
-
-
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# apply delta & dirty flags
 	_int_data = data[1]

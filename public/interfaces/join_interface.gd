@@ -147,7 +147,7 @@ func get_development_biodiversity() -> float:
 # *****************************************************************************
 # sync - DON'T MODIFY!
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	join_id = data[2]
 	name = data[3]
 	gui_name = data[4]
@@ -157,16 +157,16 @@ func set_server_init(data: Array) -> void:
 	var biome_data: Array = data[8]
 	var metaverse_data: Array = data[9]
 	operations = OperationsNet.new(true, !financials_data.is_empty())
-	operations.set_server_init(operations_data)
+	operations.set_network_init(operations_data)
 	if financials_data:
 		financials = FinancialsNet.new(true)
-		financials.set_server_init(financials_data)
+		financials.set_network_init(financials_data)
 	population = PopulationNet.new(true)
-	population.set_server_init(population_data)
+	population.set_network_init(population_data)
 	biome = BiomeNet.new(true)
-	biome.set_server_init(biome_data)
+	biome.set_network_init(biome_data)
 	metaverse = MetaverseNet.new(true)
-	metaverse.set_server_init(metaverse_data)
+	metaverse.set_network_init(metaverse_data)
 
 
 func sync_server_dirty(data: Array) -> void:

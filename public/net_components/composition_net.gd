@@ -256,7 +256,7 @@ func change_mass(resource_type: int, change: float) -> void:
 # *****************************************************************************
 # sync
 
-func get_server_init() -> Array:
+func get_network_init() -> Array:
 	
 	# reference-safe
 	var est_masses := masses.duplicate()
@@ -281,7 +281,7 @@ func get_server_init() -> Array:
 	]
 
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	# NOT reference-safe!
 	compositions_index = data[0]
 	name = data[1]
@@ -299,49 +299,7 @@ func set_server_init(data: Array) -> void:
 	may_have_free_resources = data[13]
 
 
-func get_server_dirty(data: Array) -> void:
-	# get changed values or array indexes only; zero dirty flags
-	
-	var any_dirty := _dirty or _dirty_masses or _dirty_heterogeneities
-	data.append(any_dirty)
-	if !any_dirty:
-		return
-
-	# non-arrays
-	data.append(_dirty)
-	if _dirty & DIRTY_HEADERS: # very rare
-		data.append(polity_name)
-	if _dirty & DIRTY_STRATUM:
-		data.append(body_radius)
-		data.append(outer_depth)
-		data.append(thickness)
-		data.append(spherical_fraction)
-		data.append(area)
-		data.append(density * density_bias)
-	if _dirty & DIRTY_ESTIMATION:
-		data.append(survey_type)
-	_dirty = 0
-	
-	var lsb: int # least significant bit
-	var i: int
-	
-	# masses
-	data.append(_dirty_masses)
-	while _dirty_masses:
-		lsb = _dirty_masses & -_dirty_masses
-		i = LOG2_64[lsb]
-		data.append(masses[i] * masses_biases[i])
-		_dirty_masses &= ~lsb
-	
-	# heterogeneities
-	data.append(_dirty_heterogeneities)
-	while _dirty_heterogeneities:
-		lsb = _dirty_heterogeneities & -_dirty_heterogeneities
-		i = LOG2_64[lsb]
-		data.append(heterogeneities[i] * heterogeneities_biases[i])
-		_dirty_heterogeneities &= ~lsb
-
-
+# FIXME: Update to add_dirty()
 func sync_server_dirty(data: Array, k: int) -> int:
 	# set changed values only
 	

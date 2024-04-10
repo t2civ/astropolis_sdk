@@ -54,24 +54,6 @@ func _init(is_new := false) -> void:
 	_delta_accountings = _accountings.duplicate()
 
 
-func take_dirty(data: Array) -> void:
-	# save delta in data, apply & zero delta, reset dirty flags
-	
-	_int_data = data[1]
-	_float_data = data[2]
-	
-	_int_data.append(_dirty)
-	if _dirty & DIRTY_REVENUE:
-		_float_data.append(_delta_revenue)
-		_revenue += _delta_revenue
-		_delta_revenue = 0.0
-	
-	_take_floats_delta(_accountings, _delta_accountings, _dirty_accountings)
-	
-	_dirty = 0
-	_dirty_accountings = 0
-
-
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# apply delta & dirty flags
 	_int_data = data[1]

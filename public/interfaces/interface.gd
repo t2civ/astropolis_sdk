@@ -389,7 +389,7 @@ func process_ai_new_quarter() -> void:
 # *****************************************************************************
 # sync
 
-func set_server_init(_data: Array) -> void:
+func set_network_init(_data: Array) -> void:
 	pass
 
 
