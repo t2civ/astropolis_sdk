@@ -9,16 +9,16 @@ class_name Enums
 extends Object
 
 
-enum Objects {
-	FACILITY,
-	PLAYER,
-	BODY,
-	PROXY,
-	EXCHANGE,
-	MARKET,
-	TRADER,
+## Generic 'type' enums may be used and re-used in different contexts.
+enum Types {
+	ALL,
+	ELECTRICITY,
+	EX_PLANET_SPACE,
+	MOONS,
+	OFF_HOMEWORLD,
+	PLANETOIDS,
+	PLANETS,
 }
-
 
 enum TradeClasses {
 	TRADE_CLASS_ELECTRICITY,
@@ -41,7 +41,6 @@ enum ProcessGroup {
 	PROCESS_GROUP_CONVERSION,
 	PROCESS_GROUP_EXTRACTION,
 }
-
 
 enum RandomPlayer {
 	RANDOM,

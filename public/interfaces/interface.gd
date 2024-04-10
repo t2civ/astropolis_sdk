@@ -50,7 +50,7 @@ enum EntityType {
 	ENTITY_FACILITY,
 	ENTITY_PLAYER,
 	ENTITY_BODY,
-	ENTITY_PROXY,
+	ENTITY_JOIN,
 	ENTITY_EXCHANGE,
 	ENTITY_MARKET,
 	ENTITY_TRADER,
@@ -62,7 +62,7 @@ enum EntityType {
 const ENTITY_FACILITY := EntityType.ENTITY_FACILITY
 const ENTITY_PLAYER := EntityType.ENTITY_PLAYER
 const ENTITY_BODY := EntityType.ENTITY_BODY
-const ENTITY_PROXY := EntityType.ENTITY_PROXY
+const ENTITY_JOIN := EntityType.ENTITY_JOIN
 const ENTITY_EXCHANGE := EntityType.ENTITY_EXCHANGE
 const ENTITY_MARKET := EntityType.ENTITY_MARKET
 const ENTITY_TRADER := EntityType.ENTITY_TRADER
@@ -96,7 +96,7 @@ const INTERVAL := 7.0 * IVUnits.DAY
 
 
 static var interfaces: Array[Interface] = [] # indexed by interface_id
-static var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, PROXY_OFFWORLD, etc.
+static var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, JOIN_OFFWORLD, etc.
 
 
 var interface_id := -1

@@ -137,7 +137,9 @@ func _select_tab(tab: int) -> void:
 func _update_tab(_dummy := false) -> void:
 	if !visible or !_state.is_running:
 		return
-	var target_name := _selection_manager.get_info_target_name()
+	var target_name := _selection_manager.get_selection_name()
+	
+	
 	if MainThreadGlobal.has_development(target_name):
 		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(target_name))
 	else:

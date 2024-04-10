@@ -41,22 +41,21 @@ var content: Array[Array] = [
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.fixed_unit.bind(&"species")],
 ]
 
-var targets: Array[StringName] = [&"PLANET_EARTH", &"PROXY_OFF_EARTH"]
-var replacement_names: Array[StringName] = [] # use instead of Interface name
+var targets: Array[StringName] = [&"PLANET_EARTH", &"JOIN_OFFWORLD"]
+var column_names: Array[StringName] = [&"PLANET_EARTH", &"TXT_OFF_EARTH"] # use instead of Interface name
 var fallback_names: Array[StringName] = [&"", &""] # if "" will uses targets string
 
 var _thread_targets: Array[StringName]
 var _thread_fallback_names: Array[StringName]
-var _thread_replacement_names: Array[StringName]
+var _thread_column_names: Array[StringName]
 
-#@onready var _tree: SceneTree = get_tree()
 @onready var _grid: GridContainer = $Grid
 
 
-func update_targets(targets_: Array[StringName], replacement_names_: Array[StringName] = [],
+func update_targets(targets_: Array[StringName], column_names_: Array[StringName] = [],
 		fallback_names_: Array[StringName] = []) -> void:
 	targets = targets_
-	replacement_names = replacement_names_
+	column_names = column_names_
 	fallback_names = fallback_names_
 	update()
 
@@ -71,7 +70,7 @@ func update() -> void:
 func _set_data() -> void:
 	var data := []
 	_thread_targets = targets # for thread safety
-	_thread_replacement_names = replacement_names
+	_thread_column_names = column_names
 	_thread_fallback_names = fallback_names
 	
 	# get Interfaces and check required components
@@ -103,16 +102,16 @@ func _set_data() -> void:
 	var i := 0
 	while i < n_interfaces:
 		var interface: Interface = interfaces[i]
-		var gui_name := ""
-		if _thread_replacement_names:
-			gui_name = _thread_replacement_names[i]
+		var use_name := ""
+		if _thread_column_names:
+			use_name = _thread_column_names[i]
 		elif interface:
-			gui_name = interface.gui_name
+			use_name = interface.gui_name if interface.gui_name else tr(interface.name)
 		elif _thread_fallback_names[i]:
-			gui_name = _thread_fallback_names[i]
+			use_name = _thread_fallback_names[i]
 		else:
-			gui_name = _thread_targets[i]
-		data.append(gui_name) # header
+			use_name = _thread_targets[i]
+		data.append(use_name) # header
 		i += 1
 	i = 0
 	while i < n_spacers:
@@ -179,7 +178,7 @@ func _build_grid(data: Array) -> void:
 	var n_cells := _grid.get_child_count()
 	while n_cells < n_cells_needed:
 		var label := Label.new()
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		#label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.size_flags_horizontal = SIZE_EXPAND_FILL
 		_grid.add_child(label)
 		n_cells += 1
@@ -209,6 +208,7 @@ func _build_grid(data: Array) -> void:
 			var value_label: Label = _grid.get_child(row * n_columns + column)
 			var value_text: String = data[row * n_columns + column]
 			value_label.text = value_text
+			value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			value_label.show()
 			column += 1
 		row += 1

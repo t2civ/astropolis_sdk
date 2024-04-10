@@ -47,74 +47,45 @@ func _update_selection(_dummy := false) -> void:
 	var selection_name := _selection_manager.get_selection_name()
 	if !selection_name:
 		return
-	var target_name := _selection_manager.get_info_target_name()
-	assert(target_name)
+
+	prints(selection_name)
 	
-	var body_name: StringName
-	var body_flags: int
-	var proxy_orbit: StringName
-	var proxy_moons_of: StringName
+	# Selection is either a Facility or Body. It's a Facility if user selected
+	# a player (NASA, USA, etc.), so show auxilary columns accordingly.
 	
-	# Below replicates some logic in SelectionManager; could be cleaned up.
-	var at_body_name: StringName
+	var body_name: StringName = MainThreadGlobal.get_body_name(selection_name)
+	var body_flags: int = MainThreadGlobal.get_body_flags(body_name)
+	var player_join_name := ""
 	if selection_name.begins_with("FACILITY_"):
-		body_name = MainThreadGlobal.get_body_name(selection_name)
-		body_flags = MainThreadGlobal.get_body_flags(body_name)
-		
-		if target_name.begins_with("PROXY_"):
-			# polity
-			at_body_name = _get_at_body_name(body_flags)
-			_stats_grid.update_targets([target_name], [at_body_name])
-			return
-		
-		# agency or company
-		var player_name: StringName = MainThreadGlobal.get_player_name(selection_name)
-		proxy_orbit = StringName("PROXY_ORBIT_" + body_name + "_" + player_name)
-		proxy_moons_of = StringName("PROXY_MOONS_OF_" + body_name + "_" + player_name)
+		player_join_name = "_" + MainThreadGlobal.get_player_name(selection_name)
 	
-	else: # body
-		assert(IVGlobal.bodies.has(selection_name))
-		body_name = selection_name
-		body_flags = MainThreadGlobal.get_body_flags(body_name)
-		proxy_orbit = StringName("PROXY_ORBIT_" + body_name)
-		proxy_moons_of = StringName("PROXY_MOONS_OF_" + body_name)
+	var targets: Array[StringName] = []
+	var column_names: Array[StringName] = []
 	
-	# at star
-	if body_flags & BodyFlags.IS_STAR:
-		_stats_grid.update_targets([&"PROXY_SYSTEM_STAR_SUN"], [&"SYSTEM_SOLAR_SYSTEM"])
-		return
+	if body_flags & BodyFlags.IS_PLANET:
+		targets.append(selection_name) # Facility or Body name
+		column_names.append(&"LABEL_PLANET")
+		if body_flags & BodyFlags2.GUI_HAS_ONE_MOON:
+			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
+			column_names.append(&"LABEL_MOON")
+		elif body_flags & BodyFlags2.GUI_HAS_MOONS:
+			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
+			column_names.append(&"LABEL_MOONS")
+		targets.append(StringName("JOIN_" + body_name + "_SPACE" + player_join_name))
+		column_names.append(&"LABEL_SPACE")
 	
-	at_body_name = _get_at_body_name(body_flags)
+	elif body_flags & BodyFlags.IS_STAR:
+		targets.append(StringName("JOIN_" + body_name + "_PLANETS" + player_join_name))
+		targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
+		targets.append(StringName("JOIN_" + body_name + "_PLANETOIDS" + player_join_name))
+		targets.append(StringName("JOIN_" + body_name + "_SPACE" + player_join_name))
+		column_names.append(&"LABEL_PLANETS")
+		column_names.append(&"LABEL_MOONS")
+		column_names.append(&"LABEL_PLANETOIDS")
+		column_names.append(&"LABEL_SPACE")
 	
-	# at spacecraft or small body
-	if body_flags & BodyFlags.IS_SPACECRAFT or body_flags & BodyFlags.NO_STABLE_ORBIT:
-		_stats_grid.update_targets([selection_name], [at_body_name])
-		return
+	else:
+		targets.append(body_name)
 	
-	# at moonless major body
-	var targets: Array[StringName]
-	var replacement_names: Array[StringName]
-	if not body_flags & BodyFlags2.GUI_HAS_MOONS:
-		targets = [selection_name, proxy_orbit]
-		replacement_names = [at_body_name, &"LABEL_IN_ORBIT"]
-		_stats_grid.update_targets(targets, replacement_names)
-		return
-	
-	# at major body w/ moon(s)
-	var at_moon_text := &"LABEL_MOONS"
-	if body_name == &"PLANET_EARTH":
-		at_moon_text = &"LABEL_LUNAR"
-	targets = [selection_name, proxy_orbit, proxy_moons_of]
-	replacement_names = [at_body_name, &"LABEL_ORBIT", at_moon_text]
-	_stats_grid.update_targets(targets, replacement_names)
-
-
-func _get_at_body_name(body_flags: int) -> StringName:
-	if body_flags & BodyFlags2.IS_STATION:
-		return &"LABEL_STATION"
-	if body_flags & BodyFlags2.GUI_CLOUDS_SURFACE:
-		return &"LABEL_CLOUDS_SURFACE" # Venus
-	if body_flags & BodyFlags2.GUI_CLOUDS:
-		return &"LABEL_CLOUDS" # gas giants
-	return &"LABEL_SURFACE"
+	_stats_grid.update_targets(targets, column_names)
 
