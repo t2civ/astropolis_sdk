@@ -16,32 +16,18 @@ extends NetComponent
 #
 # Income and cash flow items are cummulative for current quarter.
 # Balance items are running.
-#
-# TODO: Make interface component w/out server dirty flags & delta accumulators
 
 enum { # _dirty
 	DIRTY_REVENUE = 1,
 }
 
-const PERSIST_PROPERTIES2: Array[StringName] = [
-	&"_revenue",
-	&"_delta_revenue",
-	&"_accountings",
-	&"_delta_accountings",
-	
-	&"_dirty_accountings",
-]
 
 # interface sync
 var _revenue := 0.0 # positive values of INC_STMT_GROSS
-var _delta_revenue := 0.0
 var _accountings: Array[float]
-var _delta_accountings: Array[float]
 
 # TODO:
 # var items: Dictionary # facility only?
-
-var _dirty_accountings := 0 # max 64
 
 
 func _init(is_new := false) -> void:
@@ -51,7 +37,13 @@ func _init(is_new := false) -> void:
 	# debug dev
 	var n_accountings := 10
 	_accountings = ivutils.init_array(n_accountings, 0.0, TYPE_FLOAT)
-	_delta_accountings = _accountings.duplicate()
+
+# ********************************** SYNC *************************************
+
+func set_network_init(data: Array) -> void:
+	run_qtr = data[0]
+	_revenue = data[1]
+	_accountings = data[2]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -66,10 +58,10 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	
 	var dirty := _int_data[_int_offset]
 	_int_offset += 1
-	_dirty |= dirty
+	
 	if dirty & DIRTY_REVENUE:
-		_delta_revenue += _float_data[_float_offset]
+		_revenue += _float_data[_float_offset]
 		_float_offset += 1
 	
-	_dirty_accountings |= _add_floats_delta(_accountings)
+	_add_floats_delta(_accountings)
 

@@ -20,11 +20,6 @@ const utils := preload("res://public/static/utils.gd")
 const diversity := preload("res://public/static/diversity.gd")
 const LOG2_64 := Utils.LOG2_64
 
-#const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
-const PERSIST_PROPERTIES: Array[StringName] = [
-	&"run_qtr",
-	&"_dirty",
-]
 
 # persisted
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -45,10 +40,6 @@ static var _tables: Dictionary = IVTableData.tables
 @warning_ignore("unused_private_class_variable")
 static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 
-
-
-func set_network_init(data: Array) -> void:
-	IVSaveUtils.set_persist_properties(self, data)
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
