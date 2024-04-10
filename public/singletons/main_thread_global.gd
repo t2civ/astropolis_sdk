@@ -113,7 +113,7 @@ func get_polity_name(interface_name: StringName) -> StringName:
 
 
 func has_development(interface_name: StringName) -> bool:
-	# True for facility, proxy & player; true for body if it has facilities.
+	# True for facility, join & player; true for body if it has facilities.
 	var interface: Interface = interfaces_by_name.get(interface_name)
 	if !interface:
 		return false

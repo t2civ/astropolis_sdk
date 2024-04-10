@@ -8,7 +8,7 @@
 extends MarginContainer
 
 # Contains local selections for info panel navigation:
-#    Spacefaring Polities (-> polity at body proxy)
+#    Spacefaring Polities (-> local facility)
 #    Space Agencies (-> local facility)
 #    Space Companies (-> local facility)
 #    Offworld Facilities (-> in orbit or satellite bodies w/ facility)

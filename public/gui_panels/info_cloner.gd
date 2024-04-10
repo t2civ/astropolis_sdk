@@ -29,7 +29,6 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	var selection_manager: SelectionManager = info_panel.selection_manager
 	var sm_clone: SelectionManager = SelectionManager.new()
 	sm_clone.set_selection_and_history(selection_manager.get_selection_and_history())
-	sm_clone.info_panel_target_name = selection_manager.info_panel_target_name
 	sm_clone.is_action_listener = false
 
 	# clone subpanel tree w/ persist properties

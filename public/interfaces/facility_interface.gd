@@ -19,9 +19,7 @@ extends Interface
 #
 # Facilities are where most of the important activity happens in Astropolis. 
 # A server-side Facility object pushes changes to FacilityInterface and its
-# components. FacilityInterface then propagates component changes to
-# BodyInterface, PlayerInterface and any ProxyInterfaces held in 'propagations'
-# array.
+# components.
 
 static var facility_interfaces: Array[FacilityInterface] = [] # indexed by facility_id
 
@@ -34,7 +32,7 @@ var polity_name: StringName
 
 var body: BodyInterface
 var player: PlayerInterface
-var proxies: Array[ProxyInterface] = []
+var joins: Array[JoinInterface] = []
 
 var operations := Operations.new(true, true, true)
 var inventory := Inventory.new(true)
@@ -166,11 +164,11 @@ func set_server_init(data: Array) -> void:
 	player.add_facility(self)
 	body = interfaces_by_name[data[11]]
 	body.add_facility(self)
-	var proxy_names: Array = data[12]
-	for proxy_name: StringName in proxy_names:
-		var proxy: ProxyInterface = get_interface_by_name(proxy_name)
-		assert(!proxies.has(proxy))
-		proxies.append(proxy)
+	var join_names: Array = data[12]
+	for join_name: StringName in join_names:
+		var join: JoinInterface = get_interface_by_name(join_name)
+		assert(!joins.has(join))
+		joins.append(join)
 	
 	var operations_data: Array = data[13]
 	var inventory_data: Array = data[14]

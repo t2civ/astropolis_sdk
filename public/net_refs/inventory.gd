@@ -12,8 +12,7 @@ extends NetRef
 # will have access to API (just like any Godot class) but the GDScript class
 # will be removed.
 #
-# Arrays indexed by resource_type. Facility and (sometimes) Proxy have an
-# Inventory. '_prices', '_bids' and '_asks' are common for polity at specific body.
+# Arrays indexed by resource_type. Only Facilities have an Inventory.
 #
 # TODO: Make interface component w/out server dirty flags & delta accumulators
 #
