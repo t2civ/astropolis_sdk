@@ -31,7 +31,6 @@ extends Interface
 ## JOIN_<planet>_MOONS (<-data from all moon Bodies of a planet)
 ## JOIN_<planet>_SPACE (<-data from all spacecraft Bodies of a planet)
 ##
-## <player> (<-data from the next 4 Join types)
 ## JOIN_<star>_PLANETS_<player> (<-data from planet Facilities for Player)
 ## JOIN_<star>_MOONS_<player> (<-data from JOIN_<planet>_MOONS_<player> below)
 ## JOIN_<star>_SPACE_<player> (<-data from JOIN_<planet>_SPACE_<player> & non-planet spacecraft)
@@ -42,8 +41,8 @@ extends Interface
 ## [/codeblock]
 ##
 ## Notes:[br]
-## 1. '<star>' = 'SUN' for our solar system, but should handle multistar systems.[br]
-## 2. '<planet>' = 'EARTH', 'JUPITER', etc. These include dwarf planets.[br]
+## 1. '<star>' = 'STAR_SUN' for our solar system, but should handle multistar systems.[br]
+## 2. '<planet>' = 'PLANET_EARTH', 'PLANET_JUPITER', etc. These include dwarf planets.[br]
 ## 3. 'Moons' only includes moons of planets (or dwarf planets).[br]
 ## 4. 'Planetoids' are any Body that is not a planet, moon or spacecraft.[br]
 ## 5. 'spacecraft Bodies of a planet' include any spacecraft 'under' the planet,
@@ -65,14 +64,11 @@ extends Interface
 
 static var join_interfaces: Array[JoinInterface] = [] # indexed by join_id
 
-var sublabel := &""
-
-var operations: Operations # always created on server init
-var inventory: Inventory # TODO: Remove!
-var financials: Financials # on server init (for player-specific joins) or null
-var population: Population # TODO: always created on server init
-var biome: Biome # TODO: always created on server init
-var metaverse: Metaverse # TODO: always created on server init
+var operations: OperationsNet # always
+var financials: FinancialsNet # only player-specific Joins
+var population: PopulationNet # always
+var biome: BiomeNet # always
+var metaverse: MetaverseNet # always
 
 # read-only!
 var join_id := -1
@@ -92,8 +88,8 @@ func has_development() -> bool:
 
 
 func has_markets() -> bool:
-	return inventory != null
-	
+	return false
+
 
 func get_development_population(population_type := -1) -> float:
 	var total := operations.get_crew(population_type)
@@ -151,34 +147,26 @@ func get_development_biodiversity() -> float:
 # *****************************************************************************
 # sync - DON'T MODIFY!
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	join_id = data[2]
 	name = data[3]
 	gui_name = data[4]
-	sublabel = data[5]
-	var operations_data: Array = data[6]
-	var inventory_data: Array = data[7]
-	var financials_data: Array = data[8]
-	var population_data: Array = data[9]
-	var biome_data: Array = data[10]
-	var metaverse_data: Array = data[11]
-	operations = Operations.new(true, !financials_data.is_empty())
-	operations.set_server_init(operations_data)
-	if inventory_data:
-		inventory = Inventory.new(true)
-		inventory.set_server_init(inventory_data)
+	var operations_data: Array = data[5]
+	var financials_data: Array = data[6]
+	var population_data: Array = data[7]
+	var biome_data: Array = data[8]
+	var metaverse_data: Array = data[9]
+	operations = OperationsNet.new(true, !financials_data.is_empty())
+	operations.set_network_init(operations_data)
 	if financials_data:
-		financials = Financials.new(true)
-		financials.set_server_init(financials_data)
-	if population_data:
-		population = Population.new(true)
-		population.set_server_init(population_data)
-	if biome_data:
-		biome = Biome.new(true)
-		biome.set_server_init(biome_data)
-	if metaverse_data:
-		metaverse = Metaverse.new(true)
-		metaverse.set_server_init(metaverse_data)
+		financials = FinancialsNet.new(true)
+		financials.set_network_init(financials_data)
+	population = PopulationNet.new(true)
+	population.set_network_init(population_data)
+	biome = BiomeNet.new(true)
+	biome.set_network_init(biome_data)
+	metaverse = MetaverseNet.new(true)
+	metaverse.set_network_init(metaverse_data)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -191,19 +179,12 @@ func sync_server_dirty(data: Array) -> void:
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-	if dirty & DIRTY_INVENTORY:
-		inventory.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
 	if dirty & DIRTY_FINANCIALS:
 		financials.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_POPULATION:
 		population.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-		
-		prints(name, population.get_number())
-		
-		
 	if dirty & DIRTY_BIOME:
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2

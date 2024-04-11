@@ -32,11 +32,11 @@ var parent: BodyInterface # null for top body
 
 var satellites: Array[BodyInterface] = [] # resizable container - not threadsafe!
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
-var operations: Operations # when/if needed
-var population: Population # when/if needed
-var biome: Biome # when/if needed
-var metaverse: Metaverse # when/if needed
-var compositions: Array[Composition] = [] # resizable container - not threadsafe!
+var operations: OperationsNet # when/if needed
+var population: PopulationNet # when/if needed
+var biome: BiomeNet # when/if needed
+var metaverse: MetaverseNet # when/if needed
+var compositions: Array[CompositionNet] = [] # resizable container - not threadsafe!
 
 
 
@@ -210,7 +210,7 @@ func get_composition_fractional_deposits(index: int, resource_type: int, zero_if
 # *****************************************************************************
 # sync - DON'T MODIFY!
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	body_id = data[2]
 	name = data[3]
 	gui_name = data[4]
@@ -227,17 +227,17 @@ func set_server_init(data: Array) -> void:
 	var compositions_data: Array = data[12]
 	
 	if operations_data:
-		operations = Operations.new(true)
-		operations.set_server_init(operations_data)
+		operations = OperationsNet.new(true)
+		operations.set_network_init(operations_data)
 	if population_data:
-		population = Population.new(true)
-		population.set_server_init(population_data)
+		population = PopulationNet.new(true)
+		population.set_network_init(population_data)
 	if biome_data:
-		biome = Biome.new(true)
-		biome.set_server_init(biome_data)
+		biome = BiomeNet.new(true)
+		biome.set_network_init(biome_data)
 	if metaverse_data:
-		metaverse = Metaverse.new(true)
-		metaverse.set_server_init(metaverse_data)
+		metaverse = MetaverseNet.new(true)
+		metaverse.set_network_init(metaverse_data)
 	
 	if compositions_data:
 		var n_compositions := compositions_data.size()
@@ -245,8 +245,8 @@ func set_server_init(data: Array) -> void:
 		var i := 0
 		while i < n_compositions:
 			var composition_data: Array = compositions_data[i]
-			var composition := Composition.new(true)
-			composition.set_server_init(composition_data)
+			var composition := CompositionNet.new(true)
+			composition.set_network_init(composition_data)
 			compositions[i] = composition
 			i += 1
 	
@@ -266,22 +266,22 @@ func sync_server_dirty(data: Array) -> void:
 	
 	if dirty & DIRTY_OPERATIONS:
 		if !operations:
-			operations = Operations.new(true)
+			operations = OperationsNet.new(true)
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_POPULATION:
 		if !population:
-			population = Population.new(true)
+			population = PopulationNet.new(true)
 		population.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_BIOME:
 		if !biome:
-			biome = Biome.new(true)
+			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_METAVERSE:
 		if !metaverse:
-			metaverse = Metaverse.new(true)
+			metaverse = MetaverseNet.new(true)
 		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_COMPOSITIONS:
@@ -290,7 +290,7 @@ func sync_server_dirty(data: Array) -> void:
 		var i := 0
 		while dirty_compositions:
 			if dirty_compositions & 1:
-				var composition: Composition = compositions[i]
+				var composition: CompositionNet = compositions[i]
 				composition.add_dirty(data, offsets[k], offsets[k + 1])
 				k += 2
 			i += 1

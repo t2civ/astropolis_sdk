@@ -1,13 +1,13 @@
-# itab_resources.gd
+# itab_composition.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name ITabResources
+class_name ITabComposition
 extends MarginContainer
-const SCENE := "res://public/gui_panels/itab_resources.tscn"
+const SCENE := "res://public/gui_panels/itab_composition.tscn"
 
 
 const SUPER_OPEN_PREFIX := "\u2304 "

@@ -34,12 +34,12 @@ var body: BodyInterface
 var player: PlayerInterface
 var joins: Array[JoinInterface] = []
 
-var operations := Operations.new(true, true, true)
-var inventory := Inventory.new(true)
-var financials := Financials.new(true)
-var population: Population # when/if needed
-var biome: Biome # when/if needed
-var metaverse: Metaverse # when/if needed
+var operations := OperationsNet.new(true, true, true)
+var inventory := InventoryNet.new(true)
+var financials := FinancialsNet.new(true)
+var population: PopulationNet # when/if needed
+var biome: BiomeNet # when/if needed
+var metaverse: MetaverseNet # when/if needed
 
 
 
@@ -151,7 +151,7 @@ func get_development_biodiversity() -> float:
 # *****************************************************************************
 # sync
 
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	facility_id = data[2]
 	name = data[3]
 	gui_name = data[4]
@@ -177,19 +177,19 @@ func set_server_init(data: Array) -> void:
 	var biome_data: Array = data[17]
 	var metaverse_data: Array = data[18]
 	
-	operations.set_server_init(operations_data)
-	inventory.set_server_init(inventory_data)
-	financials.set_server_init(financials_data)
+	operations.set_network_init(operations_data)
+	inventory.set_network_init(inventory_data)
+	financials.set_network_init(financials_data)
 	
 	if population_data:
-		population = Population.new(true, true)
-		population.set_server_init(population_data)
+		population = PopulationNet.new(true, true)
+		population.set_network_init(population_data)
 	if biome_data:
-		biome = Biome.new(true)
-		biome.set_server_init(biome_data)
+		biome = BiomeNet.new(true)
+		biome.set_network_init(biome_data)
 	if metaverse_data:
-		metaverse = Metaverse.new(true)
-		metaverse.set_server_init(metaverse_data)
+		metaverse = MetaverseNet.new(true)
+		metaverse.set_network_init(metaverse_data)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -219,17 +219,17 @@ func sync_server_dirty(data: Array) -> void:
 		k += 2
 	if dirty & DIRTY_POPULATION:
 		if !population:
-			population = Population.new(true, true)
+			population = PopulationNet.new(true, true)
 		population.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_BIOME:
 		if !biome:
-			biome = Biome.new(true)
+			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_METAVERSE:
 		if !metaverse:
-			metaverse = Metaverse.new(true)
+			metaverse = MetaverseNet.new(true)
 		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
 	
 	assert(int_data[0] >= run_qtr)

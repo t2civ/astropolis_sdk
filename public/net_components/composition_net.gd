@@ -1,28 +1,31 @@
-# composition.gd
+# composition_net.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name Composition
-extends NetRef
+class_name CompositionNet
+extends NetComponent
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
 # will be removed.
 #
-# Follows "Net Ref" pattern for holding and syncing data.
 # This is a replacement (NOT a subclass) for I, Voyager's IVComposition class.
 #
-# AI and GUI have access to estimated values only; server has actual.
-# This Net Ref is different than others because it syncs offset values to
-# represent estimation biases. Data table values are game start public
-# *estimations*; actual values will differ.
+# A Body can have any number of Compositions, each representing a geological
+# layer and/or polity territory. A spacecraft Body will have 0 Compositions.
+# The vast majority of asteroids will have one (undifferentiated) Composition.
 #
-# All resource indexing here is for the 'is_extraction = true' subset.
+# AI and GUI have access to estimated values only; server has actual.
+# This NetComponent is different than others because it syncs offset values to
+# represent estimation biases. Actual server values will be randomly offset
+# from data table values (which are assumed to be public estimations).
+#
+# All resource indexing here is for the 'is_extraction == true' subset.
 # Arrays are never resized after init, so they are threadsafe to read.
-# All data in this Net Ref flows server -> interface.
+# All Composition data flows server -> interface.
 
 enum { # _dirty bit flags
 	DIRTY_HEADERS = 1,
@@ -36,29 +39,6 @@ const FOUR_PI := 4.0 * PI
 
 const FREE_RESOURCE_MIN_FRACTION := 0.1
 
-const PERSIST_PROPERTIES2: Array[StringName] = [
-	&"compositions_index",
-	&"name",
-	&"stratum_type",
-	&"polity_name",
-	&"body_radius",
-	&"outer_depth",
-	&"thickness",
-	&"spherical_fraction",
-	&"area",
-	&"density",
-	&"masses",
-	&"heterogeneities",
-	&"survey_type",
-	&"may_have_free_resources",
-	&"density_bias",
-	&"masses_biases",
-	&"heterogeneities_biases",
-	&"_volume",
-	&"_total_mass",
-	&"_dirty_masses",
-	&"_dirty_heterogeneities",
-]
 
 var compositions_index := -1
 var name: StringName
@@ -79,21 +59,9 @@ var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
 var may_have_free_resources: bool # from strata.tsv
 
-# server only TODO: Dictionaries of biases indexed by player
-var density_bias := 1.0 # the server is lying to you...
-var masses_biases: Array[float]
-var heterogeneities_biases: Array[float]
-
-# calculated
+# derive as needed
 var _volume := 0.0
 var _total_mass := 0.0
-
-
-# dirty data
-var _dirty_masses := 0 # dirty indexes as bit flags (max index 63)
-var _dirty_heterogeneities := 0 # dirty indexes as bit flags (max index 63)
-
-# not propagated
 var _needs_volume_mass_calculation := true
 
 # indexing
@@ -112,7 +80,7 @@ static var _is_class_instanced := false
 
 
 
-func _init(is_new := false, is_server := false) -> void:
+func _init(is_new := false, _is_server := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_resource_maybe_free = _tables[&"resources"][&"maybe_free"]
@@ -127,11 +95,6 @@ func _init(is_new := false, is_server := false) -> void:
 	var n_is_extraction_resources := _extraction_resources.size()
 	masses = ivutils.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
 	heterogeneities = masses.duplicate()
-	if !is_server:
-		return
-	masses_biases = ivutils.init_array(n_is_extraction_resources, 1.0, TYPE_FLOAT)
-	heterogeneities_biases = masses_biases.duplicate()
-
 
 # ********************************** READ *************************************
 # all threadsafe
@@ -240,48 +203,13 @@ func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> f
 	if fractional_deposits > 1.0:
 		fractional_deposits = 1.0
 	return fractional_deposits
-	
-
-
-# *****************************************************************************
-# server API
-
-func change_mass(resource_type: int, change: float) -> void:
-	var index: int = _resource_extractions[resource_type]
-	assert(index != -1, "resource_type must have is_extraction == true")
-	masses[index] += change
-	_dirty_masses |= 1 << index
 
 
 # *****************************************************************************
 # sync
 
-func get_server_init() -> Array:
-	
-	# reference-safe
-	var est_masses := masses.duplicate()
-	utils.multiply_float_array_by_array(est_masses, masses_biases)
-	var est_heterogeneities := heterogeneities.duplicate()
-	utils.multiply_float_array_by_array(est_heterogeneities, heterogeneities_biases)
-	return [
-		compositions_index,
-		name,
-		stratum_type,
-		polity_name,
-		body_radius,
-		outer_depth,
-		thickness,
-		spherical_fraction,
-		area,
-		density * density_bias,
-		est_masses,
-		est_heterogeneities,
-		survey_type,
-		may_have_free_resources,
-	]
 
-
-func set_server_init(data: Array) -> void:
+func set_network_init(data: Array) -> void:
 	# NOT reference-safe!
 	compositions_index = data[0]
 	name = data[1]
@@ -299,100 +227,41 @@ func set_server_init(data: Array) -> void:
 	may_have_free_resources = data[13]
 
 
-func get_server_dirty(data: Array) -> void:
-	# get changed values or array indexes only; zero dirty flags
+func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
+	# apply deltas and sets
+	_int_data = data[1]
+	_float_data = data[2]
+	_int_offset = int_offset
+	_float_offset = float_offset
 	
-	var any_dirty := _dirty or _dirty_masses or _dirty_heterogeneities
-	data.append(any_dirty)
-	if !any_dirty:
-		return
-
-	# non-arrays
-	data.append(_dirty)
-	if _dirty & DIRTY_HEADERS: # very rare
-		data.append(polity_name)
-	if _dirty & DIRTY_STRATUM:
-		data.append(body_radius)
-		data.append(outer_depth)
-		data.append(thickness)
-		data.append(spherical_fraction)
-		data.append(area)
-		data.append(density * density_bias)
-	if _dirty & DIRTY_ESTIMATION:
-		data.append(survey_type)
-	_dirty = 0
+	var svr_qtr := _int_data[0]
+	run_qtr = svr_qtr # Do we need this?
 	
-	var lsb: int # least significant bit
-	var i: int
+	var dirty := _int_data[_int_offset]
+	_int_offset += 1
 	
-	# masses
-	data.append(_dirty_masses)
-	while _dirty_masses:
-		lsb = _dirty_masses & -_dirty_masses
-		i = LOG2_64[lsb]
-		data.append(masses[i] * masses_biases[i])
-		_dirty_masses &= ~lsb
-	
-	# heterogeneities
-	data.append(_dirty_heterogeneities)
-	while _dirty_heterogeneities:
-		lsb = _dirty_heterogeneities & -_dirty_heterogeneities
-		i = LOG2_64[lsb]
-		data.append(heterogeneities[i] * heterogeneities_biases[i])
-		_dirty_heterogeneities &= ~lsb
-
-
-func sync_server_dirty(data: Array, k: int) -> int:
-	# set changed values only
-	
-	if !data[k]: # any_dirty
-		return k + 1
-	k += 1
-	
-	# non-arrays
-	var dirty_flags: int = data[k]
-	k += 1
-	if dirty_flags & DIRTY_HEADERS: # very rare
-		polity_name = data[k]
-		k += 1
-	if dirty_flags & DIRTY_STRATUM:
-		body_radius = data[k]
-		outer_depth = data[k + 1]
-		thickness = data[k + 2]
-		spherical_fraction = data[k + 3]
-		area = data[k + 4]
-		density = data[k + 5]
-		k += 6
+	if dirty & DIRTY_STRATUM:
+		body_radius = _float_data[_float_offset]
+		_float_offset += 1
+		outer_depth = _float_data[_float_offset]
+		_float_offset += 1
+		thickness = _float_data[_float_offset]
+		_float_offset += 1
+		spherical_fraction = _float_data[_float_offset]
+		_float_offset += 1
+		area = _float_data[_float_offset]
+		_float_offset += 1
+		density = _float_data[_float_offset]
+		_float_offset += 1
 		_needs_volume_mass_calculation = true
-	if dirty_flags & DIRTY_ESTIMATION:
-		survey_type = data[k]
-		k += 1
+	if dirty & DIRTY_ESTIMATION:
+		survey_type = _int_data[_int_offset]
+		_int_offset += 1
 	
-	var lsb: int # least significant bit
-	var i: int
-	
-	# masses
-	dirty_flags = data[k]
-	k += 1
-	while dirty_flags:
-		lsb = dirty_flags & -dirty_flags
-		i = LOG2_64[lsb]
-		masses[i] = data[k]
-		k += 1
-		dirty_flags &= ~lsb
-	
-	# heterogeneities
-	dirty_flags = data[k]
-	k += 1
-	while dirty_flags:
-		lsb = dirty_flags & -dirty_flags
-		i = LOG2_64[lsb]
-		heterogeneities[i] = data[k]
-		k += 1
-		dirty_flags &= ~lsb
+	_set_floats_dirty(masses)
+	_set_floats_dirty(heterogeneities)
 
-	return k
-
+# *****************************************************************************
 
 func calculate_volume_and_total_mass() -> void:
 	# area accounts for spherical_fraction, so use either to reduce calculation

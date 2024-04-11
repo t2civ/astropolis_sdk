@@ -1,32 +1,25 @@
-# net_ref.gd
+# net_component.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name NetRef
+class_name NetComponent
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# Abstract base class for data classes that are optimized for network sync.
-# Only changes are synched. Most NetRef changes are synched at Facility level
-# and propagated to Body, Player and Proxies. Exception: Compositions are
-# synched at Body level without propagation.
+## Abstract base class for data components that are optimized for network sync.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 const utils := preload("res://public/static/utils.gd")
 const diversity := preload("res://public/static/diversity.gd")
 const LOG2_64 := Utils.LOG2_64
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
-const PERSIST_PROPERTIES: Array[StringName] = [
-	&"run_qtr",
-	&"_dirty",
-]
 
 # persisted
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -49,28 +42,7 @@ static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 
 
 
-func get_server_init() -> Array:
-	return IVSaveUtils.get_persist_properties(self)
-
-
-func set_server_init(data: Array) -> void:
-	IVSaveUtils.set_persist_properties(self, data)
-
-
-func take_dirty(_data: Array) -> void:
-	# save delta in data, apply & zero delta, reset dirty flags
-	pass
-
-
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
-
-
-func subtract_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# apply delta & dirty flags
 	_int_data = data[1]
 	_float_data = data[2]
@@ -80,10 +52,6 @@ func subtract_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 func get_interface_dirty() -> Array:
 	return []
-
-
-func sync_interface_dirty(_data: Array) -> void:
-	pass
 
 
 # container sync
