@@ -26,8 +26,10 @@ var _on_ready_tab := 0
 var itab_development: ITabDevelopment
 var itab_operations: ITabOperations
 var itab_markets: ITabMarkets
-var itab_resources: ITabResources
-var itab_information: ITabInformation
+var itab_composition: ITabComposition
+var itab_orbit: ITabOrbit
+var itab_build: ITabBuild
+var itab_design: ITabDesign
 var subpanels: Array[Container]
 
 
@@ -44,9 +46,12 @@ func _init(is_new := false) -> void:
 	itab_development = IVFiles.make_object_or_scene(ITabDevelopment)
 	itab_operations = IVFiles.make_object_or_scene(ITabOperations)
 	itab_markets = IVFiles.make_object_or_scene(ITabMarkets)
-	itab_resources = IVFiles.make_object_or_scene(ITabResources)
-	itab_information = IVFiles.make_object_or_scene(ITabInformation)
-	subpanels = [itab_development, itab_operations, itab_markets, itab_resources, itab_information]
+	itab_composition = IVFiles.make_object_or_scene(ITabComposition)
+	itab_orbit = IVFiles.make_object_or_scene(ITabOrbit)
+	itab_build = IVFiles.make_object_or_scene(ITabBuild)
+	itab_design = IVFiles.make_object_or_scene(ITabDesign)
+	subpanels = [itab_development, itab_operations, itab_markets, itab_composition, itab_orbit,
+			itab_build, itab_design]
 
 
 func _ready() -> void:
@@ -61,8 +66,10 @@ func _ready() -> void:
 	add_child(itab_development)
 	add_child(itab_operations)
 	add_child(itab_markets)
-	add_child(itab_resources)
-	add_child(itab_information)
+	add_child(itab_composition)
+	add_child(itab_orbit)
+	add_child(itab_build)
+	add_child(itab_design)
 	_init_tabs()
 
 
@@ -74,10 +81,14 @@ func _on_game_load_finished() -> void:
 			itab_operations = child
 		elif child is ITabMarkets:
 			itab_markets = child
-		elif child is ITabResources:
-			itab_resources = child
-		elif child is ITabInformation:
-			itab_information = child
+		elif child is ITabComposition:
+			itab_composition = child
+		elif child is ITabOrbit:
+			itab_orbit = child
+		elif child is ITabBuild:
+			itab_build = child
+		elif child is ITabDesign:
+			itab_design = child
 		else:
 			continue
 		subpanels.append(child)
@@ -90,13 +101,17 @@ func _init_tabs() -> void:
 	itab_development.name = &"TAB_DEVELOPMENT"
 	itab_operations.name = &"TAB_OPERATIONS"
 	itab_markets.name = &"TAB_MARKETS"
-	itab_resources.name = &"TAB_RESOURCES"
-	itab_information.name = &"TAB_INFORMATION"
+	itab_composition.name = &"TAB_COMPOSITION"
+	itab_orbit.name = &"TAB_ORBIT"
+	itab_build.name = &"TAB_BUILD"
+	itab_design.name = &"TAB_DESIGN"
 	_timer.timeout.connect(itab_development.timer_update)
 	_timer.timeout.connect(itab_operations.timer_update)
 	_timer.timeout.connect(itab_markets.timer_update)
-	_timer.timeout.connect(itab_resources.timer_update)
-	_timer.timeout.connect(itab_information.timer_update)
+	_timer.timeout.connect(itab_composition.timer_update)
+	_timer.timeout.connect(itab_orbit.timer_update)
+	_timer.timeout.connect(itab_build.timer_update)
+	_timer.timeout.connect(itab_design.timer_update)
 
 
 func _tab_listener(tab: int) -> void:

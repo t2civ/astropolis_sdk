@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://dvtjul0p1c4uv"]
+
+[ext_resource type="Script" path="res://public/gui_panels/itab_build.gd" id="1_dn2l4"]
+
+[node name="Build" type="MarginContainer"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 568.0
+offset_bottom = 347.0
+script = ExtResource("1_dn2l4")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Order a sation or probe to be built and sent to this body
+or an orbit (low, hi, geosynch, etc.) or specific l-point.
+Will display delta-v and estimated cost from existing yards.
+"
+horizontal_alignment = 1
+vertical_alignment = 1

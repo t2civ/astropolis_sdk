@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://7mk5lpykq6b"]
 
-[ext_resource type="Script" path="res://public/gui_panels/itab_resources.gd" id="1"]
+[ext_resource type="Script" path="res://public/gui_panels/itab_composition.gd" id="1"]
 
-[node name="Resources" type="MarginContainer"]
+[node name="Composition" type="MarginContainer"]
 offset_left = 7.0
 offset_top = 7.0
 offset_right = 568.0
