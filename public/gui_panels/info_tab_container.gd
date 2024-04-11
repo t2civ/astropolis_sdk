@@ -29,7 +29,7 @@ var itab_markets: ITabMarkets
 var itab_composition: ITabComposition
 var itab_orbit: ITabOrbit
 var itab_build: ITabBuild
-var itab_design: ITabDesign
+var itab_budget: ITabBudget
 var subpanels: Array[Container]
 
 
@@ -49,9 +49,9 @@ func _init(is_new := false) -> void:
 	itab_composition = IVFiles.make_object_or_scene(ITabComposition)
 	itab_orbit = IVFiles.make_object_or_scene(ITabOrbit)
 	itab_build = IVFiles.make_object_or_scene(ITabBuild)
-	itab_design = IVFiles.make_object_or_scene(ITabDesign)
+	itab_budget = IVFiles.make_object_or_scene(ITabBudget)
 	subpanels = [itab_development, itab_operations, itab_markets, itab_composition, itab_orbit,
-			itab_build, itab_design]
+			itab_build, itab_budget]
 
 
 func _ready() -> void:
@@ -69,7 +69,7 @@ func _ready() -> void:
 	add_child(itab_composition)
 	add_child(itab_orbit)
 	add_child(itab_build)
-	add_child(itab_design)
+	add_child(itab_budget)
 	_init_tabs()
 
 
@@ -87,8 +87,8 @@ func _on_game_load_finished() -> void:
 			itab_orbit = child
 		elif child is ITabBuild:
 			itab_build = child
-		elif child is ITabDesign:
-			itab_design = child
+		elif child is ITabBudget:
+			itab_budget = child
 		else:
 			continue
 		subpanels.append(child)
@@ -104,14 +104,14 @@ func _init_tabs() -> void:
 	itab_composition.name = &"TAB_COMPOSITION"
 	itab_orbit.name = &"TAB_ORBIT"
 	itab_build.name = &"TAB_BUILD"
-	itab_design.name = &"TAB_DESIGN"
+	itab_budget.name = &"TAB_BUDGET"
 	_timer.timeout.connect(itab_development.timer_update)
 	_timer.timeout.connect(itab_operations.timer_update)
 	_timer.timeout.connect(itab_markets.timer_update)
 	_timer.timeout.connect(itab_composition.timer_update)
 	_timer.timeout.connect(itab_orbit.timer_update)
 	_timer.timeout.connect(itab_build.timer_update)
-	_timer.timeout.connect(itab_design.timer_update)
+	_timer.timeout.connect(itab_budget.timer_update)
 
 
 func _tab_listener(tab: int) -> void:
