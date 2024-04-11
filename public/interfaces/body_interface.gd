@@ -36,7 +36,7 @@ var operations: OperationsNet # when/if needed
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
 var metaverse: MetaverseNet # when/if needed
-var compositions: Array[Composition] = [] # resizable container - not threadsafe!
+var compositions: Array[CompositionNet] = [] # resizable container - not threadsafe!
 
 
 
@@ -245,7 +245,7 @@ func set_network_init(data: Array) -> void:
 		var i := 0
 		while i < n_compositions:
 			var composition_data: Array = compositions_data[i]
-			var composition := Composition.new(true)
+			var composition := CompositionNet.new(true)
 			composition.set_network_init(composition_data)
 			compositions[i] = composition
 			i += 1
@@ -290,7 +290,7 @@ func sync_server_dirty(data: Array) -> void:
 		var i := 0
 		while dirty_compositions:
 			if dirty_compositions & 1:
-				var composition: Composition = compositions[i]
+				var composition: CompositionNet = compositions[i]
 				composition.add_dirty(data, offsets[k], offsets[k + 1])
 				k += 2
 			i += 1
