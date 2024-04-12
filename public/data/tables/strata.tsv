@@ -1,8 +1,22 @@
 	is_free_resources	is_deposits	#comments
 Type	BOOL	BOOL	
 Prefix/STRATUM_			
-UNDIFFERENTIATED			
+# generics			
+BULK			i.e., undifferentiated
 ATMOSPHERE	x		
+SURFACE		x	
+REGOLITH		x	
+CRUST		x	
+UPPER_CRUST		x	
+LOWER_CRUST		x	
+MANTLE		x	
+UPPER_MANTLE		x	
+LOWER_MANTLE		x	
+MANTLE_CORE		x	
+CORE			
+OUTER_CORE			
+INNER_CORE			
+# likely body-specifics			
 OCEAN			
 OCEAN_FLOOR		x	
 OCEAN_CRUST		x	
@@ -16,17 +30,7 @@ CONT_4KM_8KM_ANTARCTICA		x
 CONT_8KM_28KM		x	On Earth, 8 to 28 km
 CONT_8KM_28KM_ANTARCTICA		x	
 LOWER_CONT_CRUST		x	On Earth 28 to 40 km
-REGOLITH		x	
-POLAR_SHADED_REGOLITH		x	
-SURFACE		x	
-CRUST		x	
-UPPER_CRUST		x	
-LOWER_CRUST		x	
-LOWER_CRUST_INTER_LAYER		x	
-MANTLE		x	
-UPPER_MANTLE		x	
-LOWER_MANTLE		x	
-MANTLE_CORE		x	
-CORE			
-OUTER_CORE			
-INNER_CORE			
+POLAR_SHADED_REGOLITH		x	Lunar PSR; assuming 0.001 surface area (~40000 km^2)
+CRUST_TERRAE		x	Lunar highlands
+CRUST_MARIA		x	Lunar seas
+LOWER_CRUST_INTER_LAYER		x	For Ceres, but we might remove

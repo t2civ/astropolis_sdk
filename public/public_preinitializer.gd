@@ -56,7 +56,6 @@ func _init() -> void:
 		path_format % "carrying_capacity_groups",
 		path_format % "compositions",
 		path_format % "facilities",
-		path_format % "major_strata",
 		path_format % "module_classes",
 		path_format % "modules",
 		path_format % "op_classes",
