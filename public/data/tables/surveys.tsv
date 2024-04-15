@@ -1,4 +1,4 @@
-	density_error	masses_error	heterogeneities_error	deposits_sigma	#comments
+	density_error	masses_error	variances_error	deposits_sigma	#comments
 Type	FLOAT	FLOAT	FLOAT	FLOAT	
 Default				0	
 Prefix/SURVEY_					

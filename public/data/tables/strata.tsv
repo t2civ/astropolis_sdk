@@ -20,7 +20,6 @@ INNER_CORE
 OCEAN			
 OCEAN_FLOOR		x	
 OCEAN_CRUST		x	
-CONT_FRESH_WATER	x		
 CONT_SURFACE		x	On Earth, +0.8 km (ave continental elevation) to 0 km (sea level)
 CONT_SURFACE_ANTARCTICA		x	
 CONT_SUBSURF		x	On Earth, 0 km (sea level) to 4 km

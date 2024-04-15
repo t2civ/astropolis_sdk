@@ -99,7 +99,7 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			init_open = polity_name == composition_polity # "" == "" at body for commons
 			open_at_init.append(init_open)
 		var masses := body_interface.get_composition_masses(i)
-		var heterogeneities := body_interface.get_composition_heterogeneities(i)
+		var variances := body_interface.get_composition_variances(i)
 		var total_mass := body_interface.get_composition_total_mass(i)
 		var survey_type := body_interface.get_composition_survey_type(i)
 		
@@ -111,20 +111,20 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 				continue
 			var resource_type: int = _is_extraction_resources[j]
 			var mean := 100.0 * mass / total_mass # mass percent
-			var uncertainty := 0.0
-			var heterogeneity := 0.0
+			var error := 0.0
+			var variance := 0.0
 			var deposits := 0.0
 			if !_hide_variances[resource_type]:
-				uncertainty = 100.0 * body_interface.get_composition_fractional_mass_uncertainty(
+				error = 100.0 * body_interface.get_composition_fractional_mass_uncertainty(
 						i, resource_type)
-				if heterogeneities[j]:
-					heterogeneity = 100.0 * body_interface.get_composition_fractional_heterogeneity(
+				if variances[j]:
+					variance = 100.0 * body_interface.get_composition_fractional_variance(
 							i, resource_type)
-					if heterogeneity:
+					if variance:
 						deposits = 100.0 * body_interface.get_composition_fractional_deposits(
 								i, resource_type, true)
 			
-			var resource_data := [resource_type, mean, uncertainty, heterogeneity, deposits]
+			var resource_data := [resource_type, mean, error, variance, deposits]
 			resources_data.append(resource_data)
 		
 		resources_data.sort_custom(_sort_resources)
@@ -320,7 +320,7 @@ class PolityVBox extends VBoxContainer:
 class StratumVBox extends VBoxContainer:
 	# add via PolityVBox API
 	
-	const N_COLUMNS := 5
+	const N_COLUMNS := 4
 	
 	var _resource_names: Array = IVTableData.tables.resources.name
 	
@@ -380,13 +380,13 @@ class StratumVBox extends VBoxContainer:
 			var resource_data: Array = resources_data[i]
 			var resource_type: int = resource_data[0]
 			var mean: float = resource_data[1]
-			var uncertainty: float = resource_data[2]
-			var heterogeneity: float = resource_data[3]
+			var error: float = resource_data[2]
+			var variance: float = resource_data[3]
 			var deposits: float = resource_data[4]
 			var resource_name: StringName = _resource_names[resource_type]
 			var precision := 3
-			if uncertainty:
-				precision = int(mean / (10.0 * uncertainty)) + 1
+			if error:
+				precision = int(mean / (10.0 * error)) + 1
 				if precision > 3:
 					precision = 3
 			elif mean < 0.0001:
@@ -395,15 +395,14 @@ class StratumVBox extends VBoxContainer:
 				precision = 2
 			var resource_text := RESOURCE_INDENT + tr(resource_name)
 			var mean_text := IVQFormat.number(mean, precision)
-			var uncert_text := ""
-			if uncertainty:
-				uncert_text = "± " + IVQFormat.number(uncertainty, 1)
-			var heter_text := ""
-			if heterogeneity:
-				if heterogeneity < 0.11 * mean:
-					heter_text = _text_low
+			if error:
+				mean_text += " ± " + IVQFormat.number(error, 1)
+			var variance_text := ""
+			if variance:
+				if variance < 0.11 * mean:
+					variance_text = _text_low
 				else:
-					heter_text = "± " + IVQFormat.number(heterogeneity, 1)
+					variance_text = "± " + IVQFormat.number(variance, 1)
 			var deposits_text := ""
 			if deposits:
 				deposits_text = IVQFormat.number(deposits, 1)
@@ -417,12 +416,9 @@ class StratumVBox extends VBoxContainer:
 			label.text = mean_text
 			label.show()
 			label = _resource_grid.get_child(begin_index + 2)
-			label.text = uncert_text
+			label.text = variance_text
 			label.show()
 			label = _resource_grid.get_child(begin_index + 3)
-			label.text = heter_text
-			label.show()
-			label = _resource_grid.get_child(begin_index + 4)
 			label.text = deposits_text
 			label.show()
 			i += 1

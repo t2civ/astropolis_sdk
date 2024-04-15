@@ -53,7 +53,7 @@ var area := 0.0 # determined by spherical_fraction (or visa versa)
 var density := 0.0
 
 var masses: Array[float]
-var heterogeneities: Array[float] # variation within; this is good for mining!
+var variances: Array[float] # variation within; this is good for mining!
 
 var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
@@ -94,7 +94,7 @@ func _init(is_new := false, _is_server := false) -> void:
 		return
 	var n_is_extraction_resources := _extraction_resources.size()
 	masses = ivutils.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
-	heterogeneities = masses.duplicate()
+	variances = masses.duplicate()
 
 # ********************************** READ *************************************
 # all threadsafe
@@ -138,21 +138,21 @@ func get_mass_fraction(resource_type: int) -> float:
 	return masses[index] / _total_mass
 
 
-func get_heterogeneity(resource_type: int) -> float:
+func get_variance(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return heterogeneities[index]
+	return variances[index]
 
 
-func get_fractional_heterogeneity(resource_type: int) -> float:
+func get_fractional_variance(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	# fractional_heterogeneity vanishes as mass approaches 0 or 100% of the total
+	# fractional_variance vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
-	return p * (1.0 - p) * heterogeneities[index]
+	return p * (1.0 - p) * variances[index]
 
 
 func get_density_uncertainty() -> float:
@@ -180,16 +180,16 @@ func get_fractional_mass_uncertainty(resource_type: int) -> float:
 
 
 func get_deposits_boost(resource_type: int) -> float:
-	# must have a boost from our survey AND heterogeneity
+	# must have a boost from our survey AND variance
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return _survey_deposits_sds[survey_type] * heterogeneities[index]
+	return _survey_deposits_sds[survey_type] * variances[index]
 
 
 func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var deposits_boost: float = _survey_deposits_sds[survey_type] * heterogeneities[index]
+	var deposits_boost: float = _survey_deposits_sds[survey_type] * variances[index]
 	if zero_if_no_boost and deposits_boost == 0.0:
 		return 0.0 # allows hide in GUI if deposits would equal mass_fraction
 	var mass: float = masses[index]
@@ -222,7 +222,7 @@ func set_network_init(data: Array) -> void:
 	area = data[8]
 	density = data[9]
 	masses = data[10]
-	heterogeneities = data[11]
+	variances = data[11]
 	survey_type = data[12]
 	may_have_free_resources = data[13]
 
@@ -259,7 +259,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_int_offset += 1
 	
 	_set_floats_dirty(masses)
-	_set_floats_dirty(heterogeneities)
+	_set_floats_dirty(variances)
 
 # *****************************************************************************
 

@@ -6,7 +6,7 @@
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)  
 [carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)  
 [compositions.tsv](#compositionstsv)  
-[compositions_resources_heterogeneities.tsv](#compositions_resources_heterogeneitiestsv)  
+[compositions_resources_variances.tsv](#compositions_resources_variancestsv)  
 [compositions_resources_percents.tsv](#compositions_resources_percentstsv)  
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
@@ -155,13 +155,13 @@ Unowned part of continental surface is Antarctica (area 1.42e7 km^2). Subract
 Antarctica and 6 major players from total land area (1.49e8 km^2) gets us area
 of PLAYER_OTHER at 9.03e7 km^2.
 
-## compositions_resources_heterogeneities.tsv
+## compositions_resources_variances.tsv
 
 Row prefix: `COMPOSITION_`  
 Column prefix: `RESOURCE_` (is_extraction subset)  
 Table access: `table[composition_type][resource_type]`
 
-Defines heterogeneity of resources in each composition. Values are coefficient of variation of mass. Heterogeneity causes "deposits". Fully "mixed" strata (such as atmosphere) are omitted from table and have default heterogeneity = 0.0. 
+Defines variance of resources in each composition. Values are coefficient of variation of mass. Variance causes "deposits". Fully "mixed" strata (such as atmosphere) are omitted from table and have default variance = 0.0. 
 
 ## compositions_resources_percents.tsv
 
@@ -376,7 +376,7 @@ One "operation unit" corresponds to quantities in the operations.tsv row. In gen
     SERVICES      - Varies; often 1 unit/h of some intangible resource
 
     * For differentiated solids, output is multiplied by a 'deposits' fraction (shown
-      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource heterogeneity
+      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource variance
       and a 'survey factor'.
 
 
@@ -391,7 +391,7 @@ Fields:
 * `input_resources`, `input_quantities`, `output_resources` and `output_quantities` refer to all of the resources (other than Electricity) that are used or generated. Quantities are specified in resource `trade_unit` (see [resources.tsv](#resourcestsv)) _per hour_.
 
 Notes:
-* Extractable resources in differentiated solids (which have heterogeneity > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, heterogeneity, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and heterogeneity, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
+* Extractable resources in differentiated solids (which have variance > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, variance, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and variance, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
 
 #### SOLAR_POWER, WIND_POWER, TIDAL_POWER, HYDROPOWER, GEOTHERMAL_POWER
 

@@ -17,7 +17,7 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="Spacer" type="Control" parent="VBox/Headers"]
-custom_minimum_size = Vector2(230, 0)
+custom_minimum_size = Vector2(245, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -26,20 +26,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "LABEL_MEAN_PERCENT"
 
-[node name="Uncert" type="Label" parent="VBox/Headers"]
+[node name="Variance" type="Label" parent="VBox/Headers"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "LABEL_UNCERTAINTY"
-
-[node name="Heter" type="Label" parent="VBox/Headers"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "LABEL_HETEROGENEITY_SH"
+text = "LABEL_VARIANCE"
 
 [node name="Deposits" type="Label" parent="VBox/Headers"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Kn Deposits"
+text = "LABEL_DEPOSITS"
 
 [node name="Spacer2" type="Control" parent="VBox/Headers"]
 custom_minimum_size = Vector2(10, 0)
