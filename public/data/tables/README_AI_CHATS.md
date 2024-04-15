@@ -3,6 +3,8 @@
 * [World population and agency employees](#World-population-and-agency-employees)
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
+* [Moon Geology](#Moon-Geology)
+* [Metal Abundances](#Metal-Abundances)
 * [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
 * [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
 * [Coal Mining](#Coal-Mining)
@@ -316,6 +318,598 @@ The International Space Station (ISS) is constructed using various materials, ea
    - Plastic: Used in a variety of applications, such as insulation and packaging.
 
 It's important to note that these percentages are approximate and may vary depending on the specific modules and components being considered. Additionally, as the ISS continues to evolve and new modules and equipment are added, the overall composition percentages may change over time.
+
+## Moon Geology
+
+_Moon structural data for use in compositions.tsv._
+
+The Moon's geology and potential for resource extraction vary significantly across different regions and geological layers. Here's a detailed breakdown:
+
+Regions:
+1. Maria (Lunar Seas)
+   - Composed of basaltic lava flows
+   - Relatively flat and smooth surfaces
+   - Lower albedo (darker appearance)
+   - Examples: Mare Tranquillitatis, Mare Serenitatis, Oceanus Procellarum
+   - Potential resources: ilmenite (titanium and iron oxide), pyroxene, olivine, and volcanic glass
+
+2. Terrae (Lunar Highlands)
+   - Heavily cratered and mountainous regions
+   - Higher albedo (lighter appearance)
+   - Composed primarily of anorthositic rocks
+   - Examples: Tycho crater, Copernicus crater, Montes Apenninus
+   - Potential resources: plagioclase feldspar, thorium, aluminum, calcium
+
+3. Polar Regions
+   - Permanently shadowed craters near the poles
+   - Extremely cold temperatures (< 40 K)
+   - Potential water ice deposits in permanently shadowed regions
+   - Examples: Shackleton crater (South Pole), Peary crater (North Pole)
+   - Potential resources: water ice, hydrogen, volatiles (e.g., ammonia, methane, carbon dioxide)
+
+Geological Layers:
+1. Regolith
+   - Loose, unconsolidated surface layer
+   - Composed of fragmented rock, dust, and small particles
+   - Varies in thickness (average 4-5 meters in maria, 10-15 meters in highlands)
+   - Potential resources: helium-3 (fusion fuel), oxygen, silicon, iron, titanium, aluminum
+
+2. Crust
+   - Varies in thickness (thinner in maria, thicker in highlands)
+   - Average thickness: 50 km
+   - Composed primarily of anorthositic rocks in highlands and basaltic rocks in maria
+   - Potential resources: rare earth elements (REEs), uranium, thorium
+
+3. Mantle
+   - Lies beneath the crust
+   - Composition inferred from seismic data and analysis of lunar meteorites
+   - Believed to be composed of olivine, pyroxene, and garnet
+   - Potential resources: magnesium, iron, silicon
+
+4. Core
+   - Innermost layer of the Moon
+   - Estimated radius: 300-400 km
+   - Believed to be composed of iron and nickel, with potential presence of sulfur
+   - Potential resources: iron, nickel, precious metals (e.g., gold, platinum)
+
+Resource extraction potential varies by region and geological layer. The regolith and polar regions are of particular interest due to the presence of valuable resources like helium-3, water ice, and REEs. However, accessing deeper layers (mantle and core) would require advanced mining techniques and infrastructure.
+
+Further exploration and in-situ resource utilization (ISRU) missions are necessary to better understand the Moon's geology and assess the feasibility of resource extraction. Advancements in technology, such as robotic mining systems and processing facilities, will play a crucial role in unlocking the Moon's resource potential.
+
+****
+
+The lunar polar regions are of particular interest for resource extraction due to the presence of permanently shadowed regions (PSRs) and the potential for water ice and other volatile deposits. Here's a more detailed discussion of the polar regions:
+
+Permanently Shadowed Regions (PSRs):
+- PSRs are craters or depressions near the lunar poles that never receive direct sunlight due to the Moon's slight axial tilt (1.54°) and the local topography.
+- These regions maintain extremely cold temperatures (< 40 K or -233°C) and can act as "cold traps" for volatile materials like water ice.
+- The presence of water ice in PSRs has been confirmed by various missions, including NASA's LCROSS impactor mission and the Lunar Reconnaissance Orbiter (LRO).
+- Other potential volatile deposits in PSRs include hydrogen, ammonia, methane, and carbon dioxide.
+
+Surface Area of PSRs:
+- The total surface area of PSRs on the Moon is estimated to be around 30,000 to 40,000 square kilometers.
+- The largest PSRs are found in the South Pole-Aitken Basin, a massive impact crater on the lunar far side.
+- Notable PSRs include Shackleton crater (South Pole, diameter: 21 km) and Peary crater (North Pole, diameter: 73 km).
+
+Resource Differences in Regolith:
+- The regolith in PSRs is expected to contain higher concentrations of water ice and other volatiles compared to non-permanently shadowed regions.
+- However, the distribution and concentration of these resources within the regolith are not uniform and may vary depending on factors such as local topography, temperature gradients, and the age of the deposits.
+- Remote sensing data suggests that water ice concentrations in the regolith of PSRs can range from 0.1 to 30 wt% (weight percent), with higher concentrations found in colder and more permanently shadowed areas.
+
+Potential for Resource Extraction in Deeper Layers:
+- While the primary focus for resource extraction in the polar regions is on the regolith and near-surface deposits, there is potential for resources in deeper layers as well.
+- Geophysical data from the GRAIL mission suggests that the lunar crust may be thinner near the poles, potentially making it easier to access resources in the upper mantle.
+- However, the extent and accessibility of resources in deeper layers of the polar regions are not well constrained and would require further exploration and analysis.
+
+Challenges and Opportunities:
+- Extracting resources from PSRs presents unique challenges due to the extreme cold temperatures, the need for specialized equipment, and the limited access to direct sunlight for power generation.
+- However, the presence of water ice and other volatiles in the polar regions offers significant opportunities for in-situ resource utilization (ISRU), including the production of propellant, life support consumables, and construction materials.
+- The potential for water ice in the polar regions also has implications for future human exploration and the establishment of a sustainable presence on the Moon.
+
+Further exploration and prospecting missions, such as NASA's upcoming VIPER (Volatiles Investigating Polar Exploration Rover) mission, will provide more detailed information on the distribution, concentration, and accessibility of resources in the lunar polar regions.
+
+****
+
+Here's a breakdown of the surface area, regolith depth, crust thickness, and density for the lunar maria and terrae:
+
+Maria (Lunar Seas):
+- Surface Area:
+  - Approximately 17% of the total lunar surface
+  - Roughly 6.5 million square kilometers
+
+- Average Regolith Depth:
+  - 4-5 meters
+
+- Average Crust Thickness:
+  - 20-30 kilometers
+
+- Average Density:
+  - Regolith: 1.5-1.8 g/cm^3
+  - Crust: 2.9-3.1 g/cm^3
+
+Terrae (Lunar Highlands):
+- Surface Area:
+  - Approximately 83% of the total lunar surface
+  - Roughly 31.7 million square kilometers
+
+- Average Regolith Depth:
+  - 10-15 meters
+
+- Average Crust Thickness:
+  - 50-60 kilometers
+
+- Average Density:
+  - Regolith: 1.5-1.8 g/cm^3
+  - Crust: 2.6-2.8 g/cm^3
+
+It's important to note that these values are averages and can vary significantly within each region. For example, the crust thickness in the terrae can range from 30 to 100 kilometers, depending on the specific location and the impact history of the area.
+
+The density of the regolith is similar in both regions, as it is composed of fragmented and unconsolidated material. The slightly lower crustal density in the terrae compared to the maria is due to the different compositional makeup of these regions. The terrae are primarily composed of anorthositic rocks, which are less dense than the basaltic rocks found in the maria.
+
+These differences in surface area, regolith depth, crust thickness, and density have implications for potential resource extraction and future lunar exploration. The thicker regolith in the terrae may contain a greater total volume of resources, but accessing deeper resources in the maria may be easier due to the thinner crust. Understanding these regional characteristics is crucial for planning and executing successful resource extraction missions on the Moon.
+
+****
+
+Here are the estimated mean densities for the Moon and its various layers, including the core, mantle, crust (terrae and maria), and regolith:
+
+Moon (overall):
+- Mean density: 3.34 g/cm^3
+
+Core:
+- Estimated mean density: 7.0-8.0 g/cm^3
+
+Mantle:
+- Estimated mean density: 3.4-3.6 g/cm^3
+
+Crust:
+- Terrae (Lunar Highlands):
+  - Estimated mean density: 2.6-2.8 g/cm^3
+- Maria (Lunar Seas):
+  - Estimated mean density: 2.9-3.1 g/cm^3
+
+Regolith:
+- Estimated mean density: 1.5-1.8 g/cm^3
+
+These density estimates are based on a combination of remote sensing data, analysis of lunar samples returned by the Apollo missions, and geophysical measurements from various lunar orbiter missions, such as NASA's GRAIL (Gravity Recovery and Interior Laboratory) mission.
+
+It's important to note that these are average values, and local variations in density may exist within each layer due to factors such as composition, porosity, and impact history. The density of the lunar core, in particular, is not well constrained and is inferred from geophysical models and indirect evidence, such as the Moon's moment of inertia and the presence of a weak lunar magnetic field.
+
+The relatively low density of the lunar regolith compared to the underlying crust is due to its highly porous and fragmented nature, which results from the accumulation of impact ejecta and space weathering processes over billions of years.
+
+Understanding the density variations within the Moon is crucial for modeling its internal structure, evolution, and resource potential. Future missions, such as NASA's Artemis program, aim to further refine our knowledge of the Moon's density structure through a combination of in-situ measurements, sample return, and geophysical observations.
+
+
+## Metal Abundances
+
+_This is one Opus thread (responses only) started 4/11/24. I'm starting to get the hang of getting what I want. However, I had to back up once when Opus made up its own asteroid classification system based on my leading questions. The numbers seem plausible but validation would be useful._
+
+Here is a list and description of the geological distribution of various metals and their ores, including those found on Earth and potentially on other planetary bodies:
+
+Iron (Fe):
+- Earth: Iron is the most abundant element in the Earth's core and the fourth most abundant in the Earth's crust. The primary ores are hematite (Fe2O3, 70% Fe), magnetite (Fe3O4, 72% Fe), limonite (FeO(OH)·nH2O, 50-60% Fe), and siderite (FeCO3, 48% Fe).
+- Moon, Mars, and asteroids: Iron is abundant in lunar and Martian regolith and in certain types of asteroids, such as M-type asteroids.
+
+Aluminum (Al):
+- Earth: Bauxite (Al2O3·nH2O, 30-60% Al2O3) is the primary ore, formed by weathering of aluminum-rich rocks in tropical and subtropical regions.
+- Moon: Anorthite, a calcium-rich plagioclase feldspar, is a potential source of aluminum on the Moon.
+
+Copper (Cu):
+- Earth: Chalcopyrite (CuFeS2, 34.5% Cu), bornite (Cu5FeS4, 63% Cu), and chalcocite (Cu2S, 80% Cu) are the main ores, often found in porphyry copper deposits and sedimentary rocks.
+- Asteroids: Some M-type asteroids may contain significant amounts of copper.
+
+Nickel (Ni):
+- Earth: Pentlandite ((Fe,Ni)9S8, 34% Ni) is the primary ore, often associated with copper and platinum group elements in mafic and ultramafic rocks.
+- Asteroids: Nickel is abundant in some M-type asteroids and is a significant component of iron meteorites.
+
+Zinc (Zn):
+- Earth: Sphalerite (ZnS, 67% Zn) is the main ore, often found with lead and silver in sedimentary and hydrothermal deposits.
+
+Lead (Pb):
+- Earth: Galena (PbS, 86.6% Pb) is the primary ore, often found with zinc and silver.
+
+Tin (Sn):
+- Earth: Cassiterite (SnO2, 78.8% Sn) is the main ore, often found in granitic intrusions and alluvial deposits.
+
+Tungsten (W):
+- Earth: Scheelite (CaWO4, 80.6% WO3) and wolframite ((Fe,Mn)WO4, 76% WO3) are the primary ores, found in hydrothermal and skarn deposits.
+
+Molybdenum (Mo):
+- Earth: Molybdenite (MoS2, 60% Mo) is the main ore, often associated with porphyry copper deposits and granitic intrusions.
+
+Cobalt (Co):
+- Earth: Cobaltite (CoAsS, 35.5% Co) and erythrite (Co3(AsO4)2·8H2O, 37.5% CoO) are the primary ores, often associated with nickel and copper deposits.
+
+Manganese (Mn):
+- Earth: Pyrolusite (MnO2, 63.2% Mn) and rhodochrosite (MnCO3, 47.8% Mn) are the main ores, found in sedimentary and hydrothermal deposits.
+
+Uranium (U) and Thorium (Th):
+- Earth: Uraninite (UO2, 88.15% U) and thorianite (ThO2, 87.88% Th) are the primary ores, found in granitic intrusions, pegmatites, and sedimentary deposits.
+- Moon and Mars: Uranium and thorium are present in low concentrations in lunar and Martian regolith.
+
+Gold (Au), Silver (Ag), and Platinum Group Elements (PGE):
+- Earth: Native gold, electrum (Au-Ag alloy), and various tellurides are the main gold ores. Silver is often found with lead, zinc, and copper ores. PGEs (platinum, palladium, rhodium, iridium, osmium, and ruthenium) are found in mafic and ultramafic rocks, often associated with nickel and copper.
+- Asteroids: Some M-type asteroids may contain significant amounts of precious metals.
+
+Rare Earth Elements (REE):
+- Earth: Bastnaesite ((Ce,La,Y)CO3F), monazite ((Ce,La,Nd,Th)PO4), and xenotime (YPO4) are the primary ores, often found in carbonatites, alkaline igneous rocks, and placer deposits.
+- Moon and Mars: REEs are present in low concentrations in lunar and Martian regolith.
+
+This list covers a wide range of metals and their ores, including their distribution on Earth and potential occurrences on other planetary bodies. The benchmark grades mentioned represent typical ore grades for economic extraction, although these can vary depending on the specific deposit and market conditions.
+
+****
+
+Here is a table showing the abundance of metals accessible to surface and underground mining, listing the abundance of both ores and total metal content as a proportion of geological material by weight. Please note that these values are approximate and can vary depending on the specific location and geological setting.
+
+| Metal | Ore | Ore Abundance (wt%) | Metal Content in Ore (wt%) | Total Metal Abundance (wt%) |
+|-------|-----|--------------------|-----------------------------|----------------------------|
+| Iron (Fe) | Hematite, Magnetite, Limonite, Siderite | 5.0 - 15.0 | 50.0 - 72.0 | 4.1 - 5.0 |
+| Aluminum (Al) | Bauxite | 0.5 - 1.5 | 30.0 - 60.0 | 8.0 - 8.1 |
+| Copper (Cu) | Chalcopyrite, Bornite, Chalcocite | 0.5 - 2.0 | 34.5 - 80.0 | 0.0060 - 0.0068 |
+| Nickel (Ni) | Pentlandite | 0.1 - 1.0 | 34.0 - 36.0 | 0.0080 - 0.0100 |
+| Zinc (Zn) | Sphalerite | 0.1 - 1.0 | 60.0 - 67.0 | 0.0078 - 0.0130 |
+| Lead (Pb) | Galena | 0.1 - 0.5 | 86.0 - 87.0 | 0.0014 - 0.0018 |
+| Tin (Sn) | Cassiterite | 0.01 - 0.1 | 78.0 - 79.0 | 0.0002 - 0.0003 |
+| Tungsten (W) | Scheelite, Wolframite | 0.01 - 0.1 | 60.0 - 80.0 | 0.0001 - 0.0002 |
+| Molybdenum (Mo) | Molybdenite | 0.01 - 0.05 | 58.0 - 60.0 | 0.0001 - 0.0002 |
+| Cobalt (Co) | Cobaltite, Erythrite | 0.01 - 0.05 | 35.0 - 38.0 | 0.0025 - 0.0030 |
+| Manganese (Mn) | Pyrolusite, Rhodochrosite | 0.1 - 1.0 | 47.0 - 63.0 | 0.0850 - 0.1000 |
+| Uranium (U) | Uraninite | 0.001 - 0.01 | 88.0 - 89.0 | 0.0003 - 0.0004 |
+| Thorium (Th) | Thorianite | 0.001 - 0.01 | 87.0 - 88.0 | 0.0006 - 0.0007 |
+| Gold (Au) | Native Gold, Electrum, Tellurides | 0.0001 - 0.001 | 80.0 - 99.0 | 0.0000004 - 0.0000005 |
+| Silver (Ag) | Native Silver, Various Sulfides | 0.0001 - 0.001 | 50.0 - 90.0 | 0.000007 - 0.000008 |
+| Platinum Group Elements (PGE) | Native PGE, Various Sulfides | 0.00001 - 0.0001 | 50.0 - 90.0 | 0.0000002 - 0.0000003 |
+| Rare Earth Elements (REE) | Bastnaesite, Monazite, Xenotime | 0.01 - 0.1 | 1.0 - 10.0 | 0.0002 - 0.0003 |
+
+The "Ore Abundance" column represents the proportion of the specific ore within the Earth's crust that is economically viable for mining. The "Metal Content in Ore" column shows the percentage of the metal within the ore. The "Total Metal Abundance" column represents the overall proportion of the metal within the Earth's crust, considering both ore and non-ore sources.
+
+****
+
+_See follow up table near the end with more layers and oceanic crust._
+
+Here is the table showing the abundance of metal categories in different geological layers:
+
+| Geological Layer | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|------------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Surface Continental Crust | 4.1 - 5.0 | 8.0 - 8.1 | 0.1 - 0.2 | 0.0000004 - 0.0000005 | 0.0003 - 0.0004 | 0.0006 - 0.0007 | 0.0002 - 0.0003 |
+| Below-Surface Upper Continental Crust | 4.5 - 6.0 | 7.5 - 8.0 | 0.2 - 0.3 | 0.0000005 - 0.0000006 | 0.0002 - 0.0003 | 0.0005 - 0.0006 | 0.0003 - 0.0004 |
+| Lower Continental Crust | 6.0 - 8.0 | 6.0 - 7.0 | 0.1 - 0.2 | 0.0000002 - 0.0000003 | 0.0001 - 0.0002 | 0.0002 - 0.0003 | 0.0001 - 0.0002 |
+| Mantle | 5.0 - 6.0 | 2.0 - 3.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+| Core | 80.0 - 90.0 | 0 | 5.0 - 10.0 | 0.0000005 - 0.0000006 | 0 | 0 | 0 |
+
+Notes:
+- Metal groupings:
+  - Industrial metals include copper, nickel, zinc, lead, tin, tungsten, molybdenum, cobalt, manganese, and silver.
+  - Precious metals include gold, platinum, palladium, rhodium, iridium, osmium, and ruthenium (excluding silver).
+- Geological layers:
+  - Surface continental crust: The uppermost layer of the Earth's crust, accessible to surface or pit mining.
+  - Below-surface upper continental crust: The portion of the upper continental crust that is accessible to underground mining.
+  - Lower continental crust: The deeper portion of the Earth's crust, below the upper continental crust.
+  - Mantle: The layer between the Earth's crust and core, primarily composed of silicate rocks rich in magnesium and iron.
+  - Core: The innermost layer of the Earth, divided into the liquid outer core and solid inner core, composed mainly of iron and nickel.
+- The abundances provided are approximate ranges and may vary depending on the specific location and geological setting.
+- The core is inaccessible for mining with current technology, but it is included to provide a comprehensive overview of metal distribution within the Earth.
+
+****
+
+Here is a table showing the estimated abundances of metal categories in different solar system bodies and their geological layers or regions:
+
+| Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|-------------------|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Mercury | Crust | 0 - 50 | 1.0 - 2.0 | 5.0 - 6.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.0001 - 0.0002 | 0.0002 - 0.0003 | 0.00005 - 0.0001 |
+|  | Mantle | 50 - 600 | 5.0 - 7.0 | 2.0 - 3.0 | 0.1 - 0.2 | 0.0000002 - 0.0000003 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 600 - 2,440 | 60.0 - 70.0 | 0 | 1.0 - 2.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Venus | Crust | 0 - 50 | 5.0 - 6.0 | 7.0 - 8.0 | 0.1 - 0.2 | 0.0000003 - 0.0000004 | 0.0002 - 0.0003 | 0.0004 - 0.0005 | 0.0002 - 0.0003 |
+|  | Mantle | 50 - 3,000 | 5.0 - 6.0 | 2.0 - 3.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 3,000 - 6,000 | 80.0 - 90.0 | 0 | 5.0 - 10.0 | 0.0000005 - 0.0000006 | 0 | 0 | 0 |
+| Mars | Crust | 0 - 50 | 5.0 - 6.0 | 7.0 - 8.0 | 0.1 - 0.2 | 0.0000003 - 0.0000004 | 0.0002 - 0.0003 | 0.0004 - 0.0005 | 0.0002 - 0.0003 |
+|  | Mantle | 50 - 1,700 | 12.0 - 15.0 | 2.0 - 3.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,700 - 3,400 | 70.0 - 80.0 | 0 | 3.0 - 5.0 | 0.0000003 - 0.0000004 | 0 | 0 | 0 |
+| Moon | Surface Regolith | 0 - 0.01 | 5.0 - 6.0 | 10.0 - 12.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.0001 - 0.0002 | 0.0003 - 0.0004 | 0.0003 - 0.0004 |
+|  | Maria Crust | 0.01 - 5 | 7.0 - 8.0 | 7.0 - 8.0 | 0.1 - 0.2 | 0.0000002 - 0.0000003 | 0.0002 - 0.0003 | 0.0004 - 0.0005 | 0.0004 - 0.0005 |
+|  | Terrae Crust | 0.01 - 60 | 3.0 - 4.0 | 12.0 - 14.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.0001 - 0.0002 | 0.0002 - 0.0003 | 0.0002 - 0.0003 |
+|  | Mantle | 60 - 1,000 | 8.0 - 10.0 | 2.0 - 3.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,000 - 1,700 | 30.0 - 40.0 | 0 | 1.0 - 2.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+
+Notes:
+- The abundances provided are rough estimates based on current scientific understanding and may be subject to change as new data becomes available.
+- The Moon's surface regolith and crust are divided into maria (lunar "seas" formed by ancient basaltic lava flows) and terrae (lunar highlands, which are older and more heavily cratered).
+- The depth ranges for each layer are approximate and may vary depending on the specific location and geological setting.
+- The core of the Moon is thought to be smaller relative to its size compared to the cores of Mercury, Venus, and Mars.
+- These estimates are based on a combination of remote sensing data, surface observations (for the Moon and Mars), and extrapolations from Earth's composition and planetary formation models.
+
+****
+
+Here is a table showing the estimated abundances of metal categories in different solar system bodies, including dwarf planets and large asteroids:
+
+| Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|-------------------|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Ceres | Crust | 0 - 100 | 15.0 - 20.0 | 1.0 - 2.0 | 0.1 - 0.2 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Mantle | 100 - 400 | 20.0 - 25.0 | 0.5 - 1.0 | 0.05 - 0.1 | 0.00000005 - 0.0000001 | 0.00002 - 0.00005 | 0.00005 - 0.0001 | 0.00002 - 0.00005 |
+|  | Core | 400 - 500 | 30.0 - 40.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Vesta | Crust | 0 - 20 | 10.0 - 15.0 | 5.0 - 6.0 | 0.2 - 0.3 | 0.0000002 - 0.0000003 | 0.0001 - 0.0002 | 0.0002 - 0.0003 | 0.0001 - 0.0002 |
+|  | Mantle | 20 - 200 | 15.0 - 20.0 | 2.0 - 3.0 | 0.1 - 0.2 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 200 - 250 | 25.0 - 30.0 | 0 | 1.0 - 2.0 | 0.0000002 - 0.0000003 | 0 | 0 | 0 |
+| Pallas | Bulk | 0 - 250 | 20.0 - 25.0 | 1.0 - 2.0 | 0.2 - 0.3 | 0.0000002 - 0.0000003 | 0.0001 - 0.0002 | 0.0002 - 0.0003 | 0.0001 - 0.0002 |
+| Hygiea | Bulk | 0 - 200 | 15.0 - 20.0 | 1.0 - 2.0 | 0.1 - 0.2 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+| Pluto | Crust | 0 - 100 | 0.5 - 1.0 | 1.0 - 2.0 | 0.01 - 0.05 | 0.00000005 - 0.0000001 | 0.00001 - 0.00005 | 0.00002 - 0.00005 | 0.00001 - 0.00005 |
+|  | Mantle | 100 - 1,000 | 20.0 - 25.0 | 0.5 - 1.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00002 - 0.00005 | 0.00005 - 0.0001 | 0.00002 - 0.00005 |
+|  | Core | 1,000 - 1,200 | 60.0 - 70.0 | 0 | 1.0 - 2.0 | 0.0000002 - 0.0000003 | 0 | 0 | 0 |
+| Eris | Crust | 0 - 100 | 0.5 - 1.0 | 1.0 - 2.0 | 0.01 - 0.05 | 0.00000005 - 0.0000001 | 0.00001 - 0.00005 | 0.00002 - 0.00005 | 0.00001 - 0.00005 |
+|  | Mantle | 100 - 1,000 | 20.0 - 25.0 | 0.5 - 1.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00002 - 0.00005 | 0.00005 - 0.0001 | 0.00002 - 0.00005 |
+|  | Core | 1,000 - 1,200 | 60.0 - 70.0 | 0 | 1.0 - 2.0 | 0.0000002 - 0.0000003 | 0 | 0 | 0 |
+
+Notes:
+- The abundances provided are speculative estimates based on current scientific understanding of the formation and composition of these bodies, and may be subject to significant revision as new data becomes available.
+- Ceres, Vesta, Pallas, and Hygiea are large asteroids, while Pluto and Eris are dwarf planets in the outer solar system.
+- Ceres and Vesta are thought to have undergone partial differentiation, resulting in a layered structure with a crust, mantle, and core.
+- Pallas and Hygiea are assumed to have a more homogeneous "bulk" composition due to their smaller size and lower likelihood of differentiation.
+- Pluto and Eris are expected to have a differentiated structure similar to terrestrial planets, with a rocky core, an ice-rich mantle, and a thin crust composed of a mixture of ices and rock.
+- The depth ranges for each layer are highly speculative and based on theoretical models of the internal structure of these bodies.
+
+****
+
+Here is a table showing the estimated abundances of metal categories in the Galilean moons of Jupiter:
+
+| Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|-------------------|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Io | Crust | 0 - 50 | 10.0 - 15.0 | 1.0 - 2.0 | 0.1 - 0.2 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Mantle | 50 - 800 | 15.0 - 20.0 | 0.5 - 1.0 | 0.05 - 0.1 | 0.00000005 - 0.0000001 | 0.00002 - 0.00005 | 0.00005 - 0.0001 | 0.00002 - 0.00005 |
+|  | Core | 800 - 1,000 | 30.0 - 40.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Europa | Ice Shell | 0 - 20 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 20 - 1,500 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,500 - 1,600 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Ganymede | Ice Shell | 0 - 100 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 100 - 1,800 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,800 - 2,000 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Callisto | Ice Shell | 0 - 150 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 150 - 1,500 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,500 - 1,600 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+
+Notes:
+- The abundances provided are speculative estimates based on current scientific understanding of the formation and composition of the Galilean moons, and may be subject to significant revision as new data becomes available.
+- Io is thought to have a composition similar to the rocky planets, with a silicate crust and mantle, and an iron-rich core.
+- Europa, Ganymede, and Callisto are believed to have a layered structure consisting of an outer ice shell, a silicate mantle, and a metallic core.
+- The thickness of the ice shell varies among the three icy moons, with Ganymede having the thickest shell and Europa having the thinnest.
+- The depth ranges for each layer are based on theoretical models and are subject to uncertainty.
+- The abundances of metals in the ice shells of Europa, Ganymede, and Callisto are expected to be significantly lower than in the silicate layers due to the dominance of water ice and other volatile compounds.
+
+****
+
+Here is a table showing the estimated abundances of metal categories in the Saturnian moons that are thought to have significant differentiation:
+
+| Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|-------------------|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Titan | Ice Shell | 0 - 100 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 100 - 1,800 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,800 - 2,000 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Rhea | Ice Shell | 0 - 50 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 50 - 500 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 500 - 600 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Dione | Ice Shell | 0 - 100 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 100 - 400 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 400 - 500 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Enceladus | Ice Shell | 0 - 50 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 50 - 300 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 300 - 400 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+
+Notes:
+- The abundances provided are speculative estimates based on current scientific understanding of the formation and composition of the Saturnian moons, and may be subject to significant revision as new data becomes available.
+- Titan, Rhea, Dione, and Enceladus are thought to have a differentiated internal structure, with an ice shell, a silicate mantle, and a metallic core.
+- The thickness of the ice shell and the depth of the layers vary among the moons, with Titan having the thickest ice shell and the largest overall size.
+- The abundances of metals in the ice shells are expected to be significantly lower than in the silicate layers due to the dominance of water ice and other volatile compounds.
+- Other Saturnian moons, such as Mimas, Tethys, and Iapetus, are not included in this table as they are thought to have a more homogeneous composition and lack significant differentiation.
+- The depth ranges for each layer are based on theoretical models and are subject to uncertainty.
+
+****
+
+Here is a table showing the estimated abundances of metal categories in the remaining moons of the solar system that are thought to have geological differentiation:
+
+| Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|-------------------|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Triton (Neptune) | Ice Shell | 0 - 100 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 100 - 1,000 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 1,000 - 1,200 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Titania (Uranus) | Ice Shell | 0 - 50 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 50 - 800 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 800 - 1,000 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Oberon (Uranus) | Ice Shell | 0 - 50 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 50 - 800 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 800 - 1,000 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+| Charon (Pluto) | Ice Shell | 0 - 100 | 0.1 - 0.5 | 0.5 - 1.0 | 0.01 - 0.05 | 0.00000001 - 0.00000005 | 0.000005 - 0.00001 | 0.00001 - 0.00005 | 0.000005 - 0.00001 |
+|  | Silicate Mantle | 100 - 500 | 10.0 - 15.0 | 1.0 - 2.0 | 0.05 - 0.1 | 0.0000001 - 0.0000002 | 0.00005 - 0.0001 | 0.0001 - 0.0002 | 0.00005 - 0.0001 |
+|  | Core | 500 - 600 | 20.0 - 30.0 | 0 | 0.5 - 1.0 | 0.0000001 - 0.0000002 | 0 | 0 | 0 |
+
+Notes:
+- The abundances provided are speculative estimates based on current scientific understanding of the formation and composition of these moons, and may be subject to significant revision as new data becomes available.
+- Triton (Neptune), Titania and Oberon (Uranus), and Charon (Pluto) are thought to have a differentiated internal structure, with an ice shell, a silicate mantle, and a metallic core.
+- The thickness of the ice shell and the depth of the layers vary among the moons, depending on their size and thermal history.
+- The abundances of metals in the ice shells are expected to be significantly lower than in the silicate layers due to the dominance of water ice and other volatile compounds.
+- Other moons in the solar system, such as those of Mars (Phobos and Deimos), are not included in this table as they are thought to be captured asteroids and lack significant geological differentiation.
+- The depth ranges for each layer are based on theoretical models and are subject to uncertainty.
+
+****
+
+The Tholen asteroid classification system, developed by David J. Tholen in 1984, categorizes asteroids based on their optical reflectance spectra. This system provides insights into the surface composition of asteroids and helps in understanding their formation and evolution. Here are the major and notable minor classes in the Tholen system, along with information on their metal, organic, and other chemical content:
+
+Major Classes:
+1. C-type (Carbonaceous): These asteroids have a low albedo and are thought to be composed of primitive materials, including organic compounds, water-bearing minerals, and silicates. They are the most common type of asteroid, making up about 75% of known asteroids. Subclasses include B, F, and G-types.
+
+2. S-type (Silicaceous): These asteroids have a moderate albedo and are thought to be composed of silicates, metals (iron and nickel), and some organic compounds. They are the second most common type, making up about 17% of known asteroids. Subclasses include A, K, L, Q, and R-types.
+
+3. X-type: These asteroids have a moderate to high albedo and are thought to be composed of a variety of materials, including metals (iron and nickel), enstatite (a magnesium silicate), and organic compounds. They make up about 8% of known asteroids. Subclasses include E, M, and P-types.
+
+Notable Minor Classes:
+1. V-type: These asteroids are thought to be fragments of the crust of the asteroid 4 Vesta. They are composed mainly of basaltic rocks, which are rich in pyroxene and plagioclase feldspar, with some olivine and metals (iron and nickel).
+
+2. T-type: These asteroids have a low albedo and are thought to be composed of primitive materials, similar to C-type asteroids. However, they exhibit a subtle absorption feature near 1.5 μm, which may indicate the presence of organic compounds or water-bearing minerals.
+
+3. D-type: These asteroids have a very low albedo and are thought to be composed of primitive materials, including organic compounds and water-bearing minerals. They are found mainly in the outer solar system, including the Jupiter Trojan asteroids and the Kuiper Belt.
+
+4. O-type: These asteroids have a moderate albedo and are thought to be composed mainly of silicates (olivine and pyroxene) with some metals (iron and nickel). They are relatively rare and may represent fragments of the mantle of differentiated asteroids.
+
+5. Q-type: These asteroids have a moderate albedo and are thought to be composed of silicates, metals (iron and nickel), and some organic compounds. They are believed to be the source of ordinary chondrite meteorites, which are the most common type of meteorite found on Earth.
+
+The Tholen classification system provides a framework for understanding the diversity of asteroid compositions and their potential as sources of valuable resources, such as metals, water, and organic compounds. However, it is important to note that this classification is based on remote sensing data, and in-situ measurements or sample return missions are necessary to confirm the exact composition of individual asteroids.
+
+****
+
+The undifferentiated moons of the solar system, such as Phobos, Deimos, and Hyperion, are indeed thought to be similar in composition to certain types of asteroids. These small moons are believed to be captured asteroids or fragments of larger bodies that were disrupted by impacts. By comparing their spectral characteristics with those of asteroids, researchers can infer their likely composition and relate them to specific asteroid types in the Tholen or SMASS (Small Main-Belt Asteroid Spectroscopic Survey) classification systems.
+
+1. Phobos and Deimos (Mars):
+Phobos and Deimos, the two small moons of Mars, have low albedos and spectral properties similar to those of C-type (carbonaceous) asteroids in the Tholen classification system or Ch-type (hydrated carbonaceous) asteroids in the SMASS classification. These asteroid types are characterized by the presence of primitive materials, including organic compounds and water-bearing minerals. The composition of Phobos and Deimos suggests that they may be captured asteroids from the outer main belt or remnants of a larger body that was disrupted by an impact.
+
+2. Hyperion (Saturn):
+Hyperion, a small, irregularly shaped moon of Saturn, has a low albedo and a reddish color. Its spectral properties are similar to those of D-type asteroids in the Tholen classification system or Xk-type (moderately reddish) asteroids in the SMASS classification. D-type asteroids are thought to be composed of primitive materials, including organic compounds and water-bearing minerals, and are commonly found in the outer solar system. Hyperion's composition suggests that it may be a captured asteroid or a fragment of a larger body from the outer solar system.
+
+3. Other small moons:
+- Phoebe (Saturn): Phoebe has a low albedo and spectral properties similar to those of C-type asteroids in the Tholen classification system or Cb-type (carbonaceous) asteroids in the SMASS classification. Its composition suggests that it may be a captured Kuiper Belt object.
+- Nereid (Neptune): Nereid has a neutral color and spectral properties similar to those of X-type asteroids in the Tholen classification system or Xs-type (moderately featureless) asteroids in the SMASS classification. Its composition is not well-constrained, but it may be a captured asteroid or a fragment of a larger body.
+- Himalia (Jupiter): Himalia has a low albedo and spectral properties similar to those of C-type asteroids in the Tholen classification system or Ch-type (hydrated carbonaceous) asteroids in the SMASS classification. It is likely a captured asteroid from the outer main belt.
+
+These comparisons between the undifferentiated moons and asteroid types provide insights into their possible origins and compositions. However, it is important to note that the compositions of these small moons are inferred from remote sensing data, and in-situ measurements or sample return missions would be necessary to confirm their exact nature. Additionally, some small moons may have unique spectral properties that do not fit neatly into the existing asteroid classification schemes, indicating the diversity of compositions among these objects.
+
+****
+
+Here is a list of undifferentiated moons in the solar system that have undergone spectral analysis, grouped by their similarity to asteroid types in the Tholen or SMASS classification systems:
+
+C-type (Tholen) or Ch-type (SMASS) - Carbonaceous, hydrated:
+1. Phobos (Mars)
+2. Deimos (Mars)
+3. Phoebe (Saturn)
+4. Himalia (Jupiter)
+5. Elara (Jupiter)
+6. Pasiphae (Jupiter)
+7. Sinope (Jupiter)
+8. Lysithea (Jupiter)
+9. Carme (Jupiter)
+10. Ananke (Jupiter)
+11. Iocaste (Jupiter)
+12. Praxidike (Jupiter)
+13. Harpalyke (Jupiter)
+
+D-type (Tholen) or Xk-type (SMASS) - Moderately reddish:
+1. Hyperion (Saturn)
+2. Ijiraq (Saturn)
+3. Kiviuq (Saturn)
+4. Paaliaq (Saturn)
+5. Siarnaq (Saturn)
+6. Tarvos (Saturn)
+7. Erriapus (Saturn)
+8. Albiorix (Saturn)
+
+X-type (Tholen) or Xs-type (SMASS) - Moderately featureless:
+1. Nereid (Neptune)
+2. Epimetheus (Saturn)
+3. Pandora (Saturn)
+4. Prometheus (Saturn)
+5. Helene (Saturn)
+6. Telesto (Saturn)
+7. Calypso (Saturn)
+8. Atlas (Saturn)
+9. Janus (Saturn)
+
+P-type (Tholen) or Xc-type (SMASS) - Low albedo, featureless:
+1. Amalthea (Jupiter)
+2. Thebe (Jupiter)
+3. Adrastea (Jupiter)
+4. Metis (Jupiter)
+
+Unique or unclassified:
+1. Daphnis (Saturn) - Spectral properties not well-constrained
+2. Pan (Saturn) - Spectral properties not well-constrained
+3. Proteus (Neptune) - Neutral colored, potentially similar to C-type or X-type asteroids
+
+Please note that this list includes moons for which spectral data is available, allowing for comparisons with asteroid types. There may be additional undifferentiated moons in the solar system for which spectral data is limited or not available. The classifications provided are based on the similarity of the moons' spectral properties to those of asteroid types and may be subject to revision as more data becomes available or as classification schemes are refined.
+
+****
+
+Here is a table showing the estimated abundances of the 7 metal categories for the specified asteroid types from the Tholen classification system:
+
+| Asteroid Type | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|---------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| C             | 5.0 - 15.0 | 0.5 - 1.5      | 0.1 - 0.5               | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.00005 - 0.0005 | 0.00001 - 0.0001 |
+| S             | 10.0 - 20.0 | 1.0 - 2.0     | 0.5 - 1.0               | 0.000001 - 0.00001   | 0.0001 - 0.001 | 0.0005 - 0.005 | 0.0001 - 0.001 |
+| M             | 20.0 - 60.0 | 0.1 - 0.5     | 1.0 - 5.0               | 0.00001 - 0.0001     | 0.00005 - 0.0005 | 0.0001 - 0.001 | 0.00005 - 0.0005 |
+| E             | 1.0 - 5.0   | 0.1 - 0.5     | 0.05 - 0.1              | 0.0000001 - 0.000001 | 0.000005 - 0.00005 | 0.00001 - 0.0001 | 0.000005 - 0.00005 |
+| P             | 1.0 - 5.0   | 0.1 - 0.5     | 0.05 - 0.1              | 0.0000001 - 0.000001 | 0.000005 - 0.00005 | 0.00001 - 0.0001 | 0.000005 - 0.00005 |
+| V             | 10.0 - 20.0 | 1.0 - 2.0     | 0.5 - 1.0               | 0.000001 - 0.00001   | 0.0001 - 0.001 | 0.0005 - 0.005 | 0.0001 - 0.001 |
+| T             | 5.0 - 15.0  | 0.5 - 1.5     | 0.1 - 0.5               | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.00005 - 0.0005 | 0.00001 - 0.0001 |
+| D             | 1.0 - 5.0   | 0.1 - 0.5     | 0.05 - 0.1              | 0.0000001 - 0.000001 | 0.000005 - 0.00005 | 0.00001 - 0.0001 | 0.000005 - 0.00005 |
+| O             | 5.0 - 15.0  | 0.5 - 1.5     | 0.1 - 0.5               | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.00005 - 0.0005 | 0.00001 - 0.0001 |
+| Q             | 10.0 - 20.0 | 1.0 - 2.0     | 0.5 - 1.0               | 0.000001 - 0.00001   | 0.0001 - 0.001 | 0.0005 - 0.005 | 0.0001 - 0.001 |
+
+Notes:
+- The abundances provided are rough estimates based on the current understanding of the composition of these asteroid types. Actual abundances may vary significantly within each type and are subject to revision as new data becomes available.
+- The ranges given represent the typical abundances expected for each metal category within the specified asteroid type. Individual asteroids may have abundances outside these ranges.
+- The abundances of precious metals, uranium, thorium, and rare earth elements are generally low across all asteroid types, with some variations between types.
+- M-type asteroids are thought to be the most metal-rich, with potentially high abundances of iron and other industrial metals.
+- C-type and T-type asteroids are expected to have lower metal abundances compared to other types due to their primitive, carbonaceous composition.
+- The abundances of specific metals within each category (e.g., platinum group metals within precious metals) may vary depending on the formation and evolution of the individual asteroids.
+
+****
+
+Here is an updated table with a more detailed subdivision of Earth's geological layers, reflecting known differences in chemical composition:
+
+| Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|--------------|------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Continental Crust (Upper) | 0 - 20 | 3.0 - 5.0 | 8.0 - 9.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.0001 - 0.001 | 0.001 - 0.01 | 0.001 - 0.01 |
+| Continental Crust (Middle) | 20 - 30 | 4.0 - 6.0 | 7.0 - 8.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.0001 - 0.001 | 0.001 - 0.01 | 0.001 - 0.01 |
+| Continental Crust (Lower) | 30 - 50 | 5.0 - 8.0 | 6.0 - 7.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.0001 - 0.001 | 0.001 - 0.01 | 0.001 - 0.01 |
+| Oceanic Crust (Upper) | 0 - 2 | 5.0 - 10.0 | 8.0 - 10.0 | 0.05 - 0.1 | 0.00000001 - 0.0000001 | 0.00001 - 0.0001 | 0.0001 - 0.001 | 0.0005 - 0.005 |
+| Oceanic Crust (Lower) | 2 - 10 | 6.0 - 12.0 | 6.0 - 8.0 | 0.05 - 0.1 | 0.00000001 - 0.0000001 | 0.00001 - 0.0001 | 0.0001 - 0.001 | 0.0005 - 0.005 |
+| Upper Mantle | 10 - 400 | 5.0 - 8.0 | 1.0 - 3.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.0001 - 0.001 | 0.0001 - 0.001 |
+| Transition Zone | 400 - 660 | 5.0 - 8.0 | 1.0 - 3.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.0001 - 0.001 | 0.0001 - 0.001 |
+| Lower Mantle | 660 - 2900 | 5.0 - 10.0 | 1.0 - 3.0 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.0001 - 0.001 | 0.0001 - 0.001 |
+| Outer Core | 2900 - 5100 | 80.0 - 95.0 | 0 | 0.5 - 2.0 | 0.000001 - 0.00001 | 0 | 0 | 0 |
+| Inner Core | 5100 - 6370 | 80.0 - 95.0 | 0 | 0.5 - 2.0 | 0.000001 - 0.00001 | 0 | 0 | 0 |
+
+Metal Categories:
+1. Iron: The most abundant metal in Earth's core and a major component in the mantle and crust.
+2. Aluminum: The most abundant metal in Earth's crust, primarily found in aluminosilicate minerals.
+3. Industrial Metals: Includes metals such as copper, zinc, nickel, lead, and tin, which are important for various industrial applications.
+4. Precious Metals: Includes metals such as gold, silver, platinum, and palladium, which are rare and valuable.
+5. Uranium: A radioactive metal used as a fuel in nuclear reactors and for nuclear weapons.
+6. Thorium: A radioactive metal that can be used as a nuclear fuel and is more abundant than uranium in Earth's crust.
+7. Rare Earth Elements: A group of 17 chemically similar elements, including scandium, yttrium, and the lanthanides, which are important for various technological applications.
+
+Geological Layers:
+1. Continental Crust: The outermost layer of Earth's crust, composed primarily of granitic and metamorphic rocks. It is divided into upper, middle, and lower layers based on composition and depth.
+2. Oceanic Crust: The crust beneath the oceans, composed primarily of basaltic rocks. It is thinner and denser than continental crust and is divided into upper and lower layers.
+3. Upper Mantle: The layer beneath the crust, composed primarily of peridotite (olivine and pyroxene). It extends from the base of the crust to the transition zone.
+4. Transition Zone: A region within the mantle where mineral structures undergo phase changes due to increasing pressure and temperature.
+5. Lower Mantle: The layer beneath the transition zone, composed primarily of high-pressure minerals such as bridgmanite and ferropericlase.
+6. Outer Core: The liquid layer surrounding the inner core, composed primarily of iron and nickel, with some lighter elements such as sulfur and oxygen.
+7. Inner Core: The solid innermost layer of Earth, composed primarily of iron and nickel, with some lighter elements. It is believed to be crystalline and to have a higher temperature than the outer core.
+
+****
+
+Regional differences in metal abundances on Earth are primarily due to local variations in geological processes and the formation of concentrated mineral deposits, rather than significant differences in the average metal content of the continental crust. These local variations are influenced by factors such as plate tectonics, magmatic activity, hydrothermal processes, and weathering.
+
+While the average metal content of the continental crust is relatively uniform globally, the formation of economically viable mineral deposits is highly dependent on specific geological conditions. For example, the formation of porphyry copper deposits is associated with subduction zones and magmatic arcs, while the formation of volcanogenic massive sulfide (VMS) deposits is related to hydrothermal activity at mid-ocean ridges and back-arc basins.
+
+Here is a discussion of the relative richness of known metal deposits in the specified regions, quantified as a rough estimate of the total value of metal resources per unit land area:
+
+1. United States (USA):
+The USA is relatively rich in metal resources, with significant deposits of copper, gold, molybdenum, and other metals. The estimated total value of metal resources per square kilometer is approximately $500,000 to $1,000,000.
+
+2. Russia:
+Russia has vast land area and is rich in various metal resources, including iron, nickel, copper, gold, and platinum group metals. The estimated total value of metal resources per square kilometer is approximately $200,000 to $500,000.
+
+3. Europe:
+Europe has a diverse geology and is relatively rich in metal resources, with significant deposits of copper, lead, zinc, and other metals. However, the distribution of these resources varies greatly among countries. The estimated total value of metal resources per square kilometer is approximately $100,000 to $500,000.
+
+4. China:
+China is relatively rich in metal resources, with significant deposits of iron, aluminum, copper, and rare earth elements. The estimated total value of metal resources per square kilometer is approximately $200,000 to $500,000.
+
+5. India:
+India has significant metal resources, including iron, bauxite (aluminum), and chromium. However, the relative richness of these resources per unit land area is lower compared to some other regions. The estimated total value of metal resources per square kilometer is approximately $50,000 to $200,000.
+
+6. Japan:
+Japan has limited land area and is relatively poor in metal resources compared to other regions. The country relies heavily on imports to meet its metal demand. The estimated total value of metal resources per square kilometer is approximately $10,000 to $50,000.
+
+It is important to note that these estimates are rough and based on currently known deposits. The actual metal resource potential of a region may be higher, as undiscovered deposits could exist. Additionally, the economic viability of extracting these resources depends on factors such as ore grade, accessibility, and market conditions.
+
+In summary, regional differences in metal abundances on Earth are primarily due to local variations in geological processes and the formation of concentrated mineral deposits, rather than significant differences in the average metal content of the continental crust. The relative richness of metal resources varies among the specified regions, with the USA, Russia, and China being relatively rich, while Japan is relatively poor in metal resources per unit land area.
 
 ## Kerogen and Fossil Fuels Deposits
 
