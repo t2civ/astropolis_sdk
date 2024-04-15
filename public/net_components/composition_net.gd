@@ -154,7 +154,7 @@ func get_fractional_variance(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass
-	return p * (1.0 - p) * variances[index]
+	return variances[index] * 2.0 * p * (1.0 - p)
 
 
 func get_density_error() -> float:
@@ -178,17 +178,18 @@ func get_fractional_mass_error(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass
-	return p * (1.0 - p) * error
+	return error * 2.0 * p * (1.0 - p)
 
 
 func get_deposits_boost(resource_type: int) -> float:
-	# must have a boost from our survey AND variance
+	# Must have a boost from our survey AND variance
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	return _survey_deposits_sigma[survey_type] * variances[index]
 
 
 func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> float:
+	# Fictional; ~fraction target res (versus all else) in best known deposits
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var deposits_boost: float = _survey_deposits_sigma[survey_type] * variances[index]
@@ -197,14 +198,9 @@ func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> f
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	if deposits_boost == 0.0:
-		return mass / _total_mass # what we would get below if calculated
-	# boost vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
-	var fractional_deposits := p + p * (1.0 - p) * deposits_boost
-	if fractional_deposits > 1.0:
-		fractional_deposits = 1.0
-	return fractional_deposits
+	var fractional_deposits := p + deposits_boost * 2.0 * p * (1.0 - p) # boost from p
+	return minf(fractional_deposits, 1.0)
 
 
 # *****************************************************************************
