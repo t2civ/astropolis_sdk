@@ -384,15 +384,13 @@ class StratumVBox extends VBoxContainer:
 			var variance: float = resource_data[3]
 			var deposits: float = resource_data[4]
 			var resource_name: StringName = _resource_names[resource_type]
-			var precision := 3
+			var precision := 2
 			if error:
 				precision = int(mean / (10.0 * error)) + 1
-				if precision > 3:
-					precision = 3
+				if precision > 2:
+					precision = 2
 			elif mean < 0.0001:
 				precision = 1
-			elif mean < 0.001:
-				precision = 2
 			var resource_text := RESOURCE_INDENT + tr(resource_name)
 			var mean_text := IVQFormat.number(mean, precision)
 			if error:

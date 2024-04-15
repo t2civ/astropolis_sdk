@@ -71,6 +71,7 @@ static var _resource_extractions: Array[int] # maps resource_type to index
 static var _survey_density_errors: Array[float] # coeff of variation
 static var _survey_mass_errors: Array[float]
 static var _survey_deposits_sigma: Array[float]
+static var _res_mass_err_mult: Array[float]
 static var _is_class_instanced := false
 
 
@@ -89,6 +90,7 @@ func _init(is_new := false, _is_server := false) -> void:
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
 		_survey_mass_errors = _tables[&"surveys"][&"mass_error"]
 		_survey_deposits_sigma = _tables[&"surveys"][&"deposits_sigma"]
+		_res_mass_err_mult = _tables[&"resources"][&"mass_err_mult"]
 		
 	if !is_new: # loaded game
 		return
@@ -145,12 +147,12 @@ func get_variance(resource_type: int) -> float:
 
 
 func get_fractional_variance(resource_type: int) -> float:
+	# Fractional variance vanishes as mass approaches 0 or 100% of the total
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	# fractional_variance vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
 	return p * (1.0 - p) * variances[index]
 
@@ -163,7 +165,7 @@ func get_density_error() -> float:
 func get_mass_error(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_mass_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
 	return masses[index] * error
 
 
@@ -171,12 +173,12 @@ func get_fractional_mass_error(resource_type: int) -> float:
 	# Fractional error vanishes as mass approaches 0 or 100% of the total
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_mass_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass
-	return p * (1.0 - p) * error # tested on example data
+	return p * (1.0 - p) * error
 
 
 func get_deposits_boost(resource_type: int) -> float:
