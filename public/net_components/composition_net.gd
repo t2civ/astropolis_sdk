@@ -53,7 +53,7 @@ var area := 0.0 # determined by spherical_fraction (or visa versa)
 var density := 0.0
 
 var masses: Array[float]
-var variances: Array[float] # variation within; this is good for mining!
+var variances: Array[float] # spatial heterogeneity; this is good for mining!
 
 var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
@@ -69,8 +69,8 @@ static var _resource_maybe_free: Array[bool]
 static var _extraction_resources: Array[int] # maps index to resource_type
 static var _resource_extractions: Array[int] # maps resource_type to index
 static var _survey_density_errors: Array[float] # coeff of variation
-static var _survey_masses_errors: Array[float]
-static var _survey_deposits_sds: Array[float]
+static var _survey_mass_errors: Array[float]
+static var _survey_deposits_sigma: Array[float]
 static var _is_class_instanced := false
 
 
@@ -87,8 +87,8 @@ func _init(is_new := false, _is_server := false) -> void:
 		_extraction_resources = tables_aux[&"extraction_resources"]
 		_resource_extractions = tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
-		_survey_masses_errors = _tables[&"surveys"][&"masses_error"]
-		_survey_deposits_sds = _tables[&"surveys"][&"deposits_sigma"]
+		_survey_mass_errors = _tables[&"surveys"][&"mass_error"]
+		_survey_deposits_sigma = _tables[&"surveys"][&"deposits_sigma"]
 		
 	if !is_new: # loaded game
 		return
@@ -155,26 +155,26 @@ func get_fractional_variance(resource_type: int) -> float:
 	return p * (1.0 - p) * variances[index]
 
 
-func get_density_uncertainty() -> float:
+func get_density_error() -> float:
 	var error: float = _survey_density_errors[survey_type]
 	return density * error
 
 
-func get_mass_uncertainty(resource_type: int) -> float:
+func get_mass_error(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_masses_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type]
 	return masses[index] * error
 
 
-func get_fractional_mass_uncertainty(resource_type: int) -> float:
+func get_fractional_mass_error(resource_type: int) -> float:
+	# Fractional error vanishes as mass approaches 0 or 100% of the total
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_masses_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type]
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	# fraction error vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
 	return p * (1.0 - p) * error # tested on example data
 
@@ -183,13 +183,13 @@ func get_deposits_boost(resource_type: int) -> float:
 	# must have a boost from our survey AND variance
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return _survey_deposits_sds[survey_type] * variances[index]
+	return _survey_deposits_sigma[survey_type] * variances[index]
 
 
 func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var deposits_boost: float = _survey_deposits_sds[survey_type] * variances[index]
+	var deposits_boost: float = _survey_deposits_sigma[survey_type] * variances[index]
 	if zero_if_no_boost and deposits_boost == 0.0:
 		return 0.0 # allows hide in GUI if deposits would equal mass_fraction
 	var mass: float = masses[index]

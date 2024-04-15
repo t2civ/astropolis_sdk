@@ -1,9 +1,9 @@
-	density_error	masses_error	variances_error	deposits_sigma	#comments
+	density_error	mass_error	variance_error	deposits_sigma	#comments
 Type	FLOAT	FLOAT	FLOAT	FLOAT	
 Default				0	
 Prefix/SURVEY_					
 GENERALIZATION	0.15	0.75	0.75		e.g., it's a C-type asteroid
-THEORETICAL_DISPUTED	0.2	1	1		can't see it; could be very wrong
+THEORETICAL_DISPUTED	0.2	1	1		could be very wrong
 THEORETICAL_WEAK	0.12	0.6	0.6		
 THEORETICAL	0.08	0.4	0.4		
 THEORETICAL_STRONG	0.04	0.2	0.2		

@@ -194,8 +194,8 @@ func get_composition_survey_type(index: int) -> int:
 	return compositions[index].survey_type
 
 
-func get_composition_fractional_mass_uncertainty(index: int, resource_type: int) -> float:
-	return compositions[index].get_fractional_mass_uncertainty(resource_type)
+func get_composition_fractional_mass_error(index: int, resource_type: int) -> float:
+	return compositions[index].get_fractional_mass_error(resource_type)
 
 
 func get_composition_fractional_variance(index: int, resource_type: int) -> float:
