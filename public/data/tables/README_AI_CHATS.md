@@ -619,6 +619,8 @@ Notes:
 
 ****
 
+_Only checked Ceres layers and values here are pretty bad. Wiki has crust at 40 km. Radius is 469.7, so core can't go to 500. Core existence is speculative and could be from 85-360 km, if it exists at all. Going with 100 km for the sim._
+
 Here is a table showing the estimated abundances of metal categories in different solar system bodies, including dwarf planets and large asteroids:
 
 | Solar System Body | Layer/Region | Depth (km) | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |

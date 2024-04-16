@@ -6,8 +6,9 @@
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)  
 [carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)  
 [compositions.tsv](#compositionstsv)  
+[compositions_resources_errors.tsv](#compositions_resources_errorstsv)  
+[compositions_resources_proportions.tsv](#compositions_resources_proportionstsv)  
 [compositions_resources_variances.tsv](#compositions_resources_variancestsv)  
-[compositions_resources_percents.tsv](#compositions_resources_percentstsv)  
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
 [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)  
@@ -86,9 +87,14 @@ Composition names are constructed:
 `COMPOSITION_<body_name or generic body_class>_<stratum_name>[_<owner_name>]`
 
 Field comments:
-\#volume, #mass: for info/QA only; internal values are calculated.
-thickness: if blank, imputed to be Body.m_radius.
-area: if blank, imputed to be 4 * PI * (Body.m_radius - outer_depth)^2.
+* `outer_depth` (default = 0.0) Top of the stratum relative to Body.m_radius. Negative if this is above the 'reference altitude' for m_radius (e.g., Earth sea level). 
+* `thickness` If blank, the stratum is assumed to include the body center and value is calculated as m_radius minus outer_depth.
+* `spherical_fraction` 1 if whole sphere, < 1 if partial (i.e., region). Can be blank only if `area` is provided.
+* `area` Surface area of the stratum, or leave blank to be calcuated from radius and `spherical_fraction`.
+* `density` Used to calculate total mass after volume calculations. An error is applied from survey.tsv/density_error. 
+* `#volume`, `#mass` Commented columns not read; here for QA on internal calculated values.
+* `survey` One of survey.tsv items, which will set mass_error and other details.
+
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_ATMOSPHERE
 
@@ -100,6 +106,7 @@ Density 5.15e18 kg / (4.18e10 km\^3 x 1e9 km\^3/m\^3)
    =0.123 kg/m\^3 = 1.23e-4 g/cm\^3
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_OCEAN
+
 Mass of hydrosphere 1.386e18 t, of which 97.5% (=1.351e18 t) is ocean. Area is 3.61e8 km^2. Density of seawater 1020 to >1050 kg/m^3 (=1.02 to >1.05 g/cm^3).   
 https://en.wikipedia.org/wiki/Hydrosphere   
 https://en.wikipedia.org/wiki/Seawater   
@@ -117,10 +124,12 @@ Oxygen: 5 mL/kg; x1.429 kg/m3 / (1e6  mL/m3  -> 7.1e-4%
 3.5 Industrial Minerals (salt)   
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_OCEAN_FLOOR
+
 Arbitrarily set at 100m depth for mining potential (aka Hoover it up!):   
 https://oceanminingintel.com/insights/ocean-mining-the-5-minute-what-why-where-how-and-who
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_\<crust layers>
+
 Layers arbitrarily defined for extraction potential, considering deepest:   
 - pit mining: 1.2 km, but usually < 1 km. Conveniently, average continental altitude is 800 m. So we use that for "surface".
 - mining: ~4 km. Gets really tough below, but maybe we could go to 8 km with some wild engineering.
@@ -160,23 +169,27 @@ of PLAYER_OTHER at 9.03e7 km^2.
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Moon-Geology).
 
-## compositions_resources_heterogeneities.tsv
+## compositions_resources_proportions.tsv
 
-Defines heterogeneity of resources in each composition. Values are coefficient of variation of mass, assuming a log-normal distrubution of abundance. Heterogeneity causes "deposits" which are useful for mining. (Fully "mixed" strata such as atmosphere are omitted from table and have default heterogeneity = 0.0.) E.g., USA and Japan have similar total metal content in their upper crust. But heterogeneity is boosted for USA to provide better extraction/energy ratio for mining operations. Note that both abundance and heterogeneity go down as a resource is extracted.
+Defines mass proportion for all extractable resources in each composition. Each row is summed and normalized internally, so we supply percent for convenience but numbers don't have to add to _exactly_ 100. For solid non-core strata, we generally calculate percent for each item and use regolith to add to 100. For Earth's 'surface' strata, numbers add to 100 without water, then we add water value to represent surface and aquifer fresh water.
 
-Dev note: This is the "fudge factor" or "adjustment knob" to make other values in the sim work. Resource percents in the next table are as accurate as possible. The energy used for extraction (MW / tonne ore extracted) in operations.tsv is also meant to be real. That energy is caclulated assuming a benchmark "deposits" level, which is also meant to be plausible. Then we tweak values here to achieve that deposits level.
+We define benchmark ores with these grades (see justifications under resources.tsv): 70% iron, 30% aluminium, 5% industrial metals, 0.01% precious metals, 1% rare earths and 1% uranium. These ore grades are used to convert percent pure resource content to percent ore, assuming that 100% of the target resource is contained in ore. Where we have a range, we use the mid-point or log-mean (e.g., 0.001-0.0001 -> 0.003). Cores of the Moon and similar or larger bodies don't have ores but have native metals (mostly iron) and some 'industrial minerals' (representing sulfer and anything else).
 
-To expand on above: that discussion is really about Earth and other differentiated bodies. The situation at small undifferentiated asteroids and moons is different. Here, heterogeneity is low, but abundance uncertainty is high. Surveys are needed to reduce that uncertainty. Then the player can focus on bodies that really do have high abundances.
+Percent abundances from AI chats:
 
-## compositions_resources_percents.tsv
+[Metals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Metal-Abundances) (after converting metal percents -> ore percents).
 
-Defines mass percent for all resources in each composition. For solid strata, we generally calculate percent for each item and use "gravel/conglomerate" to add to 100% (each row is summed and normalized internally, so we don't have to be exact).
+Note that percents are converted internally to mass and adjusted using 'error' assuming a log-normal distribution. The adjustment bias is kept and re-applied to interface values shown to GUI and AI. Hence, the table values are really the 'public estimates' and not the true values for each body.
 
-We define benchmark ores with these grades (see justifications under resources.tsv): 70% iron, 30% aluminium, 5% industrial metals, 0.01% precious metals, and 1% rare earths. These ore grades are used to convert percent pure resource content to percent ore, assuming that 100% of the target resource is contained in ore. Where we have a range, we use the mid-point or log-mean (e.g., 0.001-0.0001 -> 0.003). From AI chats:
+## compositions_resources_variances.tsv
 
-[Metals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Metal-Abundances).
+'Mixed' strata such as atmosphere are omitted from table and have default variance = 0.0.
 
-Note that percents are converted internally to abundances and adjusted using 'uncertainty' assuming a log-normal distribution. The adjustment bias is kept and re-applied to interface values shown to GUI and AI. Hence, the table values are the "public estimated values" and not the true values for each body.
+Variance is the spatial heterogeneity of resource mass in each composition. Values are coefficient of variation of mass assuming a log-normal distrubution. High variance together with high survey level causes "deposits" which are useful for mining. E.g., USA and Japan have similar total metal content in their upper crust. But variance is boosted for USA to provide better extraction/energy ratio for mining operations. Variance goes down with mass as a resource is extracted (because you're removing the long tail of the log-normal distribution).
+
+Dev note: This is the "fudge factor" or "adjustment knob" to make other values in the sim work. Resource percents in the _proportions.tsv table are as accurate as possible. The energy used for extraction (MW / tonne ore extracted) in operations.tsv is also meant to be real. That energy is caclulated assuming a benchmark "deposits" level, which is also meant to be plausible. Then we tweak values here to achieve that deposits level.
+
+To expand on above: that discussion is really about Earth and other differentiated bodies. The situation at small undifferentiated asteroids and moons is different. Here, variance is low, but mass error is high. Surveys are needed to reduce that error. Then the player can focus on bodies that really do have high abundances.
 
 ## facilities.tsv
 
@@ -650,7 +663,7 @@ Fields:
 * `trade_class` Internal enum that affects physical transport mechanics.
 * `trade_unit` is the quantity for `start_price` and related GUI items (price, bid, ask), and sets the minimum quantity in internal trade mechanics.   
 * `start_price` Rough Earth values in 2010 for sim start.
-
+* `mass_err_mult` Mulitiplyer for surveys.tsv/`mass_error`.
 
 #### ELECTRICITY
 Cannot be transported, but traded w/in a Body. Special storage.
@@ -733,7 +746,8 @@ Defined as 30% Industrial Minerals by weight. (See '_IRON_ORES note on grade and
 benefication.)
 ooma price
 
-#### FISSILE_FUEL_ORES
+#### URANIUM_ORES
+
 Defined as 1% Fissile Fuels by weight (Earth grades range from 0.1% up to 18%,
 but 1% is typical). (See '_IRON_ORES note on grade and benefication.)   
 https://en.wikipedia.org/wiki/Uranium_ore   
@@ -741,139 +755,191 @@ For price assume 1% grade and 10% price of yellowcake, giving $93/t.
 TODO: fix numbers given that we abstract away yellowcake, which is an intermediate
 form customarily produced at the mine (but not in our simulation).
 
-#### HELIUM3_REGOLITH
-N/A Earth; no start price.
-
 #### INDUSTRIAL_MINERALS
+
 ooma price
 
-#### THOLINS
+#### HELIUM3_REGOLITH
+
 N/A Earth; no start price.
 
-#### ROCK_AGGREGATE
-$20/t is low range of prices in Google search. Assume $5/t for industry.
+#### THOLINS
 
-#### LOW_GRADE_REGOLITH
-Dirt; give it $2/t for transport.
+N/A Earth; no start price.
+
+#### STONE
+
+This represents stone in the ground or traded dimentional stone.
+
+#### REGOLITH
+
+Mix of low-grade gravel, sand, clay, etc.
 
 #### WATER
+
 Wide range of pricing; trucked values as low as $1/t.
 
 #### OXYGEN
+
 $154/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### NITROGEN
+
 $140/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### CARBON_DIOXIDE
+
 $182/t; chemanalyst.com
 
 #### CARBON_MONOXIDE
+
 $28700/t; chemanalyst.com
 
 #### ETHANE
+
 Couldn't find price but $600/t for methanol; chemanalyst.com
 
 #### AMMONIA
+
 $1000/t; chemanalyst.com
 
 #### SULFER_DIOXIDE
+
 Couldn't find but $312/t for sulfur
 
 #### HELIUM
+
 $24,000/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### ARGON_NEON
+
 $931/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### KRYPTON_XENON
+
 Kr & Xe; Kr is cheaper (by far) at $290/kg;
 https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### STEEL
+
 $1500/t; random news article, early 2022.
 
+#### IRON
+
+Represent native iron (such as in planetory cores) or traded pig iron.
+
 #### INDUSTRIAL_METALS
+
+Represents native metals (such as in planetory cores) or traded refined metals.
+
 Al $1790/t, Ni $13900/t, Cu $6000/t; use Cu as proxy price.
 https://en.wikipedia.org/wiki/Prices_of_chemical_elements
 
 #### PRECIOUS_METALS
+
+Represents native metals (such as in planetory cores) or traded refined metals.
+
 Use Au as proxy at $60000/kg, 2/22.
 
 #### RARE_EARTHS
+
 Light REs ~$41,000/kg; Heavy REs ~$21,0000/kg
 We split the difference and call it $100,000/kg.
 
 #### CONCRETE
+
 random source?
 
 #### GLASSES
+
 ooma
 
 #### PLASTICS_POLYMERS
+
 $1200/t for styrene; chemanalyst.com
 
 #### SYNTHETIC_FIBERS
+
 Random source "average cost of non- aerospace grade is around $21.5/kg"
 
 #### INDUSTRIAL_SCRAP
+
 Steel scrap $0.23/lb x 2204 lbs/t = $506/t; random online source.
 
 #### SLAG
+
 $200/t; random online slag quote
 
 #### BULK_FOODS
+
 Grain, etc.; source?
 
 #### CRAFT_FOODS
+
 $20 bag of groceries. These are "luxury" in space.
 
 #### WOOD
+
 ooma
 
 #### BIOFIBERS
+
 ooma
 
 #### BIOFEEDSTOCK
+
 ooma
 
 #### SEWAGE
+
 ooma
 
 #### FINISHED_STRUCTURES
+
 ooma
 
 #### HEAVY_MACHINERY
+
 ooma
 
 #### ROBOTICS
+
 ooma
 
 #### ELECTRONICS
+
 ooma
 
 #### BATTERIES
+
 Tesla car battery on the order of ~$3-4k; call it $2000/t. 
 
 #### ADVANCED_COMPOSITES
+
 $85/kg; aerospace cabon fiber, 2022 news article
 
 #### FERTILIZERS
+
 $717/t; 2022 news article.
 
 #### INDUSTRIAL_CHEMICALS
+
 ooma; presumably more than kerosine
 
 #### FINE_CHEMICALS
+
 ooma
 
 #### PHARMACEUTICALS
+
 ooma
 
 #### CONSUMER_GOODS
+
 ooma
 
 #### LUXURY_GOODS
+
 ooma
 
 
