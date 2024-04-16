@@ -46,10 +46,9 @@ var stratum_type := -1 # strata.tsv
 var polity_name: StringName # "" for commons
 
 var body_radius := 0.0 # same as Body.m_radius
-var outer_depth := 0.0 # of the strata (could be negative for atmosphere)
+var outer_radius := 0.0 # could be > body_radius (e.g., atmosphere)
 var thickness := 0.0 # of the strata, =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
-var area := 0.0 # determined by spherical_fraction (or visa versa)
 var density := 0.0
 
 var masses: Array[float]
@@ -100,6 +99,17 @@ func _init(is_new := false, _is_server := false) -> void:
 
 # ********************************** READ *************************************
 # all threadsafe
+
+func is_bulk() -> bool:
+	return outer_radius == thickness and spherical_fraction == 1.0
+
+
+func is_whole_depth() -> bool:
+	return outer_radius == thickness
+
+
+func is_whole_area() -> bool:
+	return spherical_fraction == 1.0
 
 
 func get_volume() -> float:
@@ -214,15 +224,14 @@ func set_network_init(data: Array) -> void:
 	stratum_type = data[2]
 	polity_name = data[3]
 	body_radius = data[4]
-	outer_depth = data[5]
+	outer_radius = data[5]
 	thickness = data[6]
 	spherical_fraction = data[7]
-	area = data[8]
-	density = data[9]
-	masses = data[10]
-	variances = data[11]
-	survey_type = data[12]
-	may_have_free_resources = data[13]
+	density = data[8]
+	masses = data[9]
+	variances = data[10]
+	survey_type = data[11]
+	may_have_free_resources = data[12]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -241,13 +250,11 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_STRATUM:
 		body_radius = _float_data[_float_offset]
 		_float_offset += 1
-		outer_depth = _float_data[_float_offset]
+		outer_radius = _float_data[_float_offset]
 		_float_offset += 1
 		thickness = _float_data[_float_offset]
 		_float_offset += 1
 		spherical_fraction = _float_data[_float_offset]
-		_float_offset += 1
-		area = _float_data[_float_offset]
 		_float_offset += 1
 		density = _float_data[_float_offset]
 		_float_offset += 1
@@ -262,23 +269,10 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 # *****************************************************************************
 
 func calculate_volume_and_total_mass() -> void:
-	# area accounts for spherical_fraction, so use either to reduce calculation
-	if thickness == body_radius and outer_depth == 0.0: # full sphere
-		# spherical_fraction = a / (4 PI r^2)   # area / area of full sphere
-		# v = spherical_fraction * 4/3 PI r^3
-		# v = a / (4 PI r^2)     * 4/3 PI r^3
-		# simplify:
-		_volume =  area * body_radius / 3.0
-	else:
-		if thickness / body_radius < 0.01: # thin layer approximation
-			_volume = area * thickness
-		else:
-			var outer_radius := body_radius - outer_depth
-			var inner_radius := outer_radius - thickness
-			_volume = spherical_fraction * FOUR_THIRDS_PI * (
-					outer_radius * outer_radius * outer_radius
-					- inner_radius * inner_radius * inner_radius)
-	
+	var inner_radius := outer_radius - thickness
+	_volume = spherical_fraction * FOUR_THIRDS_PI * (
+			outer_radius * outer_radius * outer_radius
+			- inner_radius * inner_radius * inner_radius)
 	_total_mass = _volume * density
 	_needs_volume_mass_calculation = false
 
