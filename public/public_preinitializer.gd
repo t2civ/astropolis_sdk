@@ -56,7 +56,6 @@ func _init() -> void:
 		path_format % "carrying_capacity_groups",
 		path_format % "compositions",
 		path_format % "facilities",
-		path_format % "major_strata",
 		path_format % "module_classes",
 		path_format % "modules",
 		path_format % "op_classes",
@@ -74,8 +73,8 @@ func _init() -> void:
 		path_format % "planets_mod",
 		path_format % "moons_mod",
 		# enum x enum tables
-		path_format % "compositions_resources_heterogeneities",
-		path_format % "compositions_resources_percents",
+		path_format % "compositions_resources_proportions",
+		path_format % "compositions_resources_variances",
 		path_format % "facilities_inventories",
 		path_format % "facilities_operations_capacities",
 		path_format % "facilities_operations_utilizations",

@@ -186,20 +186,20 @@ func get_composition_masses(index: int) -> Array[float]:
 	return compositions[index].masses
 
 
-func get_composition_heterogeneities(index: int) -> Array[float]:
-	return compositions[index].heterogeneities
+func get_composition_variances(index: int) -> Array[float]:
+	return compositions[index].variances
 
 
 func get_composition_survey_type(index: int) -> int:
 	return compositions[index].survey_type
 
 
-func get_composition_fractional_mass_uncertainty(index: int, resource_type: int) -> float:
-	return compositions[index].get_fractional_mass_uncertainty(resource_type)
+func get_composition_fractional_mass_error(index: int, resource_type: int) -> float:
+	return compositions[index].get_fractional_mass_error(resource_type)
 
 
-func get_composition_fractional_heterogeneity(index: int, resource_type: int) -> float:
-	return compositions[index].get_fractional_heterogeneity(resource_type)
+func get_composition_fractional_variance(index: int, resource_type: int) -> float:
+	return compositions[index].get_fractional_variance(resource_type)
 
 
 func get_composition_fractional_deposits(index: int, resource_type: int, zero_if_no_boost := false

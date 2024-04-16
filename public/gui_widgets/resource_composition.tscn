@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://beko6fc3udkwf"]
+
+[ext_resource type="Script" path="res://public/gui_widgets/resource_composition.gd" id="1_lyexv"]
+
+[node name="ResourceComposition" type="VBoxContainer"]
+script = ExtResource("1_lyexv")
+
+[node name="NoResourcesLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+text = "(No Resources)"
+horizontal_alignment = 1
+vertical_alignment = 1

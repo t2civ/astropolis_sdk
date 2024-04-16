@@ -46,14 +46,13 @@ var stratum_type := -1 # strata.tsv
 var polity_name: StringName # "" for commons
 
 var body_radius := 0.0 # same as Body.m_radius
-var outer_depth := 0.0 # of the strata (could be negative for atmosphere)
+var outer_radius := 0.0 # could be > body_radius (e.g., atmosphere)
 var thickness := 0.0 # of the strata, =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
-var area := 0.0 # determined by spherical_fraction (or visa versa)
 var density := 0.0
 
 var masses: Array[float]
-var heterogeneities: Array[float] # variation within; this is good for mining!
+var variances: Array[float] # spatial heterogeneity; this is good for mining!
 
 var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
@@ -69,8 +68,9 @@ static var _resource_maybe_free: Array[bool]
 static var _extraction_resources: Array[int] # maps index to resource_type
 static var _resource_extractions: Array[int] # maps resource_type to index
 static var _survey_density_errors: Array[float] # coeff of variation
-static var _survey_masses_errors: Array[float]
-static var _survey_deposits_sds: Array[float]
+static var _survey_mass_errors: Array[float]
+static var _survey_deposits_sigma: Array[float]
+static var _res_mass_err_mult: Array[float]
 static var _is_class_instanced := false
 
 
@@ -87,17 +87,29 @@ func _init(is_new := false, _is_server := false) -> void:
 		_extraction_resources = tables_aux[&"extraction_resources"]
 		_resource_extractions = tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
-		_survey_masses_errors = _tables[&"surveys"][&"masses_error"]
-		_survey_deposits_sds = _tables[&"surveys"][&"deposits_sigma"]
+		_survey_mass_errors = _tables[&"surveys"][&"mass_error"]
+		_survey_deposits_sigma = _tables[&"surveys"][&"deposits_sigma"]
+		_res_mass_err_mult = _tables[&"resources"][&"mass_err_mult"]
 		
 	if !is_new: # loaded game
 		return
 	var n_is_extraction_resources := _extraction_resources.size()
 	masses = ivutils.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
-	heterogeneities = masses.duplicate()
+	variances = masses.duplicate()
 
 # ********************************** READ *************************************
 # all threadsafe
+
+func is_bulk() -> bool:
+	return outer_radius == thickness and spherical_fraction == 1.0
+
+
+func is_whole_depth() -> bool:
+	return outer_radius == thickness
+
+
+func is_whole_area() -> bool:
+	return spherical_fraction == 1.0
 
 
 func get_volume() -> float:
@@ -138,71 +150,67 @@ func get_mass_fraction(resource_type: int) -> float:
 	return masses[index] / _total_mass
 
 
-func get_heterogeneity(resource_type: int) -> float:
+func get_variance(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return heterogeneities[index]
+	return variances[index]
 
 
-func get_fractional_heterogeneity(resource_type: int) -> float:
+func get_fractional_variance(resource_type: int) -> float:
+	# Fractional variance vanishes as mass approaches 0 or 100% of the total
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	# fractional_heterogeneity vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
-	return p * (1.0 - p) * heterogeneities[index]
+	return variances[index] * 2.0 * p * (1.0 - p)
 
 
-func get_density_uncertainty() -> float:
+func get_density_error() -> float:
 	var error: float = _survey_density_errors[survey_type]
 	return density * error
 
 
-func get_mass_uncertainty(resource_type: int) -> float:
+func get_mass_error(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_masses_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
 	return masses[index] * error
 
 
-func get_fractional_mass_uncertainty(resource_type: int) -> float:
+func get_fractional_mass_error(resource_type: int) -> float:
+	# Fractional error vanishes as mass approaches 0 or 100% of the total
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_masses_errors[survey_type]
+	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	# fraction error vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
-	return p * (1.0 - p) * error # tested on example data
+	return error * 2.0 * p * (1.0 - p)
 
 
 func get_deposits_boost(resource_type: int) -> float:
-	# must have a boost from our survey AND heterogeneity
+	# Must have a boost from our survey AND variance
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return _survey_deposits_sds[survey_type] * heterogeneities[index]
+	return _survey_deposits_sigma[survey_type] * variances[index]
 
 
 func get_fractional_deposits(resource_type: int, zero_if_no_boost := false) -> float:
+	# Fictional; ~fraction target res (versus all else) in best known deposits
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var deposits_boost: float = _survey_deposits_sds[survey_type] * heterogeneities[index]
+	var deposits_boost: float = _survey_deposits_sigma[survey_type] * variances[index]
 	if zero_if_no_boost and deposits_boost == 0.0:
 		return 0.0 # allows hide in GUI if deposits would equal mass_fraction
 	var mass: float = masses[index]
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
-	if deposits_boost == 0.0:
-		return mass / _total_mass # what we would get below if calculated
-	# boost vanishes as mass approaches 0 or 100% of the total
 	var p := mass / _total_mass
-	var fractional_deposits := p + p * (1.0 - p) * deposits_boost
-	if fractional_deposits > 1.0:
-		fractional_deposits = 1.0
-	return fractional_deposits
+	var fractional_deposits := p + deposits_boost * 2.0 * p * (1.0 - p) # boost from p
+	return minf(fractional_deposits, 1.0)
 
 
 # *****************************************************************************
@@ -216,15 +224,14 @@ func set_network_init(data: Array) -> void:
 	stratum_type = data[2]
 	polity_name = data[3]
 	body_radius = data[4]
-	outer_depth = data[5]
+	outer_radius = data[5]
 	thickness = data[6]
 	spherical_fraction = data[7]
-	area = data[8]
-	density = data[9]
-	masses = data[10]
-	heterogeneities = data[11]
-	survey_type = data[12]
-	may_have_free_resources = data[13]
+	density = data[8]
+	masses = data[9]
+	variances = data[10]
+	survey_type = data[11]
+	may_have_free_resources = data[12]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -243,13 +250,11 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_STRATUM:
 		body_radius = _float_data[_float_offset]
 		_float_offset += 1
-		outer_depth = _float_data[_float_offset]
+		outer_radius = _float_data[_float_offset]
 		_float_offset += 1
 		thickness = _float_data[_float_offset]
 		_float_offset += 1
 		spherical_fraction = _float_data[_float_offset]
-		_float_offset += 1
-		area = _float_data[_float_offset]
 		_float_offset += 1
 		density = _float_data[_float_offset]
 		_float_offset += 1
@@ -259,28 +264,15 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_int_offset += 1
 	
 	_set_floats_dirty(masses)
-	_set_floats_dirty(heterogeneities)
+	_set_floats_dirty(variances)
 
 # *****************************************************************************
 
 func calculate_volume_and_total_mass() -> void:
-	# area accounts for spherical_fraction, so use either to reduce calculation
-	if thickness == body_radius and outer_depth == 0.0: # full sphere
-		# spherical_fraction = a / (4 PI r^2)   # area / area of full sphere
-		# v = spherical_fraction * 4/3 PI r^3
-		# v = a / (4 PI r^2)     * 4/3 PI r^3
-		# simplify:
-		_volume =  area * body_radius / 3.0
-	else:
-		if thickness / body_radius < 0.01: # thin layer approximation
-			_volume = area * thickness
-		else:
-			var outer_radius := body_radius - outer_depth
-			var inner_radius := outer_radius - thickness
-			_volume = spherical_fraction * FOUR_THIRDS_PI * (
-					outer_radius * outer_radius * outer_radius
-					- inner_radius * inner_radius * inner_radius)
-	
+	var inner_radius := outer_radius - thickness
+	_volume = spherical_fraction * FOUR_THIRDS_PI * (
+			outer_radius * outer_radius * outer_radius
+			- inner_radius * inner_radius * inner_radius)
 	_total_mass = _volume * density
 	_needs_volume_mass_calculation = false
 
