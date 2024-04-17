@@ -296,9 +296,8 @@ class PolityVBox extends VBoxContainer:
 			_polity_header.text = SUPER_OPEN_PREFIX + _polity_text
 		else:
 			_polity_header.text = SUPER_CLOSED_PREFIX + _polity_text
-		var n_children := get_child_count()
 		var i := 1
-		while i < n_children:
+		while i < _next_child_index:
 			var stratum_vbox: StratumVBox = get_child(i)
 			stratum_vbox.visible = _is_open
 			i += 1
@@ -326,7 +325,7 @@ class StratumVBox extends VBoxContainer:
 		_stratum_header.button_down.connect(_toggle_open_close)
 		_stratum_header.flat = true
 		_stratum_header.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		_stratum_header.size_flags_horizontal = SIZE_FILL
+		_stratum_header.size_flags_horizontal = SIZE_EXPAND_FILL
 		add_child(_stratum_header)
 		_resource_grid.columns = N_COLUMNS
 		_resource_grid.size_flags_horizontal = SIZE_EXPAND_FILL

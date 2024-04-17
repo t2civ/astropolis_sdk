@@ -61,15 +61,19 @@ func _update_selection(_dummy := false) -> void:
 	
 	if body_flags & BodyFlags.IS_PLANET:
 		targets.append(selection_name) # Facility or Body name
-		column_names.append(&"LABEL_PLANET")
-		if body_flags & BodyFlags2.GUI_HAS_ONE_MOON:
+		column_names.append(&"LABEL_PLANETARY")
+		if body_name == &"PLANET_EARTH":
 			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
-			column_names.append(&"LABEL_MOON")
+			column_names.append(&"LABEL_LUNAR")
+			column_names.append(&"LABEL_CISLUNAR_SPACE")
 		elif body_flags & BodyFlags2.GUI_HAS_MOONS:
 			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
 			column_names.append(&"LABEL_MOONS")
+			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_SPACE")))
+		else:
+			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_SPACE")))
 		targets.append(StringName("JOIN_" + body_name + "_SPACE" + player_join_name))
-		column_names.append(&"LABEL_SPACE")
+		
 	
 	elif body_flags & BodyFlags.IS_STAR:
 		targets.append(StringName("JOIN_" + body_name + "_PLANETS" + player_join_name))
