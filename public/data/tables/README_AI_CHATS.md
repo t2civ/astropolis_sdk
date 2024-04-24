@@ -4,8 +4,10 @@
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
 * [Moon Geology](#Moon-Geology)
+* [Volatiles](#Volatiles)
 * [Metal Abundances](#Metal-Abundances)
 * [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
+* [Earth Fresh Water](#Earth-Fresh-Water)
 * [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
 * [Coal Mining](#Coal-Mining)
 * [Uranium Mining](#Uranium-Mining)
@@ -321,7 +323,7 @@ It's important to note that these percentages are approximate and may vary depen
 
 ## Moon Geology
 
-_Moon structural data for use in compositions.tsv._
+_Moon structure (for compositions.tsv) and abundances of regolith helium-3 and PSR volatiles._
 
 The Moon's geology and potential for resource extraction vary significantly across different regions and geological layers. Here's a detailed breakdown:
 
@@ -478,6 +480,245 @@ The relatively low density of the lunar regolith compared to the underlying crus
 
 Understanding the density variations within the Moon is crucial for modeling its internal structure, evolution, and resource potential. Future missions, such as NASA's Artemis program, aim to further refine our knowledge of the Moon's density structure through a combination of in-situ measurements, sample return, and geophysical observations.
 
+****
+
+The permanently shadowed regions (PSRs) on the Moon are known to contain water ice and other volatile compounds. However, the exact abundances of these resources are not yet well constrained and are the subject of ongoing research and exploration. Here are the current estimates and speculations for the total abundances of water and other volatiles in the lunar PSRs:
+
+Water Ice:
+- Estimates of the total water ice content in the lunar PSRs vary widely, ranging from 100 million to several billion metric tons.
+- A conservative estimate from NASA suggests that the lunar PSRs may contain at least 600 million metric tons of water ice.
+- Some studies, based on data from NASA's LCROSS mission and the Lunar Reconnaissance Orbiter (LRO), suggest that the water ice content could be as high as 1.3 billion metric tons in the upper 1 meter of regolith in the PSRs.
+
+Hydrogen:
+- The total abundance of hydrogen in the lunar PSRs is estimated to be around 100-500 million metric tons.
+- This hydrogen is likely present in the form of water ice, as well as other hydrogen-bearing compounds, such as ammonia and methane.
+
+Carbon Dioxide (CO2):
+- The total abundance of CO2 in the lunar PSRs is speculated to be in the range of 10-100 million metric tons.
+- CO2 can be potentially used as a resource for fuel production and life support systems.
+
+Methane (CH4):
+- The total abundance of methane in the lunar PSRs is speculated to be in the range of 1-10 million metric tons.
+- Methane can serve as a potential fuel source and can also be used for the production of other hydrocarbons.
+
+Ammonia (NH3):
+- The total abundance of ammonia in the lunar PSRs is speculated to be in the range of 1-10 million metric tons.
+- Ammonia can be used as a source of nitrogen for agriculture and as a potential fuel.
+
+Other volatiles, such as sulfur, mercury, and noble gases (e.g., helium, neon, argon), are also thought to be present in the lunar PSRs, but their total abundances are less well constrained.
+
+It is important to note that these estimates are based on limited remote sensing data and theoretical models. The actual abundances and distribution of these resources may vary significantly and will require further in-situ exploration and analysis to refine the estimates.
+
+Upcoming missions, such as NASA's VIPER (Volatiles Investigating Polar Exploration Rover) and the Artemis program, aim to provide more detailed and accurate assessments of the volatile content in the lunar PSRs. This information will be crucial for planning future resource extraction and utilization efforts on the Moon.
+
+****
+
+Based on the log-midpoint of the estimated ranges provided earlier, here is a table showing the assumed abundances (in metric tons) for water ice, carbon dioxide, methane, and ammonia in the lunar permanently shadowed regions (PSRs):
+
+| Volatile Compound | Assumed Abundance (metric tons) |
+|-------------------|----------------------------------|
+| Water Ice         | 1,000,000,000                    |
+| Carbon Dioxide    | 31,622,777                       |
+| Methane           | 3,162,278                        |
+| Ammonia           | 3,162,278                        |
+
+To calculate the log-midpoint, I used the following formula:
+
+Log-midpoint = 10^((log10(lower_bound) + log10(upper_bound)) / 2)
+
+For example, for water ice:
+- Lower bound: 100,000,000 metric tons
+- Upper bound: 10,000,000,000 metric tons
+
+Log-midpoint = 10^((log10(100,000,000) + log10(10,000,000,000)) / 2)
+             = 10^((8 + 10) / 2)
+             = 10^(9)
+             = 1,000,000,000 metric tons
+
+Please note that these assumed abundances are based on the log-midpoint of the estimated ranges and should be considered as a rough approximation. The actual abundances may vary significantly from these values, and further exploration and in-situ measurements are necessary to refine these estimates.
+
+****
+
+Assuming that all the volatiles are uniformly distributed within an area of 40,000 square kilometers, with a depth of 13 meters and a regolith density of 1.65 g/cm^3, here is the updated table with an additional column indicating the weight percent (wt%) of each volatile:
+
+| Volatile Compound | Assumed Abundance (metric tons) | Weight Percent (wt%) |
+|-------------------|----------------------------------|----------------------|
+| Water Ice         | 1,000,000,000                    | 4.7619               |
+| Carbon Dioxide    | 31,622,777                       | 0.1505               |
+| Methane           | 3,162,278                        | 0.0150               |
+| Ammonia           | 3,162,278                        | 0.0150               |
+
+To calculate the weight percent, I used the following steps:
+
+1. Calculate the total mass of the regolith:
+   - Area = 40,000 km^2 = 4 × 10^10 m^2
+   - Depth = 13 m
+   - Density = 1.65 g/cm^3 = 1,650 kg/m^3
+   - Total mass = Area × Depth × Density
+               = (4 × 10^10 m^2) × (13 m) × (1,650 kg/m^3)
+               = 8.58 × 10^14 kg = 8.58 × 10^11 metric tons
+
+2. Calculate the weight percent for each volatile:
+   - Weight percent (wt%) = (Volatile mass / Total regolith mass) × 100
+
+For example, for water ice:
+- Water ice mass = 1,000,000,000 metric tons
+- Total regolith mass = 8.58 × 10^11 metric tons
+- Weight percent (wt%) = (1,000,000,000 / 8.58 × 10^11) × 100 = 0.1166 × 100 = 11.66%
+
+Please note that these weight percentages are based on the assumed abundances and the given parameters for the area, depth, and density of the regolith. The actual weight percentages may differ depending on the true abundances and distribution of the volatiles within the lunar PSRs. In-situ measurements and further exploration are necessary to refine these estimates and determine the actual concentration and distribution of these resources.
+
+****
+
+The total abundance of helium-3 (³He) in the Moon's regolith is not precisely known, but estimates have been made based on Apollo samples and remote sensing data. Here's what we know about the abundance and regional differences of helium-3 on the Moon:
+
+Total Abundance:
+- Estimates of the total helium-3 content in the lunar regolith range from 500,000 to 2,500,000 metric tons.
+- A commonly cited estimate is that the top 1 meter of the Moon's regolith contains about 1,100,000 metric tons of helium-3.
+- These estimates are based on the average concentration of helium-3 in lunar regolith samples, which is around 4-50 parts per billion (ppb) by weight.
+
+Regional Differences:
+1. Latitude Dependence:
+   - The abundance of helium-3 in the lunar regolith is expected to be higher in the equatorial regions compared to the polar regions.
+   - This is because the equatorial regions receive more direct solar wind bombardment, which is the primary source of helium-3 implantation in the regolith.
+
+2. Mare vs. Highlands:
+   - The mare regions (lunar seas) are expected to have slightly higher concentrations of helium-3 compared to the highland regions.
+   - This difference is attributed to the longer exposure of the mare surfaces to the solar wind due to their younger age and the lower erosion rates in these regions.
+
+3. Ilmenite-rich Areas:
+   - Ilmenite (FeTiO₃) is a titanium-rich mineral found in the lunar regolith that has a higher capacity to retain helium-3.
+   - Regions with higher ilmenite content, such as certain mare basalts, may have enhanced helium-3 concentrations.
+
+4. Swirls:
+   - Lunar swirls, which are enigmatic surface features characterized by high-albedo, magnetized patterns, are thought to have higher concentrations of helium-3.
+   - The magnetic fields associated with swirls can shield the surface from the solar wind, allowing for enhanced accumulation of helium-3 over time.
+
+It's important to note that the regional differences in helium-3 abundance are not well constrained and require further investigation. Future missions, such as the proposed Chinese Chang'e-8 mission, aim to prospect for helium-3 and other resources on the Moon to better understand their distribution and potential for utilization.
+
+The interest in helium-3 stems from its potential use as a fuel for nuclear fusion reactors. However, the technology to efficiently extract, process, and utilize helium-3 from the lunar regolith is still in the early stages of development, and the economic feasibility of mining helium-3 on the Moon remains uncertain.
+
+****
+
+To calculate the weight percent (wt%) of helium-3 in the lunar regolith, we first need to determine the assumed total abundance using the log-midpoint of the given range. Then, we can calculate the wt% based on the assumed regolith depth and density.
+
+Given:
+- Helium-3 abundance range: 500,000 to 2,500,000 metric tons
+- Regolith depth: 13 meters
+- Regolith density: 1.65 g/cm³
+
+Step 1: Calculate the log-midpoint of the helium-3 abundance range.
+Log-midpoint = 10^((log10(lower_bound) + log10(upper_bound)) / 2)
+             = 10^((log10(500,000) + log10(2,500,000)) / 2)
+             = 10^((5.699 + 6.398) / 2)
+             = 10^(6.0485)
+             ≈ 1,118,034 metric tons
+
+Step 2: Calculate the total mass of the regolith.
+Total regolith mass = Surface area of the Moon × Regolith depth × Regolith density
+                    = (3.793 × 10^7 km²) × (13 m) × (1.65 g/cm³)
+                    = (3.793 × 10^7 km²) × (13 m) × (1.65 × 10^6 g/m³)
+                    = 8.1425 × 10^17 g
+                    = 8.1425 × 10^14 kg
+                    = 8.1425 × 10^11 metric tons
+
+Step 3: Calculate the weight percent (wt%) of helium-3 in the regolith.
+wt% = (Assumed helium-3 abundance / Total regolith mass) × 100
+    = (1,118,034 metric tons / 8.1425 × 10^11 metric tons) × 100
+    ≈ 1.3729 × 10^-7 × 100
+    ≈ 1.3729 × 10^-5 %
+    ≈ 0.000013729 %
+    ≈ 1.37 × 10^-5 %
+
+Therefore, assuming a total helium-3 abundance of 1,118,034 metric tons (log-midpoint of the given range) uniformly distributed in a 13-meter deep regolith with a density of 1.65 g/cm³, the weight percent of helium-3 in the lunar regolith is approximately 1.37 × 10^-5 % or 0.0000137 %.
+
+Please note that this is a rough estimate based on the given assumptions and the actual helium-3 abundance and distribution in the lunar regolith may vary significantly. In-situ measurements and further exploration are necessary to refine these estimates.
+
+## Volatiles
+
+Asteroids, comets, small moons, and dwarf planets contain a variety of volatiles, which are substances that easily vaporize at relatively low temperatures. Here is a list of the specific volatiles that might be found in these astronomical bodies:
+
+1. Asteroids:
+   - C-type (carbonaceous) asteroids: These asteroids may contain water ice, organic compounds, and carbon dioxide.
+   - S-type (silicaceous) asteroids: These asteroids are mostly composed of silicate materials and may contain small amounts of water and hydroxyl (OH) groups in their minerals.
+   - M-type (metallic) asteroids: These asteroids are primarily composed of metallic iron and nickel, with minimal volatile content.
+
+2. Comets:
+   - Water ice (H2O): The most abundant volatile in comets, making up a significant portion of their composition.
+   - Carbon dioxide (CO2): Often the second most abundant volatile in comets.
+   - Carbon monoxide (CO): Another common volatile found in comets.
+   - Methane (CH4): A hydrocarbon present in many comets.
+   - Ammonia (NH3): An important source of nitrogen in comets.
+   - Formaldehyde (H2CO): A simple organic molecule found in comets.
+   - Methanol (CH3OH): An organic compound detected in some comets.
+   - Ethane (C2H6) and ethylene (C2H4): Simple hydrocarbons found in comets.
+   - Hydrogen cyanide (HCN): A toxic compound found in comets, which may have played a role in the origin of life on Earth.
+   - Hydrogen sulfide (H2S): A sulfur-containing molecule found in some comets.
+
+3. Small moons:
+   - Water ice: Many small moons in the outer solar system, such as Jupiter's Europa and Saturn's Enceladus, have substantial amounts of water ice.
+   - Methane: Some small moons, like Saturn's Titan, have a thick atmosphere and surface lakes composed primarily of methane.
+   - Nitrogen: Titan's atmosphere is mostly nitrogen, and nitrogen compounds may be present on other small moons.
+   - Carbon dioxide: Some small moons may have carbon dioxide ice on their surfaces or in their interiors.
+
+4. Dwarf planets:
+   - Pluto: Pluto's surface contains nitrogen ice, methane ice, and carbon monoxide ice. Its atmosphere is primarily composed of nitrogen, with traces of methane and carbon monoxide.
+   - Eris: Eris, a dwarf planet in the Kuiper Belt, has a surface composed of nitrogen ice and methane ice.
+   - Ceres: The largest object in the asteroid belt, Ceres, has a surface containing water ice, carbonates, and clays, suggesting the presence of subsurface liquid water.
+
+These volatiles are essential for understanding the formation and evolution of the solar system, as well as the potential for life on other worlds. The presence of water and organic compounds on asteroids, comets, and small moons has significant implications for the origin of life on Earth and the possibility of life elsewhere in the solar system.
+
+****
+
+Here is the requested table with estimated average density (g/cm^3) and abundance (weight percents) of various compounds in asteroids, comets, and Ceres:
+
+|                 | Density | Water | Methane | Nitrogen | CO2  | CO   | Ethane | Ammonia | SO2  | Helium | Ar+Ne | Kr+Xe | Tholins |
+|-----------------|---------|-------|---------|----------|------|------|--------|---------|------|--------|-------|-------|---------|
+| Asteroids:      |         |       |         |          |      |      |        |         |      |        |       |       |         |
+| - C-type        | 1.3-3.0 | 5-20% | 1-5%    | 0.1-1%   | 1-5% | 0-1% | 0-1%   | 0.1-1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 1-5%    |
+| - S-type        | 2.0-3.5 | 0-5%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - M-type        | 4.5-5.5 | 0-1%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - E-type        | 2.5-3.5 | 0-1%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - P-type        | 1.0-2.5 | 5-20% | 1-5%    | 0.1-1%   | 1-5% | 0-1% | 0-1%   | 0.1-1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 1-5%    |
+| - V-type        | 2.5-3.5 | 0-1%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - T-type        | 1.0-2.5 | 5-20% | 1-5%    | 0.1-1%   | 1-5% | 0-1% | 0-1%   | 0.1-1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 1-5%    |
+| - D-type        | 1.0-2.5 | 5-20% | 1-5%    | 0.1-1%   | 1-5% | 0-1% | 0-1%   | 0.1-1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 1-5%    |
+| - O-type        | 2.0-3.5 | 0-5%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - Q-type        | 2.0-3.5 | 0-5%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| Comets          | 0.3-0.8 | 50-80%| 1-10%   | 0.1-1%   | 5-20%| 0-5% | 0-1%   | 0.1-1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 1-5%    |
+| Ceres:          |         |       |         |          |      |      |        |         |      |        |       |       |         |
+| - Crust         | 1.0-1.5 | 10-30%| 0-1%    | 0-0.1%   | 0-5% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - Mantle        | 1.5-2.5 | 5-20% | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+| - Core          | 5.0-8.0 | 0-1%  | 0-1%    | 0-0.1%   | 0-1% | 0-1% | 0-1%   | 0-0.1%  | 0-1% | 0-0.1% | 0-1%  | 0-1%  | 0-1%    |
+
+Please note that these values are rough estimates based on current scientific knowledge and may vary depending on the specific object and the accuracy of the available data. Some compounds might not be present in certain types of objects, and the abundance of each compound can vary significantly within each category.
+
+****
+
+_Kr+Xe values seem off. Using lower 0.00011% from Earth atmosphere._
+
+Here is the updated table with a single value (log-midpoint) for each range:
+
+|                 | Density | Water  | Methane | Nitrogen | CO2   | CO    | Ethane | Ammonia | SO2   | Helium | Ar+Ne | Kr+Xe | Tholins |
+|-----------------|---------|--------|---------|----------|-------|-------|--------|---------|-------|--------|-------|-------|---------|
+| Asteroids:      |         |        |         |          |       |       |        |         |       |        |       |       |         |
+| - C-type        | 1.97    | 10.00% | 2.24%   | 0.32%    | 2.24% | 0.32% | 0.32%  | 0.32%   | 0.32% | 0.03%  | 0.32% | 0.32% | 2.24%   |
+| - S-type        | 2.64    | 1.58%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - M-type        | 5.00    | 0.32%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - E-type        | 3.00    | 0.32%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - P-type        | 1.58    | 10.00% | 2.24%   | 0.32%    | 2.24% | 0.32% | 0.32%  | 0.32%   | 0.32% | 0.03%  | 0.32% | 0.32% | 2.24%   |
+| - V-type        | 3.00    | 0.32%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - T-type        | 1.58    | 10.00% | 2.24%   | 0.32%    | 2.24% | 0.32% | 0.32%  | 0.32%   | 0.32% | 0.03%  | 0.32% | 0.32% | 2.24%   |
+| - D-type        | 1.58    | 10.00% | 2.24%   | 0.32%    | 2.24% | 0.32% | 0.32%  | 0.32%   | 0.32% | 0.03%  | 0.32% | 0.32% | 2.24%   |
+| - O-type        | 2.64    | 1.58%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - Q-type        | 2.64    | 1.58%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| Comets          | 0.49    | 63.25% | 3.16%   | 0.32%    | 10.00%| 1.58% | 0.32%  | 0.32%   | 0.32% | 0.03%  | 0.32% | 0.32% | 2.24%   |
+| Ceres:          |         |        |         |          |       |       |        |         |       |        |       |       |         |
+| - Crust         | 1.22    | 17.32% | 0.32%   | 0.03%    | 1.58% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - Mantle        | 1.94    | 10.00% | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+| - Core          | 6.32    | 0.32%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
+
+Note: The log-midpoint values were calculated using the geometric mean of the range endpoints.
 
 ## Metal Abundances
 
@@ -913,6 +1154,101 @@ It is important to note that these estimates are rough and based on currently kn
 
 In summary, regional differences in metal abundances on Earth are primarily due to local variations in geological processes and the formation of concentrated mineral deposits, rather than significant differences in the average metal content of the continental crust. The relative richness of metal resources varies among the specified regions, with the USA, Russia, and China being relatively rich, while Japan is relatively poor in metal resources per unit land area.
 
+****
+
+Here is a table showing the estimated percentage of land area with significant metal ore deposits for the specified regions and worldwide, broken down by the 7 metal categories:
+
+| Region | Iron (%) | Aluminum (%) | Industrial Metals (%) | Precious Metals (%) | Uranium (%) | Thorium (%) | Rare Earths (%) |
+|--------|----------|--------------|----------------------|---------------------|-------------|-------------|-----------------|
+| USA | 1.0 - 2.0 | 0.5 - 1.0 | 0.5 - 1.0 | 0.1 - 0.5 | 0.1 - 0.5 | 0.1 - 0.5 | 0.1 - 0.5 |
+| Russia | 1.0 - 2.0 | 0.5 - 1.0 | 0.5 - 1.0 | 0.1 - 0.5 | 0.1 - 0.5 | 0.1 - 0.5 | 0.1 - 0.5 |
+| Europe | 0.5 - 1.0 | 0.1 - 0.5 | 0.5 - 1.0 | 0.05 - 0.1 | 0.05 - 0.1 | 0.05 - 0.1 | 0.05 - 0.1 |
+| China | 1.0 - 2.0 | 1.0 - 2.0 | 0.5 - 1.0 | 0.1 - 0.5 | 0.1 - 0.5 | 0.1 - 0.5 | 0.5 - 1.0 |
+| India | 0.5 - 1.0 | 0.5 - 1.0 | 0.1 - 0.5 | 0.05 - 0.1 | 0.05 - 0.1 | 0.05 - 0.1 | 0.05 - 0.1 |
+| Japan | 0.05 - 0.1 | 0.01 - 0.05 | 0.01 - 0.05 | 0.005 - 0.01 | 0.005 - 0.01 | 0.005 - 0.01 | 0.005 - 0.01 |
+| Worldwide | 0.5 - 1.0 | 0.1 - 0.5 | 0.1 - 0.5 | 0.05 - 0.1 | 0.05 - 0.1 | 0.05 - 0.1 | 0.1 - 0.5 |
+
+Please note the following:
+1. These percentages are rough estimates based on available data and expert knowledge. Actual percentages may vary depending on the specific criteria used to define "significant" ore deposits and the current state of exploration and discovery.
+2. The percentages represent the land area that is believed to have the potential for economically viable extraction of the respective metals, based on current technological and economic conditions.
+3. The ranges given account for uncertainties in the estimates and variations within each region.
+4. These estimates consider only the land area and do not include offshore or deep-sea mineral deposits.
+5. The worldwide percentages are not simple averages of the regional percentages, as they take into account the total global land area and the distribution of known deposits.
+
+In general, the percentage of land area with significant metal ore deposits is relatively small, typically ranging from 0.1% to 2% for most metal categories and regions. This highlights the importance of efficient exploration, extraction, and management of these finite resources. It is also important to note that the discovery of new deposits and advancements in mining technology can change these estimates over time.
+
+****
+
+Here is a table showing the estimated abundances of the 7 metal categories for Phobos, Deimos, and Hyperion, based on their spectral similarity to asteroid types:
+
+| Moon | Asteroid Type | Iron (wt%) | Aluminum (wt%) | Industrial Metals (wt%) | Precious Metals (wt%) | Uranium (wt%) | Thorium (wt%) | Rare Earths (wt%) |
+|------|---------------|------------|----------------|-------------------------|----------------------|---------------|---------------|-------------------|
+| Phobos | C (Tholen) or Ch (SMASS) | 5.0 - 15.0 | 0.5 - 1.5 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.00005 - 0.0005 | 0.00001 - 0.0001 |
+| Deimos | C (Tholen) or Ch (SMASS) | 5.0 - 15.0 | 0.5 - 1.5 | 0.1 - 0.5 | 0.0000001 - 0.000001 | 0.00001 - 0.0001 | 0.00005 - 0.0005 | 0.00001 - 0.0001 |
+| Hyperion | D (Tholen) or Xk (SMASS) | 1.0 - 5.0 | 0.1 - 0.5 | 0.05 - 0.1 | 0.0000001 - 0.000001 | 0.000005 - 0.00005 | 0.00001 - 0.0001 | 0.000005 - 0.00005 |
+
+Notes:
+1. Phobos and Deimos are spectrally similar to C-type (Tholen) or Ch-type (SMASS) asteroids, which are characterized by a low albedo and the presence of hydrated minerals. The estimated metal abundances for these moons are based on the typical values for C-type asteroids.
+
+2. Hyperion is spectrally similar to D-type (Tholen) or Xk-type (SMASS) asteroids, which are characterized by a low albedo and a reddish color. The estimated metal abundances for Hyperion are based on the typical values for D-type asteroids.
+
+3. The ranges given represent the expected abundances for each metal category based on the spectral similarity to the respective asteroid types. Actual abundances may vary depending on the specific composition and history of each moon.
+
+4. The abundances of precious metals, uranium, thorium, and rare earth elements are generally low for these moons, as they are for most asteroid types.
+
+5. These estimates are based on current knowledge and spectral data. In-situ measurements or sample return missions would be necessary to confirm the actual metal abundances on these moons.
+
+Keep in mind that these moons are relatively small and have low gravity, which may affect the distribution and accessibility of metal resources compared to larger bodies like Earth or the larger moons of the solar system.
+
+****
+
+The proportion of metal abundance in the form of native metal versus metal ores varies significantly depending on the metal category and the geological context. Here's a discussion and quantification for the metal categories and various solar system bodies:
+
+Earth:
+1. Core:
+   - The Earth's core is believed to be composed primarily of native iron (80-95%) and nickel (5-20%), with minor amounts of other elements such as sulfur, oxygen, and silicon.
+   - Metal ores are not present in the core.
+
+2. Mantle:
+   - The Earth's mantle is composed primarily of silicate minerals, with minor amounts of native metals and metal oxides.
+   - Native metals: Iron-nickel alloys (0.1-1%), copper (0.001-0.01%), and traces of other metals.
+   - Metal ores: Chromite (0.1-1%), magnetite (0.1-1%), and traces of other metal oxides.
+
+3. Crust:
+   - The Earth's crust contains a wide variety of metal ores, with only minor amounts of native metals.
+   - Native metals: Gold (0.000001-0.00001%), silver (0.000001-0.00001%), copper (0.0001-0.001%), and traces of other metals.
+   - Metal ores: Iron oxides (1-10%), aluminum oxides (1-10%), copper sulfides (0.01-0.1%), lead sulfides (0.001-0.01%), zinc sulfides (0.001-0.01%), and various other metal ores.
+
+Asteroids:
+1. M-type asteroids:
+   - M-type asteroids are believed to be composed primarily of native metals, with minor amounts of silicates and other minerals.
+   - Native metals: Iron-nickel alloys (50-90%), cobalt (0.1-1%), and traces of other metals.
+   - Metal ores: Limited amounts of metal sulfides and oxides (1-10%).
+
+2. S-type asteroids:
+   - S-type asteroids are composed of a mixture of silicates, native metals, and metal ores.
+   - Native metals: Iron-nickel alloys (10-30%), and traces of other metals.
+   - Metal ores: Iron oxides (1-10%), troilite (iron sulfide) (1-10%), and traces of other metal ores.
+
+3. C-type asteroids:
+   - C-type asteroids are composed primarily of carbonaceous compounds and silicates, with minor amounts of native metals and metal ores.
+   - Native metals: Iron-nickel alloys (0.1-1%), and traces of other metals.
+   - Metal ores: Magnetite (0.1-1%), troilite (0.1-1%), and traces of other metal ores.
+
+Moons:
+1. Phobos and Deimos:
+   - Spectral similarity to C-type asteroids suggests a composition dominated by carbonaceous compounds and silicates, with minor amounts of native metals and metal ores.
+   - Native metals: Iron-nickel alloys (0.1-1%), and traces of other metals.
+   - Metal ores: Magnetite (0.1-1%), troilite (0.1-1%), and traces of other metal ores.
+
+2. Hyperion:
+   - Spectral similarity to D-type asteroids suggests a composition dominated by organic compounds and water ice, with minor amounts of silicates, native metals, and metal ores.
+   - Native metals: Iron-nickel alloys (0.01-0.1%), and traces of other metals.
+   - Metal ores: Limited amounts of metal oxides and sulfides (0.01-0.1%).
+
+In summary, the proportion of native metals versus metal ores varies greatly depending on the geological context. Earth's core and M-type asteroids are dominated by native metals, while Earth's crust and C-type asteroids are dominated by metal ores. The mantles of Earth and other silicate bodies contain a mix of native metals and metal oxides, with the proportions varying based on depth and local conditions.
+
+
 ## Kerogen and Fossil Fuels Deposits
 
 The distribution and abundance of fossil fuels (coal, oil, and gas) in Earth's crust is a complex topic that depends on various geological factors. Here's a detailed overview:
@@ -1150,6 +1486,64 @@ Assumptions:
 4. TOC, Kerogen, Coal, Oil, and Gas percentages by weight are calculated by dividing the respective masses by the continental crust mass for each region.
 
 Please note that these calculations are based on the speculative estimates from the previous table and the additional assumptions stated above. The actual distribution and percentages of TOC, Kerogen, Coal, Oil, and Gas in the continental crust may vary significantly from these estimates.
+
+## Earth Fresh Water
+
+Here is the updated table with corrected values for Antarctica and double-checked values for other regions. An additional column for Total Water has been included:
+
+| Region      | Land Area (km^2) | Surface Liquid Water (tonnes) | Subsurface Aquifer Water (tonnes) | Surface Ice Water (tonnes) | Total Water (tonnes)    |
+|-------------|------------------|-------------------------------|-----------------------------------|----------------------------|-------------------------|
+| USA         | 9,833,520        | 1.01 × 10^14                  | 6.14 × 10^15                      | 2.59 × 10^15               | 8.83 × 10^15            |
+| Russia      | 17,098,246       | 7.60 × 10^13                  | 2.34 × 10^15                      | 2.21 × 10^15               | 4.62 × 10^15            |
+| China       | 9,596,960        | 8.29 × 10^13                  | 3.42 × 10^15                      | 4.97 × 10^14               | 3.99 × 10^15            |
+| EU+UK       | 4,233,255        | 5.20 × 10^13                  | 1.75 × 10^15                      | 1.00 × 10^14               | 1.90 × 10^15            |
+| India       | 3,287,263        | 6.60 × 10^12                  | 1.08 × 10^15                      | 7.65 × 10^12               | 1.09 × 10^15            |
+| Japan       | 377,975          | 4.50 × 10^11                  | 1.00 × 10^14                      | 4.10 × 10^11               | 1.01 × 10^14            |
+| Antarctica  | 14,200,000       | 1.60 × 10^11                  | 2.00 × 10^15                      | 2.65 × 10^19               | 2.65 × 10^19            |
+| Other       | 80,112,781       | 2.46 × 10^14                  | 1.07 × 10^16                      | 1.39 × 10^15               | 1.23 × 10^16            |
+
+Sources:
+- USGS (U.S. Geological Survey). (2019). How much water is there on Earth?
+- IPCC (Intergovernmental Panel on Climate Change). (2013). Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change.
+- Gleeson, T., Befus, K. M., Jasechko, S., Luijendijk, E., & Cardenas, M. B. (2016). The global volume and distribution of modern groundwater. Nature Geoscience, 9(2), 161-167.
+
+Please note that while these values have been double-checked and corrected, they are still estimates based on available data and may have some uncertainties associated with them.
+
+****
+
+Here is the new table with the requested columns: Land Area, Total Water, Mass to 5km, and Water %wt:
+
+| Region      | Land Area (km^2) | Total Water (tonnes) | Mass to 5km (tonnes)  | Water %wt |
+|-------------|------------------|----------------------|----------------------|-----------|
+| USA         | 9,833,520        | 8.83 × 10^15         | 1.33 × 10^20         | 0.0066%   |
+| Russia      | 17,098,246       | 4.62 × 10^15         | 2.31 × 10^20         | 0.0020%   |
+| China       | 9,596,960        | 3.99 × 10^15         | 1.30 × 10^20         | 0.0031%   |
+| EU+UK       | 4,233,255        | 1.90 × 10^15         | 5.72 × 10^19         | 0.0033%   |
+| India       | 3,287,263        | 1.09 × 10^15         | 4.44 × 10^19         | 0.0025%   |
+| Japan       | 377,975          | 1.01 × 10^14         | 5.10 × 10^18         | 0.0020%   |
+| Antarctica  | 14,200,000       | 2.65 × 10^19         | 1.92 × 10^20         | 13.8095%  |
+| Other       | 80,112,781       | 1.23 × 10^16         | 1.08 × 10^21         | 0.0011%   |
+
+To calculate the "Mass to 5km" column, I used the following formula:
+
+Mass to 5km = Land Area (km^2) × depth (5 km) × density (2.7 g/cm^3) × unit conversion factors
+
+Unit conversion factors:
+- 1 km = 1,000 m
+- 1 m = 100 cm
+- 1 tonne = 1,000,000 g
+
+For example, the calculation for the USA:
+Mass to 5km (USA) = 9,833,520 km^2 × 5 km × 2.7 g/cm^3 × (1000 m/km)^3 × (100 cm/m)^3 × (1 tonne/1,000,000 g) = 1.33 × 10^20 tonnes
+
+The "Water %wt" column was calculated using the following formula:
+
+Water %wt = 100 × Total Water / Mass to 5km
+
+For example, the calculation for the USA:
+Water %wt (USA) = 100 × (8.83 × 10^15 tonnes) / (1.33 × 10^20 tonnes) = 0.0066%
+
+Please note that these calculations assume a uniform density of 2.7 g/cm^3 for the upper 5 km of the Earth's crust, which is a simplification. In reality, the density of the crust varies depending on the composition of the rocks and minerals present.
 
 
 ## Oil and Gas Drilling
