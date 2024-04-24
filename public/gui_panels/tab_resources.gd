@@ -1,13 +1,12 @@
-# resource_composition.gd
+# tab_resources.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name ResourceComposition
-extends VBoxContainer
-
+class_name TabResources
+extends MarginContainer
 
 
 const SUPER_OPEN_PREFIX := "\u2304 "
@@ -16,9 +15,6 @@ const STRATUM_OPEN_PREFIX := "  \u2304 "
 const STRATUM_CLOSED_PREFIX := "  > "
 const RESOURCE_INDENT := "        "
 const IS_SPACECRAFT := IVEnums.BodyFlags.IS_SPACECRAFT
-
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
-
 const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
@@ -38,7 +34,9 @@ var _body_name: StringName
 var _selection_name: StringName
 var _memory := {} # keep open/closed states
 
-@onready var _no_resources: Label = $NoResourcesLabel
+@onready var _compositions_vbox: VBoxContainer = %CompositionsVBox
+@onready var _missing_label: Label = $MissingLabel
+
 
 
 func _ready() -> void:
@@ -136,7 +134,6 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		
 		resources_data.append(total_mass)
 		resources_data.append(body_interface.get_composition_density(i))
-		resources_data.append(body_interface.get_composition_volume(i))
 		resources_data.append(body_interface.get_compostion_thickness(i))
 		resources_data.append(body_interface.get_compostion_body_radius(i))
 		resources_data.append(survey_name)
@@ -158,7 +155,6 @@ func _sort_resources(a: Array, b: Array) -> bool:
 		return a[4] > b[4] # deposits
 	return a[1] > b[1] # mean
 
-
 # *****************************************************************************
 # Main thread !!!!
 
@@ -167,25 +163,25 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 
 	# TODO: Sort composition_polities in some sensible way
 	var n_polities := composition_polities.size()
-	var n_polity_vboxes := get_child_count() - 1
+	var n_polity_vboxes := _compositions_vbox.get_child_count()
 	
 	# add OwnerVBoxes as needed
 	while n_polity_vboxes < n_polities:
 		var polity_vbox := PolityVBox.new(_memory)
-		add_child(polity_vbox)
+		_compositions_vbox.add_child(polity_vbox)
 		n_polity_vboxes += 1
 
 	# set OwnerVBoxes we'll use & hide extras
 	var i := 0
 	while i < n_polities:
-		var polity_vbox: PolityVBox = get_child(i + 1)
+		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
 		var polity_name: StringName = composition_polities[i]
 		var init_open: bool = open_at_init[i]
 		polity_vbox.set_vbox(selection_name, polity_name, init_open)
 		polity_vbox.show()
 		i += 1
 	while i < n_polity_vboxes:
-		var polity_vbox: PolityVBox = get_child(i + 1)
+		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
 		polity_vbox.hide()
 		i += 1
 	
@@ -200,7 +196,6 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 		var survey_name: StringName = resources_data.pop_back()
 		var body_radius: float = resources_data.pop_back() # FIXME: outer radius
 		var thickness: float = resources_data.pop_back()
-		var volume: float = resources_data.pop_back()
 		var density: float = resources_data.pop_back()
 		var total_mass: float = resources_data.pop_back()
 		# resources_data now in correct form for add_stratum()
@@ -212,47 +207,27 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 		stratum_str += IVQFormat.fixed_unit(total_mass, &"t", 2) + "; "
 		stratum_str += tr(survey_name).to_lower() + ")"
 		
-		
-		
-		var hint_format_str: String
-		if body_radius == thickness:
-			hint_format_str = tr(&"HINT_STRATUM_FORMAT_1") # radius for sm undiff body
-		else:
-			hint_format_str = tr(&"HINT_STRATUM_FORMAT_2") # thickness
-		var hint := hint_format_str % [
-			tr(survey_name),
-			IVQFormat.dynamic_unit(thickness, LENGTH_M_KM, 3),
-			IVQFormat.fixed_unit(volume, &"km^3", 3),
-			IVQFormat.fixed_unit(density, &"g/cm^3", 3),
-			IVQFormat.fixed_unit(total_mass, &"t", 3),
-		]
-		
 		var polity_index := composition_polities.find(composition_polity)
-		var polity_vbox: PolityVBox = get_child(polity_index + 1)
-		polity_vbox.add_stratum(stratum_str, hint, init_open, resources_data)
+		var polity_vbox: PolityVBox = _compositions_vbox.get_child(polity_index)
+		polity_vbox.add_stratum(stratum_str, init_open, resources_data)
 		i += 1
 	
-	for child in get_children():
-		var polity_vbox := child as PolityVBox
-		if polity_vbox:
-			polity_vbox.finish_strata()
+	i = 0
+	while i < n_polities:
+		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
+		polity_vbox.finish_strata()
+		i += 1
 	
-	_no_resources.hide()
+	_missing_label.hide()
+	_compositions_vbox.show()
 
 
 
 func _update_no_resources(is_unknown := true) -> void:
-	_hide_polity_vboxes()
-	_no_resources.text = (&"LABEL_UNKNOWN_RESOURCES_PARENTHESIS" if is_unknown
+	_compositions_vbox.hide()
+	_missing_label.text = (&"LABEL_UNKNOWN_RESOURCES_PARENTHESIS" if is_unknown
 			else &"LABEL_NO_RESOURCES_PARENTHESIS")
-	_no_resources.show()
-
-
-func _hide_polity_vboxes() -> void:
-	for child in get_children():
-		var polity_vbox := child as PolityVBox
-		if polity_vbox:
-			polity_vbox.hide()
+	_missing_label.show()
 
 
 
@@ -294,8 +269,7 @@ class PolityVBox extends VBoxContainer:
 			_polity_header.text = SUPER_CLOSED_PREFIX + _polity_text
 	
 	
-	func add_stratum(stratum_str: String, hint: StringName, init_open: bool,
-			resources_data: Array) -> void:
+	func add_stratum(stratum_str: String, init_open: bool, resources_data: Array) -> void:
 		var stratum_vbox: StratumVBox
 		if _next_child_index < get_child_count():
 			stratum_vbox = get_child(_next_child_index)
@@ -303,7 +277,7 @@ class PolityVBox extends VBoxContainer:
 			stratum_vbox = StratumVBox.new(_memory)
 			add_child(stratum_vbox)
 		_next_child_index += 1
-		stratum_vbox.set_stratum(stratum_str, hint, resources_data, init_open, _memory_key)
+		stratum_vbox.set_stratum(stratum_str, resources_data, init_open, _memory_key)
 		stratum_vbox.visible = _is_open
 	
 	
@@ -322,9 +296,8 @@ class PolityVBox extends VBoxContainer:
 			_polity_header.text = SUPER_OPEN_PREFIX + _polity_text
 		else:
 			_polity_header.text = SUPER_CLOSED_PREFIX + _polity_text
-		var n_children := get_child_count()
 		var i := 1
-		while i < n_children:
+		while i < _next_child_index:
 			var stratum_vbox: StratumVBox = get_child(i)
 			stratum_vbox.visible = _is_open
 			i += 1
@@ -352,15 +325,15 @@ class StratumVBox extends VBoxContainer:
 		_stratum_header.button_down.connect(_toggle_open_close)
 		_stratum_header.flat = true
 		_stratum_header.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		_stratum_header.size_flags_horizontal = SIZE_FILL
+		_stratum_header.size_flags_horizontal = SIZE_EXPAND_FILL
 		add_child(_stratum_header)
 		_resource_grid.columns = N_COLUMNS
 		_resource_grid.size_flags_horizontal = SIZE_EXPAND_FILL
 		add_child(_resource_grid)
 	
 	
-	func set_stratum(stratum_str: String, hint: StringName, resources_data: Array,
-			init_open: bool, base_memory_key: String) -> void:
+	func set_stratum(stratum_str: String, resources_data: Array, init_open: bool,
+			base_memory_key: String) -> void:
 		_memory_key = base_memory_key + stratum_str
 		_stratum_str = stratum_str
 		var is_open := init_open
@@ -372,7 +345,6 @@ class StratumVBox extends VBoxContainer:
 		else:
 			_stratum_header.text = STRATUM_CLOSED_PREFIX + stratum_str
 			_resource_grid.hide()
-		_stratum_header.tooltip_text = hint
 		var n_resources := resources_data.size()
 		var n_cells_needed := N_COLUMNS * (n_resources + 1)
 		var n_cells := _resource_grid.get_child_count()
@@ -458,6 +430,4 @@ class StratumVBox extends VBoxContainer:
 			_stratum_header.text = STRATUM_OPEN_PREFIX + _stratum_str
 			_resource_grid.show()
 			_memory[_memory_key] = true
-
-
 

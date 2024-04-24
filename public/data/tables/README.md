@@ -73,7 +73,7 @@ The table is here to help me develop a conceptual framework for the science/tech
 
 ## asset_adjustments_mod.tsv
 
-Specifies adjustments to imported assets, e.g., model scaling. This is a "mod" table that modifies ivoyager/data/solar_system/asset_adjustments.tsv.
+Specifies adjustments to imported assets, e.g., model scaling. This is a "mod" table that modifies ivoyager_core/data/solar_system/asset_adjustments.tsv.
 
 ## carrying_capacity_groups.tsv
 
@@ -87,7 +87,7 @@ Composition names are constructed:
 `COMPOSITION_<body_name or generic body_class>_<stratum_name>[_<owner_name>]`
 
 Field comments:
-* `outer_depth` (default = 0.0) Top of the stratum relative to Body.m_radius. Negative if this is above the 'reference altitude' for m_radius (e.g., Earth sea level). 
+* `outer_depth` (default = 0.0) Top of the stratum relative to Body.m_radius. Negative if stratum radius is greater than m_radius (e.g., Earth's atmosphere). 
 * `thickness` If blank, the stratum is assumed to include the body center and value is calculated as m_radius minus outer_depth.
 * `spherical_fraction` 1 if whole sphere, < 1 if partial (i.e., region). Can be blank only if `area` is provided.
 * `area` Surface area of the stratum, or leave blank to be calcuated from radius and `spherical_fraction`.
@@ -173,11 +173,16 @@ See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/ta
 
 Defines mass proportion for all extractable resources in each composition. Each row is summed and normalized internally, so we supply percent for convenience but numbers don't have to add to _exactly_ 100. For solid non-core strata, we generally calculate percent for each item and use regolith to add to 100. For Earth's 'surface' strata, numbers add to 100 without water, then we add water value to represent surface and aquifer fresh water.
 
-We define benchmark ores with these grades (see justifications under resources.tsv): 70% iron, 30% aluminium, 5% industrial metals, 0.01% precious metals, 1% rare earths and 1% uranium. These ore grades are used to convert percent pure resource content to percent ore, assuming that 100% of the target resource is contained in ore. Where we have a range, we use the mid-point or log-mean (e.g., 0.001-0.0001 -> 0.003). Cores of the Moon and similar or larger bodies don't have ores but have native metals (mostly iron) and some 'industrial minerals' (representing sulfer and anything else).
+We define benchmark ores with these grades (see justifications under resources.tsv): 70% iron, 30% aluminium, 5% industrial metals, 0.01% precious metals, 1% rare earths and 1% uranium. These ore grades are used to convert percent pure resource content to percent ore, assuming that 100% of the target resource is contained in ore. Where we have a range, we use the mid-point or log-mean (e.g., 0.001-0.0001 -> 0.003). Cores of the Moon and similar or larger bodies don't have ores but have native metals (mostly iron) and some 'industrial minerals' (representing sulfer and anything else). For S- and M-type asteroids, we split the metals content between ore and native (50:50 for S and 5:95 for M; for iron, 'industrial' and 'precious').
 
 Percent abundances from AI chats:
 
-[Metals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Metal-Abundances) (after converting metal percents -> ore percents).
+[Metals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Metal-Abundances) (metal % -> ore %, where appropriate)  
+[Volatiles](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Volatiles)  
+[Moon Water and Helium-3](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Moon-Geology)  
+[Earth Fossil Fuels](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Kerogen-and-Fossil-Fuels-Deposits)  
+[Earth Fresh Water](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Earth-Fresh-Water)  
+[Industrial Minerals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Minerals-Mining) (summed Earth crust minerals, less silicates; others are made up)  
 
 Note that percents are converted internally to mass and adjusted using 'error' assuming a log-normal distribution. The adjustment bias is kept and re-applied to interface values shown to GUI and AI. Hence, the table values are really the 'public estimates' and not the true values for each body.
 
@@ -803,7 +808,7 @@ Couldn't find price but $600/t for methanol; chemanalyst.com
 
 $1000/t; chemanalyst.com
 
-#### SULFER_DIOXIDE
+#### SULFUR_DIOXIDE
 
 Couldn't find but $312/t for sulfur
 

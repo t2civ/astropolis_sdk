@@ -19,7 +19,7 @@ var _selection_manager: SelectionManager
 var _body_name: StringName
 var _selection_name: StringName
 
-@onready var _resource_composition: ResourceComposition = %ResourceComposition
+@onready var _tab_resources: TabResources = %Resources
 
 
 
@@ -39,7 +39,7 @@ func _refresh() -> void:
 		return
 	if !_body_name or !_selection_name:
 		_update_selection()
-	_resource_composition.refresh()
+	_tab_resources.refresh()
 
 
 func _update_selection(_suppress_camera_move := false) -> void:
@@ -52,7 +52,7 @@ func _update_selection(_suppress_camera_move := false) -> void:
 	assert(body_name)
 	_body_name = body_name
 	_selection_name = selection_name
-	_resource_composition.update_selection(body_name, selection_name)
+	_tab_resources.update_selection(body_name, selection_name)
 
 
 
