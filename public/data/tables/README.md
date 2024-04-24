@@ -803,7 +803,7 @@ Couldn't find price but $600/t for methanol; chemanalyst.com
 
 $1000/t; chemanalyst.com
 
-#### SULFER_DIOXIDE
+#### SULFUR_DIOXIDE
 
 Couldn't find but $312/t for sulfur
 
