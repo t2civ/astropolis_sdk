@@ -184,17 +184,31 @@ Percent abundances from AI chats:
 [Earth Fresh Water](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Earth-Fresh-Water)  
 [Industrial Minerals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Minerals-Mining) (summed Earth crust minerals, less silicates; others are made up)  
 
-Note that percents are converted internally to mass and adjusted using 'error' assuming a log-normal distribution. The adjustment bias is kept and re-applied to interface values shown to GUI and AI. Hence, the table values are really the 'public estimates' and not the true values for each body.
+Notes:
+* Percents are converted internally to mass and adjusted using 'error' assuming a log-normal distribution. The adjustment bias is kept and re-applied to interface values shown to GUI and AI. Hence, the table values are really the 'public estimates' and not the true values for each body.
+* We drop volatiles in some strata for simplification. Water is set to 0.5% for Earth surface, which is vastly more than than available fresh water but vastly less than actual water locked up in the regolith. (Un-simplifying this would require a separate "fresh water" stratum.)
 
 ## compositions_resources_variances.tsv
 
 'Mixed' strata such as atmosphere are omitted from table and have default variance = 0.0.
 
-Variance is the spatial heterogeneity of resource mass in each composition. Values are coefficient of variation of mass assuming a log-normal distrubution. High variance together with high survey level causes "deposits" which are useful for mining. E.g., USA and Japan have similar total metal content in their upper crust. But variance is boosted for USA to provide better extraction/energy ratio for mining operations. Variance goes down with mass as a resource is extracted (because you're removing the long tail of the log-normal distribution).
+Variance is the spatial heterogeneity of resource mass in each composition (as a coefficient of variation). High variance together with high survey level causes "deposits" which are useful for mining. E.g., USA and Japan have similar total metal content in their upper crust. But variance is boosted for USA to provide better extraction/energy ratio for mining operations. Variance goes down with mass as a resource is extracted (because you're removing the long tail of the log-normal distribution).
 
-Dev note: This is the "fudge factor" or "adjustment knob" to make other values in the sim work. Resource percents in the _proportions.tsv table are as accurate as possible. The energy used for extraction (MW / tonne ore extracted) in operations.tsv is also meant to be real. That energy is caclulated assuming a benchmark "deposits" level, which is also meant to be plausible. Then we tweak values here to achieve that deposits level.
+Variances are tuned for Earth surface to provide "deposits" corresponding to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
+* Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
+* Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
+* Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
+* Industrial Metals 5:1 to 30:1 -> 17-3% deposits (Zn: 0.2 kWh/t at 17%, 5/5 grade)
+* Precious Metals 10:1 to 100:1 -> 9-1% deposits (Au: 15000 kWh/t at 9%, 1e-4/1e-6 grade conversion)
+* Uranium 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 25%, 1/0.1 grade conversion)
+* Rare Eaths 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 1/1 grade)
 
-To expand on above: that discussion is really about Earth and other differentiated bodies. The situation at small undifferentiated asteroids and moons is different. Here, variance is low, but mass error is high. Surveys are needed to reduce that error. Then the player can focus on bodies that really do have high abundances.
+The concept is more abstract for others, but still relates to availability. Target deposits:
+* Oil 5-0.05% deposits, ~ "primary" to "tertiary" (3 kWh/t at 5%)
+* Methane 5-0.5% deposits, ~ "conventional" to "unconventional" (3 kWh/t at 5%)
+* Water 100% deposits, surface fresh water for the taking (0.01 kWh/t at 100% ???) Note: To do water properly, we would need to add a separate "fresh water" strata, since that total mass is tiny compared to H2O locked up in the surface regolith (except for Antarctica). However, I'm simplifying since this is Earth-only.
+
+For undifferentiated asteroids and small moons, spatial heterogeneity is much much smaller. However, the minumum "deposits" level is always the mass proportion of the material. So here the purpose of surveys is to find the asteroid with unusually high abundance (which is a function of error).
 
 ## facilities.tsv
 

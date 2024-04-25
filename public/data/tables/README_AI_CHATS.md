@@ -9,6 +9,7 @@
 * [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
 * [Earth Fresh Water](#Earth-Fresh-Water)
 * [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
+* [Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)
 * [Coal Mining](#Coal-Mining)
 * [Uranium Mining](#Uranium-Mining)
 * [Industrial Metals Mining](#Industrial-Metals-Mining)
@@ -719,6 +720,29 @@ Here is the updated table with a single value (log-midpoint) for each range:
 | - Core          | 6.32    | 0.32%  | 0.32%   | 0.03%    | 0.32% | 0.32% | 0.32%  | 0.03%   | 0.32% | 0.03%  | 0.32% | 0.32% | 0.32%   |
 
 Note: The log-midpoint values were calculated using the geometric mean of the range endpoints.
+
+****
+
+_Core values can't be right. Taking some values for other layers just to have something (water, carbon dioxide and sulfur dioxide). Using 0.001% helium in all layers. See Fossil Fuels for methane._
+
+Here is a table showing the estimated abundances of volatiles in Earth's geological layers, including the upper crust, lower crust, oceanic crust, mantle, and core. The ranges and geometric means (in parentheses) are provided when applicable:
+
+| Volatile        | Upper Crust      | Lower Crust      | Oceanic Crust    | Mantle           | Core             |
+|-----------------|------------------|------------------|------------------|------------------|------------------|
+| Water           | 1-5% (2.24%)     | 0.5-2% (1%)      | 2-10% (4.47%)    | 0.01-0.1% (0.03%)| 0-0.1% (0.03%)   |
+| Methane         | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Nitrogen        | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Carbon Dioxide  | 0.1-1% (0.32%)   | 0.1-1% (0.32%)   | 0.1-1% (0.32%)   | 0.01-0.1% (0.03%)| 0-0.01% (0.003%) |
+| Carbon Monoxide | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Ethane          | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Ammonia         | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Sulfur Dioxide  | 0-0.1% (0.03%)   | 0-0.1% (0.03%)   | 0-0.1% (0.03%)   | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Helium          | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     |
+| Argon+Neon      | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+| Krypton+Xenon   | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     | 0-0.001% (0)     |
+| Tholins         | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) | 0-0.01% (0.003%) |
+
+Please note that these values are rough estimates based on current scientific knowledge and may vary depending on the specific location and depth within each layer. Some compounds might be present in trace amounts or not at all in certain layers. The abundance of each compound can also vary significantly within each layer due to local geological processes and conditions.
 
 ## Metal Abundances
 
@@ -1696,6 +1720,175 @@ The exact relationship between depth and energy input is complex and depends on 
 For example, a study by the U.S. Energy Information Administration (EIA) found that the energy intensity of oil and gas production in the United States increased by about 60% between 2000 and 2014, largely due to the shift towards deeper and more challenging wells.
 
 In summary, while the exact relationship between depth and energy input varies, deeper oil and gas wells generally require significantly more energy to drill and extract compared to shallower wells.
+
+## Mining Energies and Strip Ratio
+
+Here is a summary of typical ore grades, mine extraction byproducts, and energy requirements for mining various commodities:
+
+Coal:
+- Ore grades: Varies widely, typically 50-90% pure carbon content
+- Byproducts: Overburden (waste rock and soil), tailings, acid mine drainage 
+- Energy requirements: 0.3-1.3 kWh/ton mined
+
+Iron:
+- Ore grades: 25-65% Fe content
+- Byproducts: Overburden, tailings
+- Energy requirements: 10-40 kWh/ton concentrate produced 
+
+Aluminum (from bauxite ore):
+- Ore grades: 30-60% Al2O3 content  
+- Byproducts: Red mud tailings (1-1.5 tons per ton alumina produced)
+- Energy requirements: 14,000-16,000 kWh/ton aluminum produced
+
+Copper:
+- Ore grades: 0.5-2% Cu content (has declined over time)
+- Byproducts: Overburden, tailings, slag 
+- Energy requirements: 15-50 kWh/ton copper produced
+
+Nickel:
+- Ore grades: 0.5-3% Ni content
+- Byproducts: Overburden, tailings, slag
+- Energy requirements: 90-160 kWh/ton nickel produced
+
+Zinc:
+- Ore grades: 2-20% Zn content  
+- Byproducts: Tailings, slag, sulfur dioxide emissions
+- Energy requirements: 10-50 kWh/ton zinc concentrate produced
+
+Lead:
+- Ore grades: 2-8% Pb content
+- Byproducts: Tailings, slag, sulfur dioxide emissions  
+- Energy requirements: 5-20 kWh/ton lead concentrate produced
+
+Precious metals (gold, silver, platinum group):
+- Ore grades: Highly variable - 0.5 to 30 g/t gold, 1 to 800 g/t silver, 0.15 to 15 g/t PGMs
+- Byproducts: Overburden, cyanide-bearing tailings, slag
+- Energy requirements: Gold - 15,000-40,000 kWh/kg; Silver - 1,500-3,000 kWh/kg; PGMs - 150,000-300,000+ kWh/kg
+
+Uranium:
+- Ore grades: 0.03-20% U3O8 content
+- Byproducts: Overburden, tailings, radon emissions
+- Energy requirements: 100-200 kWh/kg U3O8 produced
+
+Rare earth elements:
+- Ore grades: 0.1-10% rare earth oxide content 
+- Byproducts: Overburden, tailings, thorium and uranium waste
+- Energy requirements: 3,000-10,000 kWh/ton rare earth oxides produced
+
+Note these figures provide typical ranges but can vary significantly between mines based on factors like ore body characteristics, mining methods, processing routes, and more. In general, as ore grades decline over time, more waste is generated and greater energy is required per unit of metal produced.
+
+****
+
+Apologies for the confusion. Here are the clarified energy requirements per tonne of ore mined, along with the assumed benchmark ore grades:
+
+Coal:
+- Energy requirements: 0.3-1.3 kWh/ton ore mined
+- Assumed benchmark ore grade: 70% pure carbon content
+
+Iron:
+- Energy requirements: 0.4-1.6 kWh/ton ore mined
+- Assumed benchmark ore grade: 45% Fe content
+
+Aluminum (from bauxite ore):
+- Energy requirements: 42-96 kWh/ton bauxite ore mined
+- Assumed benchmark ore grade: 45% Al2O3 content
+
+Copper:
+- Energy requirements: 0.075-1.0 kWh/ton ore mined
+- Assumed benchmark ore grade: 1% Cu content
+
+Nickel:
+- Energy requirements: 0.45-4.8 kWh/ton ore mined
+- Assumed benchmark ore grade: 1.5% Ni content
+
+Zinc:
+- Energy requirements: 0.2-2.0 kWh/ton ore mined
+- Assumed benchmark ore grade: 5% Zn content
+
+Lead:
+- Energy requirements: 0.1-0.8 kWh/ton ore mined
+- Assumed benchmark ore grade: 4% Pb content
+
+Precious metals (gold, silver, platinum group):
+- Energy requirements: Gold - 150-1,200 kWh/ton ore mined; Silver - 1.5-24 kWh/ton ore mined; PGMs - 1,500-45,000 kWh/ton ore mined
+- Assumed benchmark ore grades: Gold - 1 g/t; Silver - 100 g/t; PGMs - 1 g/t
+
+Uranium:
+- Energy requirements: 3-400 kWh/ton ore mined
+- Assumed benchmark ore grade: 0.1% U3O8 content
+
+Rare earth elements:
+- Energy requirements: 30-1,000 kWh/ton ore mined
+- Assumed benchmark ore grade: 1% rare earth oxide content
+
+Please note that these energy requirements are estimates based on the assumed benchmark ore grades. Actual energy consumption can vary significantly depending on the specific ore grade, mining methods, and processing techniques used at each mine site.
+
+****
+
+Here are estimates of the typical amounts of waste rock and regolith extracted per tonne of ore for each commodity, based on common strip ratios (ratio of waste to ore) and mining methods:
+
+Coal:
+- Waste rock and regolith: 3-10 tonnes per tonne of ore
+- Typical strip ratio: 3:1 to 10:1
+
+Iron:
+- Waste rock and regolith: 0.5-3 tonnes per tonne of ore
+- Typical strip ratio: 0.5:1 to 3:1
+
+Aluminum (from bauxite ore):
+- Waste rock and regolith: 0.5-2 tonnes per tonne of ore
+- Typical strip ratio: 0.5:1 to 2:1
+
+Copper:
+- Waste rock and regolith: 2-10 tonnes per tonne of ore
+- Typical strip ratio: 2:1 to 10:1
+
+Nickel:
+- Waste rock and regolith: 5-30 tonnes per tonne of ore
+- Typical strip ratio: 5:1 to 30:1
+
+Zinc:
+- Waste rock and regolith: 5-15 tonnes per tonne of ore
+- Typical strip ratio: 5:1 to 15:1
+
+Lead:
+- Waste rock and regolith: 5-15 tonnes per tonne of ore
+- Typical strip ratio: 5:1 to 15:1
+
+Precious metals (gold, silver, platinum group):
+- Waste rock and regolith: 10-100 tonnes per tonne of ore
+- Typical strip ratio: 10:1 to 100:1
+
+Uranium:
+- Waste rock and regolith: 10-1000 tonnes per tonne of ore
+- Typical strip ratio: 10:1 to 1000:1 (highly dependent on mining method)
+
+Rare earth elements:
+- Waste rock and regolith: 10-1000 tonnes per tonne of ore
+- Typical strip ratio: 10:1 to 1000:1
+
+These values are rough estimates and can vary significantly depending on factors such as the depth of the ore body, the geometry of the deposit, the mining method employed (e.g., open pit vs. underground), and the specific geological characteristics of the site. In general, lower-grade deposits tend to have higher strip ratios and generate more waste rock per tonne of ore mined.
+
+****
+
+Here is a summary table of the results for each mined material:
+
+| Mined Material | Ore Grades (Range, %) | Benchmark Grade | Energy (kWh/t ore) | Strip Ratio (Range) |
+|----------------|------------------------|-----------------|--------------------|--------------------|
+| Coal           | 50-90% pure carbon     | 70% pure carbon | 0.3-1.3            | 3:1 to 10:1        |
+| Iron           | 25-65% Fe              | 45% Fe          | 0.4-1.6            | 0.5:1 to 3:1       |
+| Aluminum (Bauxite) | 30-60% Al2O3       | 45% Al2O3       | 42-96              | 0.5:1 to 2:1       |
+| Copper         | 0.5-2% Cu              | 1% Cu           | 0.075-1.0          | 2:1 to 10:1        |
+| Nickel         | 0.5-3% Ni              | 1.5% Ni         | 0.45-4.8           | 5:1 to 30:1        |
+| Zinc           | 2-20% Zn               | 5% Zn           | 0.2-2.0            | 5:1 to 15:1        |
+| Lead           | 2-8% Pb                | 4% Pb           | 0.1-0.8            | 5:1 to 15:1        |
+| Gold           | 0.5-30 g/t             | 1 g/t           | 150-1,200          | 10:1 to 100:1      |
+| Silver         | 1-800 g/t              | 100 g/t         | 1.5-24             | 10:1 to 100:1      |
+| PGMs           | 0.15-15 g/t            | 1 g/t           | 1,500-45,000       | 10:1 to 100:1      |
+| Uranium        | 0.03-20% U3O8          | 0.1% U3O8       | 3-400              | 10:1 to 1000:1     |
+| Rare Earth Elements | 0.1-10% REO       | 1% REO          | 30-1,000           | 10:1 to 1000:1     |
+
+Note: "g/t" stands for grams per tonne, "REO" stands for rare earth oxides, and "PGMs" stands for platinum group metals. The energy values are in kilowatt-hours per tonne (kWh/t) of ore mined.
 
 ## Coal Mining
 
