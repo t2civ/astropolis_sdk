@@ -138,10 +138,10 @@ Layers arbitrarily defined for extraction potential, considering deepest:
 So we have strata for player exploitation as:
  - CONT_SURFACE: -0.8 - 0 km (pit mining)
  - CONT_SUBSURF: 0 - 4 km (mining)
- - CONT_4KM_8KM: 4 - 8 km (drilling, but maybe mining with tech)
+ - CONT_DEEP: 4 - 8 km (drilling, but maybe mining with tech)
 And deeper strata not currently accessible:
- - CONT_8KM_28KM: 8 - 28 km
- - LOWER_CONT_CRUST: 28 - 40 km
+ - CONT_ULTRA_DEEP: 8 - 28 km
+ - CONT_LOWER_CRUST: 28 - 40 km
  
 Our simplified Earth structure model:
  - Ocean Crust: 7.5 km (real world 5-10 km)

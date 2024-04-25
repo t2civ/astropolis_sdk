@@ -20,16 +20,17 @@ INNER_CORE
 OCEAN			
 OCEAN_FLOOR		x	
 OCEAN_CRUST		x	
-CONT_SURFACE		x	On Earth, +0.8 km (ave continental elevation) to 0 km (sea level)
+CONT_SURFACE		x	On Earth, 0-1 km (-0.8 km to 0.2 km from ref sea level)
 CONT_SURFACE_ANTARCTICA		x	
-CONT_SUBSURF		x	On Earth, 0 km (sea level) to 4 km
+CONT_SUBSURF		x	On Earth, 1-5 km
 CONT_SUBSURF_ANTARCTICA		x	
-CONT_4KM_8KM		x	On Earth, 4 to 8 km
-CONT_4KM_8KM_ANTARCTICA		x	
-CONT_8KM_28KM		x	On Earth, 8 to 28 km
-CONT_8KM_28KM_ANTARCTICA		x	
-LOWER_CONT_CRUST		x	On Earth 28 to 40 km
+CONT_DEEP		x	On Earth, 5-9 km
+CONT_DEEP_ANTARCTICA		x	
+CONT_ULTRA_DEEP		x	On Earth, 9 to 19 km
+CONT_ULTRA_DEEP_ANTARCTICA		x	
+CONT_EXTREME_DEEP		x	On Earth, 19 to 29 km
+CONT_EXTREME_DEEP_ANTARCTICA		x	
+CONT_LOWER_CRUST		x	On Earth 29 to 41 km
 POLAR_SHADED_REGOLITH		x	Lunar PSR; assuming 0.001 surface area (~40000 km^2)
 CRUST_TERRAE		x	Lunar highlands
 CRUST_MARIA		x	Lunar seas
-LOWER_CRUST_INTER_LAYER		x	For Ceres, but we might remove
