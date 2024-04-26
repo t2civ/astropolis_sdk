@@ -433,7 +433,7 @@ Fields:
 Notes:
 * Extractable resources in differentiated solids (which have variance > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, variance, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and variance, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
 
-#### SOLAR_POWER, WIND_POWER, TIDAL_POWER, HYDROPOWER, GEOTHERMAL_POWER
+#### OPERATION_SOLAR_POWER, _WIND_POWER, _TIDAL_POWER, _HYDROPOWER, _GEOTHERMAL_POWER
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
 
@@ -442,7 +442,7 @@ See comments in [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)
 For solar, utilization is a function of disance from sun and `solar_occlusion` (from bodies.tsv or override value from facilities.tsv).   
 For other renewables, table value in facilities_operations_utilizations.tsv never changes.
 
-#### COAL_POWER
+#### OPERATION_COAL_POWER
 Combustion  
 Typical "bituminous" coal: 84.4% C, 5.4% H2, 6.7% O2, 1.8% S, 1.7% N2;   
 Energy density 24 MJ/kg, for 40% efficiency, "325 kg will power 100 W for yr";   
@@ -466,7 +466,7 @@ This is close to wiki CO2 emmisions data: 1001 g CO2/kWh;
 https://en.wikipedia.org/wiki/Electricity_generation   
 1001g/kWh x 10^-6t/g x 1e6kWh/3600 GJ -> 278 t CO2/1000 GJ   
 
-#### OIL_POWER
+#### OPERATION_OIL_POWER
 Combustion  
 We're simplifying and burning oil directly rather than processing to fuel oil.   
 84% C, 12% H2, 3% S, 1% O2, 1% N2   
@@ -477,7 +477,7 @@ Ajusting totals from Coal (in t),
 t per 1000 GJ: 73.6 oil + 197 O2 -> 226 CO2 + 78.9 H2O + 1.47 SO2 + 0.735 N2   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### REFINED_FUELS_POWER
+#### OPERATION_REFINED_FUELS_POWER
 Combustion  
 Specific energy gasoline 46.4, kerosene 43 MJ/kg;   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -487,7 +487,7 @@ If we use S.E. 44 MJ/kg, we have (in t):
 t per 1000 GJ: 70.3 fuel + 247 O2 -> 217 CO2 + 99.8 H20   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### ETHANOL_POWER
+#### OPERATION_ETHANOL_POWER
 Combustion  
 Specific energy 30 MJ/kg HHV   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -495,7 +495,7 @@ C2H5OH + 3 O2 -> 2 CO2 + 3 H2O; mws 46.069 + 95.994 -> 88.018 + 54.045
 t per 1000 GJ: 103 ethanol + 214 O2 -> 197 CO2 + 121 H2O   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### METHANE_POWER
+#### OPERATION_METHANE_POWER
 Combustion  
 Specific energy 55.6 MJ/kg HHV (natural gas 53.6)   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -505,13 +505,13 @@ This is close to wiki CO2 emmisions data: natural gas 669 g CO2/kWh,
 -> 186 t CO2/1000 GJ   
 https://en.wikipedia.org/wiki/Electricity_generation   
 
-#### HYDROGEN_POWER
+#### OPERATION_HYDROGEN_POWER
 aka, fuel cells   
 Specific energy 141.86 MJ/kg HHV   
 2 H2 + O2 -> 2 H2O; mws 4.032 + 31.998 -> 36.03   
 t per 1000 GJ: 21.8 H2 + 173 O2 -> 195 H2O   
 
-#### PROCESS_FISSION_POWER
+#### OPERATION_FISSION_POWER
 Our proxy "fission fuel" is yellowcake.   
 Total yellowcake volume for 2020 was 92 million lb;   
 https://www.yellowcakeplc.com/uranium-market/   
@@ -522,34 +522,34 @@ https://en.wikipedia.org/wiki/Nuclear_power
 Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.   
 
 #### **** Drilling and Mining Notes ****
-* `_NEAR_SURFACE_` -0.8 to 0 km (this covers average continental altitude above sea level, and covers the majority of "pit" or "surface" in the case of mining)
-* `_SUBSURFACE_` 0 to 4 km (this covers modern subsurface mining and most drilling)
-* `_DEEP_` 4 to 8 km (drilling only using contemporary engineering)
-* `_EXTREME_DEEP_` 8 to 12 km (drilling only using contemporary engineering)
-* `_ULTRA_DEEP_` 12 to 16 km (drilling only using contemporary engineering; rare)
-* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental subsurface or deeper drilling.
+* `_SURFACE_` 0-1 km (this covers "pit" or "surface" in the case of mining)
+* `_SUBSURFACE_` 1-5 km (this covers modern subsurface mining and most drilling)
+* `_DEEP_` 5-9 km (drilling only using contemporary engineering)
+* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental drilling.
 
-#### OIL_xxxx_DRILLING
+#### OPERATION_OIL_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
 
-We use "conventional oil" input energy (0.58 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional oil" figures would be simulated by deposits on the order of 16% and 8%. (Note: use these deposits to tune Earth nation Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+AI value 0.499 MWh per tonne of oil is from US 2009 study, which probably represents conventional oil extraction.  
+Adjust for sim USA deposits (x 0.5%) -> 0.00250 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
 
-x0.8 -> 0.46 MW near-surface & subsurface; x2, x4, x8 -> 0.93 MW deep, 1.9 extreme deep, 3.7 ultra deep.
+-> surface 0.00250, subsurface 0.00500, deep 0.01000.
 
 Output is 100% Oil.
 
-#### GAS_xxxx_DRILLING
+#### OPERATION_GAS_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
 
-We use the smaller "conventional gas" input energy (0.14 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional gas" figures would be simulated by deposits on the order of 20% and 8%. (Note: use these deposits to tune Earth territorial Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+AI value 0.352 MWh per tonne of gas is from US 2011 study, which probably represents conventional gas extraction.  
+Adjust for sim USA deposits (x 2%) -> 0.00704 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
 
-x0.8 -> 0.11 MW near-surface & subsurface; x2, x4, x8 -> 0.22 MW deep, 0.45 extreme deep, 0.90 ultra deep.
+-> surface 0.00704, subsurface 0.01408, deep 0.02816.
 
 We simplify and output separated products from drilling: 90% Methane, 9.975% Ethane and 0.025% Helium.
 
-#### COAL_xxxx_MINING
+#### OPERATION_COAL_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining).
 
@@ -568,7 +568,7 @@ Per t mined:
 
 (I think this is per ton of extracted material, but still >10x different than Opus. Need to investigate!)
 
-#### URANIUM_xxxx_MINING
+#### OPERATION_URANIUM_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Mining).
 
@@ -580,7 +580,7 @@ x 0.2 x 0.82 -> 4.1 MW near-surface, 14.8 MW subsurface.
 
 Output is 0.82 t/h Uranium Ore and 0.18 t/h Gravel/Conglomerate.
 
-#### IRON_xxxx_MINING
+#### OPERATION_IRON_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
@@ -588,16 +588,16 @@ Assuming 50% "deposits".
 
 
 
-#### ALUMINIUM_xxxx_MINING
+#### OPERATION_ALUMINIUM_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 
-#### INDUST_METALS_xxxx_MINING
+#### OPERATION_INDUST_METALS_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
-#### PRECIOUS_METALS_xxxx_MINING
+#### OPERATION_PRECIOUS_METALS_xxxx_MINING
 
 
 
@@ -634,7 +634,7 @@ For precious metal ores (using 71% of Gold power above, x 1000 kg/t):
 
 
 
-#### URBAN_DEVELOPED
+#### OPERATION_URBAN_DEVELOPED
 Allows 20000 humans / km^2, which is about the density of Paris proper:
 https://en.wikipedia.org/wiki/List_of_cities_proper_by_population_density
 In 2010 & 2020, 51% & 56% of humans were "urban":
@@ -645,7 +645,7 @@ inhabitants (which is ~50% of total population).
 'rate' is n/a for this operation.
 TODO: Mechanism to grow urban capacity.
 
-#### SMALL_FOOD_FARMING
+#### OPERATION_SMALL_FOOD_FARMING
 Allows 100 humans / km^2. Capacity is ~1x total population.
 All private sector (is this way off for Russia, China?).
 
