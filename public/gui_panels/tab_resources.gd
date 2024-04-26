@@ -108,13 +108,13 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			var variance := 0.0
 			var deposits := 0.0
 			if !_hide_variances[resource_type]:
-				error = 100.0 * body_interface.get_composition_fractional_mass_error(
+				error = 100.0 * body_interface.get_composition_mass_error_fraction(
 						i, resource_type)
 				if variances[j]:
-					variance = 100.0 * body_interface.get_composition_fractional_variance(
+					variance = 100.0 * body_interface.get_composition_variance_fraction(
 							i, resource_type)
 					if variance:
-						deposits = 100.0 * body_interface.get_composition_fractional_deposits(
+						deposits = 100.0 * body_interface.get_composition_deposit_fraction(
 								i, resource_type, true)
 			
 			var resource_data := [resource_type, mean, error, variance, deposits]

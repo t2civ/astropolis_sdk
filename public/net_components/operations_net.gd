@@ -66,7 +66,7 @@ var _constructions := 0.0 # total mass of all _constructions
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
 var _capacities: Array[float] # set by facility modules
 var _run_rates: Array[float] # <= capacities; defines operation utilization
-var _effective_rates: Array[float] # <= run_rates; reduced for, eg, extractions by deposits
+var _effective_rates: Array[float] # almost always <= run_rates
 
 # Facility, Player only (_has_financials = true)
 var _est_revenues: Array[float] # per year at current rate & prices
@@ -143,6 +143,10 @@ func get_crew(population_type := -1) -> float:
 
 func get_run_rate(type: int) -> float:
 	return _run_rates[type]
+
+
+func get_effective_rate(type: int) -> float:
+	return _effective_rates[type]
 
 
 func get_capacity(type: int) -> float:
@@ -298,6 +302,10 @@ func get_group_est_gross_margin(op_group: int) -> float:
 	if sum_revenue == 0.0:
 		return NAN
 	return sum_income / sum_revenue
+
+
+func get_target_utilization(type: int) -> float:
+	return _target_utilizations[type]
 
 
 # **************************** INTERFACE MODIFY *******************************

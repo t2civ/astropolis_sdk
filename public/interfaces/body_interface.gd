@@ -194,17 +194,17 @@ func get_composition_survey_type(index: int) -> int:
 	return compositions[index].survey_type
 
 
-func get_composition_fractional_mass_error(index: int, resource_type: int) -> float:
-	return compositions[index].get_fractional_mass_error(resource_type)
+func get_composition_mass_error_fraction(index: int, resource_type: int) -> float:
+	return compositions[index].get_mass_error_fraction(resource_type)
 
 
-func get_composition_fractional_variance(index: int, resource_type: int) -> float:
-	return compositions[index].get_fractional_variance(resource_type)
+func get_composition_variance_fraction(index: int, resource_type: int) -> float:
+	return compositions[index].get_variance_fraction(resource_type)
 
 
-func get_composition_fractional_deposits(index: int, resource_type: int, zero_if_no_boost := false
+func get_composition_deposit_fraction(index: int, resource_type: int, zero_if_no_boost := false
 		) -> float:
-	return compositions[index].get_fractional_deposits(resource_type, zero_if_no_boost)
+	return compositions[index].get_deposit_fraction(resource_type, zero_if_no_boost)
 
 
 # *****************************************************************************
