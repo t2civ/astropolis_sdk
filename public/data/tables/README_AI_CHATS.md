@@ -3,11 +3,16 @@
 * [World population and agency employees](#World-population-and-agency-employees)
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
+
+
 * [Moon Geology](#Moon-Geology)
 * [Volatiles](#Volatiles)
 * [Metal Abundances](#Metal-Abundances)
 * [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
 * [Earth Fresh Water](#Earth-Fresh-Water)
+* [Oil and Gas Energy Input](#Oil-and-Gas-Energy-Input)
+
+
 * [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
 * [Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)
 * [Coal Mining](#Coal-Mining)
@@ -1569,6 +1574,68 @@ Water %wt (USA) = 100 × (8.83 × 10^15 tonnes) / (1.33 × 10^20 tonnes) = 0.006
 
 Please note that these calculations assume a uniform density of 2.7 g/cm^3 for the upper 5 km of the Earth's crust, which is a simplification. In reality, the density of the crust varies depending on the composition of the rocks and minerals present.
 
+## Oil and Gas Energy Input
+
+Energy input requirements for oil and gas drilling can vary significantly depending on factors such as the depth of the well, the geology of the formation, and the specific drilling techniques employed. However, here is a general overview of the energy inputs involved in the drilling process:
+
+1. Drilling rig power: The primary energy input for drilling comes from the drilling rig, which is typically powered by diesel engines. The power requirements can range from a few hundred horsepower for shallow wells to several thousand horsepower for deep, complex wells. For example, a typical onshore drilling rig might have a power output of 1,000 to 3,000 horsepower (745 to 2,237 kW).
+
+2. Mud pumps: Mud pumps are used to circulate drilling fluid (mud) through the drill string and wellbore. These pumps can consume a significant amount of energy, with power requirements often ranging from 1,000 to 5,000 horsepower (745 to 3,728 kW) depending on the depth and complexity of the well.
+
+3. Hoisting system: The hoisting system, which includes the drawworks and associated equipment, is used to raise and lower the drill string. The power requirements for the hoisting system can vary widely but may range from 500 to 3,000 horsepower (373 to 2,237 kW).
+
+4. Rotary system: The rotary system, which includes the top drive or rotary table, is used to rotate the drill string. Power requirements for the rotary system can range from a few hundred to several thousand horsepower, depending on the specific equipment and application.
+
+5. Auxiliary equipment: Additional energy is required for various auxiliary equipment, such as generators, air compressors, and lighting.
+
+Quantifying the total energy input for a specific drilling operation is challenging due to the many variables involved. However, a study by the U.S. Department of Energy estimated that the average energy intensity for onshore oil and gas drilling in the United States was approximately 180 megajoules per meter drilled (MJ/m) in 2007. For a 3,000-meter (9,843-foot) well, this would equate to about 540 gigajoules (GJ) of energy input.
+
+It's important to note that these figures are averages and can vary significantly depending on the specific circumstances of each drilling operation. Additionally, advances in drilling technology and techniques, such as the increased use of horizontal drilling and hydraulic fracturing, have likely changed the energy intensity of drilling operations since the referenced study was conducted.
+
+****
+
+Estimating the energy requirements per barrel of oil or per thousand cubic feet (mcf) of natural gas is complex, as it depends on various factors such as the specific reservoir characteristics, drilling depth, and production techniques employed. However, I can provide some general estimates based on available data and studies.
+
+Energy requirements per barrel of oil:
+A study by the U.S. Department of Energy in 2009 estimated that the average energy input for onshore oil production in the United States was approximately 232,000 British thermal units (Btu) per barrel of oil produced. This equates to about 245 megajoules (MJ) per barrel.
+
+However, this value can vary widely depending on the specific field and production methods. For example, some studies have suggested that the energy input for unconventional oil production, such as oil sands or tight oil, can be significantly higher, ranging from 500,000 to 1,000,000 Btu per barrel (527 to 1,055 MJ/barrel).
+
+Energy requirements per mcf of natural gas:
+Estimating the energy requirements per mcf of natural gas is even more challenging due to the wide range of production techniques and the fact that natural gas is often a byproduct of oil production.
+
+A study by the National Energy Technology Laboratory (NETL) in 2011 estimated that the average energy input for natural gas production in the United States was approximately 23,000 Btu per mcf (24.3 MJ/mcf). However, this value can vary significantly depending on the specific field and production methods.
+
+For unconventional gas production, such as shale gas or tight gas, the energy input can be higher due to the increased complexity of the drilling and stimulation processes. Some studies have suggested that the energy input for shale gas production can range from 50,000 to 100,000 Btu per mcf (52.8 to 105.5 MJ/mcf).
+
+It's important to note that these figures are estimates and can vary widely depending on the specific circumstances of each production operation. Additionally, these values represent the direct energy inputs for production and do not account for the full life-cycle energy requirements, such as energy consumed in the transportation, refining, and distribution of the oil and gas products.
+
+****
+
+To convert the energy requirements from MJ to MWh and the quantities from barrels of oil and mcf of gas to tonnes, we'll use the following conversion factors:
+
+1 MWh = 3,600 MJ
+1 barrel of oil ≈ 0.1364 metric tonnes (on average)
+1 mcf of natural gas ≈ 0.0192 metric tonnes (assuming a typical gas density of 0.8 kg/m³)
+
+Step 1: Convert MJ to MWh
+For oil: 245 MJ/barrel ÷ 3,600 MJ/MWh = 0.0681 MWh/barrel
+For gas: 24.3 MJ/mcf ÷ 3,600 MJ/MWh = 0.00675 MWh/mcf
+
+Step 2: Convert barrels of oil and mcf of gas to tonnes
+For oil: 1 barrel ÷ 0.1364 tonnes/barrel = 7.33 barrels/tonne
+For gas: 1 mcf ÷ 0.0192 tonnes/mcf = 52.08 mcf/tonne
+
+Step 3: Calculate MWh/t for oil and gas
+For oil: 0.0681 MWh/barrel × 7.33 barrels/tonne = 0.499 MWh/t
+For gas: 0.00675 MWh/mcf × 52.08 mcf/tonne = 0.352 MWh/t
+
+Therefore, using the best-case values provided, the energy requirements are:
+
+For oil: 0.499 MWh per tonne of oil
+For gas: 0.352 MWh per tonne of gas
+
+Please note that these calculations are based on the assumptions and conversion factors provided and may not reflect the exact energy requirements for all oil and gas production scenarios. The actual values can vary depending on factors such as the specific reservoir characteristics, production techniques employed, and the composition of the oil and gas.
 
 ## Oil and Gas Drilling
 
