@@ -11,7 +11,8 @@
 [compositions_resources_variances.tsv](#compositions_resources_variancestsv)  
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
-[facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)  
+[facilities_operations_capacities.tsv](#facilities_operations_capacitiestsv)  
+[facilities_operations_maxes.tsv](#facilities_operations_maxestsv)  
 [facilities_populations.tsv](#facilities_populationstsv)  
 [major_strata.tsv](#major_stratatsv)  
 [mod_classes.tsv](#mod_classestsv)  
@@ -252,15 +253,12 @@ Quantities added to facility inventory reserves at simulator start. Table values
 For now, just giving everyone something for dev...
 
 
-## facilities_operations_xxxx.tsv
-
-`_xxxx` = `_capacities` and `_utilizations`.
+## facilities_operations_capacities.tsv
 
 See [operations.tsv](#operationstsv) for definitions of "1 operation unit".
 
 Capacity is "peak", "nominal", "nameplate" or similar. Utilization is "capacity factor" (for energy generation) or similar.  
-See https://en.wikipedia.org/wiki/Capacity_factor.
-For our internal calculation purposes, capacity x utilization = rate.
+See https://en.wikipedia.org/wiki/Capacity_factor. For our internal calculation purposes, capacity x utilization = run_rate. For extractions, the extraction rate for each output resource is multiplied by the deposits fraction.
 
 Note: These tables are here for development convenience. Capacities are actually determined by modules. However, game start code will set appropriate module number in each game start facility to achieve capacities defined in the _capacities.tsv table.
 
@@ -281,6 +279,11 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 * UK offshore: ~26-41%, average ~35%
 (But continental Europe is less than UK, I believe...)
 
+#### Extractions
+
+Extraction rates are 1.0 t/h x deposit fraction.
+
+USA surface: oil (0.5%), methane (2%), ethane (0.2%), helium (0.002%)
 
 #### ISS & Tiangong
 
@@ -292,6 +295,11 @@ For simplification, we're using 50% capacity factor for solar panels at 1 AU tha
 
 Per https://www.nasa.gov/feature/facts-and-figures, ISS solar power is 75-90 kw. This is USOS segment and (I assume) actual generation, so roughly consistent with above.
 
+## facilities_operations_maxes.tsv
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+
+This table is only used for renewables. It sets the fixed utilization (=capacity factor) for each renewable source at each game start facility.
 
 ## facilities_populations.tsv
 
