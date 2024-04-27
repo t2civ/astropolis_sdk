@@ -11,10 +11,10 @@ ETHANOL_POWER
 METHANE_POWER																		
 HYDROGEN_POWER																		
 URANIUM_FISSION_POWER																		
-OIL_SURFACE_DRILLING																		
+OIL_SURFACE_DRILLING	10000																	
 OIL_SUBSURFACE_DRILLING																		
 OIL_DEEP_DRILLING																		
-GAS_SURFACE_DRILLING																		
+GAS_SURFACE_DRILLING	10000																	
 GAS_SUBSURFACE_DRILLING																		
 GAS_DEEP_DRILLING																		
 COAL_SURFACE_MINING																		
