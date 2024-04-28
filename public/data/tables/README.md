@@ -6,7 +6,7 @@
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)  
 [carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)  
 [compositions.tsv](#compositionstsv)  
-[compositions_resources_errors.tsv](#compositions_resources_errorstsv)  
+[compositions_resources_deposits.tsv](#compositions_resources_depositstsv)  
 [compositions_resources_proportions.tsv](#compositions_resources_proportionstsv)  
 [compositions_resources_variances.tsv](#compositions_resources_variancestsv)  
 [facilities.tsv](#facilitiestsv)  
@@ -96,6 +96,7 @@ Field comments:
 * `#volume`, `#mass` Commented columns not read; here for QA on internal calculated values.
 * `survey` One of survey.tsv items, which will set mass_error and other details.
 
+Notes on `survey` levels: At game start only Earth has actual resource surveys. Other body strata have values such as spectral, explored or theory (none of which provide known "deposits" above the extimated mass fraction). For Earth, we have territorial surface surveys at level 5-6, subsurface at 4-5, deep at 2-3 and ultra deep at 1. The higher survey values are given to USA, EU and Japan, lower to Russia, China, India and Other. Knowledge of deposits is assumed to be pretty good for subsurface and even deeper strata, even if this is based on mostly surface analysis. (I believe this is a realistic abstraction.)
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_ATMOSPHERE
 
@@ -129,32 +130,42 @@ Oxygen: 5 mL/kg; x1.429 kg/m3 / (1e6  mL/m3  -> 7.1e-4%
 Arbitrarily set at 100m depth for mining potential (aka Hoover it up!):   
 https://oceanminingintel.com/insights/ocean-mining-the-5-minute-what-why-where-how-and-who
 
-#### COMPOSITION_PLANET_EARTH_STRATUM_\<crust layers>
+#### COMPOSITION_PLANET_EARTH_STRATUM_\<crust and deeper layers>
 
 Layers arbitrarily defined for extraction potential, considering deepest:   
-- pit mining: 1.2 km, but usually < 1 km. Conveniently, average continental altitude is 800 m. So we use that for "surface".
-- mining: ~4 km. Gets really tough below, but maybe we could go to 8 km with some wild engineering.
-- drilling: ~7.5 km (? check wiki).
+- pit mining: 1.2 km, but usually < 1 km.
+- mining: ~4 km. Gets really tough below (but will be possible with future engineering).
+- drilling: ~12 km, but >9 is rare.
 
 So we have strata for player exploitation as:
- - CONT_SURFACE, 0 - 1 km (really -0.8 to 0.2 to ref sea level): pit mining
+ - CONT_SURFACE, 0 - 1 km: pit mining (this is really -0.8 to 0.2 to ref sea level))
  - CONT_SUBSURF, 1 - 5 km: subsurface mining
- - CONT_DEEP, 5 - 9 km: deep drilling; possibly mining with future tech
-And deeper strata not currently accessible:
+ - CONT_DEEP, 5 - 9 km: deep drilling; possibly mining with future advances
+
+And deeper strata not accessible at game start:
  - CONT_ULTRA_DEEP: 9 - 19 km
  - CONT_EXTREME_DEEP: 19 - 29 km
- - CONT_LOWER_CRUST: 29 - 40 km
+ - CONT_LOWER_CRUST: 29 - 40 km (can we get here without whole planet harvesting?)
+
+(Average continental elivation is 800m, so table 'outer_depth' values are always -0.8 from above numbers.)
  
-Our simplified Earth structure model:
- - Ocean Crust: 7.5 km (real world 5-10 km)
- - Upper Continental Crust: Surface - 28 km
- - Lower Continental Crust: 28-40 km
- (that's all we need for now...)
+Our simplified Earth structure model (outer depth, +thickness; in km):
+* Ocean: 0; +3.5
+* Ocean Floor: 3.5; +0.1 (assuming future exploitation by Hoover-it-up methods)
+* Ocean Crust: 3.6; +7.5 (real world 5-10 km)
+* Continental surface: -0.8; +1
+* Continental subsurface: 0.2; +4
+* Continental deep: 4.2; +4
+* Continental ultra deep: 8.2; +10
+* Continental extreme deep: 18.2; +10
+* Continental lower crust: 28.2; +11.8
+* Mantle: 40; +2850
+* Core: 2890; to center
 
 Notes on upper/lower continental crust: There is a Conrad
 discontinuity at 15-20 km and "sima starts about 11 km below the Conrad
 discontinuity". The sial/sima transition is all about chemistry and
-density, so that is where we define the upper/lower transition.
+density, so that is where we want the upper/lower transition.
 
 https://en.wikipedia.org/wiki/Earth%27s_crust   
 https://en.wikipedia.org/wiki/Continental_crust   
@@ -170,6 +181,26 @@ of PLAYER_OTHER at 9.03e7 km^2.
 #### COMPOSITION_MOON_MOON_xxxx
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Moon-Geology).
+
+## compositions_resources_deposits.tsv
+
+Percent values. "Deposit" is a fictional concept that can be thought of as something related to strip ratio for surface mining. It is the value that determines extraction efficiency. Specifically, any extraction operation (in operations.tsv) uses the specified energy but extracts at rate = t/h x deposits fraction. 
+
+This table is for dev convenience. Internally, deposit is calculated from mass fraction, survey level, and variance. Mass fraction is determined by compositions_resources_proportions.tsv. We use deposit level from this table to calculate a minumum variance assuming a minimum survey level of 5 (which is a really good knowledge level), overriding any value supplied in compositions_resources_variances.tsv if the result is larger.
+
+Deposits are roughly tuned to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
+* Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
+* Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
+* Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
+* Industrial Metals 5:1 to 30:1 -> 17-3% deposits (Zn: 0.2 kWh/t at 17%, 5/5 grade)
+* Precious Metals 10:1 to 100:1 -> 9-1% deposits (Au: 15000 kWh/t at 9%, 1e-4/1e-6 grade conversion)
+* Uranium 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 25%, 1/0.1 grade conversion)
+* Rare Eaths 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 1/1 grade)
+
+The concept is more abstract for others, but still relates to availability. Target deposits:
+* Oil 5-0.05% deposits, ~ "primary" to "tertiary" (3 kWh/t at 5%)
+* Methane 5-0.5% deposits, ~ "conventional" to "unconventional" (3 kWh/t at 5%)
+* Water 100% deposits, surface fresh water for the taking (0.01 kWh/t at 100% ???) Note: To do water properly, we would need to add a separate "fresh water" strata, since that total mass is tiny compared to H2O locked up in the surface regolith (except for Antarctica). However, I'm simplifying since this is Earth-only.
 
 ## compositions_resources_proportions.tsv
 
@@ -194,21 +225,11 @@ Notes:
 
 'Mixed' strata such as atmosphere are omitted from table and have default variance = 0.0.
 
+Any value specified here is overriden by calculated value
+
 Variance is the spatial heterogeneity of resource mass in each composition (as a coefficient of variation). High variance together with high survey level causes "deposits" which are useful for mining. E.g., USA and Japan have similar total metal content in their upper crust. But variance is boosted for USA to provide better extraction/energy ratio for mining operations. Variance goes down with mass as a resource is extracted (because you're removing the long tail of the log-normal distribution).
 
-Variances are tuned for Earth surface to provide "deposits" corresponding to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
-* Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
-* Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
-* Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
-* Industrial Metals 5:1 to 30:1 -> 17-3% deposits (Zn: 0.2 kWh/t at 17%, 5/5 grade)
-* Precious Metals 10:1 to 100:1 -> 9-1% deposits (Au: 15000 kWh/t at 9%, 1e-4/1e-6 grade conversion)
-* Uranium 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 25%, 1/0.1 grade conversion)
-* Rare Eaths 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 1/1 grade)
 
-The concept is more abstract for others, but still relates to availability. Target deposits:
-* Oil 5-0.05% deposits, ~ "primary" to "tertiary" (3 kWh/t at 5%)
-* Methane 5-0.5% deposits, ~ "conventional" to "unconventional" (3 kWh/t at 5%)
-* Water 100% deposits, surface fresh water for the taking (0.01 kWh/t at 100% ???) Note: To do water properly, we would need to add a separate "fresh water" strata, since that total mass is tiny compared to H2O locked up in the surface regolith (except for Antarctica). However, I'm simplifying since this is Earth-only.
 
 For undifferentiated asteroids and small moons, spatial heterogeneity is much much smaller. However, the minumum "deposits" level is always the mass proportion of the material. So here the purpose of surveys is to find the asteroid with unusually high abundance (which is a function of error).
 
@@ -281,7 +302,9 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 
 #### Extractions
 
-Extraction rates are 1.0 t/h x deposit fraction.
+Extraction rates are t/h x deposit fraction. So, for example, USA surface oil with 0.5% deposit has production 0.05 t/h per operation unit. Surface gas production is mainly methane (2% deposit) with some ethane (0.2%) and helium (0.002%).
+
+We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Production) and convert to "capacity units" by dividing by observed game deposits (which are a function of abundance and variance).
 
 USA surface: oil (0.5%), methane (2%), ethane (0.2%), helium (0.002%)
 
