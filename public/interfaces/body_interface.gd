@@ -198,6 +198,10 @@ func get_composition_mass_error_fraction(index: int, resource_type: int) -> floa
 	return compositions[index].get_mass_error_fraction(resource_type)
 
 
+func get_composition_variance(index: int, resource_type: int) -> float:
+	return compositions[index].get_variance(resource_type)
+
+
 func get_composition_variance_fraction(index: int, resource_type: int) -> float:
 	return compositions[index].get_variance_fraction(resource_type)
 

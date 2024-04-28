@@ -73,6 +73,7 @@ func _init() -> void:
 		path_format % "planets_mod",
 		path_format % "moons_mod",
 		# enum x enum tables
+		path_format % "compositions_resources_deposits",
 		path_format % "compositions_resources_proportions",
 		path_format % "compositions_resources_variances",
 		path_format % "facilities_inventories",

@@ -314,7 +314,7 @@ class StratumVBox extends VBoxContainer:
 	var _stratum_header := Button.new()
 	var _resource_grid := GridContainer.new()
 	var _stratum_str: String
-	var _text_low := tr(&"LABEL_LOW").to_lower()
+	#var _text_low := tr(&"LABEL_LOW").to_lower()
 	var _memory: Dictionary
 	var _memory_key: String
 	
@@ -360,9 +360,9 @@ class StratumVBox extends VBoxContainer:
 			if n_cells == 1:
 				label.text = &"LABEL_MEAN_PERCENT"
 			elif n_cells == 2:
-				label.text = &"LABEL_VARIANCE"
+				label.text = &"LABEL_VARIANCE_PERCENT"
 			elif n_cells == 3:
-				label.text = &"LABEL_DEPOSITS"
+				label.text = &"LABEL_DEPOSITS_PERCENT"
 			_resource_grid.add_child(label)
 			n_cells += 1
 		
@@ -389,10 +389,8 @@ class StratumVBox extends VBoxContainer:
 				mean_text += " ± " + IVQFormat.number(error, 1)
 			var variance_text := ""
 			if variance:
-				if variance < 0.11 * mean:
-					variance_text = _text_low
-				else:
-					variance_text = "± " + IVQFormat.number(variance, 1)
+				if variance > 0.11 * mean:
+					variance_text = IVQFormat.number(variance, 1)
 			var deposits_text := ""
 			if deposits:
 				deposits_text = IVQFormat.number(deposits, 1)

@@ -164,7 +164,7 @@ func get_variance_fraction(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass
-	return variances[index] * 2.0 * p * (1.0 - p)
+	return variances[index] * p * (1.0 - p)
 
 
 func get_density_error() -> float:
@@ -188,7 +188,7 @@ func get_mass_error_fraction(resource_type: int) -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass
-	return error * 2.0 * p * (1.0 - p)
+	return error * p * (1.0 - p)
 
 
 func get_deposit_boost(resource_type: int) -> float:
@@ -209,7 +209,7 @@ func get_deposit_fraction(resource_type: int, zero_if_no_boost := false) -> floa
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	var p := mass / _total_mass # mass fraction
-	var fractional_deposits := p + deposits_boost * 2.0 * p * (1.0 - p) # boost from p
+	var fractional_deposits := p + deposits_boost * p * (1.0 - p) # boost from p
 	return minf(fractional_deposits, 1.0)
 
 
