@@ -3,17 +3,13 @@
 * [World population and agency employees](#World-population-and-agency-employees)
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
-
-
 * [Moon Geology](#Moon-Geology)
 * [Volatiles](#Volatiles)
 * [Metal Abundances](#Metal-Abundances)
 * [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
 * [Earth Fresh Water](#Earth-Fresh-Water)
 * [Oil and Gas Energy Input](#Oil-and-Gas-Energy-Input)
-
-
-* [Oil and Gas Drilling](#Oil-and-Gas-Drilling)
+* [Oil and Gas Production](#Oil-and-Gas-Production)
 * [Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)
 * [Coal Mining](#Coal-Mining)
 * [Uranium Mining](#Uranium-Mining)
@@ -1637,126 +1633,163 @@ For gas: 0.352 MWh per tonne of gas
 
 Please note that these calculations are based on the assumptions and conversion factors provided and may not reflect the exact energy requirements for all oil and gas production scenarios. The actual values can vary depending on factors such as the specific reservoir characteristics, production techniques employed, and the composition of the oil and gas.
 
-## Oil and Gas Drilling
-
-The energy required to extract oil and gas can vary significantly depending on the location, method of extraction, and the specific characteristics of the reservoir. However, I can provide you with some general information and estimates.
-
-Energy Input for Oil and Gas Extraction:
-1. Oil Extraction:
-   - Conventional oil: The energy return on investment (EROI) for conventional oil is estimated to be around 20:1, meaning that for every unit of energy invested, 20 units of energy are obtained.
-   - Unconventional oil (e.g., oil sands, tight oil): The EROI for unconventional oil is lower, typically ranging from 2:1 to 4:1.
-
-2. Natural Gas Extraction:
-   - Conventional gas: The EROI for conventional natural gas is generally higher than oil, with estimates ranging from 30:1 to 100:1.
-   - Unconventional gas (e.g., shale gas, tight gas): The EROI for unconventional gas is lower, typically ranging from 10:1 to 30:1.
-
-Commercial Products and Byproducts of Oil and Gas Extraction:
-1. Crude Oil:
-   - Gasoline: 45-50% of a barrel of crude oil
-   - Diesel fuel: 25-30% of a barrel of crude oil
-   - Jet fuel: 10-15% of a barrel of crude oil
-   - Heating oil: 5-10% of a barrel of crude oil
-   - Lubricants, waxes, and greases: 1-2% of a barrel of crude oil
-   - Petrochemical feedstocks (e.g., ethylene, propylene): 5-10% of a barrel of crude oil
-
-2. Natural Gas:
-   - Methane (CH4): 70-90% of natural gas composition
-   - Ethane (C2H6): 5-15% of natural gas composition
-   - Propane (C3H8) and Butane (C4H10): 1-5% of natural gas composition
-   - Natural Gas Liquids (NGLs): Separated from natural gas and used as petrochemical feedstocks, heating fuel, and blending components for gasoline
-
-3. Byproducts:
-   - Sulfur: Recovered from sour gas and used in fertilizers, pharmaceuticals, and other chemical processes
-   - Carbon dioxide (CO2): Can be captured and used for enhanced oil recovery (EOR) or industrial applications
-   - Produced water: Water extracted along with oil and gas, which can be treated and reused or disposed of safely
-
-Please note that these figures are rough estimates and can vary significantly depending on the specific circumstances of each oil and gas extraction operation. The exact proportions of products and byproducts also depend on the refining process and market demand.
-
 ****
 
-To convert the energy return on investment (EROI) figures to units of energy (MWh) per tonne of extracted oil or gas, we need to make some assumptions about the energy content of oil and gas. Let's use the following assumptions:
-
-- Energy content of crude oil: 11.63 MWh/tonne (41.9 GJ/tonne)
-- Energy content of natural gas: 13.89 MWh/tonne (50 GJ/tonne)
-
-1. Oil Extraction:
-   - Conventional oil (EROI 20:1):
-     * Energy output = 11.63 MWh/tonne
-     * Energy input = Energy output / EROI = 11.63 MWh/tonne / 20 = 0.58 MWh/tonne
-
-   - Unconventional oil (EROI 2:1 to 4:1):
-     * Energy output = 11.63 MWh/tonne
-     * Energy input (EROI 2:1) = 11.63 MWh/tonne / 2 = 5.82 MWh/tonne
-     * Energy input (EROI 4:1) = 11.63 MWh/tonne / 4 = 2.91 MWh/tonne
-
-2. Natural Gas Extraction:
-   - Conventional gas (EROI 30:1 to 100:1):
-     * Energy output = 13.89 MWh/tonne
-     * Energy input (EROI 30:1) = 13.89 MWh/tonne / 30 = 0.46 MWh/tonne
-     * Energy input (EROI 100:1) = 13.89 MWh/tonne / 100 = 0.14 MWh/tonne
-
-   - Unconventional gas (EROI 10:1 to 30:1):
-     * Energy output = 13.89 MWh/tonne
-     * Energy input (EROI 10:1) = 13.89 MWh/tonne / 10 = 1.39 MWh/tonne
-     * Energy input (EROI 30:1) = 13.89 MWh/tonne / 30 = 0.46 MWh/tonne
+_Below is snipped from a different thread where we got to energies via energy return on investment (EROI) figures. It roughly similar but gives us a bigger range._
 
 In summary:
-1. Oil Extraction:
-   - Conventional oil: 0.58 MWh/tonne
-   - Unconventional oil: 2.91 to 5.82 MWh/tonne
 
-2. Natural Gas Extraction:
-   - Conventional gas: 0.14 to 0.46 MWh/tonne
-   - Unconventional gas: 0.46 to 1.39 MWh/tonne
+Oil Extraction:
 
+Conventional oil: 0.58 MWh/tonne
+Unconventional oil: 2.91 to 5.82 MWh/tonne
+Natural Gas Extraction:
+
+Conventional gas: 0.14 to 0.46 MWh/tonne
+Unconventional gas: 0.46 to 1.39 MWh/tonne
 Please note that these calculations are based on the assumed energy content values and the provided EROI ranges. Actual values may vary depending on the specific characteristics of the oil and gas reserves and the extraction methods employed.
 
-****
+## Oil and Gas Production
 
-Yes, helium is a byproduct of natural gas extraction. Helium is formed by the natural radioactive decay of heavy elements like uranium and thorium in the Earth's crust. It is often found in natural gas reservoirs, particularly in those with a high nitrogen content.
+_From GPT-4. Opus was going wildly off the rails for some reason._
 
-The concentration of helium in natural gas varies widely depending on the geological characteristics of the reservoir. In most natural gas fields, helium concentrations range from 0.005% to 0.2% by volume. However, in some unique geological settings, helium concentrations can be much higher, up to 7% or more.
+Below are two tables that provide a quantified overview of oil and gas production for specified regions. These tables use historical data for 2010 and 2020, and project figures for 2030. The unit of measurement for oil production is in millions of barrels per day (mb/d), and for natural gas production, it is in billion cubic feet per day (bcf/d).
 
-To quantify the helium production from natural gas extraction, let's consider an example:
+### Table 1: Oil Production by Region (in mb/d)
+| Region   | 2010  | 2020  | 2030 (Projected) |
+|----------|-------|-------|-----------------|
+| USA      | 5.5   | 12.2  | 13.0            |
+| Russia   | 10.1  | 10.5  | 10.2            |
+| China    | 4.0   | 4.1   | 3.8             |
+| EU+UK    | 3.2   | 2.1   | 1.5             |
+| India    | 0.7   | 0.9   | 1.1             |
+| Japan    | 0.1   | 0.1   | 0.1             |
+| Other    | 18.4  | 21.1  | 22.3            |
+| **Total**| 42.0  | 51.0  | 52.0            |
 
-- If a natural gas field produces 1 billion cubic meters (35.3 billion cubic feet) of gas per year with an average helium concentration of 0.1% by volume, the annual helium production would be:
-  * Helium production = Natural gas production × Helium concentration
-  * Helium production = 1 billion m³ × 0.001 = 1 million m³ (35.3 million cubic feet) of helium per year
+### Table 2: Gas Production by Region (in bcf/d)
+| Region   | 2010  | 2020  | 2030 (Projected) |
+|----------|-------|-------|-----------------|
+| USA      | 62.0  | 91.0  | 98.0            |
+| Russia   | 60.0  | 68.0  | 70.0            |
+| China    | 3.8   | 12.0  | 18.0            |
+| EU+UK    | 18.0  | 12.7  | 10.0            |
+| India    | 3.5   | 5.0   | 7.0             |
+| Japan    | 3.0   | 3.0   | 3.1             |
+| Other    | 55.0  | 63.0  | 70.0            |
+| **Total**| 205.3 | 254.7 | 276.1           |
 
-The global helium production in 2021 was estimated to be around 175 million cubic meters (6.2 billion cubic feet). The United States is the world's largest helium producer, followed by Qatar, Algeria, and Russia.
+#### Notes:
+1. The values in these tables are approximations based on historical production data, current trends, and projections. They broadly reflect the changes in production capabilities and political-economic impacts on the oil and gas industries.
+2. "Other" includes all other countries not listed separately. This category can fluctuate significantly based on developments in smaller oil and gas producing nations.
+3. The projected values for 2030 are based on trends such as technological advancements, policy changes related to climate change and energy transitions, and geopolitical factors that could influence production levels. 
 
-It's important to note that not all natural gas fields contain economically recoverable amounts of helium. The concentration of helium, as well as the size of the gas reserve and the proximity to helium markets, determines whether it is economically viable to extract and purify the helium from the natural gas.
-
-****
-
-To quantify helium production as a percent by weight of total natural gas extracted, we need to consider the molecular weights of helium and the main components of natural gas, primarily methane.
-
-- Molecular weight of helium (He): 4 g/mol
-- Molecular weight of methane (CH₄): 16 g/mol
-
-Let's assume that the natural gas is composed of 100% methane for simplicity, and the helium concentration is 0.1% by volume, as in the previous example.
-
-Step 1: Convert volume percent to mole percent
-- Since the volume percent and mole percent are the same for ideal gases, the mole percent of helium is 0.1%, and the mole percent of methane is 99.9%.
-
-Step 2: Calculate the mass of helium and methane in the mixture
-- Mass of helium = Mole percent of helium × Molecular weight of helium
-  * Mass of helium = 0.001 × 4 g/mol = 0.004 g/mol
-
-- Mass of methane = Mole percent of methane × Molecular weight of methane
-  * Mass of methane = 0.999 × 16 g/mol = 15.984 g/mol
-
-Step 3: Calculate the total mass of the mixture
-- Total mass = Mass of helium + Mass of methane
-  * Total mass = 0.004 g/mol + 15.984 g/mol = 15.988 g/mol
-
-Step 4: Calculate the weight percent of helium
-- Weight percent of helium = (Mass of helium / Total mass) × 100
-  * Weight percent of helium = (0.004 g/mol / 15.988 g/mol) × 100 = 0.025%
-
-Therefore, in this example, helium production is approximately 0.025% by weight of the total natural gas extracted. This value may vary depending on the actual composition of the natural gas and the helium concentration in the reservoir.
+These tables provide a simplified view and should be used with an understanding that actual figures can vary based on many unpredictable factors.
 
 ****
+
+To convert the oil and gas production from the units provided in the tables (millions of barrels per day for oil and billion cubic feet per day for gas) to tonnes per hour, we'll use the following conversion factors:
+
+### Conversion Factors:
+
+1. **Oil**: One barrel of crude oil is approximately equivalent to 0.136 tonnes. Therefore, to convert millions of barrels per day (mb/d) to tonnes per hour:
+   - Convert barrels to tonnes: \( \text{mb/d} \times 10^6 \times 0.136 \)
+   - Convert daily to hourly: \( \div 24 \)
+
+2. **Gas**: The weight of natural gas can vary depending on its composition, but a common approximation is 0.678 kilograms per cubic meter at standard conditions. Since 1 billion cubic feet equals about 28.32 million cubic meters:
+   - Convert cubic feet to cubic meters and then to kilograms: \( \text{bcf/d} \times 10^9 \times 0.02832 \times 0.678 \)
+   - Convert kilograms to tonnes: \( \div 1000 \)
+   - Convert daily to hourly: \( \div 24 \)
+
+Using these conversion factors, let's transform the data:
+
+### Table 3: Oil Production by Region (in tonnes per hour)
+| Region   | 2010    | 2020    | 2030 (Projected) |
+|----------|---------|---------|-----------------|
+| USA      | 205.8   | 456.0   | 486.0           |
+| Russia   | 377.0   | 392.4   | 381.6           |
+| China    | 149.6   | 153.4   | 142.1           |
+| EU+UK    | 119.5   | 78.5    | 56.1            |
+| India    | 26.2    | 33.7    | 41.1            |
+| Japan    | 3.7     | 3.7     | 3.7             |
+| Other    | 688.6   | 789.7   | 833.8           |
+| **Total**| 1570.4  | 1907.4  | 1944.4          |
+
+### Table 4: Gas Production by Region (in tonnes per hour)
+| Region   | 2010    | 2020    | 2030 (Projected) |
+|----------|---------|---------|-----------------|
+| USA      | 1117.3  | 1639.8  | 1765.1          |
+| Russia   | 1081.1  | 1224.6  | 1261.0          |
+| China    | 54.4    | 216.0   | 324.2           |
+| EU+UK    | 257.7   | 181.9   | 143.0           |
+| India    | 50.1    | 71.6    | 100.2           |
+| Japan    | 43.0    | 43.0    | 44.4            |
+| Other    | 788.4   | 901.2   | 1002.0          |
+| **Total**| 3392.0  | 4278.1  | 4640.9          |
+
+#### Conversion Explanation:
+- For **oil**, the conversion from millions of barrels per day to tonnes per hour involves multiplying by 10^6 to convert to barrels, multiplying by 0.136 to convert to tonnes, and then dividing by 24 to convert to an hourly rate.
+- For **gas**, the conversion from billion cubic feet per day to tonnes per hour involves multiplying by 10^9 to get cubic feet, converting to cubic meters, then to kilograms, and finally converting to tonnes per hour by dividing by 1000 and 24.
+
+These tables give a unit-adjusted view of oil and gas production, allowing for more granular comparisons and analyses within industrial contexts.
+
+****
+
+To answer your questions about the worldwide annual production of oil and gas measured in British Thermal Units (BTU) and the BTU content per tonne of oil and gas, let's break down the details:
+
+### Worldwide Annual Production of Oil and Gas in BTU
+
+As of my last update, the exact figures for worldwide production can vary year by year depending on economic, political, and environmental factors. However, general approximations can be made based on typical production values and the energy content of oil and gas.
+
+**Oil:**
+- **Daily global oil production**: Approximately 100 million barrels per day.
+- **Annual production**: \(100 \text{ million barrels/day} \times 365 \text{ days/year} = 36.5 \text{ billion barrels/year}\).
+- **Energy content of oil**: About 5.8 million BTU/barrel.
+
+  Thus, the annual BTU from oil is:
+  \[
+  36.5 \text{ billion barrels} \times 5.8 \text{ million BTU/barrel} = 211.7 \text{ trillion BTU}
+  \]
+
+**Natural Gas:**
+- **Daily global natural gas production**: Estimated at about 340 billion cubic feet per day.
+- **Annual production**: \(340 \text{ billion cubic feet/day} \times 365 \text{ days/year} = 124.1 \text{ trillion cubic feet/year}\).
+- **Energy content of natural gas**: About 1,037 BTU per cubic foot.
+
+  Thus, the annual BTU from natural gas is:
+  \[
+  124.1 \text{ trillion cubic feet} \times 1,037 \text{ BTU/cubic foot} = 128.665 \text{ trillion BTU}
+  \]
+
+### BTU Content per Tonne of Oil and Gas
+
+**Oil:**
+- **Density of crude oil**: Approximately 850 kg/m³ (varies by type).
+- **Weight of one barrel of crude oil**: Roughly 136 kilograms (0.136 tonnes).
+- **Energy content per barrel**: 5.8 million BTU.
+
+  To find the BTU content per tonne:
+  \[
+  \frac{5.8 \text{ million BTU}}{0.136 \text{ tonnes}} = \approx 42.65 \text{ million BTU/tonne}
+  \]
+
+**Natural Gas:**
+- **Weight of natural gas**: The weight can vary, but a common value for methane (a major component of natural gas) is about 0.678 kilograms per cubic meter.
+- **Density at standard conditions**: Around 0.716 kg/m³.
+
+  To find the BTU content per tonne, considering 1 cubic meter contains about 1,037 BTU:
+  \[
+  \frac{1,037 \text{ BTU}}{0.716 \text{ kg}} \times 1000 \text{ kg/tonne} = \approx 1,448,324 \text{ BTU/tonne}
+  \]
+
+### Conclusion
+
+These calculations provide a rough estimate of the annual energy production from oil and gas and the energy content per tonne. Note that specific values can vary based on the quality and specific gravity of the oil and the composition of the natural gas. For precise and up-to-date information, consulting specific databases such as the U.S. Energy Information Administration (EIA) or the International Energy Agency (IEA) is recommended.
+
+
+****
+
+_Some helpful strata information from different threads..._
 
 The depth of oil and gas deposits varies significantly depending on the geological characteristics of the region. Oil and gas can be found at depths ranging from a few hundred meters to several kilometers below the Earth's surface.
 
@@ -1787,6 +1820,26 @@ The exact relationship between depth and energy input is complex and depends on 
 For example, a study by the U.S. Energy Information Administration (EIA) found that the energy intensity of oil and gas production in the United States increased by about 60% between 2000 and 2014, largely due to the shift towards deeper and more challenging wells.
 
 In summary, while the exact relationship between depth and energy input varies, deeper oil and gas wells generally require significantly more energy to drill and extract compared to shallower wells.
+
+****
+
+Worldwide oil and gas production is a vast and complex industry, with numerous sources and extraction methods. Here's a breakdown of the requested information:
+
+1. Oil Production:
+   - Global oil production in 2021 was approximately 89.4 million barrels per day (mb/d) (Source: IEA).
+   - Conventional oil accounts for around 70-80% of total oil production, while unconventional oil (including tight oil, oil sands, and extra-heavy oil) makes up the remaining 20-30%.
+
+2. Natural Gas Production:
+   - Global natural gas production in 2021 was about 4,036 billion cubic meters (bcm) (Source: IEA).
+   - Conventional natural gas constitutes around 80-90% of total gas production, while unconventional gas (including shale gas, tight gas, and coalbed methane) accounts for 10-20%.
+
+3. Drilling Depths:
+   - Near-surface (< 1km deep): A significant portion of oil and gas production comes from shallow reservoirs. Exact percentages vary by region, but it is estimated that 30-40% of global oil and gas production is from depths less than 1 km.
+   - Subsurface (1-5 km): The majority of oil and gas production occurs at these depths. Approximately 50-60% of global oil and gas is extracted from reservoirs between 1 and 5 km deep.
+   - Deep (5+ km): Deep drilling has become more common with advances in technology, but it still accounts for a smaller share of global production. Around 5-10% of oil and gas is produced from depths greater than 5 km.
+
+It's important to note that these figures are estimates and can vary depending on the source and the specific definitions used for conventional/unconventional resources and depth categories. Additionally, the distribution of production depths can differ significantly between oil and gas, as well as across different regions worldwide.
+
 
 ## Mining Energies and Strip Ratio
 
