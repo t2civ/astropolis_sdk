@@ -8,6 +8,6 @@ GEOTHERMAL_POWER	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.7
 @DATA_TYPE=FLOAT																		
 @DATA_DEFAULT=NAN																		
 @TRANSPOSE																		
-# max renewable utilization																		
+# fixed for renewables only!																		
 # transposed on import to:																		
 # table[facility_type][operation_type]																		
