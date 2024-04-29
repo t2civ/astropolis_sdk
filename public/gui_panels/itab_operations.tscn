@@ -97,13 +97,13 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power
-(MW)"
+(-MW)"
 horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Extraction/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Extraction
+text = "Rate
 (t/d)"
 horizontal_alignment = 1
 
@@ -159,13 +159,13 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power
-(MW)"
+(-MW)"
 horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Refining/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Conversion
+text = "Rate
 (t/d)"
 horizontal_alignment = 1
 
@@ -221,13 +221,13 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power
-(MW)"
+(-MW)"
 horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Production
+text = "Rate
 (t/d)"
 horizontal_alignment = 1
 
@@ -283,7 +283,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power
-(MW)"
+(-MW)"
 horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Biomes/Hdrs"]
@@ -345,13 +345,14 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power
-(MW)"
+(-MW)"
 horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Services/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Comput"
+text = "Comput
+(puhr)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Services/Hdrs"]

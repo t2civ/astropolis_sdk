@@ -108,13 +108,13 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			var variance := 0.0
 			var deposits := 0.0
 			if !_hide_variances[resource_type]:
-				error = 100.0 * body_interface.get_composition_fractional_mass_error(
+				error = 100.0 * body_interface.get_composition_mass_error_fraction(
 						i, resource_type)
 				if variances[j]:
-					variance = 100.0 * body_interface.get_composition_fractional_variance(
+					variance = 100.0 * body_interface.get_composition_variance_fraction(
 							i, resource_type)
 					if variance:
-						deposits = 100.0 * body_interface.get_composition_fractional_deposits(
+						deposits = 100.0 * body_interface.get_composition_deposit_fraction(
 								i, resource_type, true)
 			
 			var resource_data := [resource_type, mean, error, variance, deposits]
@@ -314,7 +314,8 @@ class StratumVBox extends VBoxContainer:
 	var _stratum_header := Button.new()
 	var _resource_grid := GridContainer.new()
 	var _stratum_str: String
-	var _text_low := tr(&"LABEL_LOW").to_lower()
+	var _variance_label: Label
+	var _deposits_label: Label
 	var _memory: Dictionary
 	var _memory_key: String
 	
@@ -348,6 +349,8 @@ class StratumVBox extends VBoxContainer:
 		var n_resources := resources_data.size()
 		var n_cells_needed := N_COLUMNS * (n_resources + 1)
 		var n_cells := _resource_grid.get_child_count()
+		var has_varance := false
+		var has_deposit := false
 		
 		# make cells as needed
 		while n_cells < n_cells_needed:
@@ -360,9 +363,9 @@ class StratumVBox extends VBoxContainer:
 			if n_cells == 1:
 				label.text = &"LABEL_MEAN_PERCENT"
 			elif n_cells == 2:
-				label.text = &"LABEL_VARIANCE"
+				_variance_label = label
 			elif n_cells == 3:
-				label.text = &"LABEL_DEPOSITS"
+				_deposits_label = label
 			_resource_grid.add_child(label)
 			n_cells += 1
 		
@@ -388,30 +391,33 @@ class StratumVBox extends VBoxContainer:
 			if error:
 				mean_text += " ± " + IVQFormat.number(error, 1)
 			var variance_text := ""
-			if variance:
-				if variance < 0.11 * mean:
-					variance_text = _text_low
-				else:
-					variance_text = "± " + IVQFormat.number(variance, 1)
+			if variance and variance > 0.11 * mean:
+				variance_text = IVQFormat.number(variance, 1)
+				has_varance = true
 			var deposits_text := ""
 			if deposits:
 				deposits_text = IVQFormat.number(deposits, 1)
+				has_deposit = true
 			
-			# set text & show column labels
-			var begin_index := N_COLUMNS * (i + 1)
-			var label: Label = _resource_grid.get_child(begin_index)
+			# set resource texts
+			var resource_index := N_COLUMNS * (i + 1)
+			var label: Label = _resource_grid.get_child(resource_index)
 			label.text = resource_text
 			label.show()
-			label = _resource_grid.get_child(begin_index + 1)
+			label = _resource_grid.get_child(resource_index + 1)
 			label.text = mean_text
 			label.show()
-			label = _resource_grid.get_child(begin_index + 2)
+			label = _resource_grid.get_child(resource_index + 2)
 			label.text = variance_text
 			label.show()
-			label = _resource_grid.get_child(begin_index + 3)
+			label = _resource_grid.get_child(resource_index + 3)
 			label.text = deposits_text
 			label.show()
 			i += 1
+		
+		# show/hide variance & deposits headers
+		_variance_label.text = &"LABEL_VARIANCE_PERCENT" if has_varance else &""
+		_deposits_label.text = &"LABEL_DEPOSITS_PERCENT" if has_deposit else &""
 		
 		# hide unused Labels
 		i = n_cells

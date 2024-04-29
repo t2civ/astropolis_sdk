@@ -73,11 +73,13 @@ func _init() -> void:
 		path_format % "planets_mod",
 		path_format % "moons_mod",
 		# enum x enum tables
+		path_format % "compositions_resources_deposits",
 		path_format % "compositions_resources_proportions",
 		path_format % "compositions_resources_variances",
 		path_format % "facilities_inventories",
 		path_format % "facilities_operations_capacities",
-		path_format % "facilities_operations_utilizations",
+		path_format % "facilities_operations_capacity_factors",
+		path_format % "facilities_operations_extractions",
 		path_format % "facilities_populations",
 	]
 	IVCoreSettings.postprocess_tables.append_array(postprocess_tables_append)
@@ -155,13 +157,6 @@ func _on_project_objects_instantiated() -> void:
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
 			resource_resource_classes, n_resource_classes) # an array of resources for each resource_class
-	
-	# tests
-	for i in n_operations:
-		assert(IVTableData.get_db_array(&"operations", &"input_resources", i).size()
-				== IVTableData.get_db_array(&"operations", &"input_quantities", i).size())
-		assert(IVTableData.get_db_array(&"operations", &"output_resources", i).size()
-				== IVTableData.get_db_array(&"operations", &"output_quantities", i).size())
 
 
 func _on_project_nodes_added() -> void:

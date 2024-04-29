@@ -6,12 +6,14 @@
 [asset_adjustments_mod.tsv](#asset_adjustments_modtsv)  
 [carrying_capacity_groups.tsv](#carrying_capacity_groupstsv)  
 [compositions.tsv](#compositionstsv)  
-[compositions_resources_errors.tsv](#compositions_resources_errorstsv)  
+[compositions_resources_deposits.tsv](#compositions_resources_depositstsv)  
 [compositions_resources_proportions.tsv](#compositions_resources_proportionstsv)  
 [compositions_resources_variances.tsv](#compositions_resources_variancestsv)  
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
-[facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)  
+[facilities_operations_capacities.tsv](#facilities_operations_capacitiestsv)  
+[facilities_operations_capacity_factors.tsv](#facilities_operations_capacity_factorstsv)  
+[facilities_operations_extractions.tsv](#facilities_operations_extractionstsv)  
 [facilities_populations.tsv](#facilities_populationstsv)  
 [major_strata.tsv](#major_stratatsv)  
 [mod_classes.tsv](#mod_classestsv)  
@@ -95,6 +97,7 @@ Field comments:
 * `#volume`, `#mass` Commented columns not read; here for QA on internal calculated values.
 * `survey` One of survey.tsv items, which will set mass_error and other details.
 
+Notes on `survey` levels: At game start only Earth has actual resource surveys. Other body strata have values such as spectral, explored or theory (none of which provide known "deposits" above the extimated mass fraction). For Earth, we have territorial surface surveys at level 5-6, subsurface at 4-5, deep at 2-3 and ultra deep at 1. The higher survey values are given to USA, EU and Japan, lower to Russia, China, India and Other. Knowledge of deposits is assumed to be pretty good for subsurface and even deeper strata, even if this is based on mostly surface analysis. (I believe this is a realistic abstraction.)
 
 #### COMPOSITION_PLANET_EARTH_STRATUM_ATMOSPHERE
 
@@ -128,31 +131,42 @@ Oxygen: 5 mL/kg; x1.429 kg/m3 / (1e6  mL/m3  -> 7.1e-4%
 Arbitrarily set at 100m depth for mining potential (aka Hoover it up!):   
 https://oceanminingintel.com/insights/ocean-mining-the-5-minute-what-why-where-how-and-who
 
-#### COMPOSITION_PLANET_EARTH_STRATUM_\<crust layers>
+#### COMPOSITION_PLANET_EARTH_STRATUM_\<crust and deeper layers>
 
 Layers arbitrarily defined for extraction potential, considering deepest:   
-- pit mining: 1.2 km, but usually < 1 km. Conveniently, average continental altitude is 800 m. So we use that for "surface".
-- mining: ~4 km. Gets really tough below, but maybe we could go to 8 km with some wild engineering.
-- drilling: ~7.5 km (? check wiki).
+- pit mining: 1.2 km, but usually < 1 km.
+- mining: ~4 km. Gets really tough below (but will be possible with future engineering).
+- drilling: ~12 km, but >9 is rare.
 
 So we have strata for player exploitation as:
- - CONT_SURFACE: -0.8 - 0 km (pit mining)
- - CONT_SUBSURF: 0 - 4 km (mining)
- - CONT_4KM_8KM: 4 - 8 km (drilling, but maybe mining with tech)
-And deeper strata not currently accessible:
- - CONT_8KM_28KM: 8 - 28 km
- - LOWER_CONT_CRUST: 28 - 40 km
+ - CONT_SURFACE, 0 - 1 km: pit mining (this is really -0.8 to 0.2 to ref sea level))
+ - CONT_SUBSURF, 1 - 5 km: subsurface mining
+ - CONT_DEEP, 5 - 9 km: deep drilling; possibly mining with future advances
+
+And deeper strata not accessible at game start:
+ - CONT_ULTRA_DEEP: 9 - 19 km
+ - CONT_EXTREME_DEEP: 19 - 29 km
+ - CONT_LOWER_CRUST: 29 - 40 km (can we get here without whole planet harvesting?)
+
+(Average continental elivation is 800m, so table 'outer_depth' values are always -0.8 from above numbers.)
  
-Our simplified Earth structure model:
- - Ocean Crust: 7.5 km (real world 5-10 km)
- - Upper Continental Crust: Surface - 28 km
- - Lower Continental Crust: 28-40 km
- (that's all we need for now...)
+Our simplified Earth structure model (outer depth, +thickness; in km):
+* Ocean: 0; +3.5
+* Ocean Floor: 3.5; +0.1 (assuming future exploitation by Hoover-it-up methods)
+* Ocean Crust: 3.6; +7.5 (real world 5-10 km)
+* Continental surface: -0.8; +1
+* Continental subsurface: 0.2; +4
+* Continental deep: 4.2; +4
+* Continental ultra deep: 8.2; +10
+* Continental extreme deep: 18.2; +10
+* Continental lower crust: 28.2; +11.8
+* Mantle: 40; +2850
+* Core: 2890; to center
 
 Notes on upper/lower continental crust: There is a Conrad
 discontinuity at 15-20 km and "sima starts about 11 km below the Conrad
 discontinuity". The sial/sima transition is all about chemistry and
-density, so that is where we define the upper/lower transition.
+density, so that is where we want the upper/lower transition.
 
 https://en.wikipedia.org/wiki/Earth%27s_crust   
 https://en.wikipedia.org/wiki/Continental_crust   
@@ -168,6 +182,26 @@ of PLAYER_OTHER at 9.03e7 km^2.
 #### COMPOSITION_MOON_MOON_xxxx
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Moon-Geology).
+
+## compositions_resources_deposits.tsv
+
+Percent values. "Deposit" is a fictional concept that can be thought of as something related to strip ratio for surface mining. It is the value that determines extraction efficiency. Specifically, any extraction operation (in operations.tsv) uses the specified energy but extracts at rate = t/h x deposits fraction. 
+
+This table is for dev convenience. Internally, deposit is calculated from mass fraction, survey level, and variance. Mass fraction is determined by compositions_resources_proportions.tsv. We use deposit level from this table to calculate a minumum variance assuming a minimum survey level of 5 (which is a really good knowledge level), overriding any value supplied in compositions_resources_variances.tsv if the result is larger.
+
+Deposits are roughly tuned to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
+* Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
+* Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
+* Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
+* Industrial Metals 5:1 to 30:1 -> 17-3% deposits (Zn: 0.2 kWh/t at 17%, 5/5 grade)
+* Precious Metals 10:1 to 100:1 -> 9-1% deposits (Au: 15000 kWh/t at 9%, 1e-4/1e-6 grade conversion)
+* Uranium 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 25%, 1/0.1 grade conversion)
+* Rare Eaths 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 1/1 grade)
+
+The concept is more abstract for others, but still relates to availability. Target deposits:
+* Oil 5-0.05% deposits, ~ "primary" to "tertiary" (3 kWh/t at 5%)
+* Methane 5-0.5% deposits, ~ "conventional" to "unconventional" (3 kWh/t at 5%)
+* Water 100% deposits, surface fresh water for the taking (0.01 kWh/t at 100% ???) Note: To do water properly, we would need to add a separate "fresh water" strata, since that total mass is tiny compared to H2O locked up in the surface regolith (except for Antarctica). However, I'm simplifying since this is Earth-only.
 
 ## compositions_resources_proportions.tsv
 
@@ -192,21 +226,11 @@ Notes:
 
 'Mixed' strata such as atmosphere are omitted from table and have default variance = 0.0.
 
+Any value specified here is overriden by calculated value
+
 Variance is the spatial heterogeneity of resource mass in each composition (as a coefficient of variation). High variance together with high survey level causes "deposits" which are useful for mining. E.g., USA and Japan have similar total metal content in their upper crust. But variance is boosted for USA to provide better extraction/energy ratio for mining operations. Variance goes down with mass as a resource is extracted (because you're removing the long tail of the log-normal distribution).
 
-Variances are tuned for Earth surface to provide "deposits" corresponding to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
-* Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
-* Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
-* Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
-* Industrial Metals 5:1 to 30:1 -> 17-3% deposits (Zn: 0.2 kWh/t at 17%, 5/5 grade)
-* Precious Metals 10:1 to 100:1 -> 9-1% deposits (Au: 15000 kWh/t at 9%, 1e-4/1e-6 grade conversion)
-* Uranium 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 25%, 1/0.1 grade conversion)
-* Rare Eaths 10:1 to 1000:1 -> 9-0.1% deposits (30 kWh/t at 1/1 grade)
 
-The concept is more abstract for others, but still relates to availability. Target deposits:
-* Oil 5-0.05% deposits, ~ "primary" to "tertiary" (3 kWh/t at 5%)
-* Methane 5-0.5% deposits, ~ "conventional" to "unconventional" (3 kWh/t at 5%)
-* Water 100% deposits, surface fresh water for the taking (0.01 kWh/t at 100% ???) Note: To do water properly, we would need to add a separate "fresh water" strata, since that total mass is tiny compared to H2O locked up in the surface regolith (except for Antarctica). However, I'm simplifying since this is Earth-only.
 
 For undifferentiated asteroids and small moons, spatial heterogeneity is much much smaller. However, the minumum "deposits" level is always the mass proportion of the material. So here the purpose of surveys is to find the asteroid with unusually high abundance (which is a function of error).
 
@@ -251,15 +275,12 @@ Quantities added to facility inventory reserves at simulator start. Table values
 For now, just giving everyone something for dev...
 
 
-## facilities_operations_xxxx.tsv
-
-`_xxxx` = `_capacities` and `_utilizations`.
+## facilities_operations_capacities.tsv
 
 See [operations.tsv](#operationstsv) for definitions of "1 operation unit".
 
 Capacity is "peak", "nominal", "nameplate" or similar. Utilization is "capacity factor" (for energy generation) or similar.  
-See https://en.wikipedia.org/wiki/Capacity_factor.
-For our internal calculation purposes, capacity x utilization = rate.
+See https://en.wikipedia.org/wiki/Capacity_factor. For our internal calculation purposes, capacity x utilization = run_rate. For extractions, the extraction rate for each output resource is multiplied by the deposits fraction.
 
 Note: These tables are here for development convenience. Capacities are actually determined by modules. However, game start code will set appropriate module number in each game start facility to achieve capacities defined in the _capacities.tsv table.
 
@@ -281,6 +302,8 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 (But continental Europe is less than UK, I believe...)
 
 
+
+
 #### ISS & Tiangong
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS-and-Tiangong).
@@ -291,6 +314,43 @@ For simplification, we're using 50% capacity factor for solar panels at 1 AU tha
 
 Per https://www.nasa.gov/feature/facts-and-figures, ISS solar power is 75-90 kw. This is USOS segment and (I assume) actual generation, so roughly consistent with above.
 
+## facilities_operations_capacity_factors.tsv
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+
+This table is only used for renewables. It sets the fixed capacity factor for each renewable operation at each game start facility.
+
+## facilities_operations_extractions.tsv
+
+This table sets game start capacity to achieve specified effective rate for extraction operations considering target resource deposits. Capacity calculated from this value will override any value set in facilities_operations_capacities.tsv. E.g., if we want effective oil extraction at 200 and oil deposit is 1%, then we need capacity 20000. We can just set 200 here and capacity will be set correctly even if we change table deposit level later. 
+
+We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Production) and split these roughly 37% surface, 57% subsurface, 6% deep, adjusted for region (e.g., biased deeper in USA and Europe).
+
+FIXME?: It's likely that real world capacities are greater than production. Ignoring that for now.
+
+2010 oil production:
+
+| Region   | 2010 total | Surface | Subsurface | Deep |
+|----------|------------|---------|------------|------|
+| USA      | 206        | 20      | 160        | 26   |
+| Russia   | 377        | 160     | 200        | 17   |
+| China    | 150        | 70      | 75         | 5    |
+| EU+UK    | 120        | 12      | 80         | 28   |
+| India    | 26         | 16      | 9.5        | 0.5  |
+| Japan    | 3.7        | 1       | 1.7        | 1    |
+| Other    | 689        | 255     | 392        | 42   |
+
+2010 gas production:
+
+| Region   | 2010 total | Surface | Subsurface | Deep |
+|----------|------------|---------|------------|------|
+| USA      | 1117       | 108     | 867        | 141  |
+| Russia   | 1081       | 459     | 574        | 49   |
+| China    | 54         | 25      | 27         | 1.8  |
+| EU+UK    | 258        | 26      | 172        | 60   |
+| India    | 50         | 29      | 20         | 1    |
+| Japan    | 43         | 12      | 20         | 11   |
+| Other    | 788        | 291     | 447        | 48   |
 
 ## facilities_populations.tsv
 
@@ -432,7 +492,7 @@ Fields:
 Notes:
 * Extractable resources in differentiated solids (which have variance > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, variance, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and variance, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
 
-#### SOLAR_POWER, WIND_POWER, TIDAL_POWER, HYDROPOWER, GEOTHERMAL_POWER
+#### OPERATION_SOLAR_POWER, _WIND_POWER, _TIDAL_POWER, _HYDROPOWER, _GEOTHERMAL_POWER
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
 
@@ -441,7 +501,7 @@ See comments in [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv)
 For solar, utilization is a function of disance from sun and `solar_occlusion` (from bodies.tsv or override value from facilities.tsv).   
 For other renewables, table value in facilities_operations_utilizations.tsv never changes.
 
-#### COAL_POWER
+#### OPERATION_COAL_POWER
 Combustion  
 Typical "bituminous" coal: 84.4% C, 5.4% H2, 6.7% O2, 1.8% S, 1.7% N2;   
 Energy density 24 MJ/kg, for 40% efficiency, "325 kg will power 100 W for yr";   
@@ -465,7 +525,7 @@ This is close to wiki CO2 emmisions data: 1001 g CO2/kWh;
 https://en.wikipedia.org/wiki/Electricity_generation   
 1001g/kWh x 10^-6t/g x 1e6kWh/3600 GJ -> 278 t CO2/1000 GJ   
 
-#### OIL_POWER
+#### OPERATION_OIL_POWER
 Combustion  
 We're simplifying and burning oil directly rather than processing to fuel oil.   
 84% C, 12% H2, 3% S, 1% O2, 1% N2   
@@ -476,7 +536,7 @@ Ajusting totals from Coal (in t),
 t per 1000 GJ: 73.6 oil + 197 O2 -> 226 CO2 + 78.9 H2O + 1.47 SO2 + 0.735 N2   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### REFINED_FUELS_POWER
+#### OPERATION_REFINED_FUELS_POWER
 Combustion  
 Specific energy gasoline 46.4, kerosene 43 MJ/kg;   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -486,7 +546,7 @@ If we use S.E. 44 MJ/kg, we have (in t):
 t per 1000 GJ: 70.3 fuel + 247 O2 -> 217 CO2 + 99.8 H20   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### ETHANOL_POWER
+#### OPERATION_ETHANOL_POWER
 Combustion  
 Specific energy 30 MJ/kg HHV   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -494,7 +554,7 @@ C2H5OH + 3 O2 -> 2 CO2 + 3 H2O; mws 46.069 + 95.994 -> 88.018 + 54.045
 t per 1000 GJ: 103 ethanol + 214 O2 -> 197 CO2 + 121 H2O   
 (Assuming 40% efficiency. Is this ok?)   
 
-#### METHANE_POWER
+#### OPERATION_METHANE_POWER
 Combustion  
 Specific energy 55.6 MJ/kg HHV (natural gas 53.6)   
 https://en.wikipedia.org/wiki/Energy_density   
@@ -504,13 +564,13 @@ This is close to wiki CO2 emmisions data: natural gas 669 g CO2/kWh,
 -> 186 t CO2/1000 GJ   
 https://en.wikipedia.org/wiki/Electricity_generation   
 
-#### HYDROGEN_POWER
+#### OPERATION_HYDROGEN_POWER
 aka, fuel cells   
 Specific energy 141.86 MJ/kg HHV   
 2 H2 + O2 -> 2 H2O; mws 4.032 + 31.998 -> 36.03   
 t per 1000 GJ: 21.8 H2 + 173 O2 -> 195 H2O   
 
-#### PROCESS_FISSION_POWER
+#### OPERATION_FISSION_POWER
 Our proxy "fission fuel" is yellowcake.   
 Total yellowcake volume for 2020 was 92 million lb;   
 https://www.yellowcakeplc.com/uranium-market/   
@@ -521,34 +581,34 @@ https://en.wikipedia.org/wiki/Nuclear_power
 Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.   
 
 #### **** Drilling and Mining Notes ****
-* `_NEAR_SURFACE_` -0.8 to 0 km (this covers average continental altitude above sea level, and covers the majority of "pit" or "surface" in the case of mining)
-* `_SUBSURFACE_` 0 to 4 km (this covers modern subsurface mining and most drilling)
-* `_DEEP_` 4 to 8 km (drilling only using contemporary engineering)
-* `_EXTREME_DEEP_` 8 to 12 km (drilling only using contemporary engineering)
-* `_ULTRA_DEEP_` 12 to 16 km (drilling only using contemporary engineering; rare)
-* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental subsurface or deeper drilling.
+* `_SURFACE_` 0-1 km (this covers "pit" or "surface" in the case of mining)
+* `_SUBSURFACE_` 1-5 km (this covers modern subsurface mining and most drilling)
+* `_DEEP_` 5-9 km (drilling only using contemporary engineering)
+* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental drilling.
 
-#### OIL_xxxx_DRILLING
+#### OPERATION_OIL_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
 
-We use "conventional oil" input energy (0.58 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional oil" figures would be simulated by deposits on the order of 16% and 8%. (Note: use these deposits to tune Earth nation Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+AI value 0.499 MWh per tonne of oil is from US 2009 study, which probably represents conventional oil extraction.  
+Adjust for sim USA deposits (x 0.5%) -> 0.00250 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
 
-x0.8 -> 0.46 MW near-surface & subsurface; x2, x4, x8 -> 0.93 MW deep, 1.9 extreme deep, 3.7 ultra deep.
+-> surface 0.00250, subsurface 0.00500, deep 0.01000.
 
 Output is 100% Oil.
 
-#### GAS_xxxx_DRILLING
+#### OPERATION_GAS_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Drilling).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
 
-We use the smaller "conventional gas" input energy (0.14 MWh/tonne) for the case of 80% deposits, near-surface & subsurface. "Unconventional gas" figures would be simulated by deposits on the order of 20% and 8%. (Note: use these deposits to tune Earth territorial Compositions.) We use 2x, 4x and 8x input energy for deep, extreme deep and ultra deep.
+AI value 0.352 MWh per tonne of gas is from US 2011 study, which probably represents conventional gas extraction.  
+Adjust for sim USA deposits (x 2%) -> 0.00704 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
 
-x0.8 -> 0.11 MW near-surface & subsurface; x2, x4, x8 -> 0.22 MW deep, 0.45 extreme deep, 0.90 ultra deep.
+-> surface 0.00704, subsurface 0.01408, deep 0.02816.
 
 We simplify and output separated products from drilling: 90% Methane, 9.975% Ethane and 0.025% Helium.
 
-#### COAL_xxxx_MINING
+#### OPERATION_COAL_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining).
 
@@ -567,7 +627,7 @@ Per t mined:
 
 (I think this is per ton of extracted material, but still >10x different than Opus. Need to investigate!)
 
-#### URANIUM_xxxx_MINING
+#### OPERATION_URANIUM_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Mining).
 
@@ -579,7 +639,7 @@ x 0.2 x 0.82 -> 4.1 MW near-surface, 14.8 MW subsurface.
 
 Output is 0.82 t/h Uranium Ore and 0.18 t/h Gravel/Conglomerate.
 
-#### IRON_xxxx_MINING
+#### OPERATION_IRON_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
@@ -587,16 +647,16 @@ Assuming 50% "deposits".
 
 
 
-#### ALUMINIUM_xxxx_MINING
+#### OPERATION_ALUMINIUM_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
 
-#### INDUST_METALS_xxxx_MINING
+#### OPERATION_INDUST_METALS_xxxx_MINING
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
-#### PRECIOUS_METALS_xxxx_MINING
+#### OPERATION_PRECIOUS_METALS_xxxx_MINING
 
 
 
@@ -633,7 +693,7 @@ For precious metal ores (using 71% of Gold power above, x 1000 kg/t):
 
 
 
-#### URBAN_DEVELOPED
+#### OPERATION_URBAN_DEVELOPED
 Allows 20000 humans / km^2, which is about the density of Paris proper:
 https://en.wikipedia.org/wiki/List_of_cities_proper_by_population_density
 In 2010 & 2020, 51% & 56% of humans were "urban":
@@ -644,7 +704,7 @@ inhabitants (which is ~50% of total population).
 'rate' is n/a for this operation.
 TODO: Mechanism to grow urban capacity.
 
-#### SMALL_FOOD_FARMING
+#### OPERATION_SMALL_FOOD_FARMING
 Allows 100 humans / km^2. Capacity is ~1x total population.
 All private sector (is this way off for Russia, China?).
 

@@ -64,8 +64,9 @@ var _lfq_net_income := 0.0
 var _constructions := 0.0 # total mass of all _constructions
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
-var _rates: Array[float] # =mass_flow if has_mass_flow (?)
-var _capacities: Array[float]
+var _capacities: Array[float] # set by facility modules
+var _run_rates: Array[float] # <= capacities; defines operation utilization
+var _effective_rates: Array[float] # almost always <= run_rates
 
 # Facility, Player only (_has_financials = true)
 var _est_revenues: Array[float] # per year at current rate & prices
@@ -78,6 +79,7 @@ var _op_logics: Array[int] # enum; Facility only
 # Facility only. '_op_commands' are AI or player settable from FacilityInterface.
 # Use API! (Direct change will break!) Data flows Interface -> Server.
 var _op_commands: Array[int] # enum; Facility only
+var _target_utilizations: Array[float]
 
 # Operations data here
 var _has_financials := false
@@ -106,17 +108,19 @@ func _init(is_new := false, has_financials := false, is_facility := false) -> vo
 	_is_facility = is_facility
 	var n_populations: int = _table_n_rows[&"populations"]
 	_crews = ivutils.init_array(n_populations, 0.0, TYPE_FLOAT)
-	_rates = ivutils.init_array(_n_operations, 0.0, TYPE_FLOAT)
-	_capacities = _rates.duplicate()
+	_capacities = ivutils.init_array(_n_operations, 0.0, TYPE_FLOAT)
+	_run_rates = _capacities.duplicate()
+	_effective_rates = _capacities.duplicate()
 	if !has_financials:
 		return
-	_est_revenues = _rates.duplicate()
-	_est_gross_incomes = _rates.duplicate()
+	_est_revenues = _capacities.duplicate()
+	_est_gross_incomes = _capacities.duplicate()
 	if !is_facility:
 		return
 	_est_gross_margins = ivutils.init_array(_n_operations, NAN, TYPE_FLOAT)
 	_op_logics = ivutils.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = ivutils.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
+	_target_utilizations = ivutils.init_array(_n_operations, 1.0, TYPE_FLOAT)
 
 
 # ********************************** READ *************************************
@@ -137,8 +141,12 @@ func get_crew(population_type := -1) -> float:
 	return _crews[population_type]
 
 
-func get_rate(type: int) -> float:
-	return _rates[type]
+func get_run_rate(type: int) -> float:
+	return _run_rates[type]
+
+
+func get_effective_rate(type: int) -> float:
+	return _effective_rates[type]
 
 
 func get_capacity(type: int) -> float:
@@ -172,11 +180,11 @@ func get_utilization(type: int) -> float:
 	var capacity := _capacities[type]
 	if !capacity:
 		return 0.0
-	return _rates[type] / capacity
+	return _run_rates[type] / capacity
 
 
 func get_electricity(type: int) -> float:
-	return get_rate(type) * _table_operations[&"electricity"][type]
+	return get_run_rate(type) * _table_operations[&"electricity"][type]
 
 
 func get_total_electricity() -> float:
@@ -184,7 +192,7 @@ func get_total_electricity() -> float:
 	var sum := 0.0
 	var i := 0
 	while i < _n_operations:
-		sum += get_rate(i) * operation_electricities[i]
+		sum += get_run_rate(i) * operation_electricities[i]
 		i += 1
 	return sum
 
@@ -194,32 +202,32 @@ func get_development_energy() -> float:
 	var sum := 0.0
 	var i := 0
 	while i < _n_operations:
-		sum += get_rate(i) * dev_energies[i]
+		sum += get_run_rate(i) * dev_energies[i]
 		i += 1
 	return sum
 
 
 func get_gui_flow(type: int) -> float:
-	return get_rate(type) * _table_operations[&"gui_flow"][type]
+	return get_run_rate(type) * _table_operations[&"gui_flow"][type]
 
 
 func get_fuel_burn(type: int) -> float:
-	return get_rate(type) * _table_operations[&"fuel_burn"][type]
+	return get_run_rate(type) * _table_operations[&"fuel_burn"][type]
 
 
 func get_extraction_rate(type: int) -> float:
-	return get_rate(type) * _table_operations[&"extraction_rate"][type]
+	return get_run_rate(type) * _table_operations[&"extraction_rate"][type]
 
 
 func get_mass_flow(type: int) -> float:
-	return get_rate(type) * _table_operations[&"mass_flow"][type]
+	return get_run_rate(type) * _table_operations[&"mass_flow"][type]
 
 
 func get_development_manufacturing() -> float:
 	var mass_flows: Array[float] = _table_operations[&"mass_flow"]
 	var sum := 0.0
 	for type: int in tables_aux[&"is_manufacturing_operations"]:
-		sum += get_rate(type) * mass_flows[type]
+		sum += get_run_rate(type) * mass_flows[type]
 	return sum
 
 
@@ -249,7 +257,7 @@ func get_group_utilization(op_group: int) -> float:
 		return 0.0
 	var sum_rates := 0.0
 	for type in op_group_ops:
-		sum_rates += get_rate(type)
+		sum_rates += get_run_rate(type)
 	return sum_rates / sum_capacities
 
 
@@ -258,7 +266,7 @@ func get_group_electricity(op_group: int) -> float:
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
 	for type in op_group_ops:
-		sum += get_rate(type) * electricities[type]
+		sum += get_run_rate(type) * electricities[type]
 	return sum
 
 
@@ -296,6 +304,10 @@ func get_group_est_gross_margin(op_group: int) -> float:
 	return sum_income / sum_revenue
 
 
+func get_target_utilization(type: int) -> float:
+	return _target_utilizations[type]
+
+
 # **************************** INTERFACE MODIFY *******************************
 
 func set_op_command(type: int, command: int) -> void:
@@ -317,15 +329,17 @@ func set_network_init(data: Array) -> void:
 	_lfq_net_income = data[3]
 	_constructions = data[4]
 	_crews = data[5]
-	_rates = data[6]
-	_capacities = data[7]
-	_est_revenues = data[8]
-	_est_gross_incomes = data[9]
-	_est_gross_margins = data[10]
-	_op_logics = data[11]
-	_op_commands = data[12]
-	_has_financials = data[13]
-	_is_facility = data[14]
+	_capacities = data[6]
+	_run_rates = data[7]
+	_effective_rates = data[8]
+	_est_revenues = data[9]
+	_est_gross_incomes = data[10]
+	_est_gross_margins = data[11]
+	_op_logics = data[12]
+	_op_commands = data[13]
+	_target_utilizations = data[14]
+	_has_financials = data[15]
+	_is_facility = data[16]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -354,10 +368,12 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_float_offset += 1
 	
 	_add_floats_delta(_crews)
-	_add_floats_delta(_rates)
-	_add_floats_delta(_rates, 64)
 	_add_floats_delta(_capacities)
 	_add_floats_delta(_capacities, 64)
+	_add_floats_delta(_run_rates)
+	_add_floats_delta(_run_rates, 64)
+	_add_floats_delta(_effective_rates)
+	_add_floats_delta(_effective_rates, 64)
 	
 	if !_has_financials:
 		return

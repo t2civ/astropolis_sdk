@@ -1,6 +1,7 @@
 id,en
 TXT_AIR,Air
 TXT_ALUMINIUM,Aluminium
+TXT_ALUMINIUM_ORES,Aluminium Ores
 TXT_BATTERIES,Batteries
 TXT_BIOFEEDSTOCK,Biofeedstock
 TXT_COAL,Coal
@@ -22,9 +23,11 @@ TXT_HELIUM3,Helium-3
 TXT_HYDRO,Hydro
 TXT_HYDROGEN,Hydrogen
 TXT_INDUST_CHEMICALS,Industrial Chemicals
+TXT_INDUST_METAL_ORES,Industrial Metal Ores
 TXT_INDUST_METALS,Industrial Metals
 TXT_INDUST_MINERALS,Industrial Minerals
 TXT_IRON,Iron
+TXT_IRON_ORES,Iron Ores
 TXT_LUXURY_GOODS,Luxury Goods
 TXT_METHANE,Methane
 TXT_MOONS,Moons
@@ -32,6 +35,7 @@ TXT_OFF_EARTH,Off-Earth
 TXT_OIL,Oil
 TXT_PHARMACEUTICALS,Pharmaceuticals
 TXT_PLASTICS_POLYMERS,Plastics/Polymers
+TXT_RARE_EARTH_ORES,Rare Earth Ores
 TXT_RARE_EARTHS,Rare Earths
 TXT_REFINED_FUELS,Refined Fuels
 TXT_ROBOTS,Robots
@@ -45,6 +49,7 @@ TXT_THEORY,Theory
 TXT_THOLINS,Tholins
 TXT_TIDAL,Tidal
 TXT_URANIUM,Uranium
+TXT_URANIUM_ORES,Uranium Ores
 TXT_URANIUM_FISSION,Uranium Fission
 TXT_WATER,Water
 TXT_WIND,Wind

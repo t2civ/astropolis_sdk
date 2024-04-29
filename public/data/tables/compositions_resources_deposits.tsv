@@ -1,0 +1,55 @@
+COMPOSITION_\RESOURCE_	COAL	OIL	METHANE	ETHANE	HYDROGEN	HELIUM3	IRON_ORES	ALUMINIUM_ORES	INDUSTRIAL_METAL_ORES	PRECIOUS_METAL_ORES	RARE_EARTH_ORES	URANIUM_ORES	INDUSTRIAL_MINERALS	THOLINS	STONE	IRON	INDUSTRIAL_METALS	PRECIOUS_METALS	WATER	OXYGEN	NITROGEN	CARBON_DIOXIDE	CARBON_MONOXIDE	AMMONIA	SULFUR_DIOXIDE	HELIUM	ARGON_NEON	KRYPTON_XENON
+CLASS_C_ASTEROID_STRATUM_BULK																												
+CLASS_S_ASTEROID_STRATUM_BULK																												
+CLASS_M_ASTEROID_STRATUM_BULK																												
+PLANET_EARTH_STRATUM_OCEAN_FLOOR																												
+PLANET_EARTH_STRATUM_OCEAN_CRUST																												
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_USA	12	0.05	0.2	0.02															200							0.002		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_RUSSIA	12	0.5	2	0.2															200							0.02		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_CHINA	15	0.1	0.4	0.04															200							0.004		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_EU	10	0.05	0.2	0.02															200							0.002		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_INDIA	15	0.2	0.8	0.08															200							0.008		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_JAPAN	5	0.05	0.2	0.02															200							0.002		
+PLANET_EARTH_STRATUM_CONT_SURFACE_POLITY_OTHER	12	0.5	2	0.2															200							0.02		
+PLANET_EARTH_STRATUM_CONT_SURFACE_ANTARCTICA	12	0.5	2	0.2															200							0.02		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_USA	25	0.5	2	0.2																						0.02		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_RUSSIA	25	1	4	0.4																						0.04		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_CHINA	20	0.2	0.8	0.08																						0.008		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_EU	15	0.2	0.8	0.08																						0.008		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_INDIA	25	0.2	0.8	0.08																						0.008		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_JAPAN	9	0.05	0.4	0.04																						0.004		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_POLITY_OTHER	15	1	4	0.4																						0.04		
+PLANET_EARTH_STRATUM_CONT_SUBSURF_ANTARCTICA	15	0.5	2	0.2																						0.02		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_USA	12	0.25	1	0.1																						0.01		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_RUSSIA	7	0.5	2	0.2																						0.02		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_CHINA	10	0.1	0.4	0.04																						0.004		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_EU	10	0.1	0.4	0.04																						0.004		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_INDIA	15	0.1	0.4	0.04																						0.004		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_JAPAN	4	0.02	0.2	0.02																						0.002		
+PLANET_EARTH_STRATUM_CONT_DEEP_POLITY_OTHER	7	0.5	2	0.2																						0.02		
+PLANET_EARTH_STRATUM_CONT_DEEP_ANTARCTICA	7	0.25	0.5	0.05																						0.005		
+PLANET_EARTH_STRATUM_CONT_ULTRA_DEEP																												
+PLANET_EARTH_STRATUM_CONT_EXTREME_DEEP																												
+PLANET_EARTH_STRATUM_CONT_LOWER_CRUST																												
+PLANET_EARTH_STRATUM_MANTLE																												
+MOON_MOON_STRATUM_REGOLITH																												
+MOON_MOON_STRATUM_POLAR_SHADED_REGOLITH																												
+MOON_MOON_STRATUM_CRUST_TERRAE																												
+MOON_MOON_STRATUM_CRUST_MARIA																												
+MOON_MOON_STRATUM_MANTLE																												
+PLANET_MARS_STRATUM_SURFACE																												
+PLANET_MARS_STRATUM_CRUST																												
+MOON_PHOBOS_STRATUM_BULK																												
+MOON_DEIMOS_STRATUM_BULK																												
+PLANET_CERES_STRATUM_CRUST																												
+PLANET_CERES_STRATUM_MANTLE																												
+@ENUM_X_ENUM																												
+@DATA_TYPE=FLOAT																												
+@DATA_UNIT=0.01																												
+@DATA_DEFAULT=NAN																												
+# Percents. Used to calculate min game start variance																												
+# assuming min survey level 5. (You will see lower 'deposit'																												
+# if actual survey level < 5.)																												
+# Overrides _variances.tsv value if result is greater.																												
+# Spatially heterogenious resources only.																												
+# columns RESOURCE_ (is_extraction subset)																												
