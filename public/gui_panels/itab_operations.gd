@@ -171,7 +171,7 @@ func _get_ai_data(target_name: StringName) -> void:
 		var group_data := [
 			_op_group_names[op_group_type],
 			interface.get_op_group_utilization(op_group_type),
-			interface.get_op_group_electricity(op_group_type),
+			absf(interface.get_op_group_electricity(op_group_type)),
 			NAN,
 			interface.get_op_group_est_revenue(op_group_type),
 			interface.get_op_group_est_gross_margin(op_group_type),
@@ -199,7 +199,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			var op_data := [
 				sublabel,
 				interface.get_operation_utilization(operation_type),
-				interface.get_operation_electricity(operation_type),
+				absf(interface.get_operation_electricity(operation_type)),
 				flow,
 				interface.get_operation_est_revenue(operation_type),
 				interface.get_operation_est_gross_margin(operation_type),

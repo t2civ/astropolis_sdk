@@ -199,7 +199,8 @@ func get_deposit_boost(resource_type: int) -> float:
 
 
 func get_deposit_fraction(resource_type: int, zero_if_no_boost := false) -> float:
-	# Fictional concept; roughly related to scrape ratio at best known deposits
+	# Fictional concept, roughly related to scrape ratio at best known deposits.
+	# Max 1.0.
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var deposits_boost: float = _survey_deposits_sigma[survey_type] * variances[index]
@@ -211,6 +212,15 @@ func get_deposit_fraction(resource_type: int, zero_if_no_boost := false) -> floa
 	var p := mass / _total_mass # mass fraction
 	var fractional_deposits := p + deposits_boost * p * (1.0 - p) # boost from p
 	return minf(fractional_deposits, 1.0)
+
+
+func get_deposits_fraction(resource_types: Array[int]) -> float:
+	# E.g., [methane_type, ethane_type, helium_type] for total 'gas' deposits.
+	# >1.0 possible but shouldn't happen for actual extraction subsets.
+	var sum := 0.0
+	for resource_type in resource_types:
+		sum += get_deposit_fraction(resource_type)
+	return sum
 
 
 # *****************************************************************************

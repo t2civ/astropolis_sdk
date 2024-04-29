@@ -11,28 +11,6 @@ ETHANOL_POWER
 METHANE_POWER																		
 HYDROGEN_POWER																		
 URANIUM_FISSION_POWER																		
-OIL_SURFACE_DRILLING	10000																	
-OIL_SUBSURFACE_DRILLING																		
-OIL_DEEP_DRILLING																		
-GAS_SURFACE_DRILLING	10000																	
-GAS_SUBSURFACE_DRILLING																		
-GAS_DEEP_DRILLING																		
-COAL_SURFACE_MINING																		
-COAL_SUBSURFACE_MINING																		
-URANIUM_SURFACE_MINING																		
-URANIUM_SUBSURFACE_MINING																		
-IRON_SURFACE_MINING																		
-IRON_SUBSURFACE_MINING																		
-ALUMINIUM_SURFACE_MINING																		
-ALUMINIUM_SUBSURFACE_MINING																		
-INDUST_METALS_SURFACE_MINING																		
-INDUST_METALS_SUBSURFACE_MINING																		
-RARE_EARTHS_SURFACE_MINING																		
-RARE_EARTHS_SUBSURFACE_MINING																		
-INDUST_MINERALS_SURFACE_MINING																		
-INDUST_MINERALS_SUBSURFACE_MINING																		
-STONE_QUARRYING																		
-REGOLITH_QUARRYING																		
 AIR_EXTRACTION																		
 OIL_REFINING																		
 OIL_GASIFICATION																		
