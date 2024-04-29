@@ -12,7 +12,8 @@
 [facilities.tsv](#facilitiestsv)  
 [facilities_inventories.tsv](#facilities_inventoriestsv)  
 [facilities_operations_capacities.tsv](#facilities_operations_capacitiestsv)  
-[facilities_operations_maxes.tsv](#facilities_operations_maxestsv)  
+[facilities_operations_capacity_factors.tsv](#facilities_operations_capacity_factorstsv)  
+[facilities_operations_extractions.tsv](#facilities_operations_extractionstsv)  
 [facilities_populations.tsv](#facilities_populationstsv)  
 [major_strata.tsv](#major_stratatsv)  
 [mod_classes.tsv](#mod_classestsv)  
@@ -300,13 +301,8 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 * UK offshore: ~26-41%, average ~35%
 (But continental Europe is less than UK, I believe...)
 
-#### Extractions
 
-Extraction rates are t/h x deposit fraction. So, for example, USA surface oil with 0.5% deposit has production 0.05 t/h per operation unit. Surface gas production is mainly methane (2% deposit) with some ethane (0.2%) and helium (0.002%).
 
-We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Production) and convert to "capacity units" by dividing by observed game deposits (which are a function of abundance and variance).
-
-USA surface: oil (0.5%), methane (2%), ethane (0.2%), helium (0.002%)
 
 #### ISS & Tiangong
 
@@ -318,11 +314,43 @@ For simplification, we're using 50% capacity factor for solar panels at 1 AU tha
 
 Per https://www.nasa.gov/feature/facts-and-figures, ISS solar power is 75-90 kw. This is USOS segment and (I assume) actual generation, so roughly consistent with above.
 
-## facilities_operations_maxes.tsv
+## facilities_operations_capacity_factors.tsv
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
 
-This table is only used for renewables. It sets the fixed utilization (=capacity factor) for each renewable source at each game start facility.
+This table is only used for renewables. It sets the fixed capacity factor for each renewable operation at each game start facility.
+
+## facilities_operations_extractions.tsv
+
+This table sets game start capacity to achieve specified effective rate for extraction operations considering target resource deposits. Capacity calculated from this value will override any value set in facilities_operations_capacities.tsv. E.g., if we want effective oil extraction at 200 and oil deposit is 1%, then we need capacity 20000. We can just set 200 here and capacity will be set correctly even if we change table deposit level later. 
+
+We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Production) and split these roughly 37% surface, 57% subsurface, 6% deep, adjusted for region (e.g., biased deeper in USA and Europe).
+
+FIXME?: It's likely that real world capacities are greater than production. Ignoring that for now.
+
+2010 oil production:
+
+| Region   | 2010 total | Surface | Subsurface | Deep |
+|----------|------------|---------|------------|------|
+| USA      | 206        | 20      | 160        | 26   |
+| Russia   | 377        | 160     | 200        | 17   |
+| China    | 150        | 70      | 75         | 5    |
+| EU+UK    | 120        | 12      | 80         | 28   |
+| India    | 26         | 16      | 9.5        | 0.5  |
+| Japan    | 3.7        | 1       | 1.7        | 1    |
+| Other    | 689        | 255     | 392        | 42   |
+
+2010 gas production:
+
+| Region   | 2010 total | Surface | Subsurface | Deep |
+|----------|------------|---------|------------|------|
+| USA      | 1117       | 108     | 867        | 141  |
+| Russia   | 1081       | 459     | 574        | 49   |
+| China    | 54         | 25      | 27         | 1.8  |
+| EU+UK    | 258        | 26      | 172        | 60   |
+| India    | 50         | 29      | 20         | 1    |
+| Japan    | 43         | 12      | 20         | 11   |
+| Other    | 788        | 291     | 447        | 48   |
 
 ## facilities_populations.tsv
 
