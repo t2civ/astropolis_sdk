@@ -10,7 +10,9 @@ extends MarginContainer
 const SCENE := "res://public/gui_panels/itab_markets.tscn"
 
 # Tabs follow row enumerations in resource_classes.tsv.
-# TODO: complete localizations
+#
+# FIXME: Volume, Bid/Ask get and format.
+# TODO: Header localizations.
 
 const N_COLUMNS := 6
 
@@ -26,6 +28,7 @@ const TRADE_CLASS_TEXTS := [ # correspond to TradeClasses
 
 const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
+	&"vol_toggle",
 	&"current_tab",
 	&"_on_ready_tab",
 ]
@@ -33,6 +36,7 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 var unit_multipliers := IVUnits.unit_multipliers
 
 # persisted
+var vol_toggle := true # show volume or bid/ask
 var current_tab := 0
 var _on_ready_tab := 0
 
@@ -41,7 +45,7 @@ var _state: Dictionary = IVGlobal.state
 var _selection_manager: SelectionManager
 var _suppress_tab_listener := true
 
-var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
+var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _tables: Dictionary = IVTableData.tables
@@ -89,7 +93,7 @@ func _ready() -> void:
 	$TabContainer/Biologicals.name = &"TAB_MKS_BIOLOGICALS"
 	$TabContainer/Cyber.name = &"TAB_MKS_CYBER"
 	for col0_spacer in _col0_spacers:
-		col0_spacer.custom_minimum_size.x = _name_column_width - 10.0
+		col0_spacer.custom_minimum_size.x = _name_column_width
 	_tab_container.set_current_tab(_on_ready_tab)
 	_suppress_tab_listener = false
 	_update_tab()
@@ -182,6 +186,10 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 				label.custom_minimum_size.x = _name_column_width
 			else: # value
 				label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			if column == 2:
+				label.visible = !vol_toggle
+			elif column == 3:
+				label.visible = vol_toggle
 			hbox.add_child(label)
 			column += 1
 		vbox.add_child(hbox)
