@@ -240,9 +240,7 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 		var group_data: Array = data[i * 2]
 		var ops_data: Array = data[i * 2 + 1]
 		var group_box: GroupBox = vbox.get_child(i)
-		var op_group_type: int = _op_classes_op_groups[tab][i]
-		var init_open: bool = _tables.op_groups.init_open[op_group_type]
-		group_box.set_group_item(target_name, group_data, ops_data, init_open)
+		group_box.set_group_item(target_name, group_data, ops_data)
 		group_box.show()
 		i += 1
 	
@@ -258,7 +256,7 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 
 
 class GroupBox extends VBoxContainer:
-	# Reused container for RowItems (which are reused)
+	# Reused container for RowItems
 	
 	var _group_hdr := RowItem.new(true)
 	var _is_open: bool
@@ -274,14 +272,10 @@ class GroupBox extends VBoxContainer:
 		_group_hdr.group_button.button_down.connect(_toggle_open_close)
 	
 	
-	func set_group_item(target_name: StringName, group_data: Array, ops_data: Array,
-			init_open := true) -> void:
+	func set_group_item(target_name: StringName, group_data: Array, ops_data: Array) -> void:
 		_memory_key = target_name + group_data[0]
-		if _memory.has(_memory_key):
-			_is_open = _memory[_memory_key]
-		else:
-			_is_open = init_open
-
+		_is_open = _memory.get(_memory_key, false)
+		
 		var group_state: int
 		if ops_data:
 			group_state = GROUP_OPEN if _is_open else GROUP_CLOSED

@@ -157,6 +157,45 @@ func _on_project_objects_instantiated() -> void:
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
 			resource_resource_classes, n_resource_classes) # an array of resources for each resource_class
+	
+	# processed table data
+	var operation_input_quantities_converted: Array[Array] = []
+	tables_aux[&"operation_input_quantities_converted"] = operation_input_quantities_converted
+	var operation_input_quantities: Array[Array] = tables[&"operations"][&"input_quantities"]
+	var operation_input_units: Array[Array] = tables[&"operations"][&"input_units"]
+	for i in n_operations:
+		var input_quantities: Array[float] = operation_input_quantities[i]
+		var input_units: Array[StringName] = operation_input_units[i]
+		var input_quantities_converted: Array[float] = []
+		operation_input_quantities_converted.append(input_quantities_converted)
+		for j in input_quantities.size():
+			var value := input_quantities[j]
+			var unit := input_units[j]
+			input_quantities_converted.append(IVQConvert.convert_quantity(value, unit))
+	
+	var operation_output_quantities_converted: Array[Array] = []
+	tables_aux[&"operation_output_quantities_converted"] = operation_output_quantities_converted
+	var operation_output_quantities: Array[Array] = tables[&"operations"][&"output_quantities"]
+	var operation_output_units: Array[Array] = tables[&"operations"][&"output_units"]
+	for i in n_operations:
+		var output_quantities: Array[float] = operation_output_quantities[i]
+		var output_units: Array[StringName] = operation_output_units[i]
+		var output_quantities_converted: Array[float] = []
+		operation_output_quantities_converted.append(output_quantities_converted)
+		for j in output_quantities.size():
+			var value := output_quantities[j]
+			var unit := output_units[j]
+			output_quantities_converted.append(IVQConvert.convert_quantity(value, unit))
+			
+			prints(value, output_quantities_converted[j])
+	
+	# error testing
+	for operation_type in IVTableData.get_n_rows(&"operations"):
+		# Test redundant 'process_group' in operations.tsv and op_groups.tsv.
+		var op_group := IVTableData.get_db_int(&"operations", &"op_group", operation_type)
+		var process_group := IVTableData.get_db_int(&"operations", &"process_group", operation_type)
+		assert(process_group == IVTableData.get_db_int(&"op_groups", &"process_group", op_group),
+				"Inconsistant 'process_group' in 'operations.tsv' and 'op_groups.tsv'")
 
 
 func _on_project_nodes_added() -> void:

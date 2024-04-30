@@ -57,6 +57,11 @@ enum { # _dirty
 	DIRTY_CONSTRUCTIONS = 1 << 3,
 }
 
+const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
+const PROCESS_GROUP_CONV_POWER := Enums.ProcessGroup.PROCESS_GROUP_CONV_POWER
+const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
+const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
+
 # Interface read-only! Data flows server -> interface.
 var _lfq_revenue := 0.0 # last 4 quarters
 var _lfq_gross_output := 0.0 # revenue w/ some exceptions; = "economy"
@@ -92,6 +97,8 @@ var _dirty_op_commands_2 := 0 # max 128
 # localized indexing & table data
 static var _table_operations: Dictionary
 static var _n_operations: int
+static var _operation_electricities: Array[float]
+static var _operation_process_groups: Array[int]
 static var _op_groups_operations: Array[Array]
 static var _is_class_instanced := false
 
@@ -101,6 +108,8 @@ func _init(is_new := false, has_financials := false, is_facility := false) -> vo
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
+		_operation_electricities = _table_operations[&"electricity"]
+		_operation_process_groups = _table_operations[&"process_group"]
 		_op_groups_operations = tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
@@ -184,27 +193,25 @@ func get_utilization(type: int) -> float:
 
 
 func get_electricity(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"electricity"][type]
-
-
-func get_total_electricity() -> float:
-	var operation_electricities: Array[float] = _table_operations[&"electricity"]
-	var sum := 0.0
-	var i := 0
-	while i < _n_operations:
-		sum += get_run_rate(i) * operation_electricities[i]
-		i += 1
-	return sum
+	# Negative for power consumers.
+	var operation_electricity := _operation_electricities[type]
+	if operation_electricity > 0.0: # power generating
+		return get_effective_rate(type) * operation_electricity
+	return get_run_rate(type) * operation_electricity
 
 
 func get_development_energy() -> float:
-	var dev_energies: Array[float] = _table_operations[&"dev_energy"]
+	# For now, we just sum power generation. TODO: Handle solar foundries, etc.
 	var sum := 0.0
-	var i := 0
-	while i < _n_operations:
-		sum += get_run_rate(i) * dev_energies[i]
-		i += 1
+	for type in _n_operations:
+		var electricity := get_electricity(type)
+		if electricity > 0.0:
+			sum += electricity
 	return sum
+
+
+func get_extraction_rate(type: int) -> float:
+	return get_run_rate(type) * _table_operations[&"extraction_rate"][type]
 
 
 func get_gui_flow(type: int) -> float:
@@ -214,9 +221,6 @@ func get_gui_flow(type: int) -> float:
 func get_fuel_burn(type: int) -> float:
 	return get_run_rate(type) * _table_operations[&"fuel_burn"][type]
 
-
-func get_extraction_rate(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"extraction_rate"][type]
 
 
 func get_mass_flow(type: int) -> float:
@@ -262,11 +266,9 @@ func get_group_utilization(op_group: int) -> float:
 
 
 func get_group_electricity(op_group: int) -> float:
-	var electricities: Array[float] = _table_operations[&"dev_energy"]
-	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
-	for type in op_group_ops:
-		sum += get_run_rate(type) * electricities[type]
+	for type: int in _op_groups_operations[op_group]:
+		sum += get_electricity(type)
 	return sum
 
 
