@@ -164,6 +164,9 @@ func _get_ai_data(target_name: StringName) -> void:
 # Main thread !!!!
 
 func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
+	# We convert prices and quantities to trade_unit here. We're assuming
+	# all trade_units are multipliers, but that could change (e.g., if we
+	# implement floating currencies).
 	
 	# make rows as needed
 	var vbox: VBoxContainer = _vboxes[tab]
@@ -195,20 +198,15 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		
 		var trade_class: int = _trade_classes[resource_type]
 		var trade_unit: StringName = _trade_units[resource_type]
+		var unit_conv: float = 1.0 / unit_multipliers[trade_unit]
 		
-		in_stock /= unit_multipliers[trade_unit]
-		contracted /= unit_multipliers[trade_unit]
-		
-		var resource_text: String = (
-			tr(_resource_names[resource_type])
-			+ " (" + TRADE_CLASS_TEXTS[trade_class]
-			+ trade_unit + ")"
-		)
-		var price_text := "" if is_nan(price) else IVQFormat.number(price, 3)
-		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid, 3)
-		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask, 3)
-		var in_stock_text := IVQFormat.number(in_stock, 2) # FIXME: trade unit
-		var contracted_text := IVQFormat.number(contracted, 2) # FIXME: trade unit
+		var resource_text: String = (tr(_resource_names[resource_type])
+				+ " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")")
+		var price_text := "" if is_nan(price) else IVQFormat.number(price * unit_conv, 3)
+		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid * unit_conv, 3)
+		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask * unit_conv, 3)
+		var in_stock_text := IVQFormat.number(in_stock * unit_conv, 2)
+		var contracted_text := IVQFormat.number(contracted * unit_conv, 2)
 		
 		var hbox: HBoxContainer = vbox.get_child(i)
 		(hbox.get_child(0) as Label).text = resource_text

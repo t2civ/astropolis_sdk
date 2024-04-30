@@ -14,7 +14,7 @@ extends NetComponent
 #
 # Arrays indexed by resource_type. Only Facilities have an Inventory.
 #
-# Quantities in internal units; however prices, bids, asks refer to trade_unit.
+# All values in internal units!
 
 
 # Interface read-only! Data flows server -> interface.

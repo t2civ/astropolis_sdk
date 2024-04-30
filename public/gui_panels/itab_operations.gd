@@ -224,7 +224,7 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 	# header changes
 	var revenue_hdr: Label = _revenue_hdrs[tab]
 	var margin_hdr: Label = _margin_hdrs[tab]
-	revenue_hdr.text = "Revenue\n($M)" if has_financials else ""
+	revenue_hdr.text = "Revenue\n($M/d)" if has_financials else ""
 	margin_hdr.text = "Margin\n(gr; %)" if has_financials else ""
 	
 	# make GroupBoxes as needed
@@ -409,6 +409,8 @@ class RowItem extends HBoxContainer:
 		elif flow == INF:
 			flow_label.text = "?"
 		else:
+			# TODO: We'll need to convert flow above for tab
+			flow /= unit_multipliers[&"t/d"]
 			flow_label.text = IVQFormat.number(flow, 2)
 			
 		if is_nan(revenue):
@@ -416,6 +418,7 @@ class RowItem extends HBoxContainer:
 		elif revenue == INF:
 			revenue_label.text = "?"
 		else:
+			revenue /= unit_multipliers[&"$M/d"]
 			revenue_label.text = IVQFormat.number(revenue / 1e6, 2)
 			
 		if is_nan(margin):
