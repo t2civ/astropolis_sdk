@@ -26,7 +26,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
@@ -78,7 +78,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
@@ -130,7 +130,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
@@ -182,7 +182,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
@@ -234,7 +234,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
@@ -286,7 +286,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
@@ -338,7 +338,7 @@ size_flags_horizontal = 3
 [node name="Hdr1" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
 
 [node name="Hdr2" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2

@@ -187,6 +187,8 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		vbox.add_child(hbox)
 		n_children += 1
 	
+	var currency_multiplier: float = unit_multipliers[&"$"]
+	
 	var i := 0
 	while i < n_resources:
 		var resource_type: int = data[i * N_COLUMNS]
@@ -198,15 +200,16 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		
 		var trade_class: int = _trade_classes[resource_type]
 		var trade_unit: StringName = _trade_units[resource_type]
-		var unit_conv: float = 1.0 / unit_multipliers[trade_unit]
+		var unit_multiplier: float = unit_multipliers[trade_unit]
+		var price_multiplier := currency_multiplier / unit_multiplier
 		
 		var resource_text: String = (tr(_resource_names[resource_type])
 				+ " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")")
-		var price_text := "" if is_nan(price) else IVQFormat.number(price * unit_conv, 3)
-		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid * unit_conv, 3)
-		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask * unit_conv, 3)
-		var in_stock_text := IVQFormat.number(in_stock * unit_conv, 2)
-		var contracted_text := IVQFormat.number(contracted * unit_conv, 2)
+		var price_text := "" if is_nan(price) else IVQFormat.number(price / price_multiplier, 3)
+		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3)
+		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask / price_multiplier, 3)
+		var in_stock_text := IVQFormat.number(in_stock / unit_multiplier, 2)
+		var contracted_text := IVQFormat.number(contracted / unit_multiplier, 2)
 		
 		var hbox: HBoxContainer = vbox.get_child(i)
 		(hbox.get_child(0) as Label).text = resource_text

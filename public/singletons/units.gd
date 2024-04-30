@@ -26,7 +26,7 @@ extends Node
 
 # SI base units
 const SECOND := 1.0
-const METER := 1.0 # 1e-7 works for HTML5 export, as of Godot 4.2.beta4
+const METER := 1.0
 const KG := 1.0
 const AMPERE := 1.0
 const KELVIN := 1.0
@@ -65,8 +65,11 @@ const TESLA := WEBER / METER ** 2
 const GRAVITATIONAL_CONSTANT := 6.67430e-11 * METER ** 3 / (KG * SECOND ** 2)
 
 # *********** Astropolis additions ***********
-const USD := 1E-6
+
+const USD := 1e-6
 const Q := 1.0 # Short for the QSNINDC ;)
+
+# ********************************************
 
 # Unit symbols below mostly follow:
 # https://en.wikipedia.org/wiki/International_System_of_Units
@@ -203,7 +206,14 @@ var unit_multipliers := {
 	&"Q" : Q,
 	
 	# currency compounds
+	&"$/t" : USD / TONNE,
+	&"$/kg" : USD / KG,
+	&"$/MWh" : USD / (1e6 * WATT * HOUR),
+	
 	&"$M/d" : 1e6 * USD / DAY,
+	
+	
+# ********************************************
 }
 
 var unit_lambdas := {
