@@ -26,7 +26,7 @@ static var facility_interfaces: Array[FacilityInterface] = [] # indexed by facil
 var facility_id := -1
 var facility_class := -1
 var public_sector: float # often 0.0 or 1.0, sometimes mixed
-var has_economy: bool # ops treated as separate entities for economic measure & tax
+var is_unitary: bool # is small focused activity for stats & tax treatment
 var solar_occlusion: float # TODO: calculate from body atmosphere, body shading, etc.
 var polity_name: StringName
 
@@ -157,7 +157,7 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	facility_class = data[5]
 	public_sector = data[6]
-	has_economy = data[7]
+	is_unitary = data[7]
 	solar_occlusion = data[8]
 	polity_name = data[9]
 	player = interfaces_by_name[data[10]]
@@ -203,6 +203,7 @@ func sync_server_dirty(data: Array) -> void:
 		var float_data: Array[float] = data[2]
 		var string_data: Array[String] = data[3]
 		facility_class = int_data[1]
+		is_unitary = bool(int_data[2])
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		gui_name = string_data[0]

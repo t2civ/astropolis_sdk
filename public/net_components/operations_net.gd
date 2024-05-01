@@ -55,6 +55,7 @@ enum { # _dirty
 	DIRTY_LFQ_GROSS_OUTPUT = 1 << 1,
 	DIRTY_LFQ_NET_INCOME = 1 << 2,
 	DIRTY_CONSTRUCTIONS = 1 << 3,
+	DIRTY_IS_UNITARY = 1 << 4,
 }
 
 const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
@@ -67,6 +68,7 @@ var _lfq_revenue := 0.0 # last 4 quarters
 var _lfq_gross_output := 0.0 # revenue w/ some exceptions; = "economy"
 var _lfq_net_income := 0.0
 var _constructions := 0.0 # total mass of all _constructions
+var _is_unitary := false # is small focused activity for stats & tax treatment
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
 var _capacities: Array[float] # set by facility modules
@@ -136,7 +138,14 @@ func _init(is_new := false, has_financials_ := false, is_facility := false) -> v
 # all threadsafe
 
 func has_financials() -> bool:
+	# True for Facilities & Players and Joins of these two only.
 	return _has_financials
+
+
+func is_unitary() -> bool:
+	# Do we treat all ops as single activity for economic stats and taxation?
+	# True for small, focused facilities. False for large colonies or spaceports.
+	return _is_unitary
 
 
 func get_lfq_gross_output() -> float:
@@ -348,10 +357,11 @@ func set_network_init(data: Array) -> void:
 	_target_utilizations = data[14]
 	_has_financials = data[15]
 	_is_facility = data[16]
+	_is_unitary = data[17]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply deltas and sets
+	# Deltas and sets from the server entity.
 	_int_data = data[1]
 	_float_data = data[2]
 	_int_offset = int_offset
@@ -374,6 +384,9 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_CONSTRUCTIONS:
 		_constructions += _float_data[_float_offset]
 		_float_offset += 1
+	if dirty & DIRTY_IS_UNITARY:
+		_is_unitary = bool(_int_data[_int_offset])
+		_int_offset += 1
 	
 	_add_floats_delta(_crews)
 	_add_floats_delta(_capacities)
