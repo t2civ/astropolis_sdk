@@ -172,16 +172,17 @@ func _get_ai_data(target_name: StringName) -> void:
 	var tab := current_tab
 	var operations := interface.get_operations()
 	var has_financials := operations.has_financials()
-	var electricity := 0.0
-	var flow := 0.0
 	
 	var op_groups: Array[int] = _op_classes_op_groups[tab]
 	var n_op_groups := op_groups.size()
 	
 	for op_group in op_groups:
 		
-		electricity = operations.get_group_electricity(op_group)
+		var electricity := operations.get_group_electricity(op_group)
 		electricity /= _unit_multipliers[&"MW"]
+		var flow := 0.0
+		var revenue := operations.get_group_est_revenue(op_group)
+		revenue /= _unit_multipliers[&"$M/y"]
 		
 		match tab:
 			TAB_ENERGY:
@@ -199,7 +200,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			operations.get_group_utilization(op_group),
 			electricity,
 			flow,
-			operations.get_group_est_revenue(op_group),
+			revenue,
 			operations.get_group_est_gross_margin(op_group),
 		]
 		data.append(group_data)
@@ -216,6 +217,9 @@ func _get_ai_data(target_name: StringName) -> void:
 			
 			electricity = operations.get_electricity(operation_type)
 			electricity /= _unit_multipliers[&"MW"]
+			flow = 0.0
+			revenue = operations.get_est_revenue(operation_type)
+			revenue /= _unit_multipliers[&"$M/y"]
 			
 			match tab:
 				TAB_ENERGY:
@@ -236,7 +240,7 @@ func _get_ai_data(target_name: StringName) -> void:
 				operations.get_utilization(operation_type),
 				electricity,
 				flow,
-				operations.get_est_revenue(operation_type),
+				revenue,
 				operations.get_est_gross_margin(operation_type),
 			]
 			operations_data.append(operation_data)
@@ -368,8 +372,6 @@ class RowItem extends HBoxContainer:
 	var _group_name: StringName
 	var _name_column_width := 250.0 # TODO: resize on GUI resize
 	
-	var _unit_multipliers := IVUnits.unit_multipliers # FIXME: Rm after conversions moved up
-	
 	
 	func _init(is_group: bool) -> void:
 		_is_group = is_group
@@ -427,13 +429,12 @@ class RowItem extends HBoxContainer:
 			ops_label.text = SUB_PREFIX + tr(row_name)
 		
 		utilization_label.text = "%.f" % (100.0 * utilization)
-			
+		
 		if is_nan(power):
 			power_label.text = " "
 		elif power == INF:
 			power_label.text = "?"
 		else:
-			power /= _unit_multipliers[&"MW"]
 			power_label.text = IVQFormat.number(power, 2)
 			
 		if is_nan(flow):
@@ -448,7 +449,6 @@ class RowItem extends HBoxContainer:
 		elif revenue == INF:
 			revenue_label.text = "?"
 		else:
-			revenue /= _unit_multipliers[&"$M/y"]
 			revenue_label.text = IVQFormat.number(revenue, 2)
 			
 		if is_nan(margin):
