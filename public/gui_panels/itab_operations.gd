@@ -12,6 +12,15 @@ const SCENE := "res://public/gui_panels/itab_operations.tscn"
 # Tabs follow row enumerations in op_classes.tsv.
 # TODO: complete localizations
 
+enum {
+	TAB_ENERGY,
+	TAB_EXTRACTION,
+	TAB_REFINING,
+	TAB_MANUFACTURING,
+	TAB_BIOMES,
+	TAB_SERVICES,
+}
+
 
 enum {
 	GROUP_OPEN,
@@ -39,6 +48,7 @@ var _on_ready_tab := 0
 # not persisted
 
 var _state: Dictionary = IVGlobal.state
+var _unit_multipliers := IVUnits.unit_multipliers
 var _selection_manager: SelectionManager
 var _suppress_tab_listener := true
 
@@ -52,9 +62,7 @@ var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
 var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
 var _operation_names: Array[StringName] = _tables[&"operations"][&"name"]
 var _operation_sublabels: Array[StringName] = _tables[&"operations"][&"sublabel"]
-var _operation_flow_units: Array[StringName] = _tables[&"operations"][&"flow_unit"]
 
-@onready var _multipliers := IVUnits.unit_multipliers
 @warning_ignore("unsafe_property_access")
 @onready var _memory: Dictionary = get_parent().memory # open states
 @onready var _no_ops_label: Label = $NoOpsLabel
@@ -162,53 +170,76 @@ func _get_ai_data(target_name: StringName) -> void:
 		return
 	
 	var tab := current_tab
-	var has_financials := interface.has_financials()
-	var op_groups: Array = _op_classes_op_groups[tab]
+	var operations := interface.get_operations()
+	var has_financials := operations.has_financials()
+	var electricity := 0.0
+	var flow := 0.0
+	
+	var op_groups: Array[int] = _op_classes_op_groups[tab]
 	var n_op_groups := op_groups.size()
-	var i := 0
-	while i < n_op_groups:
-		var op_group_type: int = op_groups[i]
+	
+	for op_group in op_groups:
+		
+		electricity = operations.get_group_electricity(op_group)
+		electricity /= _unit_multipliers[&"MW"]
+		
+		match tab:
+			TAB_ENERGY:
+				flow = 0.0
+			TAB_EXTRACTION:
+				electricity = -electricity
+				flow = operations.get_group_extraction_rate(op_group)
+				flow /= _unit_multipliers[&"t/d"]
+			_:
+				electricity = -electricity
+				flow = 0.0
+		
 		var group_data := [
-			_op_group_names[op_group_type],
-			interface.get_op_group_utilization(op_group_type),
-			absf(interface.get_op_group_electricity(op_group_type)),
-			NAN,
-			interface.get_op_group_est_revenue(op_group_type),
-			interface.get_op_group_est_gross_margin(op_group_type),
+			_op_group_names[op_group],
+			operations.get_group_utilization(op_group),
+			electricity,
+			flow,
+			operations.get_group_est_revenue(op_group),
+			operations.get_group_est_gross_margin(op_group),
 		]
 		data.append(group_data)
 		
-		var ops_data := []
-		var ops: Array = _op_groups_operations[op_group_type]
-		var n_ops := ops.size()
+		var operations_data := []
+		data.append(operations_data)
+		
+		var operation_types: Array[int] = _op_groups_operations[op_group]
+		var n_ops := operation_types.size()
 		if n_ops < 2:
-			data.append(ops_data)
-			i += 1
 			continue
 		
-		# ops under op_group
-		var j := 0
-		while j < n_ops:
-			var operation_type: int = ops[j]
-			var flow: float = interface.get_operation_gui_flow(operation_type)
-			if !is_nan(flow):
-				flow /= _multipliers[_operation_flow_units[operation_type]]
+		for operation_type in operation_types:
+			
+			electricity = operations.get_electricity(operation_type)
+			electricity /= _unit_multipliers[&"MW"]
+			
+			match tab:
+				TAB_ENERGY:
+					flow = 0.0
+				TAB_EXTRACTION:
+					electricity = -electricity
+					flow = operations.get_extraction_rate(operation_type)
+					flow /= _unit_multipliers[&"t/d"]
+				_:
+					electricity = -electricity
+					flow = 0.0
+			
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:
 				sublabel = _operation_names[operation_type]
-			var op_data := [
+			var operation_data := [
 				sublabel,
-				interface.get_operation_utilization(operation_type),
-				absf(interface.get_operation_electricity(operation_type)),
+				operations.get_utilization(operation_type),
+				electricity,
 				flow,
-				interface.get_operation_est_revenue(operation_type),
-				interface.get_operation_est_gross_margin(operation_type),
+				operations.get_est_revenue(operation_type),
+				operations.get_est_gross_margin(operation_type),
 			]
-			ops_data.append(op_data)
-			j += 1
-		
-		data.append(ops_data)
-		i += 1
+			operations_data.append(operation_data)
 	
 	_update_tab_display.call_deferred(target_name, tab, n_op_groups, has_financials, data)
 
@@ -224,8 +255,8 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 	# header changes
 	var revenue_hdr: Label = _revenue_hdrs[tab]
 	var margin_hdr: Label = _margin_hdrs[tab]
-	revenue_hdr.text = "Revenue\n($M/d)" if has_financials else ""
-	margin_hdr.text = "Margin\n(gr; %)" if has_financials else ""
+	revenue_hdr.text = "Revenue\n($M/y)" if has_financials else ""
+	margin_hdr.text = "Margin\n(% gr)" if has_financials else ""
 	
 	# make GroupBoxes as needed
 	var vbox: VBoxContainer = _vboxes[tab]
@@ -238,9 +269,9 @@ func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, ha
 	var i := 0
 	while i < n_op_groups:
 		var group_data: Array = data[i * 2]
-		var ops_data: Array = data[i * 2 + 1]
+		var operations_data: Array = data[i * 2 + 1]
 		var group_box: GroupBox = vbox.get_child(i)
-		group_box.set_group_item(target_name, group_data, ops_data)
+		group_box.set_group_item(target_name, group_data, operations_data)
 		group_box.show()
 		i += 1
 	
@@ -272,12 +303,12 @@ class GroupBox extends VBoxContainer:
 		_group_hdr.group_button.button_down.connect(_toggle_open_close)
 	
 	
-	func set_group_item(target_name: StringName, group_data: Array, ops_data: Array) -> void:
+	func set_group_item(target_name: StringName, group_data: Array, operations_data: Array) -> void:
 		_memory_key = target_name + group_data[0]
 		_is_open = _memory.get(_memory_key, false)
 		
 		var group_state: int
-		if ops_data:
+		if operations_data:
 			group_state = GROUP_OPEN if _is_open else GROUP_CLOSED
 			_is_singular = false
 		else:
@@ -285,7 +316,7 @@ class GroupBox extends VBoxContainer:
 			_is_singular = true
 		_group_hdr.set_row(group_data, group_state)
 		
-		var n_ops := ops_data.size()
+		var n_ops := operations_data.size()
 		var n_children := get_child_count()
 		var n_children_needed := n_ops + 1
 		while n_children < n_children_needed:
@@ -294,7 +325,7 @@ class GroupBox extends VBoxContainer:
 		var i := 0
 		while i < n_ops:
 			var ops_row: RowItem = get_child(i + 1)
-			var ops_datum: Array = ops_data[i]
+			var ops_datum: Array = operations_data[i]
 			ops_row.set_row(ops_datum)
 			ops_row.visible = _is_open
 			i += 1
@@ -332,11 +363,12 @@ class RowItem extends HBoxContainer:
 	var margin_label := Label.new()
 	var controler := Control.new() # TODO
 	
-	var unit_multipliers := IVUnits.unit_multipliers
 	
 	var _is_group: bool
 	var _group_name: StringName
 	var _name_column_width := 250.0 # TODO: resize on GUI resize
+	
+	var _unit_multipliers := IVUnits.unit_multipliers # FIXME: Rm after conversions moved up
 	
 	
 	func _init(is_group: bool) -> void:
@@ -401,7 +433,7 @@ class RowItem extends HBoxContainer:
 		elif power == INF:
 			power_label.text = "?"
 		else:
-			power /= unit_multipliers[&"MW"]
+			power /= _unit_multipliers[&"MW"]
 			power_label.text = IVQFormat.number(power, 2)
 			
 		if is_nan(flow):
@@ -409,8 +441,6 @@ class RowItem extends HBoxContainer:
 		elif flow == INF:
 			flow_label.text = "?"
 		else:
-			# TODO: We'll need to convert flow above for tab
-			flow /= unit_multipliers[&"t/d"]
 			flow_label.text = IVQFormat.number(flow, 2)
 			
 		if is_nan(revenue):
@@ -418,8 +448,8 @@ class RowItem extends HBoxContainer:
 		elif revenue == INF:
 			revenue_label.text = "?"
 		else:
-			revenue /= unit_multipliers[&"$M/d"]
-			revenue_label.text = IVQFormat.number(revenue / 1e6, 2)
+			revenue /= _unit_multipliers[&"$M/y"]
+			revenue_label.text = IVQFormat.number(revenue, 2)
 			
 		if is_nan(margin):
 			margin_label.text = " "

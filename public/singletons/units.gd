@@ -210,7 +210,7 @@ var unit_multipliers := {
 	&"$/kg" : USD / KG,
 	&"$/MWh" : USD / (1e6 * WATT * HOUR),
 	
-	&"$M/d" : 1e6 * USD / DAY,
+	&"$M/y" : 1e6 * USD / YEAR,
 	
 	
 # ********************************************

@@ -103,7 +103,7 @@ static var _op_groups_operations: Array[Array]
 static var _is_class_instanced := false
 
 
-func _init(is_new := false, has_financials := false, is_facility := false) -> void:
+func _init(is_new := false, has_financials_ := false, is_facility := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
@@ -113,7 +113,7 @@ func _init(is_new := false, has_financials := false, is_facility := false) -> vo
 		_op_groups_operations = tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
-	_has_financials = has_financials
+	_has_financials = has_financials_
 	_is_facility = is_facility
 	var n_populations: int = _table_n_rows[&"populations"]
 	_crews = ivutils.init_array(n_populations, 0.0, TYPE_FLOAT)
@@ -134,6 +134,9 @@ func _init(is_new := false, has_financials := false, is_facility := false) -> vo
 
 # ********************************** READ *************************************
 # all threadsafe
+
+func has_financials() -> bool:
+	return _has_financials
 
 
 func get_lfq_gross_output() -> float:
@@ -211,16 +214,12 @@ func get_development_energy() -> float:
 
 
 func get_extraction_rate(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"extraction_rate"][type]
+	assert(_operation_process_groups[type] == PROCESS_GROUP_EXTRACTION)
+	return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
 
 
-func get_gui_flow(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"gui_flow"][type]
 
-
-func get_fuel_burn(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"fuel_burn"][type]
-
+# FIXME below
 
 
 func get_mass_flow(type: int) -> float:
@@ -304,6 +303,13 @@ func get_group_est_gross_margin(op_group: int) -> float:
 	if sum_revenue == 0.0:
 		return NAN
 	return sum_income / sum_revenue
+
+
+func get_group_extraction_rate(op_group: int) -> float:
+	var sum := 0.0
+	for type: int in _op_groups_operations[op_group]:
+		sum += get_extraction_rate(type)
+	return sum
 
 
 func get_target_utilization(type: int) -> float:
