@@ -417,6 +417,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Transp" type="Label" parent="TabContainer"]
+visible = false
+layout_mode = 2
+text = "WIP
+
+Will have info on transport tonnage to and from this facilty:
+* Price for transport (per tonne) from various locations/spaceports.
+* Current transport tonnage en route.
+* Bids/Asks for transport tonnage."
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="NoMarkets" type="Label" parent="."]
 visible = false
 layout_mode = 2

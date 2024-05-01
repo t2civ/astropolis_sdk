@@ -14,6 +14,18 @@ const SCENE := "res://public/gui_panels/itab_markets.tscn"
 # FIXME: Volume, Bid/Ask get and format.
 # TODO: Header localizations.
 
+enum {
+	TAB_ENERGY,
+	TAB_ORES,
+	TAB_VOLATILES,
+	TAB_MATERIALS,
+	TAB_MANUFACTURED,
+	TAB_BIOLOGICALS,
+	TAB_CYBER,
+	TAB_TRANSPORT,
+}
+
+
 const N_COLUMNS := 6
 
 const TRADE_CLASS_TEXTS := [ # correspond to TradeClasses
@@ -37,8 +49,8 @@ var unit_multipliers := IVUnits.unit_multipliers
 
 # persisted
 var vol_toggle := true # show volume or bid/ask
-var current_tab := 0
-var _on_ready_tab := 0
+var current_tab: int = TAB_ENERGY
+var _on_ready_tab: int = TAB_ENERGY
 
 
 var _state: Dictionary = IVGlobal.state
@@ -122,6 +134,10 @@ func _update_tab(_suppress_camera_move := false) -> void:
 	if !visible or !_state.is_running:
 		return
 	if !visible or !_state.is_running:
+		return
+	if current_tab == TAB_TRANSPORT:
+		_no_markets_label.hide()
+		_tab_container.show()
 		return
 	var target_name := _selection_manager.get_selection_name()
 	if MainThreadGlobal.has_markets(target_name):
