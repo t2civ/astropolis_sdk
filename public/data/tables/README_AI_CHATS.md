@@ -1,6 +1,7 @@
 ## AI Chats
 * [General Notes](#General-Notes)
 * [World population and agency employees](#World-population-and-agency-employees)
+* [Anthropogenic Mass](#Anthropogenic-Mass)
 * [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
 * [ISS and Tiangong](#ISS-and-Tiangong)
 * [Moon Geology](#Moon-Geology)
@@ -19,7 +20,7 @@
 
 ## General Notes
 
-Unless indicated otherwise, responses are from Claude-3-Opus. I'm only copy/pasting responses used for table data or that contain projections for tuning the simulation. Sometimes validation links are provided. See tables/README.md for conversion of real-world data to simulator table values.
+Responses are usually Claude-3-Opus (if not indicated otherwise) but sometimes GPT-4. They both go off the rails sometimes and I can't say which is better yet. I favor Claude-3-Opus mainly because its formatting is more friendly to copy/paste here. See tables/README.md for conversion of real-world data to simulator table values.
 
 ## World population and agency employees
 
@@ -55,6 +56,54 @@ In 2020:
 - JAXA (Japan): Approximately 1,600 employees
 
 So in summary, the major space agencies have seen some fluctuations in their workforce sizes over the past decade, with most seeing a gradual increase, except for NASA which saw a slight decrease. Roscosmos and CNSA have the largest number of employees, reflecting the scale of their national space programs.
+
+## Anthropogenic Mass
+
+Estimating the total mass of all human-built structures is challenging due to the vast range of materials and types of structures involved, from skyscrapers and houses to roads and bridges. However, researchers have attempted to calculate this figure by considering the mass of urban environments and other infrastructure globally.
+
+A key study addressing this question was published in the journal "Anthropocene" in 2020. The researchers estimated that the total mass of human-made materials (often referred to as "anthropogenic mass") exceeded the total mass of all living biomass on Earth by that year. The study suggested that the anthropogenic mass, which includes buildings, infrastructure, and other human-made objects, was approximately equivalent to 1.1 teratonnes (or 1,100 billion tonnes).
+
+This anthropogenic mass is not static and has been growing rapidly. It was estimated that human-made mass was doubling approximately every 20 years. The growth in mass is driven by global development, especially in urbanization and infrastructure projects.
+
+It's important to note that such estimates can vary based on the methodologies used and the specific types of structures and materials considered. Nonetheless, this figure gives a rough idea of the scale of human physical impact on the planet.
+
+****
+
+The mass of human-built structures estimated in studies like the one mentioned, which calculates the total anthropogenic mass, typically includes all human-made structures, whether they are currently in use or not. This includes historical structures such as the Pyramids of Egypt, ancient ruins, and other heritage sites.
+
+As for the mass of the Pyramids, particularly the Great Pyramid of Giza (also known as the Pyramid of Khufu), it is one of the most studied ancient structures. The Great Pyramid originally stood at about 146.6 meters (481 feet) tall but now is about 138.8 meters (455 feet) due to the loss of some of the outer casing stones. The estimated volume of the pyramid is roughly 2.5 million cubic meters.
+
+To convert this volume into mass, we need to know the density of the materials used. The pyramid is primarily constructed from limestone, with smaller amounts of granite and possibly other materials used in certain sections. Limestone has a density of approximately 2.3 to 2.7 grams per cubic centimeter (or 2,300 to 2,700 kilograms per cubic meter).
+
+Using an average density of around 2,500 kg/m³ for simplicity, the mass of the Great Pyramid can be estimated as follows:
+
+\[ \text{Mass} = \text{Volume} \times \text{Density} \]
+\[ \text{Mass} = 2,500,000 \, \text{m}^3 \times 2,500 \, \text{kg/m}^3 = 6,250,000,000 \, \text{kg} \]
+\[ \text{Mass} \approx 6.25 \, \text{million tonnes} \]
+
+This calculation gives a rough estimate of the mass of the Great Pyramid of Giza. Other pyramids would have different masses depending on their size and construction materials. This example shows how significant the mass of even a single monumental structure can be when considering the total mass of all human-built structures.
+
+****
+
+Estimating the proportion of anthropogenic mass found in specific regions such as the USA, Russia, China, Europe, India, Japan, and other areas of the world is complex and requires taking into account several factors, including the level of urbanization, industrial development, infrastructure, and historical construction activities. However, one can make some broad estimates based on these countries' and regions' economic output, population, and urbanization rates.
+
+As of the recent estimates (around the 2020s), here's a rough breakdown:
+
+1. **China**: China has experienced rapid industrialization and urbanization over the past few decades. It is likely the largest contributor to contemporary anthropogenic mass due to its extensive infrastructure projects, including cities, highways, and numerous factories. **Estimated proportion: 30-35%**
+
+2. **USA**: The United States has a long history of industrialization and has extensive infrastructure in place, including numerous large cities, an extensive highway system, and significant industrial and commercial facilities. **Estimated proportion: 20-25%**
+
+3. **Europe**: This includes a wide range of countries with varying levels of industrial and urban development. Western European countries have well-developed urban and industrial infrastructures, while Eastern Europe is less dense but still significant. **Estimated proportion: 15-20%**
+
+4. **India**: India is rapidly urbanizing and industrializing, but its overall infrastructure development lags behind China and the USA. However, given its large population and ongoing development projects, its contribution is significant. **Estimated proportion: 7-10%**
+
+5. **Japan**: Despite its smaller geographical size, Japan is highly urbanized and industrialized, with very dense infrastructure and advanced technology. **Estimated proportion: 5-7%**
+
+6. **Russia**: Russia has a vast land area with significant industrial bases, especially in oil and gas, but its overall density of infrastructure is lower than that of smaller, more densely populated countries. **Estimated proportion: 5-7%**
+
+7. **Other**: This category includes all other countries not specifically mentioned above, such as countries in Africa, South America, the rest of Asia, and Oceania. These regions include rapidly growing economies as well as many developing nations with less infrastructure development. **Estimated proportion: 15-20%**
+
+These estimates are very rough and depend on various assumptions about economic activity, development patterns, and construction materials used. The proportions can also change over time as different regions develop or reduce their infrastructure activities. Moreover, the actual situation might differ significantly based on new data or changes in global economic and development trends.
 
 ## Solar and other renewable energy generation
 
@@ -322,6 +371,30 @@ The International Space Station (ISS) is constructed using various materials, ea
    - Plastic: Used in a variety of applications, such as insulation and packaging.
 
 It's important to note that these percentages are approximate and may vary depending on the specific modules and components being considered. Additionally, as the ISS continues to evolve and new modules and equipment are added, the overall composition percentages may change over time.
+
+****
+
+As of the latest available data:
+
+- **International Space Station (ISS)**: The total mass of the ISS is approximately 420,000 kilograms (420 metric tons). The station's mass can vary slightly due to the addition of new modules or experiments and the departure of spacecraft.
+  
+- **Tiangong Space Station**: The total mass of the Tiangong Space Station is still evolving as the station is under construction and expansion. The core module alone, known as Tianhe, has a mass of about 22,000 kilograms (22 metric tons). The full mass of the station will increase as additional modules are added.
+
+These numbers provide a general idea of the scale of both stations, with the ISS being significantly larger and more massive than Tiangong in its current state.
+
+****
+
+The Russian Orbital Segment (ROS) of the International Space Station (ISS) comprises several modules, including Zarya, Zvezda, Poisk, Rassvet, Nauka, and the docking compartments. The total mass of the ROS is a significant portion of the ISS, but calculating an exact value for each module's mass can be complex due to variations in equipment and supplies over time.
+
+Here are approximate masses for the key modules of the ROS:
+
+- **Zarya (Functional Cargo Block or FGB)**: Approximately 19,300 kilograms (19.3 metric tons)
+- **Zvezda (Service Module)**: Approximately 20,320 kilograms (20.3 metric tons)
+
+Other modules like Poisk, Rassvet, and Nauka also contribute to the total mass, with newer modules like Nauka being added as recently as 2021 and weighing approximately 20,000 kilograms (20 metric tons).
+
+Adding up these key components, and considering additional smaller elements and docked spacecraft, the ROS contributes a substantial part of the ISS's overall mass. A rough estimate would suggest that the ROS might represent around 70,000 to 80,000 kilograms (70 to 80 metric tons) of the total mass of the ISS, although specific figures can vary based on current configurations and attached vehicles.
+
 
 ## Moon Geology
 
@@ -2069,6 +2142,102 @@ Byproducts:
 5. Mine water: Coal mining often involves the pumping of groundwater to keep the mine workings dry. The amount of mine water generated per tonne of coal varies depending on factors such as the depth of the mine and the local hydrogeology. In some cases, up to 10 cubic meters of water may need to be pumped per tonne of coal extracted.
 
 It's important to note that these figures are rough estimates and can vary significantly depending on the specific conditions at each mine. Additionally, the management and disposal of these byproducts can have significant environmental impacts, such as air and water pollution, greenhouse gas emissions, and land disturbance.
+
+****
+
+Here is a table showing total coal production by year and region (in million tonnes):
+
+| Region   | 2010   | 2020   | 2030 (projected) |
+|----------|--------|--------|------------------|
+| China    | 3,235  | 3,902  | 4,190            |
+| India    | 574    | 756    | 1,190            |
+| USA      | 984    | 485    | 371              |
+| EU+UK    | 535    | 349    | 259              |
+| Russia   | 321    | 440    | 530              |
+| Japan    | 0      | 0      | 0                |
+| Other    | 1,851  | 2,068  | 2,160            |
+| Total    | 7,500  | 8,000  | 8,700            |
+
+Sources:
+- 2010 and 2020 data: IEA Coal Information 2021
+- 2030 projections: IEA World Energy Outlook 2022
+
+Please note that the 2030 figures are projections based on stated policies and current trends as of 2022. Actual production may differ based on changes in policies, economic conditions, and other factors.
+
+Some key observations:
+- China is by far the world's largest coal producer, accounting for around 50% of global production.
+- India is projected to see the largest growth in coal production through 2030, driven by increasing electricity demand and industrial production.
+- Coal production in the USA and EU+UK is projected to continue declining as these regions shift towards cleaner energy sources.
+- Japan has no domestic coal production and relies entirely on imports to meet its coal demand.
+
+****
+
+Here is the table showing total coal production by year and region, with units converted from million tonnes per year to tonnes per hour:
+
+| Region   | 2010    | 2020    | 2030 (projected) |
+|----------|---------|---------|------------------|
+| China    | 369,178 | 445,662 | 478,422          |
+| India    | 65,525  | 86,301  | 135,845          |
+| USA      | 112,329 | 55,365  | 42,352           |
+| EU+UK    | 61,073  | 39,840  | 29,566           |
+| Russia   | 36,644  | 50,228  | 60,502           |
+| Japan    | 0       | 0       | 0                |
+| Other    | 211,187 | 236,073 | 246,575          |
+| Total    | 855,936 | 913,470 | 993,263          |
+
+To convert from million tonnes per year to tonnes per hour:
+1. Multiply million tonnes per year by 1,000,000 to get tonnes per year.
+2. Divide tonnes per year by 8,760 (the number of hours in a year, assuming 365 days).
+
+For example, for China in 2010:
+3,235 million tonnes/year × 1,000,000 = 3,235,000,000 tonnes/year
+3,235,000,000 tonnes/year ÷ 8,760 hours/year = 369,178 tonnes/hour
+
+Please note that this conversion assumes continuous production at a constant rate throughout the year. In reality, coal production rates may vary based on factors such as seasonal demand, maintenance schedules, and unplanned disruptions.
+
+****
+
+The proportion of coal production from surface mining versus subsurface (underground) mining varies by region, depending on factors such as the depth and accessibility of coal seams, geological conditions, and economic considerations. Here's an overview:
+
+Global average:
+- Surface mining accounts for about 80% of global coal production.
+- Underground mining accounts for the remaining 20%.
+
+Regional variations:
+1. USA:
+   - Surface mining: ~66%
+   - Underground mining: ~34%
+   - Depths of underground mines range from ~100 feet (30 meters) to over 1,000 feet (300 meters).
+
+2. China:
+   - Surface mining: ~85%
+   - Underground mining: ~15%
+   - Underground mining depths can exceed 1,000 meters in some regions.
+
+3. India:
+   - Surface mining: ~92%
+   - Underground mining: ~8%
+   - Underground mining depths range from ~100 meters to over 600 meters.
+
+4. Australia:
+   - Surface mining: ~78%
+   - Underground mining: ~22%
+   - Underground mining depths can reach up to 600 meters.
+
+5. Russia:
+   - Surface mining: ~70%
+   - Underground mining: ~30%
+   - Underground mining depths can exceed 1,200 meters in some regions.
+
+Subsurface mining depths:
+The depths at which subsurface mining occurs vary widely depending on the geological characteristics of the coal seams. In general:
+- Shallow underground mines: Less than 300 meters deep
+- Deep underground mines: 300 to 1,000 meters deep
+- Ultra-deep underground mines: Greater than 1,000 meters deep
+
+The deepest coal mine in the world is the Mponeng gold mine in South Africa, which reaches a depth of over 4,000 meters. However, coal mining at such extreme depths is rare, as it becomes increasingly challenging and expensive to extract coal from deep underground.
+
+It's important to note that these figures are approximate and can change over time as mining technologies and economic conditions evolve. Additionally, the choice between surface and underground mining methods depends on factors such as the depth, thickness, and quality of the coal seams, as well as environmental and social considerations.
 
 ## Uranium Mining
 
