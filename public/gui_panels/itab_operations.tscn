@@ -41,14 +41,14 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Fuel
-(t/d)"
+(-t/d)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Energy/Hdrs"]
@@ -111,7 +111,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Extraction/Hdrs"]
@@ -173,7 +173,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Refining/Hdrs"]
@@ -235,7 +235,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
@@ -297,7 +297,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Biomes/Hdrs"]
@@ -359,7 +359,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Revenue
-($M)"
+($M/y)"
 horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Services/Hdrs"]

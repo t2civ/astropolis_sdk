@@ -10,7 +10,21 @@ extends MarginContainer
 const SCENE := "res://public/gui_panels/itab_markets.tscn"
 
 # Tabs follow row enumerations in resource_classes.tsv.
-# TODO: complete localizations
+#
+# FIXME: Volume, Bid/Ask get and format.
+# TODO: Header localizations.
+
+enum {
+	TAB_ENERGY,
+	TAB_ORES,
+	TAB_VOLATILES,
+	TAB_MATERIALS,
+	TAB_MANUFACTURED,
+	TAB_BIOLOGICALS,
+	TAB_CYBER,
+	TAB_TRANSPORT,
+}
+
 
 const N_COLUMNS := 6
 
@@ -26,6 +40,7 @@ const TRADE_CLASS_TEXTS := [ # correspond to TradeClasses
 
 const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
+	&"vol_toggle",
 	&"current_tab",
 	&"_on_ready_tab",
 ]
@@ -33,15 +48,16 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 var unit_multipliers := IVUnits.unit_multipliers
 
 # persisted
-var current_tab := 0
-var _on_ready_tab := 0
+var vol_toggle := true # show volume or bid/ask
+var current_tab: int = TAB_ENERGY
+var _on_ready_tab: int = TAB_ENERGY
 
 
 var _state: Dictionary = IVGlobal.state
 var _selection_manager: SelectionManager
 var _suppress_tab_listener := true
 
-var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
+var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _tables: Dictionary = IVTableData.tables
@@ -89,7 +105,7 @@ func _ready() -> void:
 	$TabContainer/Biologicals.name = &"TAB_MKS_BIOLOGICALS"
 	$TabContainer/Cyber.name = &"TAB_MKS_CYBER"
 	for col0_spacer in _col0_spacers:
-		col0_spacer.custom_minimum_size.x = _name_column_width - 10.0
+		col0_spacer.custom_minimum_size.x = _name_column_width
 	_tab_container.set_current_tab(_on_ready_tab)
 	_suppress_tab_listener = false
 	_update_tab()
@@ -118,6 +134,10 @@ func _update_tab(_suppress_camera_move := false) -> void:
 	if !visible or !_state.is_running:
 		return
 	if !visible or !_state.is_running:
+		return
+	if current_tab == TAB_TRANSPORT:
+		_no_markets_label.hide()
+		_tab_container.show()
 		return
 	var target_name := _selection_manager.get_selection_name()
 	if MainThreadGlobal.has_markets(target_name):
@@ -164,6 +184,9 @@ func _get_ai_data(target_name: StringName) -> void:
 # Main thread !!!!
 
 func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
+	# We convert prices and quantities to trade_unit here. We're assuming
+	# all trade_units are multipliers, but that could change (e.g., if we
+	# implement floating currencies).
 	
 	# make rows as needed
 	var vbox: VBoxContainer = _vboxes[tab]
@@ -179,10 +202,16 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 				label.custom_minimum_size.x = _name_column_width
 			else: # value
 				label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			if column == 2:
+				label.visible = !vol_toggle
+			elif column == 3:
+				label.visible = vol_toggle
 			hbox.add_child(label)
 			column += 1
 		vbox.add_child(hbox)
 		n_children += 1
+	
+	var currency_multiplier: float = unit_multipliers[&"$"]
 	
 	var i := 0
 	while i < n_resources:
@@ -195,20 +224,16 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		
 		var trade_class: int = _trade_classes[resource_type]
 		var trade_unit: StringName = _trade_units[resource_type]
+		var unit_multiplier: float = unit_multipliers[trade_unit]
+		var price_multiplier := currency_multiplier / unit_multiplier
 		
-		in_stock /= unit_multipliers[trade_unit]
-		contracted /= unit_multipliers[trade_unit]
-		
-		var resource_text: String = (
-			tr(_resource_names[resource_type])
-			+ " (" + TRADE_CLASS_TEXTS[trade_class]
-			+ trade_unit + ")"
-		)
-		var price_text := "" if is_nan(price) else IVQFormat.number(price, 3)
-		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid, 3)
-		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask, 3)
-		var in_stock_text := IVQFormat.number(in_stock, 2) # FIXME: trade unit
-		var contracted_text := IVQFormat.number(contracted, 2) # FIXME: trade unit
+		var resource_text: String = (tr(_resource_names[resource_type])
+				+ " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")")
+		var price_text := "" if is_nan(price) else IVQFormat.number(price / price_multiplier, 3)
+		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3)
+		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask / price_multiplier, 3)
+		var in_stock_text := IVQFormat.number(in_stock / unit_multiplier, 2)
+		var contracted_text := IVQFormat.number(contracted / unit_multiplier, 2)
 		
 		var hbox: HBoxContainer = vbox.get_child(i)
 		(hbox.get_child(0) as Label).text = resource_text

@@ -105,7 +105,7 @@ func get_development_manufacturing() -> float:
 
 func get_development_constructions() -> float:
 	if operations:
-		return operations.get_constructions()
+		return operations.get_construction_mass()
 	return 0.0
 
 

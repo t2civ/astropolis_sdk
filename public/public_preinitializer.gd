@@ -157,6 +157,14 @@ func _on_project_objects_instantiated() -> void:
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
 			resource_resource_classes, n_resource_classes) # an array of resources for each resource_class
+	
+	# error testing
+	for operation_type in IVTableData.get_n_rows(&"operations"):
+		# Test redundant 'process_group' in operations.tsv and op_groups.tsv.
+		var op_group := IVTableData.get_db_int(&"operations", &"op_group", operation_type)
+		var process_group := IVTableData.get_db_int(&"operations", &"process_group", operation_type)
+		assert(process_group == IVTableData.get_db_int(&"op_groups", &"process_group", op_group),
+				"Inconsistant 'process_group' in 'operations.tsv' and 'op_groups.tsv'")
 
 
 func _on_project_nodes_added() -> void:

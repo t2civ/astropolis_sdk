@@ -242,8 +242,14 @@ There is at most one "facility" for each player at each body, which combines all
 
 The table has game start only. We have one "homeworld" facility for each player on Earth, plus four at SPACECRAFT_ISS (one each for NASA, Roscosmos, ESA & JAXA) and one at SPACECRAFT_TIANGONG (CNSA).
 
-#### public_portion
-Fraction of facility that is public sector. For small facilities, generally 1.0 for space agencies and 0.0 for private companies. For Earth "homeworld" facilities representing polities, values follow roughly: https://en.wikipedia.org/wiki/List_of_countries_by_public_sector_size:
+Fields:
+* `public_sector` Fraction of facility that is public sector. For small facilities, generally 1.0 for space agencies and 0.0 for private companies. Larger facilities may be intermediate.
+* `is_unitary` True for small focused facilities like a mining station. False for colonies or spaceports. If true, treat all operations as a single activity for the purpose of economic stats and taxation (e.g., we don't tax the mine for its solar panel generation). If false, each operation is treated like a separate buisness.
+* `mass` Total mass of the facility. For homeworld 'facilities', this is total anthropogenic mass. Used for the development 'Constructions' stat.
+
+
+#### public_sector
+For Earth "homeworld" facilities representing polities, values follow roughly: https://en.wikipedia.org/wiki/List_of_countries_by_public_sector_size:
 
 
 |             | 2010 (%)       | 2020 (%)       |
@@ -259,14 +265,31 @@ Fraction of facility that is public sector. For small facilities, generally 1.0 
 
 We mainly use ILO estimates, or best guess what it would be in ~2010 and ~2020. EU is set between Germany (12.9) & France (20.5), leaning to the latter. 
 
-#### internal_market
+#### mass
 
-If set, internal operations are treated as separate entities for taxation and economic activity measurement. I.e., all resources produced & used are sales & purchases. True for "ports" and larger facilities, false for smaller facilities. We assume the ISS's solar panels produce ecectricty for its own operation, while "USA" solar panels produce electricity sold to other domestic entities.
+From [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Anthropogenic-Mass) on anthropogenic mass we have 1.1e12 tonnes in 2020, doubling every 20 years. That puts us at 5.5e11 in 2000 and 7.8e11 in 2010. We split the 2010 values by:
+* USA 20% -> 1.6e11 t
+* Russia 5% -> 3.9e10 t
+* China 30% -> 2.3e11 t
+* Europe 15% -> 1.2e11 t
+* India 7% -> 5.5e10 t
+* Japan 6% -> 4.7e10 t
+* Other 17% -> 1.3e11 t
 
-#### solar_occlusion
+For space agencies, we made up masses out of thin air:
+* NASA 5e6 t (~2x what you would get if you used employee number as proportion of world total)
+* Roscosomos 2e6 t (a lot of construction history, neverminding current state)
+* CNSA 2e6 t
+* ESA 5e5 t
+* ISRO 5e5 t
+* JAXA 5e5 t
 
-Overrides Body.solar_occlusion if specified. These are set to give observed (or guessed) solar power utilizations (="capacity factor") for polity "homeworld facilities". See facilities_operations_utilizations.tsv/SOLAR_POWER below.
-
+We have ISS at 420 tonnes and Tiangong at 22 tonnes from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS-and-Tiangong). We just slice up the ISS among NASA, Roscosmos, ESA and JAXA:
+* ISS - Roscosmos 75 t (Zarya, Zvezda, etc.)
+* ISS - ESA 12.5 t (Columbus Laboratory)
+* ISS - JAXA 28.3 t (Kibo complex)
+* ISS - NASA 304.2 t (remainder)
+* Tiangong - 33 t (bumped 33% for future construction)
 
 ## facilities_inventories.tsv
 
@@ -351,6 +374,19 @@ FIXME?: It's likely that real world capacities are greater than production. Igno
 | India    | 50         | 29      | 20         | 1    |
 | Japan    | 43         | 12      | 20         | 11   |
 | Other    | 788        | 291     | 447        | 48   |
+
+2010 coal production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining). Note that most of the "underground mining" in that chat is surface (0-1 km) in our sim. I'm using ~15% subsurface for USA, Russia, and EU and much smaller percents for others.
+
+| Region   | 2010 total | Surface | Subsurface |
+|----------|------------|---------|------------|
+| USA      | 112329     | 94357   | 17972      |
+| Russia   | 36644      | 31147   | 5497       |
+| China    | 369178     | 343336  | 25842      |
+| EU+UK    | 61073      | 51912   | 9161       |
+| India    | 65525      | 65000   | 525        |
+| Japan    | 0          | 0       | 0          |
+| Other    | 211187     | 200628  | 10559      |
+
 
 ## facilities_populations.tsv
 
@@ -601,8 +637,9 @@ Output is 100% Oil.
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
 
-AI value 0.352 MWh per tonne of gas is from US 2011 study, which probably represents conventional gas extraction.  
-Adjust for sim USA deposits (x 2%) -> 0.00704 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
+AI value 0.352 MWh per tonne of gas is from US 2011 study, which probably represents conventional gas extraction. We have USA subsurface deposit at 2%.
+
+Adjust for sim USA deposits (x 0.02) -> 0.00704 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
 
 -> surface 0.00704, subsurface 0.01408, deep 0.02816.
 
@@ -612,11 +649,11 @@ We simplify and output separated products from drilling: 90% Methane, 9.975% Eth
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining).
 
-We use the smaller energy values from the 2020 China figures (1.40 MWh per tonne surface, 2.90 MWh per tonne subsurface) for the case where we have 80% deposits. Larger values cited in the 2010 USDE would be simulated by deposits on the order of 50%. (Note: use these deposits to tune Earth territorial Compositions.) Assume 82% recovery ratio.
+We use the smaller energy values from the 2020 China figures (1.40 MWh per tonne surface, 2.90 MWh per tonne subsurface) for the case where we have 20% deposits. Larger values cited in the 2010 USDE would be simulated by deposits on the order of 12%. Assume this is based on 82% recovery ratio.
 
-x 0.8 x 0.82 -> 0.92 MW near-surface, 1.9 MW subsurface.
+Adjust for sim China deposits (x 0.20 / 0.82) -> 0.341 MWh/t for 100% deposits. Use x2 for subsurface.
 
-Output is 0.82 t/h coal (recovery ratio) and 0.18 t/h gravel/conglomerate.
+-> surface 0.341, subsurface 0.683.
 
 Per US 2000 study https://www.energy.gov/sites/default/files/2013/11/f4/mining_bandwidth.pdf,
 

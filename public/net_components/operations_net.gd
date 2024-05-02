@@ -54,14 +54,21 @@ enum { # _dirty
 	DIRTY_LFQ_REVENUE = 1,
 	DIRTY_LFQ_GROSS_OUTPUT = 1 << 1,
 	DIRTY_LFQ_NET_INCOME = 1 << 2,
-	DIRTY_CONSTRUCTIONS = 1 << 3,
+	DIRTY_CONSTRUCTION_MASS = 1 << 3,
+	DIRTY_IS_UNITARY = 1 << 4,
 }
+
+const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
+const PROCESS_GROUP_CONV_POWER := Enums.ProcessGroup.PROCESS_GROUP_CONV_POWER
+const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
+const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 # Interface read-only! Data flows server -> interface.
 var _lfq_revenue := 0.0 # last 4 quarters
 var _lfq_gross_output := 0.0 # revenue w/ some exceptions; = "economy"
 var _lfq_net_income := 0.0
-var _constructions := 0.0 # total mass of all _constructions
+var _construction_mass := 0.0 # total mass of all _construction_mass
+var _is_unitary := false # is small focused activity for stats & tax treatment
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
 var _capacities: Array[float] # set by facility modules
@@ -92,19 +99,23 @@ var _dirty_op_commands_2 := 0 # max 128
 # localized indexing & table data
 static var _table_operations: Dictionary
 static var _n_operations: int
+static var _operation_electricities: Array[float]
+static var _operation_process_groups: Array[int]
 static var _op_groups_operations: Array[Array]
 static var _is_class_instanced := false
 
 
-func _init(is_new := false, has_financials := false, is_facility := false) -> void:
+func _init(is_new := false, has_financials_ := false, is_facility := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
+		_operation_electricities = _table_operations[&"electricity"]
+		_operation_process_groups = _table_operations[&"process_group"]
 		_op_groups_operations = tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
-	_has_financials = has_financials
+	_has_financials = has_financials_
 	_is_facility = is_facility
 	var n_populations: int = _table_n_rows[&"populations"]
 	_crews = ivutils.init_array(n_populations, 0.0, TYPE_FLOAT)
@@ -126,13 +137,23 @@ func _init(is_new := false, has_financials := false, is_facility := false) -> vo
 # ********************************** READ *************************************
 # all threadsafe
 
+func has_financials() -> bool:
+	# True for Facilities & Players and Joins of these two only.
+	return _has_financials
+
+
+func is_unitary() -> bool:
+	# Do we treat all ops as single activity for economic stats and taxation?
+	# True for small, focused facilities. False for large colonies or spaceports.
+	return _is_unitary
+
 
 func get_lfq_gross_output() -> float:
 	return _lfq_gross_output
 
 
-func get_constructions() -> float:
-	return _constructions
+func get_construction_mass() -> float:
+	return _construction_mass
 
 
 func get_crew(population_type := -1) -> float:
@@ -184,39 +205,30 @@ func get_utilization(type: int) -> float:
 
 
 func get_electricity(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"electricity"][type]
-
-
-func get_total_electricity() -> float:
-	var operation_electricities: Array[float] = _table_operations[&"electricity"]
-	var sum := 0.0
-	var i := 0
-	while i < _n_operations:
-		sum += get_run_rate(i) * operation_electricities[i]
-		i += 1
-	return sum
+	# Negative for power consumers.
+	var operation_electricity := _operation_electricities[type]
+	if operation_electricity > 0.0: # power generating
+		return get_effective_rate(type) * operation_electricity
+	return get_run_rate(type) * operation_electricity
 
 
 func get_development_energy() -> float:
-	var dev_energies: Array[float] = _table_operations[&"dev_energy"]
+	# For now, we just sum power generation. TODO: Handle solar foundries, etc.
 	var sum := 0.0
-	var i := 0
-	while i < _n_operations:
-		sum += get_run_rate(i) * dev_energies[i]
-		i += 1
+	for type in _n_operations:
+		var electricity := get_electricity(type)
+		if electricity > 0.0:
+			sum += electricity
 	return sum
 
 
-func get_gui_flow(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"gui_flow"][type]
-
-
-func get_fuel_burn(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"fuel_burn"][type]
-
-
 func get_extraction_rate(type: int) -> float:
-	return get_run_rate(type) * _table_operations[&"extraction_rate"][type]
+	assert(_operation_process_groups[type] == PROCESS_GROUP_EXTRACTION)
+	return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
+
+
+
+# FIXME below
 
 
 func get_mass_flow(type: int) -> float:
@@ -262,11 +274,9 @@ func get_group_utilization(op_group: int) -> float:
 
 
 func get_group_electricity(op_group: int) -> float:
-	var electricities: Array[float] = _table_operations[&"dev_energy"]
-	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
-	for type in op_group_ops:
-		sum += get_run_rate(type) * electricities[type]
+	for type: int in _op_groups_operations[op_group]:
+		sum += get_electricity(type)
 	return sum
 
 
@@ -304,6 +314,13 @@ func get_group_est_gross_margin(op_group: int) -> float:
 	return sum_income / sum_revenue
 
 
+func get_group_extraction_rate(op_group: int) -> float:
+	var sum := 0.0
+	for type: int in _op_groups_operations[op_group]:
+		sum += get_extraction_rate(type)
+	return sum
+
+
 func get_target_utilization(type: int) -> float:
 	return _target_utilizations[type]
 
@@ -327,7 +344,7 @@ func set_network_init(data: Array) -> void:
 	_lfq_revenue = data[1]
 	_lfq_gross_output = data[2]
 	_lfq_net_income = data[3]
-	_constructions = data[4]
+	_construction_mass = data[4]
 	_crews = data[5]
 	_capacities = data[6]
 	_run_rates = data[7]
@@ -340,10 +357,11 @@ func set_network_init(data: Array) -> void:
 	_target_utilizations = data[14]
 	_has_financials = data[15]
 	_is_facility = data[16]
+	_is_unitary = data[17]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply deltas and sets
+	# Deltas and sets from the server entity.
 	_int_data = data[1]
 	_float_data = data[2]
 	_int_offset = int_offset
@@ -363,9 +381,12 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_LFQ_NET_INCOME:
 		_lfq_net_income += _float_data[_float_offset]
 		_float_offset += 1
-	if dirty & DIRTY_CONSTRUCTIONS:
-		_constructions += _float_data[_float_offset]
+	if dirty & DIRTY_CONSTRUCTION_MASS:
+		_construction_mass += _float_data[_float_offset]
 		_float_offset += 1
+	if dirty & DIRTY_IS_UNITARY:
+		_is_unitary = bool(_int_data[_int_offset])
+		_int_offset += 1
 	
 	_add_floats_delta(_crews)
 	_add_floats_delta(_capacities)

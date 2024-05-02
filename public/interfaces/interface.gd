@@ -228,69 +228,34 @@ func get_facilities() -> Array[Interface]:
 	# AI thread only!
 	return []
 
-# Operations
+# Components
 
-func get_operation_utilization(operation_type: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_utilization(operation_type)
+func get_operations() -> OperationsNet:
+	return get(&"operations")
 
 
-func get_operation_electricity(operation_type: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_electricity(operation_type)
+func get_inventory() -> InventoryNet:
+	return get(&"inventory")
 
 
-func get_operation_gui_flow(operation_type: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_gui_flow(operation_type)
+func get_financials() -> FinancialsNet:
+	return get(&"financials")
 
 
-func get_operation_est_revenue(operation_type: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return NAN
-	return operations.get_est_revenue(operation_type)
+func get_population() -> PopulationNet:
+	return get(&"population")
 
 
-func get_operation_est_gross_margin(operation_type: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return NAN
-	return operations.get_est_gross_margin(operation_type)
+func get_biome() -> BiomeNet:
+	return get(&"biome")
 
 
-func get_op_group_utilization(op_group: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_group_utilization(op_group)
+func get_metaverse() -> MetaverseNet:
+	return get(&"metaverse")
 
 
-func get_op_group_electricity(op_group: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_group_electricity(op_group)
+# FIXME: Remove component methods below...
 
-
-func get_op_group_est_revenue(op_group: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_group_est_revenue(op_group)
-
-
-func get_op_group_est_gross_margin(op_group: int) -> float:
-	var operations: OperationsNet = get(&"operations")
-	if !operations:
-		return 0.0
-	return operations.get_group_est_gross_margin(op_group)
 
 # Inventory
 

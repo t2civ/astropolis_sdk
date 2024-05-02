@@ -19,34 +19,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Energy/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Energy/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Energy/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Energy/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -71,34 +77,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Ores/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Ores/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Ores/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Ores/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -123,34 +135,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Volatiles/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Volatiles/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Volatiles/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Volatiles/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -175,34 +193,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Materials/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Materials/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Materials/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Materials/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -227,34 +251,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Manufactured/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Manufactured/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Manufactured/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Manufactured/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -279,34 +309,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Biologicals/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Biologicals/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Biologicals/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Biologicals/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -331,34 +367,40 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="TabContainer/Cyber/Hdrs"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Hdr1" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Price"
+text = "Price ($)"
+horizontal_alignment = 1
 
 [node name="Hdr2" type="Label" parent="TabContainer/Cyber/Hdrs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bids"
+text = "Bid/Ask"
+horizontal_alignment = 1
 
 [node name="Hdr3" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Asks"
+text = "Vol (/d)"
+horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Inventory"
+horizontal_alignment = 1
 
 [node name="Hdr5" type="Label" parent="TabContainer/Cyber/Hdrs"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Contracts"
+text = "Contracted"
+horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="TabContainer/Cyber/Hdrs"]
 custom_minimum_size = Vector2(5, 0)
@@ -374,6 +416,18 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Transp" type="Label" parent="TabContainer"]
+visible = false
+layout_mode = 2
+text = "WIP
+
+Will have info on transport tonnage to and from this facilty:
+* Price for transport (per tonne) from various locations/spaceports.
+* Current transport tonnage en route.
+* Bids/Asks for transport tonnage."
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="NoMarkets" type="Label" parent="."]
 visible = false
