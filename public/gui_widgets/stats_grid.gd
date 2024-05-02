@@ -30,7 +30,8 @@ var required_component := &"operations"
 var content: Array[Array] = [
 	# label_txt, target_path
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number],
-	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.prefixed_named_number.bind("$")],
+	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.prefixed_named_number.bind("$", 3,
+			IVQFormat.TextFormat.SHORT_MIXED_CASE, 1.0 / IVUnits.unit_multipliers[&"$"])],
 	[&"LABEL_ENERGY", &"get_development_energy", IVQFormat.prefixed_unit.bind(&"W")],
 	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/d")],
 	[&"LABEL_CONSTRUCTIONS", &"get_development_constructions", IVQFormat.prefixed_unit.bind(&"t")],

@@ -152,7 +152,10 @@ func sync_server_dirty(data: Array) -> void:
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	
+
+	#if dirty & DIRTY_QUARTER:
+		#prints("NET", self)
+
 	if dirty & DIRTY_BASE:
 		var string_data: Array[String] = data[3]
 		gui_name = string_data[0]
