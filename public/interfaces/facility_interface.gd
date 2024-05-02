@@ -114,7 +114,7 @@ func get_development_manufacturing() -> float:
 
 
 func get_development_constructions() -> float:
-	return operations.get_constructions()
+	return operations.get_construction_mass()
 
 
 func get_development_computations() -> float:

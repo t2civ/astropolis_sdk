@@ -54,7 +54,7 @@ enum { # _dirty
 	DIRTY_LFQ_REVENUE = 1,
 	DIRTY_LFQ_GROSS_OUTPUT = 1 << 1,
 	DIRTY_LFQ_NET_INCOME = 1 << 2,
-	DIRTY_CONSTRUCTIONS = 1 << 3,
+	DIRTY_CONSTRUCTION_MASS = 1 << 3,
 	DIRTY_IS_UNITARY = 1 << 4,
 }
 
@@ -67,7 +67,7 @@ const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 var _lfq_revenue := 0.0 # last 4 quarters
 var _lfq_gross_output := 0.0 # revenue w/ some exceptions; = "economy"
 var _lfq_net_income := 0.0
-var _constructions := 0.0 # total mass of all _constructions
+var _construction_mass := 0.0 # total mass of all _construction_mass
 var _is_unitary := false # is small focused activity for stats & tax treatment
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
@@ -152,8 +152,8 @@ func get_lfq_gross_output() -> float:
 	return _lfq_gross_output
 
 
-func get_constructions() -> float:
-	return _constructions
+func get_construction_mass() -> float:
+	return _construction_mass
 
 
 func get_crew(population_type := -1) -> float:
@@ -344,7 +344,7 @@ func set_network_init(data: Array) -> void:
 	_lfq_revenue = data[1]
 	_lfq_gross_output = data[2]
 	_lfq_net_income = data[3]
-	_constructions = data[4]
+	_construction_mass = data[4]
 	_crews = data[5]
 	_capacities = data[6]
 	_run_rates = data[7]
@@ -381,8 +381,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_LFQ_NET_INCOME:
 		_lfq_net_income += _float_data[_float_offset]
 		_float_offset += 1
-	if dirty & DIRTY_CONSTRUCTIONS:
-		_constructions += _float_data[_float_offset]
+	if dirty & DIRTY_CONSTRUCTION_MASS:
+		_construction_mass += _float_data[_float_offset]
 		_float_offset += 1
 	if dirty & DIRTY_IS_UNITARY:
 		_is_unitary = bool(_int_data[_int_offset])
