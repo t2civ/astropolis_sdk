@@ -87,7 +87,7 @@ func get_development_population(population_type := -1) -> float:
 
 func get_development_economy() -> float:
 	if operations:
-		return operations.get_lfq_gross_output()
+		return operations.get_gross_output_lfq()
 	return 0.0
 
 

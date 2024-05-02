@@ -181,7 +181,7 @@ func _get_ai_data(target_name: StringName) -> void:
 		var electricity := operations.get_group_electricity(op_group)
 		electricity /= _unit_multipliers[&"MW"]
 		var flow := 0.0
-		var revenue := operations.get_group_est_revenue(op_group)
+		var revenue := operations.get_group_revenue(op_group)
 		revenue /= _unit_multipliers[&"$M/y"]
 		
 		match tab:
@@ -201,7 +201,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			electricity,
 			flow,
 			revenue,
-			operations.get_group_est_gross_margin(op_group),
+			operations.get_group_gross_margin(op_group),
 		]
 		data.append(group_data)
 		
@@ -218,7 +218,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			electricity = operations.get_electricity(operation_type)
 			electricity /= _unit_multipliers[&"MW"]
 			flow = 0.0
-			revenue = operations.get_est_revenue(operation_type)
+			revenue = operations.get_revenue_rate(operation_type)
 			revenue /= _unit_multipliers[&"$M/y"]
 			
 			match tab:
@@ -241,7 +241,7 @@ func _get_ai_data(target_name: StringName) -> void:
 				electricity,
 				flow,
 				revenue,
-				operations.get_est_gross_margin(operation_type),
+				operations.get_gross_margin(operation_type),
 			]
 			operations_data.append(operation_data)
 	
