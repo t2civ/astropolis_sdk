@@ -33,11 +33,8 @@ enum { # _dirty bit flags
 	DIRTY_ESTIMATION = 1 << 2,
 }
 
-
 const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
 const FOUR_PI := 4.0 * PI
-
-const FREE_RESOURCE_MIN_FRACTION := 0.1
 
 
 var compositions_index := -1
@@ -56,7 +53,7 @@ var variances: Array[float] # spatial heterogeneity; this is good for mining!
 
 var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
-var may_have_free_resources: bool # from strata.tsv
+var is_atmosphere: bool # from strata.tsv
 
 # derive as needed
 var _volume := 0.0
@@ -64,7 +61,6 @@ var _total_mass := 0.0
 var _needs_volume_mass_calculation := true
 
 # indexing
-static var _resource_maybe_free: Array[bool]
 static var _extraction_resources: Array[int] # maps index to resource_type
 static var _resource_extractions: Array[int] # maps resource_type to index
 static var _survey_density_errors: Array[float] # coeff of variation
@@ -83,7 +79,6 @@ static var _is_class_instanced := false
 func _init(is_new := false, _is_server := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_resource_maybe_free = _tables[&"resources"][&"maybe_free"]
 		_extraction_resources = tables_aux[&"extraction_resources"]
 		_resource_extractions = tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
@@ -122,18 +117,6 @@ func get_total_mass() -> float:
 	if _needs_volume_mass_calculation:
 		calculate_volume_and_total_mass()
 	return _total_mass
-
-
-func is_free_resource(resource_type: int) -> bool:
-	if !may_have_free_resources:
-		return false
-	if !_resource_maybe_free[resource_type]:
-		return false
-	var index: int = _resource_extractions[resource_type]
-	assert(index != -1, "resource_type must have is_extraction == true")
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
-	return masses[index] / _total_mass >= FREE_RESOURCE_MIN_FRACTION
 
 
 func get_mass(resource_type: int) -> float:
@@ -241,7 +224,7 @@ func set_network_init(data: Array) -> void:
 	masses = data[9]
 	variances = data[10]
 	survey_type = data[11]
-	may_have_free_resources = data[12]
+	is_atmosphere = data[12]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:

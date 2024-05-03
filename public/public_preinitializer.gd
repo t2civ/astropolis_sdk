@@ -134,7 +134,6 @@ func _on_project_objects_instantiated() -> void:
 	# table row subsets (arrays of row_types)
 	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
 	tables_aux[&"extraction_resources"] = extraction_resources
-	tables_aux[&"maybe_free_resources"] = IVTableData.get_db_true_rows(&"resources", &"maybe_free")
 	tables_aux[&"is_manufacturing_operations"] = IVTableData.get_db_true_rows(&"operations", &"is_manufacturing")
 	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"process_group",
 			Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION)

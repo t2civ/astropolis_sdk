@@ -1,4 +1,4 @@
-	resource_class	trade_class	trade_unit	start_price	unique_type	is_extraction	maybe_free	sort_override	hide_variances	mass_err_mult
+	resource_class	trade_class	trade_unit	start_price	unique_type	is_extraction	is_volatile	sort_override	hide_variances	mass_err_mult
 Type	INT	INT	STRING_NAME	FLOAT	INT	BOOL	BOOL	INT	BOOL	FLOAT
 Unit				$/t						
 Default			t					0		1
@@ -6,7 +6,7 @@ Prefix/RESOURCE_	RESOURCE_CLASS_	TRADE_CLASS_
 ELECTRICITY	ENERGY	ELECTRICITY	MWh	27.8 $/MWh	ELECTRICITY					
 COAL	ENERGY	BULK		189		x				
 OIL	ENERGY	LIQUID		513		x				
-REFINED_FUELS	ENERGY	LIQUID		1180						
+REFINED_FUELS	ENERGY	LIQUID		1180			x			
 ETHANOL	ENERGY	LIQUID		849		x	x			
 METHANE	ENERGY	CRYOGENIC		196		x	x			
 ETHANE	ENERGY	CRYOGENIC		600		x	x			
