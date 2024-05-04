@@ -30,8 +30,8 @@ var required_component := &"operations"
 var content: Array[Array] = [
 	# label_txt, target_path
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number],
-	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.prefixed_named_number.bind("$", 3,
-			IVQFormat.TextFormat.SHORT_MIXED_CASE, 1.0 / IVUnits.unit_multipliers[&"$"])],
+	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.modified_named_number.bind(3,
+			IVQFormat.TextFormat.SHORT_MIXED_CASE, "$", "", 1.0 / IVUnits.unit_multipliers[&"$"])],
 	[&"LABEL_ENERGY", &"get_development_energy", IVQFormat.prefixed_unit.bind(&"W")],
 	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/d")],
 	[&"LABEL_CONSTRUCTIONS", &"get_development_constructions", IVQFormat.prefixed_unit.bind(&"t")],
@@ -39,7 +39,7 @@ var content: Array[Array] = [
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bits")],
 	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/d")],
 	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
-	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.fixed_unit.bind(&"species")],
+	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.named_number],
 ]
 
 var targets: Array[StringName] = [&"PLANET_EARTH", &"JOIN_OFFWORLD"]
