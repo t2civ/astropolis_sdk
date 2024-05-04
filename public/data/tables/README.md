@@ -15,6 +15,7 @@
 [facilities_operations_capacity_factors.tsv](#facilities_operations_capacity_factorstsv)  
 [facilities_operations_extractions.tsv](#facilities_operations_extractionstsv)  
 [facilities_populations.tsv](#facilities_populationstsv)  
+[facility_venn_sets.tsv](#facility_venn_setstsv)  
 [major_strata.tsv](#major_stratatsv)  
 [mod_classes.tsv](#mod_classestsv)  
 [modules.tsv](#modulestsv)  
@@ -245,7 +246,7 @@ The table has game start only. We have one "homeworld" facility for each player 
 Fields:
 * `public_sector` Fraction of facility that is public sector. For small facilities, generally 1.0 for space agencies and 0.0 for private companies. Larger facilities may be intermediate.
 * `is_unitary` True for small focused facilities like a mining station. False for colonies or spaceports. If true, treat all operations as a single activity for the purpose of economic stats and taxation (e.g., we don't tax the mine for its solar panel generation). If false, each operation is treated like a separate buisness.
-* `mass` Total mass of the facility. For homeworld 'facilities', this is total anthropogenic mass. Used for the development 'Constructions' stat.
+* `construction_mass` Total mass of all constructions. For homeworld 'facilities', this is total anthropogenic mass. Used for the development 'Constructions' stat.
 
 
 #### public_sector
@@ -399,6 +400,52 @@ https://en.wikipedia.org/wiki/Demographics_of_the_European_Union
 "Population" of space agency players on Earth is employees.
 I think Haiku response might be combining CNSA and CASC (but that's ok).  
 NASA actual numbers for fy 2010, 2020: https://en.wikipedia.org/wiki/NASA#cite_note-3
+
+## facility_venn_sets.tsv
+
+I'm modeling both 'biodiversity' and 'information' as [information entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), where shared biodiversity and shared information are [mutual information](https://en.wikipedia.org/wiki/Mutual_information). 'Shared biodiversity' is related to but not exactly the same as shared species.
+
+The table rows indicate biodiversity and information that is 'endemic' (the first few rows) or shared by different overlapping sets (the final row being shared by all). The columns sum to ~100.0, with units 1.3e4 and 4.39e19, respectively. This gives actual totals 1.3e6 effective species (worldwide biodiversity) and 4.39e21 maximally compressed stored bits (worldwide information).
+
+* `biodiversity` is the exponential of the Shannon index, expressed as 'effective number' of species. It would equal the number of species if all species were equally abundant. In real biomes abundances are not equal, so this number is always much smaller than the total number of species. Internally we model biodiversity using the Shannon index, which is a measure of information entropy.
+* `information` Is the information entropy of all stored information, i.e., the size if all stored information was maximally compressed (sometimes called 'entropically' compressed). We use unit 'bits', which is equivalent to 'shannons'.
+
+This seems like a lot of work, but I'm very interested in modeling these in the context of a Dyson swarm. Each of the billions of habitats is essentially an island for biodiversity (islands are great for biodiversity!). That's not true for digital information, but you can still imagine information islands resulting from intentional isolation.
+
+The sets breakdown in the table is totally fictional, as is the total for biodiversity. Here are the justifications:
+
+#### biodiversity
+
+There is no study that tries to estimate _effective_ species number worldwide. Estimates of total number of species are [all over the place](https://ourworldindata.org/how-many-species-are-there), but we're going with 8.5 million non-microbial in 2010. In local studies, effective number ranges from 5% to 25% of the total number. If we assume 15% for worldwide, that puts us at 1.3e6 effective species worldwide (giving Shannon index ~14).
+
+With a lot of guesswork, I'm going for these regional breakdowns. The first percent is the target sum for that region (the sum of all of sets that contain it). The second percent is endemic ('endemic' means not in the other 6 groups). The rest of the table is filled in by feel to get the totals right.
+
+* USA: 7% total, 1.4% endemic
+* Russia: 5%, 0.5% endemic (high latitude)
+* China: 8%, 3.5% endemic
+* Europe: 6%, 0.6% endemic
+* India: 9%, 2.0% endemic
+* Japan: 3%, 1.3% endemic (small island)
+* Other: 90.7%, 62% endemic (calculated from above; tropics!)
+* Shared by all: 5% (mainly bird and marine species)
+
+
+
+#### information
+
+From [this study](https://www.science.org/doi/10.1126/science.1200970) we have maximally compressed data (= 'information entropy') in 2007 at 2.95e20 bytes, or 2.36e21 bits, growing 23% per year. That projection puts us at 4.39e21 in 2010 and 3.48e22 in 2020.
+
+I'm guessing that there is a lot more mutual information here than is the case for biodiversity. Here are the guesswork breakdowns:
+
+* USA % -> 
+* Russia % -> 
+* China % -> 
+* Europe % -> 
+* India % -> 
+* Japan % -> 
+* Other % -> 
+
+
 
 ## major_strata.tsv
 
