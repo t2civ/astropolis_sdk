@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name CyberspaceNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -17,6 +17,8 @@ enum {
 	DIRTY_COMPUTATIONS = 1,
 	DIRTY_INFORMATION = 1 << 1,
 }
+
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 
 var _computations := 0.0
 var _information := 1.0 # min 1.0
@@ -45,23 +47,21 @@ func set_network_init(data: Array) -> void:
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
+	# Changes and sets from the server entity.
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	
 	if dirty & DIRTY_COMPUTATIONS:
-		_computations += _float_data[_float_offset]
-		_float_offset += 1
+		_computations += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_INFORMATION:
-		# WARNGING: _int_offset is invalid from server data!
-		_information += _float_data[_float_offset]
-		_float_offset += 1
+		# WARNGING: int_offset is invalid from server data!
+		_information += float_data[float_offset]
 

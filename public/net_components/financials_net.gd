@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name FinancialsNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -25,7 +25,10 @@ enum { # _dirty
 	DIRTY_COST_OF_GOODS_SOLD = 1 << 2,
 }
 
+const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
+
 # interface sync
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _revenue := 0.0 # positive
 var _gross_output := 0.0 # = all producer revenue (exludes resellers, tax revenue, etc.)
 var _cost_of_goods_sold := 0.0 # positive
@@ -37,6 +40,7 @@ var _gross_output_history: Array[float] = []
 var _cost_of_goods_sold_history: Array[float] = []
 var _accountings_history: Array[Array] = []
 
+var _sync := SyncHelper.new()
 
 var _n_accountings := 10 # WIP
 
@@ -87,28 +91,28 @@ func set_network_init(data: Array) -> void:
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# Changes and sets from the server entity.
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	
 	if dirty & DIRTY_REVENUE:
-		_revenue += _float_data[_float_offset]
-		_float_offset += 1
+		_revenue += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_GROSS_OUTPUT:
-		_gross_output += _float_data[_float_offset]
-		_float_offset += 1
+		_gross_output += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_COST_OF_GOODS_SOLD:
-		_cost_of_goods_sold += _float_data[_float_offset]
-		_float_offset += 1
+		_cost_of_goods_sold += float_data[float_offset]
+		float_offset += 1
 	
-	_add_floats_delta(_accountings)
+	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.add_floats_delta(_accountings)
 	
 	# finished quarter?
-	var svr_qtr := _int_data[0]
+	var svr_qtr := int_data[0]
 	assert(svr_qtr >= run_qtr)
 	if svr_qtr > run_qtr:
 		_update_quarter(svr_qtr)

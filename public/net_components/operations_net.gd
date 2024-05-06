@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name OperationsNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -55,11 +55,15 @@ enum { # _dirty
 	DIRTY_CONSTRUCTION_MASS = 1 << 1,
 }
 
+const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
+const utils := preload("res://public/static/utils.gd")
+
 const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
 const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
 const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 # Interface read-only! Data flows server -> interface.
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _construction_mass := 0.0 # total mass of all _construction_mass
 
@@ -89,7 +93,12 @@ var _is_facility := false
 var _dirty_op_commands_1 := 0
 var _dirty_op_commands_2 := 0 # max 128
 
+var _sync := SyncHelper.new()
+
 # localized indexing & table data
+static var _tables: Dictionary = IVTableData.tables
+static var _table_n_rows: Dictionary = IVTableData.table_n_rows
+static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 static var _table_operations: Dictionary
 static var _n_operations: int
 static var _operation_electricities: Array[float]
@@ -105,7 +114,7 @@ func _init(is_new := false, has_financials_ := false, is_facility := false) -> v
 		_n_operations = _table_n_rows[&"operations"]
 		_operation_electricities = _table_operations[&"electricity"]
 		_operation_process_groups = _table_operations[&"process_group"]
-		_op_groups_operations = tables_aux[&"op_groups_operations"]
+		_op_groups_operations = _tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_
@@ -225,7 +234,7 @@ func get_mass_flow(type: int) -> float:
 func get_development_manufacturing() -> float:
 	var mass_flows: Array[float] = _table_operations[&"mass_flow"]
 	var sum := 0.0
-	for type: int in tables_aux[&"is_manufacturing_operations"]:
+	for type: int in _tables_aux[&"is_manufacturing_operations"]:
 		sum += get_run_rate(type) * mass_flows[type]
 	return sum
 
@@ -346,46 +355,46 @@ func set_network_init(data: Array) -> void:
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# Changes and sets from the server entity.
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	if dirty & DIRTY_GROSS_OUTPUT_LFQ:
-		_gross_output_lfq += _float_data[_float_offset]
-		_float_offset += 1
+		_gross_output_lfq += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_CONSTRUCTION_MASS:
-		_construction_mass += _float_data[_float_offset]
-		_float_offset += 1
+		_construction_mass += float_data[float_offset]
+		float_offset += 1
 	
-	_add_floats_delta(_crews)
-	_add_floats_delta(_capacities)
-	_add_floats_delta(_capacities, 64)
-	_add_floats_delta(_run_rates)
-	_add_floats_delta(_run_rates, 64)
-	_add_floats_delta(_effective_rates)
-	_add_floats_delta(_effective_rates, 64)
+	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.add_floats_delta(_crews)
+	_sync.add_floats_delta(_capacities)
+	_sync.add_floats_delta(_capacities, 64)
+	_sync.add_floats_delta(_run_rates)
+	_sync.add_floats_delta(_run_rates, 64)
+	_sync.add_floats_delta(_effective_rates)
+	_sync.add_floats_delta(_effective_rates, 64)
 	
 	if !_has_financials:
 		return
 	
-	_add_floats_delta(_revenue_rates)
-	_add_floats_delta(_revenue_rates, 64)
-	_add_floats_delta(_cogs_rates)
-	_add_floats_delta(_cogs_rates, 64)
+	_sync.add_floats_delta(_revenue_rates)
+	_sync.add_floats_delta(_revenue_rates, 64)
+	_sync.add_floats_delta(_cogs_rates)
+	_sync.add_floats_delta(_cogs_rates, 64)
 
 	if !_is_facility:
 		return
 	
-	_set_floats_dirty(_gross_margins) # not accumulator!
-	_set_floats_dirty(_gross_margins, 64) # not accumulator!
-	_set_ints_dirty(_op_logics) # not accumulator!
-	_set_ints_dirty(_op_logics, 64) # not accumulator!
+	_sync.set_floats_dirty(_gross_margins) # not accumulator!
+	_sync.set_floats_dirty(_gross_margins, 64) # not accumulator!
+	_sync.set_ints_dirty(_op_logics) # not accumulator!
+	_sync.set_ints_dirty(_op_logics, 64) # not accumulator!
 
 
 func get_interface_dirty() -> Array:

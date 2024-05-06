@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name PopulationNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -14,8 +14,11 @@ extends NetComponent
 #
 # Arrays indexed by population_type unless noted otherwise.
 
+const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
+const utils := preload("res://public/static/utils.gd")
 
 # All data flows server -> interface.
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _numbers: Array[float]
 var _intrinsic_growths: Array[float] # Facility only
 var _carrying_capacities: Array[float] # Facility only; indexed by carrying_capacity_group
@@ -25,7 +28,10 @@ var _history_numbers: Array[Array] # Array for ea pop type; [..., qrt_before_las
 
 var _is_facility := false
 
+var _sync := SyncHelper.new()
 
+static var _tables: Dictionary = IVTableData.tables
+static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 static var _n_populations: int
 static var _table_populations: Dictionary
 static var _carrying_capacity_groups: Array[int]
@@ -109,24 +115,24 @@ func set_network_init(data: Array) -> void:
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
+	# Changes and sets from the server entity.
 	
-	var svr_qtr: int = _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr: int = int_data[0]
 	if run_qtr < svr_qtr:
 		_update_history(svr_qtr) # before new quarter changes
 	
-	_add_floats_delta(_numbers)
+	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.add_floats_delta(_numbers)
 	
 	if !_is_facility:
 		return
 	
-	_set_floats_dirty(_intrinsic_growths)
-	_set_floats_dirty(_carrying_capacities)
-	_set_floats_dirty(_migration_pressures)
+	_sync.set_floats_dirty(_intrinsic_growths)
+	_sync.set_floats_dirty(_carrying_capacities)
+	_sync.set_floats_dirty(_migration_pressures)
 
 
 func _update_history(svr_qtr: int) -> void:

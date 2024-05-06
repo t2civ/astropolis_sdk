@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name CompositionNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -19,7 +19,7 @@ extends NetComponent
 # The vast majority of asteroids will have one (undifferentiated) Composition.
 #
 # AI and GUI have access to estimated values only; server has actual.
-# This NetComponent is different than others because it syncs offset values to
+# This component is different than others because it syncs offset values to
 # represent estimation biases. Actual server values will be randomly offset
 # from data table values (which are assumed to be public estimations).
 #
@@ -33,10 +33,13 @@ enum { # _dirty bit flags
 	DIRTY_ESTIMATION = 1 << 2,
 }
 
+const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
+
 const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
 const FOUR_PI := 4.0 * PI
 
 
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var compositions_index := -1
 var name: StringName
 var stratum_type := -1 # strata.tsv
@@ -60,7 +63,11 @@ var _volume := 0.0
 var _total_mass := 0.0
 var _needs_volume_mass_calculation := true
 
+var _sync := SyncHelper.new()
+
 # indexing
+static var _tables: Dictionary = IVTableData.tables
+static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 static var _extraction_resources: Array[int] # maps index to resource_type
 static var _resource_extractions: Array[int] # maps resource_type to index
 static var _survey_density_errors: Array[float] # coeff of variation
@@ -79,8 +86,8 @@ static var _is_class_instanced := false
 func _init(is_new := false, _is_server := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_extraction_resources = tables_aux[&"extraction_resources"]
-		_resource_extractions = tables_aux[&"resource_extractions"]
+		_extraction_resources = _tables_aux[&"extraction_resources"]
+		_resource_extractions = _tables_aux[&"resource_extractions"]
 		_survey_density_errors = _tables[&"surveys"][&"density_error"]
 		_survey_mass_errors = _tables[&"surveys"][&"mass_error"]
 		_survey_deposits_sigma = _tables[&"surveys"][&"deposits_sigma"]
@@ -228,36 +235,36 @@ func set_network_init(data: Array) -> void:
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply deltas and sets
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
+	# Changes and sets from the server entity.
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # Do we need this?
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	
 	if dirty & DIRTY_STRATUM:
-		body_radius = _float_data[_float_offset]
-		_float_offset += 1
-		outer_radius = _float_data[_float_offset]
-		_float_offset += 1
-		thickness = _float_data[_float_offset]
-		_float_offset += 1
-		spherical_fraction = _float_data[_float_offset]
-		_float_offset += 1
-		density = _float_data[_float_offset]
-		_float_offset += 1
+		body_radius = float_data[float_offset]
+		float_offset += 1
+		outer_radius = float_data[float_offset]
+		float_offset += 1
+		thickness = float_data[float_offset]
+		float_offset += 1
+		spherical_fraction = float_data[float_offset]
+		float_offset += 1
+		density = float_data[float_offset]
+		float_offset += 1
 		_needs_volume_mass_calculation = true
 	if dirty & DIRTY_ESTIMATION:
-		survey_type = _int_data[_int_offset]
-		_int_offset += 1
+		survey_type = int_data[int_offset]
+		int_offset += 1
 	
-	_set_floats_dirty(masses)
-	_set_floats_dirty(variances)
+	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.set_floats_dirty(masses)
+	_sync.set_floats_dirty(variances)
 
 # *****************************************************************************
 
