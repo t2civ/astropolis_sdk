@@ -75,7 +75,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_biomass += _float_data[_float_offset]
 		_float_offset += 1
 	if dirty & DIRTY_BIODIVERSITY:
-		# WARNGING: _int_offset is invalid from server processing!
+		# WARNGING: _int_offset is invalid from server data!
 		_biodiversity += _float_data[_float_offset]
 		_float_offset += 1
 

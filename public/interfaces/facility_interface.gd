@@ -125,7 +125,7 @@ func get_development_computations() -> float:
 
 func get_development_information() -> float:
 	if cyberspace:
-		return cyberspace.get_development_information()
+		return cyberspace.get_information()
 	return 0.0
 
 

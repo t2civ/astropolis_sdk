@@ -125,39 +125,3 @@ func _add_floats_delta(delta_array: Array[float], bits_offset := 0) -> int:
 	return return_flags
 
 
-# REMOVE BELOW !!!!
-
-func _take_diversity_model_delta(model: Dictionary, delta_model: Dictionary) -> void:
-	_int_data.append(delta_model.size())
-	for key: int in delta_model: # changes only
-		var delta: float = delta_model[key]
-		_int_data.append(key)
-		_float_data.append(delta)
-		diversity.change_model(model, key, delta)
-		assert(!model.has(key) or model[key] > 0.0)
-	delta_model.clear()
-
-
-func _add_diversity_model_delta(delta_model: Dictionary) -> void:
-	var size := _int_data[_int_offset]
-	_int_offset += 1
-	var i := 0
-	while i < size:
-		var key := _int_data[_int_offset]
-		_int_offset += 1
-		var delta := _float_data[_float_offset]
-		_float_offset += 1
-		assert(delta != 0.0)
-		diversity.change_model(delta_model, key, delta)
-		i += 1
-
-
-func _debug_assert_diversity_model_change(model: Dictionary, delta_model: Dictionary, key: int) -> bool:
-	var number: float = model.get(key, 0.0)
-	number += delta_model.get(key, 0.0)
-	if number != floor(number):
-		assert(false)
-		return false
-	assert(number >= 0.0)
-	return number >= 0.0
-

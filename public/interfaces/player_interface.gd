@@ -103,7 +103,7 @@ func get_development_computations() -> float:
 
 
 func get_development_information() -> float:
-	return cyberspace.get_development_information()
+	return cyberspace.get_information()
 
 
 func get_development_bioproductivity() -> float:

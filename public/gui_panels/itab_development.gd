@@ -69,9 +69,9 @@ func _update_selection(_dummy := false) -> void:
 		elif body_flags & BodyFlags2.GUI_HAS_MOONS:
 			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
 			column_names.append(&"LABEL_MOONS")
-			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_SPACE")))
+			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_LOCAL_SPACE")))
 		else:
-			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_SPACE")))
+			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_LOCAL_SPACE")))
 		targets.append(StringName("JOIN_" + body_name + "_SPACE" + player_join_name))
 		
 	
@@ -83,7 +83,7 @@ func _update_selection(_dummy := false) -> void:
 		column_names.append(&"LABEL_PLANETS")
 		column_names.append(&"LABEL_MOONS")
 		column_names.append(&"LABEL_PLANETOIDS")
-		column_names.append(&"LABEL_SPACE")
+		column_names.append(&"LABEL_SYSTEM_SPACE")
 	
 	else:
 		targets.append(body_name)
