@@ -140,7 +140,10 @@ func get_development_biomass() -> float:
 
 func get_development_biodiversity() -> float:
 	if biome:
-		return biome.get_development_biodiversity()
+		var biodiversity := biome.get_biodiversity()
+		if biodiversity == 1.0 and get_development_population() == 0.0:
+			return 0.0 
+		return biodiversity
 	return 0.0
 
 

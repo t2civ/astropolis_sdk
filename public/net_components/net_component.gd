@@ -125,6 +125,8 @@ func _add_floats_delta(delta_array: Array[float], bits_offset := 0) -> int:
 	return return_flags
 
 
+# REMOVE BELOW !!!!
+
 func _take_diversity_model_delta(model: Dictionary, delta_model: Dictionary) -> void:
 	_int_data.append(delta_model.size())
 	for key: int in delta_model: # changes only
