@@ -1,8 +1,8 @@
-	is_free_resources	is_deposits	#comments
+	is_atmosphere	is_deposits	#comments
 Type	BOOL	BOOL	
 Prefix/STRATUM_			
 # generics			
-BULK			i.e., undifferentiated
+BULK		x	i.e., undifferentiated
 ATMOSPHERE	x		
 SURFACE		x	
 REGOLITH		x	

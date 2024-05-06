@@ -8,6 +8,9 @@
 class_name Diversity
 extends Object
 
+# REMOVE THIS CLASS AFTER ENTROPY OVERHAUL!
+
+
 # Static class for methods related to diversity models.
 #
 # We use 'diversity_model' dictionaries to model species populations (or

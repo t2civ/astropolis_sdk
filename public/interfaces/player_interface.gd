@@ -83,7 +83,7 @@ func get_development_population(population_type := -1) -> float:
 
 
 func get_development_economy() -> float:
-	return operations.get_lfq_gross_output()
+	return operations.get_gross_output_lfq()
 
 
 func get_development_energy() -> float:
@@ -115,8 +115,10 @@ func get_development_biomass() -> float:
 
 
 func get_development_biodiversity() -> float:
-	return biome.get_development_biodiversity()
-
+	var biodiversity := biome.get_biodiversity()
+	if biodiversity == 1.0 and get_development_population() == 0.0:
+		return 0.0 # mech civ!
+	return biodiversity
 
 
 
@@ -152,7 +154,10 @@ func sync_server_dirty(data: Array) -> void:
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	
+
+	#if dirty & DIRTY_QUARTER:
+		#prints("NET", self)
+
 	if dirty & DIRTY_BASE:
 		var string_data: Array[String] = data[3]
 		gui_name = string_data[0]

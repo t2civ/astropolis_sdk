@@ -87,7 +87,7 @@ func get_development_population(population_type := -1) -> float:
 
 func get_development_economy() -> float:
 	if operations:
-		return operations.get_lfq_gross_output()
+		return operations.get_gross_output_lfq()
 	return 0.0
 
 
@@ -135,7 +135,10 @@ func get_development_biomass() -> float:
 
 func get_development_biodiversity() -> float:
 	if biome:
-		return biome.get_development_biodiversity()
+		var biodiversity := biome.get_biodiversity()
+		if biodiversity == 1.0 and get_development_population() == 0.0:
+			return 0.0 
+		return biodiversity
 	return 0.0
 
 

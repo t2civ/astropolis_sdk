@@ -51,24 +51,17 @@ enum OpCommands {
 }
 
 enum { # _dirty
-	DIRTY_LFQ_REVENUE = 1,
-	DIRTY_LFQ_GROSS_OUTPUT = 1 << 1,
-	DIRTY_LFQ_NET_INCOME = 1 << 2,
-	DIRTY_CONSTRUCTION_MASS = 1 << 3,
-	DIRTY_IS_UNITARY = 1 << 4,
+	DIRTY_GROSS_OUTPUT_LFQ = 1,
+	DIRTY_CONSTRUCTION_MASS = 1 << 1,
 }
 
 const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
-const PROCESS_GROUP_CONV_POWER := Enums.ProcessGroup.PROCESS_GROUP_CONV_POWER
 const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
 const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 # Interface read-only! Data flows server -> interface.
-var _lfq_revenue := 0.0 # last 4 quarters
-var _lfq_gross_output := 0.0 # revenue w/ some exceptions; = "economy"
-var _lfq_net_income := 0.0
+var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _construction_mass := 0.0 # total mass of all _construction_mass
-var _is_unitary := false # is small focused activity for stats & tax treatment
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
 var _capacities: Array[float] # set by facility modules
@@ -76,11 +69,11 @@ var _run_rates: Array[float] # <= capacities; defines operation utilization
 var _effective_rates: Array[float] # almost always <= run_rates
 
 # Facility, Player only (_has_financials = true)
-var _est_revenues: Array[float] # per year at current rate & prices
-var _est_gross_incomes: Array[float] # per year at current prices
+var _revenue_rates: Array[float] # at current rate & prices
+var _cogs_rates: Array[float] # cost of goods sold; at current rate & prices
 
 # Facility only
-var _est_gross_margins: Array[float] # at current prices (even if rate = 0)
+var _gross_margins: Array[float] # at current prices (even if rate = 0)
 var _op_logics: Array[int] # enum; Facility only
 
 # Facility only. '_op_commands' are AI or player settable from FacilityInterface.
@@ -124,11 +117,11 @@ func _init(is_new := false, has_financials_ := false, is_facility := false) -> v
 	_effective_rates = _capacities.duplicate()
 	if !has_financials:
 		return
-	_est_revenues = _capacities.duplicate()
-	_est_gross_incomes = _capacities.duplicate()
+	_revenue_rates = _capacities.duplicate()
+	_cogs_rates = _capacities.duplicate()
 	if !is_facility:
 		return
-	_est_gross_margins = ivutils.init_array(_n_operations, NAN, TYPE_FLOAT)
+	_gross_margins = ivutils.init_array(_n_operations, NAN, TYPE_FLOAT)
 	_op_logics = ivutils.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = ivutils.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
 	_target_utilizations = ivutils.init_array(_n_operations, 1.0, TYPE_FLOAT)
@@ -142,14 +135,8 @@ func has_financials() -> bool:
 	return _has_financials
 
 
-func is_unitary() -> bool:
-	# Do we treat all ops as single activity for economic stats and taxation?
-	# True for small, focused facilities. False for large colonies or spaceports.
-	return _is_unitary
-
-
-func get_lfq_gross_output() -> float:
-	return _lfq_gross_output
+func get_gross_output_lfq() -> float:
+	return _gross_output_lfq
 
 
 func get_construction_mass() -> float:
@@ -174,27 +161,27 @@ func get_capacity(type: int) -> float:
 	return _capacities[type]
 
 
-func get_est_revenue(type: int) -> float:
+func get_revenue_rate(type: int) -> float:
 	if !_has_financials:
 		return NAN
-	return _est_revenues[type]
+	return _revenue_rates[type]
 
 
-func get_est_gross_income(type: int) -> float:
+func get_cogs_rate(type: int) -> float:
 	if !_has_financials:
 		return NAN
-	return _est_gross_incomes[type]
+	return _cogs_rates[type]
 
 
-func get_est_gross_margin(type: int) -> float:
+func get_gross_margin(type: int) -> float:
 	if !_has_financials:
 		return NAN
 	if _is_facility: # facilities (only) have margin even if revenue = 0
-		return _est_gross_margins[type]
-	var est_revenue := _est_revenues[type]
-	if est_revenue == 0.0:
+		return _gross_margins[type]
+	var revenue := _revenue_rates[type]
+	if revenue == 0.0:
 		return NAN
-	return _est_gross_incomes[type] / est_revenue
+	return (revenue - _cogs_rates[type]) / revenue
 
 
 func get_utilization(type: int) -> float:
@@ -280,38 +267,38 @@ func get_group_electricity(op_group: int) -> float:
 	return sum
 
 
-func get_group_est_revenue(op_group: int) -> float:
+func get_group_revenue(op_group: int) -> float:
 	if !_has_financials:
 		return NAN
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
 	for type in op_group_ops:
-		sum += _est_revenues[type]
+		sum += _revenue_rates[type]
 	return sum
 
 
-func get_group_est_gross_income(op_group: int) -> float:
+func get_group_cogs_rate(op_group: int) -> float:
 	if !_has_financials:
 		return NAN
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
 	var sum := 0.0
 	for type in op_group_ops:
-		sum += get_est_gross_income(type)
+		sum += get_cogs_rate(type)
 	return sum
 
 
-func get_group_est_gross_margin(op_group: int) -> float:
+func get_group_gross_margin(op_group: int) -> float:
 	if !_has_financials:
 		return NAN
 	var op_group_ops: Array[int] = _op_groups_operations[op_group]
-	var sum_income := 0.0
+	var sum_cogs := 0.0
 	var sum_revenue := 0.0
 	for type in op_group_ops:
-		sum_income += get_est_gross_income(type)
-		sum_revenue += get_est_revenue(type)
+		sum_cogs += get_cogs_rate(type)
+		sum_revenue += get_revenue_rate(type)
 	if sum_revenue == 0.0:
 		return NAN
-	return sum_income / sum_revenue
+	return (sum_revenue - sum_cogs) / sum_revenue
 
 
 func get_group_extraction_rate(op_group: int) -> float:
@@ -341,27 +328,24 @@ func set_op_command(type: int, command: int) -> void:
 
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
-	_lfq_revenue = data[1]
-	_lfq_gross_output = data[2]
-	_lfq_net_income = data[3]
-	_construction_mass = data[4]
-	_crews = data[5]
-	_capacities = data[6]
-	_run_rates = data[7]
-	_effective_rates = data[8]
-	_est_revenues = data[9]
-	_est_gross_incomes = data[10]
-	_est_gross_margins = data[11]
-	_op_logics = data[12]
-	_op_commands = data[13]
-	_target_utilizations = data[14]
-	_has_financials = data[15]
-	_is_facility = data[16]
-	_is_unitary = data[17]
+	_gross_output_lfq = data[1]
+	_construction_mass = data[2]
+	_crews = data[3]
+	_capacities = data[4]
+	_run_rates = data[5]
+	_effective_rates = data[6]
+	_revenue_rates = data[7]
+	_cogs_rates = data[8]
+	_gross_margins = data[9]
+	_op_logics = data[10]
+	_op_commands = data[11]
+	_target_utilizations = data[12]
+	_has_financials = data[13]
+	_is_facility = data[14]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# Deltas and sets from the server entity.
+	# Changes and sets from the server entity.
 	_int_data = data[1]
 	_float_data = data[2]
 	_int_offset = int_offset
@@ -372,21 +356,12 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	
 	var dirty := _int_data[_int_offset]
 	_int_offset += 1
-	if dirty & DIRTY_LFQ_REVENUE:
-		_lfq_revenue += _float_data[_float_offset]
-		_float_offset += 1
-	if dirty & DIRTY_LFQ_GROSS_OUTPUT:
-		_lfq_gross_output += _float_data[_float_offset]
-		_float_offset += 1
-	if dirty & DIRTY_LFQ_NET_INCOME:
-		_lfq_net_income += _float_data[_float_offset]
+	if dirty & DIRTY_GROSS_OUTPUT_LFQ:
+		_gross_output_lfq += _float_data[_float_offset]
 		_float_offset += 1
 	if dirty & DIRTY_CONSTRUCTION_MASS:
 		_construction_mass += _float_data[_float_offset]
 		_float_offset += 1
-	if dirty & DIRTY_IS_UNITARY:
-		_is_unitary = bool(_int_data[_int_offset])
-		_int_offset += 1
 	
 	_add_floats_delta(_crews)
 	_add_floats_delta(_capacities)
@@ -399,16 +374,16 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if !_has_financials:
 		return
 	
-	_add_floats_delta(_est_revenues)
-	_add_floats_delta(_est_revenues, 64)
-	_add_floats_delta(_est_gross_incomes)
-	_add_floats_delta(_est_gross_incomes, 64)
+	_add_floats_delta(_revenue_rates)
+	_add_floats_delta(_revenue_rates, 64)
+	_add_floats_delta(_cogs_rates)
+	_add_floats_delta(_cogs_rates, 64)
 
 	if !_is_facility:
 		return
 	
-	_set_floats_dirty(_est_gross_margins) # not accumulator!
-	_set_floats_dirty(_est_gross_margins, 64) # not accumulator!
+	_set_floats_dirty(_gross_margins) # not accumulator!
+	_set_floats_dirty(_gross_margins, 64) # not accumulator!
 	_set_ints_dirty(_op_logics) # not accumulator!
 	_set_ints_dirty(_op_logics, 64) # not accumulator!
 

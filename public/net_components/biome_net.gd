@@ -16,25 +16,22 @@ extends NetComponent
 enum {
 	DIRTY_BIOPRODUCTIVITY = 1,
 	DIRTY_BIOMASS = 1 << 1,
-	DIRTY_DIVERSITY_MODEL = 1 << 2,
+	DIRTY_BIODIVERSITY = 1 << 2,
 }
 
 
 var _bioproductivity := 0.0
 var _biomass := 0.0
-var _diversity_model: Dictionary # see static/diversity.gd
+var _biodiversity := 1.0 # min 1.0
 
-
-# TODO: histories for all dev stats
 
 
 func _init(is_new := false) -> void:
 	if !is_new: # game load
 		return
-	_diversity_model = {}
 
 # ********************************** READ *************************************
-# NOT all threadsafe!
+# threadsafe
 
 func get_bioproductivity() -> float:
 	return _bioproductivity
@@ -44,19 +41,10 @@ func get_biomass() -> float:
 	return _biomass
 
 
-func get_development_biodiversity() -> float:
-	# NOT THREADSAFE !!!!
-	var entropy := diversity.get_shannon_entropy(_diversity_model, false)
-	if entropy == 0.0:
-		return 0.0 # no species; not technically correct but intuitive
-	return exp(entropy)
+func get_biodiversity() -> float:
+	# Minimum here is 1.0. You'll have to do a population test if you want 0.0.
+	return _biodiversity
 
-
-func get_species_richness() -> float:
-	# NOT THREADSAFE !!!!
-	# total number of species
-	return diversity.get_species_richness(_diversity_model)
- 
 
 # ********************************** SYNC *************************************
 
@@ -64,11 +52,11 @@ func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_bioproductivity = data[1]
 	_biomass = data[2]
-	_diversity_model = data[3]
+	_biodiversity = data[3]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
+	# Changes and sets from the server entity.
 	_int_data = data[1]
 	_float_data = data[2]
 	_int_offset = int_offset
@@ -86,7 +74,9 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_BIOMASS:
 		_biomass += _float_data[_float_offset]
 		_float_offset += 1
-	if dirty & DIRTY_DIVERSITY_MODEL:
-		_add_diversity_model_delta(_diversity_model)
+	if dirty & DIRTY_BIODIVERSITY:
+		# WARNGING: _int_offset is invalid from server processing!
+		_biodiversity += _float_data[_float_offset]
+		_float_offset += 1
 
 

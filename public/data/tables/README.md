@@ -240,17 +240,17 @@ Name construction: `FACILITY_<body_name>_<player_name>`
 
 There is at most one "facility" for each player at each body, which combines all of that player's activity. 
 
-The table has game start only. We have one "homeworld" facility for each player on Earth, plus four at SPACECRAFT_ISS (one each for NASA, Roscosmos, ESA & JAXA) and one at SPACECRAFT_TIANGONG (CNSA).
+The table has game start entities only. We have one 'homeworld' facility for each player on Earth, plus four at SPACECRAFT_ISS (one each for NASA, Roscosmos, ESA & JAXA) and one at SPACECRAFT_TIANGONG (CNSA).
 
 Fields:
 * `public_sector` Fraction of facility that is public sector. For small facilities, generally 1.0 for space agencies and 0.0 for private companies. Larger facilities may be intermediate.
-* `is_unitary` True for small focused facilities like a mining station. False for colonies or spaceports. If true, treat all operations as a single activity for the purpose of economic stats and taxation (e.g., we don't tax the mine for its solar panel generation). If false, each operation is treated like a separate buisness.
-* `mass` Total mass of the facility. For homeworld 'facilities', this is total anthropogenic mass. Used for the development 'Constructions' stat.
-
+* `is_unitary` True for small focused facilities (e.g., a research station or asteroid mine). False for larger settlements, habitats or spaceports. If true, we treat all operations as a single economic activity for the purpose of economy stats and taxation (e.g., we don't tax the asteroid mine for its solar panel generation). If false, each operation is treated like a separate buisness (here we assume that any power generators are selling into the grid).
+* `construction_mass` Total mass of all constructions. For 'homeworld' facilities this value is total anthropogenic mass.
+* `biodiversity_fraction` Fraction of total biodiversity in this facility. Adds to >1.0 due to biodiversity sharing. Only used for 'homeworld' facilities that have a significant biome.
+* `information_fraction` Fraction of total information in this facility. Adds to >1.0 due to information sharing. Only use for 'homeworld' facilities that have a significant cyberspace.
 
 #### public_sector
 For Earth "homeworld" facilities representing polities, values follow roughly: https://en.wikipedia.org/wiki/List_of_countries_by_public_sector_size:
-
 
 |             | 2010 (%)       | 2020 (%)       |
 | ----------- | -------------- | -------------- |
@@ -262,10 +262,9 @@ For Earth "homeworld" facilities representing polities, values follow roughly: h
 | Japan       | 7.7            | 7.7            |
 | Other       | 20 (guess)     | 20 (guess)     |
 
-
 We mainly use ILO estimates, or best guess what it would be in ~2010 and ~2020. EU is set between Germany (12.9) & France (20.5), leaning to the latter. 
 
-#### mass
+#### construction_mass
 
 From [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Anthropogenic-Mass) on anthropogenic mass we have 1.1e12 tonnes in 2020, doubling every 20 years. That puts us at 5.5e11 in 2000 and 7.8e11 in 2010. We split the 2010 values by:
 * USA 20% -> 1.6e11 t
@@ -290,6 +289,24 @@ We have ISS at 420 tonnes and Tiangong at 22 tonnes from [AI Chat](https://githu
 * ISS - JAXA 28.3 t (Kibo complex)
 * ISS - NASA 304.2 t (remainder)
 * Tiangong - 33 t (bumped 33% for future construction)
+
+#### biodiversity_fraction
+
+'Biodiversity' is the exponential of the Shannon index, expressed as 'effective number' of species. It would equal the number of species if all species were equally abundant. In real biomes abundances are not equal, so this number is always much smaller than the total number of species. (The GUI display in the form '1.33 Mspp' is non-standard, but it's a game so I can do what I want.)
+
+There is no study that tries to estimate _effective_ species number worldwide. Estimates of total number of species are [all over the place](https://ourworldindata.org/how-many-species-are-there), but we're going with 8.5 million non-microbial in 2010. In local studies, effective number ranges from 5% to 25% of the total number. If we assume 15% for worldwide, that puts us at 1.3e6 effective species worldwide (giving Shannon index ~14). This value is set for simulation start in [ThreadsafeGlobal](https://github.com/t2civ/astropolis_sdk/blob/master/public/singletons/threadsafe_global.gd).
+
+The table regional breakdowns for `biodiversity_fraction` are fictional. 'Other' is especially high due to holding most of the tropics. Russia is low (despite its size) due to low biodiversity at higher latitudes.
+
+#### information_fraction
+
+'Information' is the information entropy of all stored data, i.e., its size if it were maximally ('entropically') compressed, expressed in bits.
+
+From [this study](https://www.science.org/doi/10.1126/science.1200970) we have maximally compressed data in 2007 at 2.95e20 bytes, or 2.36e21 bits, growing 23% per year. That projection puts us at 4.39e21 bits in 2010 and 3.48e22 bits in 2020. The 2010 value is set for simulation start in [ThreadsafeGlobal](https://github.com/t2civ/astropolis_sdk/blob/master/public/singletons/threadsafe_global.gd).
+
+The table regional breakdowns for `information_fraction` are fictional. I'm guessing that a large proportion of the total is shared (unlike biodiversity).
+
+Internally I'm modeling both information and biodiversity as [information entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)). The models allow for [mutual information](https://en.wikipedia.org/wiki/Mutual_information) so that joint totals aren't simple sums.
 
 ## facilities_inventories.tsv
 
@@ -399,6 +416,8 @@ https://en.wikipedia.org/wiki/Demographics_of_the_European_Union
 "Population" of space agency players on Earth is employees.
 I think Haiku response might be combining CNSA and CASC (but that's ok).  
 NASA actual numbers for fy 2010, 2020: https://en.wikipedia.org/wiki/NASA#cite_note-3
+
+
 
 ## major_strata.tsv
 
