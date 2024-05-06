@@ -35,7 +35,7 @@ var facilities: Array[Interface] = [] # resizable container - not threadsafe!
 var operations: OperationsNet # when/if needed
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
-var metaverse: MetaverseNet # when/if needed
+var cyberspace: CyberspaceNet # when/if needed
 var compositions: Array[CompositionNet] = [] # resizable container - not threadsafe!
 
 
@@ -110,14 +110,14 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	if metaverse:
-		return metaverse.get_computations()
+	if cyberspace:
+		return cyberspace.get_computations()
 	return 0.0
 
 
 func get_development_information() -> float:
-	if metaverse:
-		return metaverse.get_development_information()
+	if cyberspace:
+		return cyberspace.get_development_information()
 	return 0.0
 
 
@@ -230,7 +230,7 @@ func set_network_init(data: Array) -> void:
 	var operations_data: Array = data[8]
 	var population_data: Array = data[9]
 	var biome_data: Array = data[10]
-	var metaverse_data: Array = data[11]
+	var cyberspace_data: Array = data[11]
 	var compositions_data: Array = data[12]
 	
 	if operations_data:
@@ -242,9 +242,9 @@ func set_network_init(data: Array) -> void:
 	if biome_data:
 		biome = BiomeNet.new(true)
 		biome.set_network_init(biome_data)
-	if metaverse_data:
-		metaverse = MetaverseNet.new(true)
-		metaverse.set_network_init(metaverse_data)
+	if cyberspace_data:
+		cyberspace = CyberspaceNet.new(true)
+		cyberspace.set_network_init(cyberspace_data)
 	
 	if compositions_data:
 		var n_compositions := compositions_data.size()
@@ -286,10 +286,10 @@ func sync_server_dirty(data: Array) -> void:
 			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-	if dirty & DIRTY_METAVERSE:
-		if !metaverse:
-			metaverse = MetaverseNet.new(true)
-		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+	if dirty & DIRTY_CYBERSPACE:
+		if !cyberspace:
+			cyberspace = CyberspaceNet.new(true)
+		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_COMPOSITIONS:
 		var dirty_compositions := offsets[k]

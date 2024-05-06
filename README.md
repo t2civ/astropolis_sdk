@@ -16,7 +16,7 @@ All content data is defined in simple text data tables in [public/data/tables/](
 Astropolis has essentially a client-server architecture. AIs and GUIs are clients and communicate with servers, the non-public game internals, exclusively via 'interface' classes like PlayerInterface, FacilityInterface, BodyInterface, and so on (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/interfaces)). Game AIs are instantiations (i.e., subclasses) of these interfaces. GUIs hook up to interface classes to get display data or apply human player changes (with care for multithreading since the Interface/AI system runs in its own thread).
 
 
-Interface/AI classes are composed with objects Inventory, Operations, Financials, Composition, Population, Biome and Metaverse (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/net_refs)). These 'NetRef' objects are optimized for network data sync for multiplayer support.
+Interface/AI classes are composed with objects Inventory, Operations, Financials, Composition, Population, Biome and Cyberspace (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/net_refs)). These 'NetRef' objects are optimized for network data sync for multiplayer support.
 
 
 Interface (base) and NetRef classes are presently coded in GDScript, but will be ported to C++ becoming GDExtension classes. Modders will then be able to code AI subclasses in GDScript, C#, C++, or any other language [supported by the Godot community](https://godotengine.org/features/).

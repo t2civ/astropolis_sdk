@@ -1,11 +1,11 @@
-# metaverse_net.gd
+# cyberspace_net.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name MetaverseNet
+class_name CyberspaceNet
 extends NetComponent
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You

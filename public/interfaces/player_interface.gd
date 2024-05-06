@@ -35,7 +35,7 @@ var operations := OperationsNet.new(true, true)
 var financials := FinancialsNet.new(true)
 var population := PopulationNet.new(true)
 var biome := BiomeNet.new(true)
-var metaverse := MetaverseNet.new(true)
+var cyberspace := CyberspaceNet.new(true)
 
 
 
@@ -99,11 +99,11 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	return metaverse.get_computations()
+	return cyberspace.get_computations()
 
 
 func get_development_information() -> float:
-	return metaverse.get_development_information()
+	return cyberspace.get_development_information()
 
 
 func get_development_bioproductivity() -> float:
@@ -139,13 +139,13 @@ func set_network_init(data: Array) -> void:
 	var financials_data: Array = data[10]
 	var population_data: Array = data[11]
 	var biome_data: Array = data[12]
-	var metaverse_data: Array = data[13]
+	var cyberspace_data: Array = data[13]
 	
 	operations.set_network_init(operations_data)
 	financials.set_network_init(financials_data)
 	population.set_network_init(population_data)
 	biome.set_network_init(biome_data)
-	metaverse.set_network_init(metaverse_data)
+	cyberspace.set_network_init(cyberspace_data)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -179,8 +179,8 @@ func sync_server_dirty(data: Array) -> void:
 	if dirty & DIRTY_BIOME:
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-	if dirty & DIRTY_METAVERSE:
-		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+	if dirty & DIRTY_CYBERSPACE:
+		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:
