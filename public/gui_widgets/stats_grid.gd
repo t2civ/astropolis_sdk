@@ -39,7 +39,7 @@ var content: Array[Array] = [
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bits")],
 	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/d")],
 	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
-	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.named_number],
+	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]
 
 var targets: Array[StringName] = [&"PLANET_EARTH", &"JOIN_OFFWORLD"]

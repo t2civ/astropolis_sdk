@@ -81,7 +81,6 @@ func _init() -> void:
 		path_format % "facilities_operations_capacity_factors",
 		path_format % "facilities_operations_extractions",
 		path_format % "facilities_populations",
-		path_format % "facility_venn_sets",
 	]
 	IVCoreSettings.postprocess_tables.append_array(postprocess_tables_append)
 	

@@ -66,6 +66,7 @@ const GRAVITATIONAL_CONSTANT := 6.67430e-11 * METER ** 3 / (KG * SECOND ** 2)
 
 # *********** Astropolis additions ***********
 
+const SPP := 1.0 # biodiversity (effective species)
 const USD := 1e-6
 const Q := 1.0 # Short for the QSNINDC ;)
 
@@ -198,6 +199,9 @@ var unit_multipliers := {
 	# *********** Astropolis additions ***********
 	# added compounds
 	&"t/d" : TONNE / DAY,
+	
+	# biodiversity
+	&"spp" : SPP,
 	
 	# currency
 	&"$" : USD,
