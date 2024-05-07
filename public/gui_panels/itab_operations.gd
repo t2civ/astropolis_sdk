@@ -193,11 +193,14 @@ func _get_ai_data(target_name: StringName) -> void:
 		if tab != TAB_ENERGY:
 			electricity = -electricity
 		if _op_group_process_groups[op_group] == PROCESS_GROUP_CONVERSION:
-			flow = operations.get_group_mass_conversion_rate(op_group)
-			flow /= _unit_multipliers[&"t/d"]
+			if tab == TAB_ENERGY:
+				flow = operations.get_group_fuel_rate(op_group)
+			else:
+				flow = operations.get_group_mass_conversion_rate(op_group)
+			flow /= _unit_multipliers[&"t/h"]
 		elif _op_group_process_groups[op_group] == PROCESS_GROUP_EXTRACTION:
 			flow = operations.get_group_extraction_rate(op_group)
-			flow /= _unit_multipliers[&"t/d"]
+			flow /= _unit_multipliers[&"t/h"]
 			
 		
 		var group_data := [
@@ -229,11 +232,14 @@ func _get_ai_data(target_name: StringName) -> void:
 			if tab != TAB_ENERGY:
 				electricity = -electricity
 			if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
-				flow = operations.get_mass_conversion_rate(operation_type)
-				flow /= _unit_multipliers[&"t/d"]
+				if tab == TAB_ENERGY:
+					flow = operations.get_fuel_rate(operation_type)
+				else:
+					flow = operations.get_mass_conversion_rate(operation_type)
+				flow /= _unit_multipliers[&"t/h"]
 			elif _operation_process_groups[operation_type] == PROCESS_GROUP_EXTRACTION:
 				flow = operations.get_extraction_rate(operation_type)
-				flow /= _unit_multipliers[&"t/d"]
+				flow /= _unit_multipliers[&"t/h"]
 			
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:

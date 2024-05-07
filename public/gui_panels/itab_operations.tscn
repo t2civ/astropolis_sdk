@@ -41,7 +41,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Fuel
-(-t/d)"
+(-t/h)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Energy/Hdrs"]
@@ -104,7 +104,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Rate
-(t/d)"
+(t/h)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Extraction/Hdrs"]
@@ -166,7 +166,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Rate
-(t/d)"
+(t/h)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Refining/Hdrs"]
@@ -228,7 +228,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Rate
-(t/d)"
+(t/h)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Manufacturing/Hdrs"]
@@ -290,7 +290,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Bioprod
-(t/d)"
+(t/h)"
 horizontal_alignment = 1
 
 [node name="Hdr4" type="Label" parent="TabContainer/Biomes/Hdrs"]

@@ -247,6 +247,12 @@ func get_mass_conversion_rate(type: int) -> float:
 	return get_effective_rate(type) * _table_operations[&"mass_conversion"][type] # power consumer
 
 
+func get_fuel_rate(type: int) -> float:
+	if _operation_electricities[type] > 0.0:
+		return get_run_rate(type) * _table_operations[&"fuel_rate"][type] # power generator
+	return NAN
+
+
 func get_n_operations_in_same_group(type: int) -> int:
 	var op_group: int = _table_operations[&"op_group"][type]
 	var op_group_ops: Array[int] = _op_group_operations[op_group]
@@ -331,6 +337,13 @@ func get_group_mass_conversion_rate(op_group: int) -> float:
 	var sum := 0.0
 	for type: int in _op_group_operations[op_group]:
 		sum += get_mass_conversion_rate(type)
+	return sum
+
+
+func get_group_fuel_rate(op_group: int) -> float:
+	var sum := 0.0
+	for type: int in _op_group_operations[op_group]:
+		sum += get_fuel_rate(type)
 	return sum
 
 

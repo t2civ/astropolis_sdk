@@ -199,6 +199,7 @@ var unit_multipliers := {
 	# *********** Astropolis additions ***********
 	# added compounds
 	&"t/d" : TONNE / DAY,
+	&"t/h" : TONNE / HOUR,
 	
 	# biodiversity
 	&"spp" : SPP,
@@ -212,6 +213,7 @@ var unit_multipliers := {
 	# currency compounds
 	&"$/t" : USD / TONNE,
 	&"$/kg" : USD / KG,
+	&"$/g" : USD / GRAM,
 	&"$/MWh" : USD / (1e6 * WATT * HOUR),
 	
 	&"$M/y" : 1e6 * USD / YEAR,
