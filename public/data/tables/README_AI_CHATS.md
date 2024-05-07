@@ -1,22 +1,25 @@
 ## AI Chats
-* [General Notes](#General-Notes)
-* [World population and agency employees](#World-population-and-agency-employees)
-* [Anthropogenic Mass](#Anthropogenic-Mass)
-* [Solar and other renewable energy generation](#Solar-and-other-renewable-energy-generation)
-* [ISS and Tiangong](#ISS-and-Tiangong)
-* [Moon Geology](#Moon-Geology)
-* [Volatiles](#Volatiles)
-* [Metal Abundances](#Metal-Abundances)
-* [Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)
-* [Earth Fresh Water](#Earth-Fresh-Water)
-* [Oil and Gas Energy Input](#Oil-and-Gas-Energy-Input)
-* [Oil and Gas Production](#Oil-and-Gas-Production)
-* [Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)
-* [Coal Mining](#Coal-Mining)
-* [Uranium Mining](#Uranium-Mining)
-* [Industrial Metals Mining](#Industrial-Metals-Mining)
-* [Precious Metals and Rare Earths Mining](#Precious-Metals-and-Rare-Earths-Mining)
-* [Industrial Minerals Mining](#Industrial-Minerals-Mining)
+[General Notes](#General-Notes)  
+[World population and agency employees](#World-population-and-agency-employees)  
+[Anthropogenic Mass](#Anthropogenic-Mass)  
+[Renewable Power Generation](#Renewable-Power-Generation)  
+[Non-Renewable Power Generation](#Non-Renewable-Power-Generation)  
+[ISS and Tiangong](#ISS-and-Tiangong)  
+[Moon Geology](#Moon-Geology)  
+[Volatiles](#Volatiles)  
+[Metal Abundances](#Metal-Abundances)  
+[Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)  
+[Earth Fresh Water](#Earth-Fresh-Water)  
+[Coal Combustion](#Coal-Combustion)  
+[Oil and Gas Energy Input](#Oil-and-Gas-Energy-Input)  
+[Oil and Gas Production](#Oil-and-Gas-Production)  
+[Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)  
+[Coal Mining](#Coal-Mining)  
+[Uranium Mining](#Uranium-Mining)  
+[Industrial Metals Mining](#Industrial-Metals-Mining)  
+[Precious Metals and Rare Earths Mining](#Precious-Metals-and-Rare-Earths-Mining)  
+[Industrial Minerals Mining](#Industrial-Minerals-Mining)  
+[Resource Prices](#Resource-Prices)
 
 ## General Notes
 
@@ -105,7 +108,7 @@ As of the recent estimates (around the 2020s), here's a rough breakdown:
 
 These estimates are very rough and depend on various assumptions about economic activity, development patterns, and construction materials used. The proportions can also change over time as different regions develop or reduce their infrastructure activities. Moreover, the actual situation might differ significantly based on new data or changes in global economic and development trends.
 
-## Solar and other renewable energy generation
+## Renewable Power Generation
 
 Here is a table showing solar power installed capacity, actual generation, and capacity factor for the years 2000, 2010, 2020, and 2030 (projected):
 
@@ -312,6 +315,137 @@ Geothermal Power:
 | - Efficiency| 73%    | 75%    |
 | - Generation| 67 TWh | 112 TWh|
 
+## Non-Renewable Power Generation
+
+As of 2021, the worldwide power generation capacity and actual generation from various sources were as follows:
+
+1. Coal:
+   - Nameplate capacity: 2,188 GW
+   - Power generation: 9,454 TWh
+
+2. Natural Gas:
+   - Nameplate capacity: 1,823 GW
+   - Power generation: 6,356 TWh
+
+3. Oil:
+   - Nameplate capacity: 428 GW
+   - Power generation: 802 TWh
+
+4. Nuclear:
+   - Nameplate capacity: 393 GW
+   - Power generation: 2,653 TWh
+
+Other significant power generation sources include:
+
+1. Hydropower:
+   - Nameplate capacity: 1,360 GW
+   - Power generation: 4,327 TWh
+
+2. Wind:
+   - Nameplate capacity: 824 GW
+   - Power generation: 1,870 TWh
+
+3. Solar (Photovoltaic):
+   - Nameplate capacity: 849 GW
+   - Power generation: 1,001 TWh
+
+Ethanol and other biofuels are primarily used in the transportation sector, with a relatively small contribution to electricity generation. In 2021, bioenergy (including ethanol) accounted for about 591 TWh of electricity generation globally, representing around 2.3% of the total electricity generated.
+
+Please note that these figures are based on the most recent available data and may have changed slightly since then.
+
+****
+
+Certainly! To calculate the utilization ratios, we need to convert the power generation values from TWh (terawatt-hours) to GWh (gigawatt-hours) and then divide them by the nameplate capacity in GW (gigawatts) multiplied by the number of hours in a year (8,760 hours).
+
+1. Coal:
+   - Power generation: 9,454 TWh = 9,454,000 GWh
+   - Utilization ratio = 9,454,000 GWh / (2,188 GW * 8,760 hours) = 0.493 or 49.3%
+
+2. Natural Gas:
+   - Power generation: 6,356 TWh = 6,356,000 GWh
+   - Utilization ratio = 6,356,000 GWh / (1,823 GW * 8,760 hours) = 0.398 or 39.8%
+
+3. Oil:
+   - Power generation: 802 TWh = 802,000 GWh
+   - Utilization ratio = 802,000 GWh / (428 GW * 8,760 hours) = 0.214 or 21.4%
+
+4. Nuclear:
+   - Power generation: 2,653 TWh = 2,653,000 GWh
+   - Utilization ratio = 2,653,000 GWh / (393 GW * 8,760 hours) = 0.771 or 77.1%
+
+5. Hydropower:
+   - Power generation: 4,327 TWh = 4,327,000 GWh
+   - Utilization ratio = 4,327,000 GWh / (1,360 GW * 8,760 hours) = 0.363 or 36.3%
+
+6. Wind:
+   - Power generation: 1,870 TWh = 1,870,000 GWh
+   - Utilization ratio = 1,870,000 GWh / (824 GW * 8,760 hours) = 0.259 or 25.9%
+
+7. Solar (Photovoltaic):
+   - Power generation: 1,001 TWh = 1,001,000 GWh
+   - Utilization ratio = 1,001,000 GWh / (849 GW * 8,760 hours) = 0.135 or 13.5%
+
+These utilization ratios show the actual power generated as a fraction of the maximum possible power generation if the nameplate capacity were utilized continuously throughout the year. Factors such as fuel availability, maintenance downtime, and variable generation (in the case of wind and solar) contribute to utilization ratios being less than 100%.
+
+****
+
+Here are the two tables showing nameplate power generation capacity in 2010 and 2020 for Coal, Natural Gas, Oil, Ethanol, and Nuclear in the specified regions:
+
+2010 Nameplate Power Generation Capacity (GW)
+| Region  | Coal   | Natural Gas | Oil   | Ethanol | Nuclear |
+|---------|--------|-------------|-------|---------|---------|
+| USA     | 318.4  | 407.0       | 53.8  | 1.2     | 101.2   |
+| Russia  | 105.0  | 98.1        | 16.3  | 0.1     | 23.2    |
+| China   | 660.0  | 36.8        | 14.7  | 0.5     | 10.8    |
+| EU+UK   | 195.5  | 220.1       | 72.9  | 2.0     | 131.8   |
+| India   | 118.5  | 17.7        | 7.8   | 0.3     | 4.6     |
+| Japan   | 35.3   | 64.5        | 46.3  | 0.1     | 47.5    |
+| Other   | 355.3  | 243.8       | 138.2 | 1.8     | 61.9    |
+| Total   | 1788.0 | 1088.0      | 350.0 | 6.0     | 381.0   |
+
+2020 Nameplate Power Generation Capacity (GW)
+| Region  | Coal   | Natural Gas | Oil   | Ethanol | Nuclear |
+|---------|--------|-------------|-------|---------|---------|
+| USA     | 233.6  | 555.3       | 39.1  | 1.7     | 98.5    |
+| Russia  | 90.4   | 126.8       | 5.4   | 0.2     | 29.4    |
+| China   | 1080.0 | 90.2        | 8.1   | 1.2     | 49.9    |
+| EU+UK   | 135.2  | 255.8       | 44.3  | 3.5     | 118.6   |
+| India   | 228.9  | 24.9        | 9.2   | 0.7     | 6.9     |
+| Japan   | 47.2   | 84.1        | 37.5  | 0.2     | 33.1    |
+| Other   | 460.7  | 386.9       | 118.4 | 4.5     | 83.6    |
+| Total   | 2276.0 | 1524.0      | 262.0 | 12.0    | 420.0   |
+
+Please note that these figures are approximate and based on available data. The "Other" category includes all other countries not specifically listed. Ethanol capacity is relatively small compared to other sources and is primarily used in the transportation sector, with a smaller portion used for electricity generation.
+
+****
+
+Here are two more tables showing current (2023) and projected 2030 nameplate power generation capacity for Coal, Natural Gas, Oil, Ethanol, and Nuclear in the specified regions:
+
+Current (2023) Nameplate Power Generation Capacity (GW)
+| Region  | Coal   | Natural Gas | Oil   | Ethanol | Nuclear |
+|---------|--------|-------------|-------|---------|---------|
+| USA     | 212.8  | 584.2       | 35.3  | 1.9     | 95.7    |
+| Russia  | 85.1   | 132.5       | 4.8   | 0.2     | 30.6    |
+| China   | 1150.0 | 110.5       | 7.2   | 1.5     | 55.6    |
+| EU+UK   | 118.4  | 262.7       | 38.6  | 4.2     | 115.2   |
+| India   | 251.3  | 30.8        | 8.5   | 0.9     | 8.2     |
+| Japan   | 45.9   | 88.6        | 34.1  | 0.2     | 31.7    |
+| Other   | 485.5  | 425.7       | 109.5 | 5.1     | 88.0    |
+| Total   | 2349.0 | 1635.0      | 238.0 | 14.0    | 425.0   |
+
+Projected 2030 Nameplate Power Generation Capacity (GW)
+| Region  | Coal   | Natural Gas | Oil   | Ethanol | Nuclear |
+|---------|--------|-------------|-------|---------|---------|
+| USA     | 180.5  | 625.1       | 28.2  | 2.3     | 93.2    |
+| Russia  | 78.2   | 145.3       | 3.5   | 0.3     | 33.1    |
+| China   | 1180.0 | 145.0       | 5.8   | 2.0     | 70.5    |
+| EU+UK   | 95.3   | 278.6       | 30.1  | 5.5     | 112.4   |
+| India   | 280.6  | 45.2        | 7.1   | 1.3     | 15.8    |
+| Japan   | 40.2   | 93.8        | 28.5  | 0.3     | 30.6    |
+| Other   | 520.6  | 485.0       | 96.8  | 6.3     | 99.4    |
+| Total   | 2375.4 | 1818.0      | 200.0 | 18.0    | 455.0   |
+
+Please note that these figures are projections based on current trends, policies, and announced plans. Actual values may differ depending on various factors such as economic conditions, policy changes, and technological advancements. The projections suggest a continued shift towards natural gas and a slight increase in nuclear capacity, while coal is expected to decline in most regions. Ethanol capacity is projected to grow slowly, but will still represent a small portion of total power generation capacity.
 
 ## ISS and Tiangong
 
@@ -1642,6 +1776,107 @@ For example, the calculation for the USA:
 Water %wt (USA) = 100 × (8.83 × 10^15 tonnes) / (1.33 × 10^20 tonnes) = 0.0066%
 
 Please note that these calculations assume a uniform density of 2.7 g/cm^3 for the upper 5 km of the Earth's crust, which is a simplification. In reality, the density of the crust varies depending on the composition of the rocks and minerals present.
+
+## Coal Combustion
+
+The primary chemical reaction in coal combustion power generation is the oxidation of carbon (C) to carbon dioxide (CO₂). However, coal also contains other elements such as hydrogen (H), sulfur (S), and nitrogen (N), which undergo oxidation reactions as well.
+
+Main reaction:
+C (12 g/mol) + O₂ (32 g/mol) → CO₂ (44 g/mol) + Heat
+Heat released: ~32.8 MJ/kg of coal
+
+Additional reactions:
+2H₂ (4 g/mol) + O₂ (32 g/mol) → 2H₂O (36 g/mol) + Heat
+Heat released: ~141.8 MJ/kg of hydrogen
+
+S (32 g/mol) + O₂ (32 g/mol) → SO₂ (64 g/mol) + Heat
+Heat released: ~9.2 MJ/kg of sulfur
+
+N (14 g/mol) + O₂ (32 g/mol) → 2NO (60 g/mol) + Heat
+Heat released: ~2.8 MJ/kg of nitrogen
+
+The energy efficiency of a typical coal-burning power plant depends on various factors, such as the type of coal, the design of the plant, and the operating conditions. On average, the efficiency of coal-fired power plants ranges from 33% to 40%.
+
+1. Subcritical coal-fired power plants: These plants operate at lower temperatures and pressures, with an efficiency of around 33-35%.
+
+2. Supercritical coal-fired power plants: These plants operate at higher temperatures and pressures, achieving an efficiency of approximately 37-40%.
+
+3. Ultra-supercritical coal-fired power plants: These state-of-the-art plants operate at even higher temperatures and pressures, with efficiencies reaching up to 45%. However, they are less common due to higher construction and maintenance costs.
+
+The efficiency of a coal-fired power plant is calculated as the ratio of the electrical energy output to the chemical energy input from the coal. The remaining energy is lost as waste heat during the combustion process, heat transfer, and mechanical losses in the turbines and generators.
+
+****
+
+The composition of coal varies depending on the type and origin of the coal. However, a typical bituminous coal composition by weight can be approximated as follows:
+
+- Carbon (C): 70-80%
+- Hydrogen (H₂): 4-5%
+- Sulfur (S): 1-4%
+- Nitrogen (N): 1-2%
+- Oxygen (O) and other elements: 10-20%
+
+For this calculation, let's assume the following composition:
+- Carbon (C): 75%
+- Hydrogen (H₂): 4.5%
+- Sulfur (S): 2%
+- Nitrogen (N): 1.5%
+
+Calculation of overall heat generation:
+
+Heat from carbon: 0.75 × 32.8 MJ/kg = 24.6 MJ/kg
+Heat from hydrogen: 0.045 × 141.8 MJ/kg = 6.381 MJ/kg
+Heat from sulfur: 0.02 × 9.2 MJ/kg = 0.184 MJ/kg
+Heat from nitrogen: 0.015 × 2.8 MJ/kg = 0.042 MJ/kg
+
+Total heat generation = 24.6 + 6.381 + 0.184 + 0.042 = 31.207 MJ/kg
+
+To convert the result from MJ/kg to MWh/tonne:
+1 MJ = 0.000277778 MWh
+1 kg = 0.001 tonne
+
+31.207 MJ/kg × 0.000277778 MWh/MJ × 1000 kg/tonne = 8.669 MWh/tonne
+
+Therefore, based on the assumed composition, the overall heat generation of coal combustion is approximately 31.207 MJ/kg or 8.669 MWh/tonne.
+
+****
+
+To calculate the total reactants and products of coal combustion per kg of coal, we need to determine the molar quantities of each element and their corresponding reactants and products. Let's use the same proportions as before:
+
+- Carbon (C): 75% (0.75 kg/kg coal)
+- Hydrogen (H₂): 4.5% (0.045 kg/kg coal)
+- Sulfur (S): 2% (0.02 kg/kg coal)
+- Nitrogen (N): 1.5% (0.015 kg/kg coal)
+
+Molar quantities of elements per kg of coal:
+- Carbon: 0.75 kg ÷ 0.012 kg/mol = 62.5 mol
+- Hydrogen: 0.045 kg ÷ 0.002 kg/mol = 22.5 mol
+- Sulfur: 0.02 kg ÷ 0.032 kg/mol = 0.625 mol
+- Nitrogen: 0.015 kg ÷ 0.014 kg/mol = 1.071 mol
+
+Reactants:
+- Carbon: 62.5 mol C + 62.5 mol O₂ = 62.5 mol CO₂
+- Hydrogen: 22.5 mol H₂ + 11.25 mol O₂ = 22.5 mol H₂O
+- Sulfur: 0.625 mol S + 0.625 mol O₂ = 0.625 mol SO₂
+- Nitrogen: 1.071 mol N + 1.071 mol O₂ = 2.142 mol NO
+
+Total reactants per kg of coal:
+- Coal: 1 kg
+- Oxygen: 62.5 mol O₂ (for C) + 11.25 mol O₂ (for H₂) + 0.625 mol O₂ (for S) + 1.071 mol O₂ (for N) = 75.446 mol O₂
+  - Mass of oxygen: 75.446 mol O₂ × 0.032 kg/mol = 2.414 kg
+
+Products:
+- Carbon dioxide: 62.5 mol CO₂
+- Water vapor: 22.5 mol H₂O
+- Sulfur dioxide: 0.625 mol SO₂
+- Nitrogen monoxide: 2.142 mol NO
+
+Total products per kg of coal:
+- Carbon dioxide: 62.5 mol CO₂ × 0.044 kg/mol = 2.75 kg
+- Water vapor: 22.5 mol H₂O × 0.018 kg/mol = 0.405 kg
+- Sulfur dioxide: 0.625 mol SO₂ × 0.064 kg/mol = 0.04 kg
+- Nitrogen monoxide: 2.142 mol NO × 0.030 kg/mol = 0.064 kg
+
+In summary, for every kg of coal combusted with the given composition, the reactants are 1 kg of coal and 2.414 kg of oxygen, and the products are 2.75 kg of carbon dioxide, 0.405 kg of water vapor, 0.04 kg of sulfur dioxide, and 0.064 kg of nitrogen monoxide.
 
 ## Oil and Gas Energy Input
 
@@ -3196,6 +3431,51 @@ Please note that these figures are approximate and based on available data and e
 
 C-type asteroids are carbonaceous asteroids, S-type are silicaceous asteroids, and M-type are metallic asteroids. The composition of these asteroid types can vary significantly, and the figures provided are rough estimates.
 
+## Resource Prices
+
+Here is a table showing the prices of various energy sources in 2000, 2010, 2020, and projected prices for 2030:
+
+| Item          | 2000    | 2010    | 2020    | 2030 (projected) |
+|---------------|---------|---------|---------|------------------|
+| Electricity   | $0.0683 | $0.0983 | $0.1043 | $0.1150          |
+| Coal          | $27.63  | $73.43  | $57.14  | $60.00           |
+| Oil           | $30.38  | $79.61  | $41.96  | $70.00           |
+| Gasoline      | $1.51   | $2.79   | $2.18   | $3.00            |
+| Ethanol       | $1.21   | $2.08   | $1.49   | $1.80            |
+| Methane       | $4.31   | $4.39   | $2.39   | $3.50            |
+| Ethane        | $0.22   | $0.28   | $0.12   | $0.20            |
+| Hydrogen      | $0.96   | $3.14   | $1.00   | $1.50            |
+| Uranium Fuel  | $8.25   | $46.16  | $27.89  | $30.00           |
+| Deuterium     | N/A     | N/A     | N/A     | $2000.00         |
+| Helium-3      | N/A     | N/A     | N/A     | $1,400,000.00    |
+
+Note: All prices are in USD. Electricity prices are per kilowatt-hour (kWh), coal and uranium fuel prices are per short ton, oil and gasoline prices are per barrel, ethanol and hydrogen prices are per gallon, methane and ethane prices are per thousand cubic feet (Mcf). Deuterium and Helium-3 prices are highly speculative for 2030, as they are not currently traded commodities. The projections for 2030 are based on various factors and assumptions, and actual prices may vary significantly.
+
+****
+
+Here is the updated table with the requested unit conversions:
+
+| Item                   | 2000     | 2010     | 2020     | 2030 (projected) |
+|------------------------|----------|----------|----------|------------------|
+| Electricity (MWh)      | $68.30   | $98.30   | $104.30  | $115.00          |
+| Coal (t)               | $27.63   | $73.43   | $57.14   | $60.00           |
+| Oil (t)                | $222.22  | $582.79  | $307.25  | $512.52          |
+| Gasoline (t)           | $502.96  | $929.63  | $726.38  | $999.60          |
+| Ethanol (t)            | $403.28  | $693.06  | $496.27  | $599.76          |
+| Methane (t)            | $170.00  | $173.04  | $94.20   | $137.95          |
+| Ethane (t)             | $97.17   | $123.35  | $52.91   | $88.18           |
+| Hydrogen (t)           | $8,598.13| $28,117.56| $8,957.60| $13,436.40       |
+| Uranium Fuel (kg)      | $18.15   | $101.62  | $61.39   | $66.03           |
+
+Conversions:
+- Electricity: 1 MWh = 1,000 kWh
+- Coal and Uranium Fuel: 1 short ton = 0.907185 metric tons (t)
+- Oil: 1 barrel = 0.136 metric tons (t)
+- Gasoline and Ethanol: 1 gallon = 0.003 metric tons (t)
+- Methane and Ethane: 1 Mcf = 0.0253 metric tons (t)
+- Hydrogen: 1 gallon = 0.000112 metric tons (t)
+
+Please note that the prices for hydrogen seem unusually high due to the low density of hydrogen and the conversion from gallons to metric tons.
 
 
 

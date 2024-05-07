@@ -326,7 +326,7 @@ Note: These tables are here for development convenience. Capacities are actually
 
 #### Renewables
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 Table data is 2010 installed capacity values converted to MW. Utilization (=capacity factor or efficiency) will likely be constant in the simularion so using either 2020 or projected 2030 values or some plausible compromise. Using 0.75 for all geothermal.
 
@@ -341,8 +341,9 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 * UK offshore: ~26-41%, average ~35%
 (But continental Europe is less than UK, I believe...)
 
+#### Non-Renewables
 
-
+Using 2010 values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Non-Renewable-Power-Generation).
 
 #### ISS & Tiangong
 
@@ -356,7 +357,7 @@ Per https://www.nasa.gov/feature/facts-and-figures, ISS solar power is 75-90 kw.
 
 ## facilities_operations_capacity_factors.tsv
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 This table is only used for renewables. It sets the fixed capacity factor for each renewable operation at each game start facility.
 
@@ -530,11 +531,11 @@ One "operation unit" corresponds to quantities in the operations.tsv row. In gen
     SERVICES      - Varies; often 1 unit/h of some intangible resource
 
     * For differentiated solids, output is multiplied by a 'deposits' fraction (shown
-      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource variance
+      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource spatial variance,
       and a 'survey factor'.
 
 
-Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne extraction converts to 1.4 MW in the `electricity` field and one tonne in the `output_quantities` field.
+Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne mass conversion converts to 1.4 MW in the `electricity` field and one tonne in the `mass_conversion` field.
 
 Fields:
 * `op_class`, `op_group`, `module_class` and `stratum` refer to entities from the corresponding tables.
@@ -549,7 +550,7 @@ Notes:
 
 #### OPERATION_SOLAR_POWER, _WIND_POWER, _TIDAL_POWER, _HYDROPOWER, _GEOTHERMAL_POWER
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 Rate unit is 1 MW by definition. Utilization is subject to the environment.  
 See comments in [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv).  
@@ -557,28 +558,18 @@ For solar, utilization is a function of disance from sun and `solar_occlusion` (
 For other renewables, table value in facilities_operations_utilizations.tsv never changes.
 
 #### OPERATION_COAL_POWER
-Combustion  
-Typical "bituminous" coal: 84.4% C, 5.4% H2, 6.7% O2, 1.8% S, 1.7% N2;   
-Energy density 24 MJ/kg, for 40% efficiency, "325 kg will power 100 W for yr";   
-https://en.wikipedia.org/wiki/Coal   
-0.325t/100Wyr x 1yr/365.25d x 10^6W/MW x 1MWd/86.4GJ -> 103 t coal/1000 GJ   
-Combustion:   
-(84% C) C + O2 -> CO2; mws 12.011 + 31.998 -> 44.009   
-(5.4% H2) 2 H2 + O2 -> 2 H2O; mws 4.032 + 31.998 -> 36.03   
-(1.8% S) S + O2 -> SO2; mws 32.06 + 31.998 -> 64.058   
-(1.7% N2) N2 -> N2 (ignoring NOx)   
-(6.7% O2) Assume cobusted so deduct from O2 input   
-Per 103 t coal,   
-86.5 C (in coal) + 230.5 O2 -> 317 CO2   
-5.56 H2 (in coal) + 44.1 O2 -> 49.7 H2O   
-1.85 S (in coal) + 1.85 O2 -> 3.70 SO2   
-6.90 O2 (in coal) - 6.90 O2 -> nothing   
-	-> + 1000 GJ power   
-t per 1000 GJ: 103 coal + 269 O2 -> 317 CO2 + 49.7 H2O + 3.70 SO2 + 1.75 N2   
-We could balance mass with 'ash' product if we want to go there.   
-This is close to wiki CO2 emmisions data: 1001 g CO2/kWh;   
-https://en.wikipedia.org/wiki/Electricity_generation   
-1001g/kWh x 10^-6t/g x 1e6kWh/3600 GJ -> 278 t CO2/1000 GJ   
+
+Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Combustion) we have:
+* 1 Coal + 2.414 O2 -> 2.75 CO2 + 0.405 H2O + 0.04 SO2 (by weight; ignoring NO).
+* 8.669 MWh/tonne heat.
+* Efficiency 33-40%, state-of-the-art 45%. Assuming 36%.
+
+Per 1 MW generation we have in t/h:
+* inputs: 0.320 Coal, 0.774 O2
+* outputs: 0.881 CO2, 0.130 H2O, 0.0128 SO2
+* adj outputs: 0.941 CO2, 0.139 H2O, 0.0137 SO2 (bump for mass conservation)
+
+From [wiki CO2 emmisions data](https://en.wikipedia.org/wiki/Electricity_generation) we have 1001 g CO2/kWh, or ~1 tonne CO2/MWh.
 
 #### OPERATION_OIL_POWER
 Combustion  
@@ -800,40 +791,14 @@ Fields:
 * `start_price` Rough Earth values in 2010 for sim start.
 * `mass_err_mult` Mulitiplyer for surveys.tsv/`mass_error`.
 
-#### ELECTRICITY
-Cannot be transported, but traded w/in a Body. Special storage.
-LCOE on the order of $60/MWh (6 cents/kWh), say $100/MWh wholesale,
-x 1 MWh/3.6 GJ -> $27.8/GJ
-https://en.wikipedia.org/wiki/Cost_of_electricity_by_source
+#### Various energy resources
 
-#### COAL
-$189/t; 2/22
+Using mostly 2010 prices from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Resource-Prices).
 
-#### OIL
-$70/barrel oil x 7.33 barrels/t = $513/t
-
-#### REFINED_FUELS
-$3.57/gallon for kerosine -> or $1180/t
-
-#### ETHANOL
-$849/t; 2/22 chemanalyst.com
-
-#### METHANE
-$4/MMBtu, ~$4/1000ft3, ~$4/GJ x 0.049 GJ/kg x 1000 kg/t = $196/t
-
-#### HYDROGEN
-$1390/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
-
-#### URANIUM_FUELS
-Prices for uranium oxide "yellowcake" bottomed in 2001 at $7/lb and topped in
-2007 at $137/lb;
-https://en.wikipedia.org/wiki/Uranium_market
-Found recent price $42.43/lb U3O8e (source?)
-x 2.20462 lb/t -> $93.54/kg
-
-#### HELIUM3
-Wiki - "historically about $100/liter" (gas?? Presure?) "59 gram per liter at 1 atm".
-Assume price is at 1atm. Then, $100/59g.
+Notes:
+* Ignoring the 2010 hydrogen spike and using $9000/t.
+* The "Uranium Fuel" prices are consistent with yellowcake. Per [wiki](https://en.wikipedia.org/wiki/Uranium_market), Prices for uranium oxide yellowcake bottomed in 2001 at $7/lb and topped in 2007 at $137/lb -> $15/kg to $304/kg.
+* Deuterium is $13/g and Helium-3 is $1695/g. I forgot the source of these numbers.
 
 #### IRON_ORES
 
