@@ -285,12 +285,12 @@ func sync_server_dirty(data: Array) -> void:
 		if !biome:
 			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
+		k += 3
 	if dirty & DIRTY_CYBERSPACE:
 		if !cyberspace:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
+		k += 3
 	if dirty & DIRTY_COMPOSITIONS:
 		var dirty_compositions := offsets[k]
 		k += 1

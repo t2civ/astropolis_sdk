@@ -62,6 +62,5 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_computations += float_data[float_offset]
 		float_offset += 1
 	if dirty & DIRTY_INFORMATION:
-		# WARNGING: int_offset is invalid from server data!
 		_information += float_data[float_offset]
 

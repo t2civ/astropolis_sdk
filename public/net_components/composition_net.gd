@@ -262,7 +262,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		survey_type = int_data[int_offset]
 		int_offset += 1
 	
-	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(masses)
 	_sync.set_floats_dirty(variances)
 

@@ -124,7 +124,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if run_qtr < svr_qtr:
 		_update_history(svr_qtr) # before new quarter changes
 	
-	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_numbers)
 	
 	if !_is_facility:

@@ -178,7 +178,7 @@ func sync_server_dirty(data: Array) -> void:
 		k += 2
 	if dirty & DIRTY_BIOME:
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
+		k += 3
 	if dirty & DIRTY_CYBERSPACE:
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 	

@@ -100,7 +100,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_reserves)
 	_sync.add_floats_delta(_reserves, 64)
 	_sync.add_floats_delta(_markets)

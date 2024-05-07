@@ -19,7 +19,8 @@ var _int_offset: int
 var _float_offset: int
 
 
-func init(int_data: Array[int], float_data: Array[float], int_offset: int, float_offset: int) -> void:
+func init_for_add(int_data: Array[int], float_data: Array[float], int_offset: int,
+		float_offset: int) -> void:
 	_int_data = int_data
 	_float_data = float_data
 	_int_offset = int_offset

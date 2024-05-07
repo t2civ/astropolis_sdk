@@ -371,7 +371,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_construction_mass += float_data[float_offset]
 		float_offset += 1
 	
-	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_crews)
 	_sync.add_floats_delta(_capacities)
 	_sync.add_floats_delta(_capacities, 64)

@@ -108,7 +108,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_cost_of_goods_sold += float_data[float_offset]
 		float_offset += 1
 	
-	_sync.init(int_data, float_data, int_offset, float_offset)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_accountings)
 	
 	# finished quarter?
