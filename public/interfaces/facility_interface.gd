@@ -106,11 +106,11 @@ func get_development_economy() -> float:
 
 
 func get_development_energy() -> float:
-	return operations.get_development_energy()
+	return operations.get_energy_rate()
 
 
 func get_development_manufacturing() -> float:
-	return operations.get_development_manufacturing()
+	return operations.get_manufacturing_rate()
 
 
 func get_development_constructions() -> float:
@@ -119,7 +119,7 @@ func get_development_constructions() -> float:
 
 func get_development_computations() -> float:
 	if cyberspace:
-		return cyberspace.get_computations()
+		return cyberspace.get_computation_rate()
 	return 0.0
 
 

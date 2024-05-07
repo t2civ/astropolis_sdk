@@ -14,13 +14,13 @@ extends RefCounted
 
 
 enum {
-	DIRTY_COMPUTATIONS = 1,
+	DIRTY_COMPUTATION_RATE = 1,
 	DIRTY_INFORMATION = 1 << 1,
 }
 
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 
-var _computations := 0.0
+var _computation_rate := 0.0
 var _information := 1.0 # min 1.0
 
 
@@ -31,8 +31,8 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # NOT all threadsafe!
 
-func get_computations() -> float:
-	return _computations
+func get_computation_rate() -> float:
+	return _computation_rate
 
 
 func get_information() -> float:
@@ -42,7 +42,7 @@ func get_information() -> float:
 
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
-	_computations = data[1]
+	_computation_rate = data[1]
 	_information = data[2]
 
 
@@ -58,8 +58,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var dirty := int_data[int_offset]
 	int_offset += 1
 	
-	if dirty & DIRTY_COMPUTATIONS:
-		_computations += float_data[float_offset]
+	if dirty & DIRTY_COMPUTATION_RATE:
+		_computation_rate += float_data[float_offset]
 		float_offset += 1
 	if dirty & DIRTY_INFORMATION:
 		_information += float_data[float_offset]

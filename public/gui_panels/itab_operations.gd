@@ -21,12 +21,15 @@ enum {
 	TAB_SERVICES,
 }
 
-
 enum {
 	GROUP_OPEN,
 	GROUP_CLOSED,
 	GROUP_SINGULAR,
 }
+
+const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
+const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
+const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 const N_COLUMNS := 7
 
@@ -57,11 +60,14 @@ var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 # table indexing
 var _tables: Dictionary = IVTableData.tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
-var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
-var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
 var _operation_names: Array[StringName] = _tables[&"operations"][&"name"]
 var _operation_sublabels: Array[StringName] = _tables[&"operations"][&"sublabel"]
+var _operation_process_groups: Array[int] = _tables[&"operations"][&"process_group"]
+var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
+var _op_group_process_groups: Array[int] = _tables[&"op_groups"][&"process_group"]
+var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
+var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
+
 
 @warning_ignore("unsafe_property_access")
 @onready var _memory: Dictionary = get_parent().memory # open states
@@ -180,20 +186,19 @@ func _get_ai_data(target_name: StringName) -> void:
 		
 		var electricity := operations.get_group_electricity(op_group)
 		electricity /= _unit_multipliers[&"MW"]
-		var flow := 0.0
+		var flow := NAN
 		var revenue := operations.get_group_revenue(op_group)
 		revenue /= _unit_multipliers[&"$M/y"]
 		
-		match tab:
-			TAB_ENERGY:
-				flow = 0.0
-			TAB_EXTRACTION:
-				electricity = -electricity
-				flow = operations.get_group_extraction_rate(op_group)
-				flow /= _unit_multipliers[&"t/d"]
-			_:
-				electricity = -electricity
-				flow = 0.0
+		if tab != TAB_ENERGY:
+			electricity = -electricity
+		if _op_group_process_groups[op_group] == PROCESS_GROUP_CONVERSION:
+			flow = operations.get_group_mass_conversion_rate(op_group)
+			flow /= _unit_multipliers[&"t/d"]
+		elif _op_group_process_groups[op_group] == PROCESS_GROUP_EXTRACTION:
+			flow = operations.get_group_extraction_rate(op_group)
+			flow /= _unit_multipliers[&"t/d"]
+			
 		
 		var group_data := [
 			_op_group_names[op_group],
@@ -215,22 +220,20 @@ func _get_ai_data(target_name: StringName) -> void:
 		
 		for operation_type in operation_types:
 			
-			electricity = operations.get_electricity(operation_type)
+			electricity = operations.get_electricity_rate(operation_type)
 			electricity /= _unit_multipliers[&"MW"]
-			flow = 0.0
+			flow = NAN
 			revenue = operations.get_revenue_rate(operation_type)
 			revenue /= _unit_multipliers[&"$M/y"]
 			
-			match tab:
-				TAB_ENERGY:
-					flow = 0.0
-				TAB_EXTRACTION:
-					electricity = -electricity
-					flow = operations.get_extraction_rate(operation_type)
-					flow /= _unit_multipliers[&"t/d"]
-				_:
-					electricity = -electricity
-					flow = 0.0
+			if tab != TAB_ENERGY:
+				electricity = -electricity
+			if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
+				flow = operations.get_mass_conversion_rate(operation_type)
+				flow /= _unit_multipliers[&"t/d"]
+			elif _operation_process_groups[operation_type] == PROCESS_GROUP_EXTRACTION:
+				flow = operations.get_extraction_rate(operation_type)
+				flow /= _unit_multipliers[&"t/d"]
 			
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:
