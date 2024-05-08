@@ -316,8 +316,8 @@ class GroupBox extends VBoxContainer:
 		_group_hdr.group_button.button_down.connect(_toggle_open_close)
 	
 	
-	func set_group_item(target_name: StringName, group_data: Array, operations_data: Array) -> void:
-		_memory_key = target_name + group_data[0]
+	func set_group_item(_target_name: StringName, group_data: Array, operations_data: Array) -> void:
+		_memory_key = group_data[0]
 		_is_open = _memory.get(_memory_key, false)
 		
 		var group_state: int
