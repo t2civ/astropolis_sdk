@@ -65,6 +65,7 @@ var _operation_sublabels: Array[StringName] = _tables[&"operations"][&"sublabel"
 var _operation_process_groups: Array[int] = _tables[&"operations"][&"process_group"]
 var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
 var _op_group_process_groups: Array[int] = _tables[&"op_groups"][&"process_group"]
+var _op_group_show_singular: Array[bool] = _tables[&"op_groups"][&"show_singular"]
 var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
 var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
 
@@ -218,7 +219,7 @@ func _get_ai_data(target_name: StringName) -> void:
 		
 		var operation_types: Array[int] = _op_groups_operations[op_group]
 		var n_ops := operation_types.size()
-		if n_ops < 2:
+		if n_ops < 2 and !_op_group_show_singular[op_group]:
 			continue
 		
 		for operation_type in operation_types:
