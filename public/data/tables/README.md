@@ -318,9 +318,9 @@ Internally I'm modeling both information and biodiversity as [information entrop
 
 ## facilities_inventories.tsv
 
-Quantities added to facility inventory reserves at simulator start. Table values in trade_units, but converted to internal.
+Quantities added to facility inventory reserves at simulator start.
 
-For now, just giving everyone something for dev...
+_Dev note: For now, all values are for dev/testing purposes. I'll worry about realistic stockpiles later..._
 
 
 ## facilities_operations_capacities.tsv
@@ -351,7 +351,9 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 
 #### Non-Renewables
 
-Using 2010 values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Non-Renewable-Power-Generation).
+Using 2010 fossil fuels values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Non-Renewable-Power-Generation).
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Fuel--Power) for uranium fission power.
 
 #### ISS & Tiangong
 
@@ -373,35 +375,9 @@ This table is only used for renewables. It sets the fixed capacity factor for ea
 
 This table sets game start capacity to achieve specified effective rate for extraction operations considering target resource deposits. Capacity calculated from this value will override any value set in facilities_operations_capacities.tsv. E.g., if we want effective oil extraction at 200 and oil deposit is 1%, then we need capacity 20000. We can just set 200 here and capacity will be set correctly even if we change table deposit level later. 
 
-We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil--Gas-Production) and split these roughly 37% surface, 57% subsurface, 6% deep, adjusted for region (e.g., biased deeper in USA and Europe).
-
 FIXME?: It's likely that real world capacities are greater than production. Ignoring that for now.
 
-**FIXME: Coal production >100x more than gas & oil? That seems like an AI conversion error.**
-
-2010 oil production:
-
-| Region   | 2010 total | Surface | Subsurface | Deep |
-|----------|------------|---------|------------|------|
-| USA      | 206        | 20      | 160        | 26   |
-| Russia   | 377        | 160     | 200        | 17   |
-| China    | 150        | 70      | 75         | 5    |
-| EU+UK    | 120        | 12      | 80         | 28   |
-| India    | 26         | 16      | 9.5        | 0.5  |
-| Japan    | 3.7        | 1       | 1.7        | 1    |
-| Other    | 689        | 255     | 392        | 42   |
-
-2010 gas production:
-
-| Region   | 2010 total | Surface | Subsurface | Deep |
-|----------|------------|---------|------------|------|
-| USA      | 1117       | 108     | 867        | 141  |
-| Russia   | 1081       | 459     | 574        | 49   |
-| China    | 54         | 25      | 27         | 1.8  |
-| EU+UK    | 258        | 26      | 172        | 60   |
-| India    | 50         | 29      | 20         | 1    |
-| Japan    | 43         | 12      | 20         | 11   |
-| Other    | 788        | 291     | 447        | 48   |
+We use 2010 regional and depth production values for oil and gas from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil--Gas-Production).
 
 2010 coal production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Coal-Mining). Note that most of the "underground mining" in that chat is surface (0-1 km) in our sim. I'm using ~15% subsurface for USA, Russia, and EU and much smaller percents for others.
 
@@ -557,6 +533,10 @@ Fields:
 
 Notes:
 * Extractable resources in differentiated solids (which have variance > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, variance, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and variance, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
+* `_SURFACE_` 0-1 km (this covers "pit" or "surface" in the case of mining)
+* `_SUBSURFACE_` 1-5 km (this covers modern subsurface mining and most drilling)
+* `_DEEP_` 5-9 km (drilling only using contemporary engineering)
+* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental drilling.
 
 #### OPERATION_SOLAR_POWER, _WIND_POWER, _TIDAL_POWER, _HYDROPOWER, _GEOTHERMAL_POWER
 
@@ -619,26 +599,18 @@ Per 1 MW generation we have in t/h:
 * outputs: 0.627 CO2, 0.384 H2O
 
 #### OPERATION_HYDROGEN_POWER
-aka, fuel cells   
+
+AKA, fuel cells. This isn't added yet because it isn't important for Earth economy. But it will be a significant power source in a space economy.
+
 Specific energy 141.86 MJ/kg HHV   
 2 H2 + O2 -> 2 H2O; mws 4.032 + 31.998 -> 36.03   
 t per 1000 GJ: 21.8 H2 + 173 O2 -> 195 H2O   
 
-#### OPERATION_FISSION_POWER
-Our proxy "fission fuel" is yellowcake.   
-Total yellowcake volume for 2020 was 92 million lb;   
-https://www.yellowcakeplc.com/uranium-market/   
-Total nuclear power supplied in 2019 was 2,586 TWh   
-https://en.wikipedia.org/wiki/Nuclear_power   
-96e6 lbs/2586 TWh x 1 TWh/3.6e6 GJ x 1kg/2.20462 lbs -> 0.00468 kg/GJ   
--> 4.68 kg / 1000 GJ   
-Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.   
+#### LEU_FISSION_POWER
 
-#### **** Drilling and Mining Notes ****
-* `_SURFACE_` 0-1 km (this covers "pit" or "surface" in the case of mining)
-* `_SUBSURFACE_` 1-5 km (this covers modern subsurface mining and most drilling)
-* `_DEEP_` 5-9 km (drilling only using contemporary engineering)
-* We don't bother with onshore versus offshore drilling. Offshore drilling occurs on the continental plate, near enough for our purposes to lump with continental drilling.
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Fuel--Power).
+
+Low-enriched uranium for typical civilian nuclear power.
 
 #### OPERATION_OIL_xxxx_DRILLING
 
@@ -822,19 +794,21 @@ These are Earth-specific extractable resources. They are simplified in the sim t
 
 Here for Earth economy. Not sure if either will be significant in a developed space economy.
 
-#### RESOURCE_METHANE, _ETHANE
+#### RESOURCE_METHANE
 
-On Earth, these are the two main products of gas drilling and used mainly for power generation and materials synthesis, respectively. They are both important volatile constituents in the solar system. Trade/transport in cryogenic form.
+On Earth, the main product of gas drilling and used mainly for power generation. It's also an important volatile constituent in the solar system. Trade/transport in cryogenic form.
 
 #### RESOURCE_HYDROGEN
 
 Rockets! Trade/transport in cryogenic form.
 
-#### RESOURCE_URANIUM_FUEL
+#### RESOURCE_LOW_ENRICHED_URANIUM, _HIGHLY_ENRICHED_URANIUM
 
-Assuming pure U3O8 with low 20% U-235 enrichment for use in typical civilian nuclear power plants.
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Uranium-Fuel--Power).
 
-FIXME: Price is currently for yellowcake.
+LEU, HEU and WGU are typically described as 3-5%, >20% and >90%, respectively. For the sim we're using 4%, 50% and 95%. LEU is fuel for typical civilian nuclear power plants and for many proposed "small modular reators". HEU is used in military reactors and may be useful for future space reactors (aka, the "Rickover").
+
+_Dev note: I'll add Weapons-Grade Uranium later..._
 
 #### RESOURCE_DEUTERIUM, _HELIUM3
 
@@ -905,9 +879,9 @@ This represents stone in the ground or traded dimentional stone. Great for shiel
 
 Mix of low-grade gravel, sand, clay, etc., that makes up the majority of rocky bodies together with 'stone'. It's also a major byproduct of ore refining. Good for shielding.
 
-#### RESOURCE_WATER, _OXYGEN, _NITROGEN, _CARBON_DIOXIDE, _CARBON_MONOXIDE, _AMMONIA, _SULFUR_DIOXIDE, _HELIUM, _ARGON_NEON, _KRYPTON_XENON
+#### RESOURCE_WATER, _OXYGEN, _NITROGEN, _CARBON_DIOXIDE, _CARBON_MONOXIDE, _AMMONIA, _ETHANE, _SULFUR_DIOXIDE, _HELIUM, _ARGON_NEON, _KRYPTON_XENON
 
-Volatiles! Some trade/transport as ice and others in cryogenic form.
+Volatiles! These are selected in particular because they are significant constituants of icy bodies and planet (and Titan) atmospheres, and/or have important industrial usage. A few are traded/transported as ice, but most in cryogenic form.
 
 Start prices from [wiki](https://en.wikipedia.org/wiki/Prices_of_chemical_elements):
 * $154/t OXYGEN
