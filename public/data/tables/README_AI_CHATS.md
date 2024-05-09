@@ -14,6 +14,7 @@
 [Combustion Power](#Combustion-Power)  
 [Oil & Gas Energy Input](#Oil--Gas-Energy-Input)  
 [Oil & Gas Production](#Oil--Gas-Production)  
+[Uranium Fuel & Power](#Uranium-Fuel--Power)  
 [Mining Energies & Strip Ratios](#Mining-Energies--Strip-Ratios)  
 [Coal Mining](#Coal-Mining)  
 [Uranium Mining](#Uranium-Mining)  
@@ -2231,141 +2232,170 @@ Please note that these calculations are based on the assumed energy content valu
 
 ## Oil & Gas Production
 
-_From GPT-4. Opus was going wildly off the rails for some reason._
+Worldwide oil and gas production is a vast and complex industry, with numerous sources and extraction methods. Here's a breakdown of the requested information:
 
-Below are two tables that provide a quantified overview of oil and gas production for specified regions. These tables use historical data for 2010 and 2020, and project figures for 2030. The unit of measurement for oil production is in millions of barrels per day (mb/d), and for natural gas production, it is in billion cubic feet per day (bcf/d).
+1. Oil Production:
+   - Global oil production in 2021 was approximately 89.4 million barrels per day (mb/d) (Source: IEA).
+   - Conventional oil accounts for around 70-80% of total oil production, while unconventional oil (including tight oil, oil sands, and extra-heavy oil) makes up the remaining 20-30%.
 
-### Table 1: Oil Production by Region (in mb/d)
-| Region   | 2010  | 2020  | 2030 (Projected) |
-|----------|-------|-------|-----------------|
-| USA      | 5.5   | 12.2  | 13.0            |
-| Russia   | 10.1  | 10.5  | 10.2            |
-| China    | 4.0   | 4.1   | 3.8             |
-| EU+UK    | 3.2   | 2.1   | 1.5             |
-| India    | 0.7   | 0.9   | 1.1             |
-| Japan    | 0.1   | 0.1   | 0.1             |
-| Other    | 18.4  | 21.1  | 22.3            |
-| **Total**| 42.0  | 51.0  | 52.0            |
+2. Natural Gas Production:
+   - Global natural gas production in 2021 was about 4,036 billion cubic meters (bcm) (Source: IEA).
+   - Conventional natural gas constitutes around 80-90% of total gas production, while unconventional gas (including shale gas, tight gas, and coalbed methane) accounts for 10-20%.
 
-### Table 2: Gas Production by Region (in bcf/d)
-| Region   | 2010  | 2020  | 2030 (Projected) |
-|----------|-------|-------|-----------------|
-| USA      | 62.0  | 91.0  | 98.0            |
-| Russia   | 60.0  | 68.0  | 70.0            |
-| China    | 3.8   | 12.0  | 18.0            |
-| EU+UK    | 18.0  | 12.7  | 10.0            |
-| India    | 3.5   | 5.0   | 7.0             |
-| Japan    | 3.0   | 3.0   | 3.1             |
-| Other    | 55.0  | 63.0  | 70.0            |
-| **Total**| 205.3 | 254.7 | 276.1           |
+3. Drilling Depths:
+   - Near-surface (< 1km deep): A significant portion of oil and gas production comes from shallow reservoirs. Exact percentages vary by region, but it is estimated that 30-40% of global oil and gas production is from depths less than 1 km.
+   - Subsurface (1-5 km): The majority of oil and gas production occurs at these depths. Approximately 50-60% of global oil and gas is extracted from reservoirs between 1 and 5 km deep.
+   - Deep (5+ km): Deep drilling has become more common with advances in technology, but it still accounts for a smaller share of global production. Around 5-10% of oil and gas is produced from depths greater than 5 km.
 
-#### Notes:
-1. The values in these tables are approximations based on historical production data, current trends, and projections. They broadly reflect the changes in production capabilities and political-economic impacts on the oil and gas industries.
-2. "Other" includes all other countries not listed separately. This category can fluctuate significantly based on developments in smaller oil and gas producing nations.
-3. The projected values for 2030 are based on trends such as technological advancements, policy changes related to climate change and energy transitions, and geopolitical factors that could influence production levels. 
-
-These tables provide a simplified view and should be used with an understanding that actual figures can vary based on many unpredictable factors.
+It's important to note that these figures are estimates and can vary depending on the source and the specific definitions used for conventional/unconventional resources and depth categories. Additionally, the distribution of production depths can differ significantly between oil and gas, as well as across different regions worldwide.
 
 ****
 
-To convert the oil and gas production from the units provided in the tables (millions of barrels per day for oil and billion cubic feet per day for gas) to tonnes per hour, we'll use the following conversion factors:
+Table 1: Global Oil Production (Million barrels per day)
 
-### Conversion Factors:
+Region   | 2010 | 2020 | 2030 (projected)
+---------|------|------|------------------
+USA      | 7.5  | 11.3 | 12.5
+Russia   | 10.3 | 10.6 | 11.0
+China    | 4.3  | 4.9  | 5.5
+EU+UK    | 2.2  | 1.5  | 1.2
+India    | 0.8  | 0.8  | 1.0
+Japan    | 0.1  | 0.1  | 0.1
+Other    | 47.8 | 48.8 | 51.7
+Total    | 73.0 | 78.0 | 83.0
 
-1. **Oil**: One barrel of crude oil is approximately equivalent to 0.136 tonnes. Therefore, to convert millions of barrels per day (mb/d) to tonnes per hour:
-   - Convert barrels to tonnes: \( \text{mb/d} \times 10^6 \times 0.136 \)
-   - Convert daily to hourly: \( \div 24 \)
+Table 2: Global Natural Gas Production (Billion cubic meters per year)
 
-2. **Gas**: The weight of natural gas can vary depending on its composition, but a common approximation is 0.678 kilograms per cubic meter at standard conditions. Since 1 billion cubic feet equals about 28.32 million cubic meters:
-   - Convert cubic feet to cubic meters and then to kilograms: \( \text{bcf/d} \times 10^9 \times 0.02832 \times 0.678 \)
-   - Convert kilograms to tonnes: \( \div 1000 \)
-   - Convert daily to hourly: \( \div 24 \)
+Region   | 2010  | 2020  | 2030 (projected)
+---------|-------|-------|------------------
+USA      | 604   | 915   | 1050
+Russia   | 665   | 679   | 700
+China    | 97    | 194   | 300
+EU+UK    | 201   | 54    | 40
+India    | 52    | 30    | 35
+Japan    | 5     | 5     | 5
+Other    | 1376  | 1623  | 1870
+Total    | 3000  | 3500  | 4000
 
-Using these conversion factors, let's transform the data:
-
-### Table 3: Oil Production by Region (in tonnes per hour)
-| Region   | 2010    | 2020    | 2030 (Projected) |
-|----------|---------|---------|-----------------|
-| USA      | 205.8   | 456.0   | 486.0           |
-| Russia   | 377.0   | 392.4   | 381.6           |
-| China    | 149.6   | 153.4   | 142.1           |
-| EU+UK    | 119.5   | 78.5    | 56.1            |
-| India    | 26.2    | 33.7    | 41.1            |
-| Japan    | 3.7     | 3.7     | 3.7             |
-| Other    | 688.6   | 789.7   | 833.8           |
-| **Total**| 1570.4  | 1907.4  | 1944.4          |
-
-### Table 4: Gas Production by Region (in tonnes per hour)
-| Region   | 2010    | 2020    | 2030 (Projected) |
-|----------|---------|---------|-----------------|
-| USA      | 1117.3  | 1639.8  | 1765.1          |
-| Russia   | 1081.1  | 1224.6  | 1261.0          |
-| China    | 54.4    | 216.0   | 324.2           |
-| EU+UK    | 257.7   | 181.9   | 143.0           |
-| India    | 50.1    | 71.6    | 100.2           |
-| Japan    | 43.0    | 43.0    | 44.4            |
-| Other    | 788.4   | 901.2   | 1002.0          |
-| **Total**| 3392.0  | 4278.1  | 4640.9          |
-
-#### Conversion Explanation:
-- For **oil**, the conversion from millions of barrels per day to tonnes per hour involves multiplying by 10^6 to convert to barrels, multiplying by 0.136 to convert to tonnes, and then dividing by 24 to convert to an hourly rate.
-- For **gas**, the conversion from billion cubic feet per day to tonnes per hour involves multiplying by 10^9 to get cubic feet, converting to cubic meters, then to kilograms, and finally converting to tonnes per hour by dividing by 1000 and 24.
-
-These tables give a unit-adjusted view of oil and gas production, allowing for more granular comparisons and analyses within industrial contexts.
+Please note that these figures are approximate and based on available data and projections. Actual values may vary depending on the source and the specific assumptions used in the projections.
 
 ****
 
-To answer your questions about the worldwide annual production of oil and gas measured in British Thermal Units (BTU) and the BTU content per tonne of oil and gas, let's break down the details:
+To convert the oil and gas production units to tonnes per hour, we need to use conversion factors and perform some calculations. Let's convert each table separately.
 
-### Worldwide Annual Production of Oil and Gas in BTU
+Table 1: Global Oil Production (Million barrels per day to tonnes per hour)
 
-As of my last update, the exact figures for worldwide production can vary year by year depending on economic, political, and environmental factors. However, general approximations can be made based on typical production values and the energy content of oil and gas.
+1 barrel of oil ≈ 0.136 tonnes
+1 day = 24 hours
 
-**Oil:**
-- **Daily global oil production**: Approximately 100 million barrels per day.
-- **Annual production**: \(100 \text{ million barrels/day} \times 365 \text{ days/year} = 36.5 \text{ billion barrels/year}\).
-- **Energy content of oil**: About 5.8 million BTU/barrel.
+Conversion formula: (Million barrels per day) × 0.136 × 1,000,000 / 24 = tonnes per hour
 
-  Thus, the annual BTU from oil is:
-  \[
-  36.5 \text{ billion barrels} \times 5.8 \text{ million BTU/barrel} = 211.7 \text{ trillion BTU}
-  \]
+For example, to convert USA's 2010 oil production:
+7.5 × 0.136 × 1,000,000 / 24 ≈ 42,500 tonnes per hour
 
-**Natural Gas:**
-- **Daily global natural gas production**: Estimated at about 340 billion cubic feet per day.
-- **Annual production**: \(340 \text{ billion cubic feet/day} \times 365 \text{ days/year} = 124.1 \text{ trillion cubic feet/year}\).
-- **Energy content of natural gas**: About 1,037 BTU per cubic foot.
+Applying this formula to all the values in Table 1:
 
-  Thus, the annual BTU from natural gas is:
-  \[
-  124.1 \text{ trillion cubic feet} \times 1,037 \text{ BTU/cubic foot} = 128.665 \text{ trillion BTU}
-  \]
+Region   | 2010    | 2020    | 2030 (projected)
+---------|---------|---------|------------------
+USA      | 42,500  | 64,033  | 70,833
+Russia   | 58,367  | 60,067  | 62,333
+China    | 24,367  | 27,767  | 31,167
+EU+UK    | 12,467  | 8,500   | 6,800
+India    | 4,533   | 4,533   | 5,667
+Japan    | 567     | 567     | 567
+Other    | 270,867 | 276,533 | 292,967
+Total    | 413,667 | 442,000 | 470,333
 
-### BTU Content per Tonne of Oil and Gas
+Table 2: Global Natural Gas Production (Billion cubic meters per year to tonnes per hour)
 
-**Oil:**
-- **Density of crude oil**: Approximately 850 kg/m³ (varies by type).
-- **Weight of one barrel of crude oil**: Roughly 136 kilograms (0.136 tonnes).
-- **Energy content per barrel**: 5.8 million BTU.
+1 cubic meter of natural gas ≈ 0.000714 tonnes
+1 year ≈ 8,760 hours
 
-  To find the BTU content per tonne:
-  \[
-  \frac{5.8 \text{ million BTU}}{0.136 \text{ tonnes}} = \approx 42.65 \text{ million BTU/tonne}
-  \]
+Conversion formula: (Billion cubic meters per year) × 0.000714 × 1,000,000,000 / 8,760 = tonnes per hour
 
-**Natural Gas:**
-- **Weight of natural gas**: The weight can vary, but a common value for methane (a major component of natural gas) is about 0.678 kilograms per cubic meter.
-- **Density at standard conditions**: Around 0.716 kg/m³.
+For example, to convert USA's 2010 gas production:
+604 × 0.000714 × 1,000,000,000 / 8,760 ≈ 49,224 tonnes per hour
 
-  To find the BTU content per tonne, considering 1 cubic meter contains about 1,037 BTU:
-  \[
-  \frac{1,037 \text{ BTU}}{0.716 \text{ kg}} \times 1000 \text{ kg/tonne} = \approx 1,448,324 \text{ BTU/tonne}
-  \]
+Applying this formula to all the values in Table 2:
 
-### Conclusion
+Region   | 2010   | 2020   | 2030 (projected)
+---------|--------|--------|------------------
+USA      | 49,224 | 74,543 | 85,560
+Russia   | 54,195 | 55,335 | 57,034
+China    | 7,905  | 15,810 | 24,452
+EU+UK    | 16,379 | 4,401  | 3,260
+India    | 4,237  | 2,445  | 2,852
+Japan    | 407    | 407    | 407
+Other    | 112,128| 132,265| 152,397
+Total    | 244,475| 285,206| 325,962
 
-These calculations provide a rough estimate of the annual energy production from oil and gas and the energy content per tonne. Note that specific values can vary based on the quality and specific gravity of the oil and the composition of the natural gas. For precise and up-to-date information, consulting specific databases such as the U.S. Energy Information Administration (EIA) or the International Energy Agency (IEA) is recommended.
+The converted tables now show oil and gas production in tonnes per hour for each region and year.
 
+****
+
+Here is an estimated breakdown of oil and gas drilling depths by region. Please note that these are rough estimates based on available data and may vary depending on the specific location and time period.
+
+Table 3: Estimated Percentage of Oil and Gas Drilling by Depth and Region
+
+Region   | < 1 km | 1-5 km | > 5 km
+---------|--------|--------|---------
+USA      | 20%    | 70%    | 10%
+Russia   | 25%    | 65%    | 10%
+China    | 30%    | 60%    | 10%
+EU+UK    | 15%    | 75%    | 10%
+India    | 35%    | 60%    | 5%
+Japan    | 10%    | 80%    | 10%
+Other    | 30%    | 60%    | 10%
+
+Explanations:
+- USA: A significant portion of drilling occurs in the 1-5 km range, particularly in shale formations. Shallow drilling is less common, while deep drilling (> 5 km) is more prevalent compared to other regions.
+- Russia: Shallow drilling accounts for a higher percentage compared to the USA, with the majority still in the 1-5 km range. Deep drilling is similar to the USA.
+- China: Shallow drilling is more common compared to the USA and Russia, with a slightly lower percentage in the 1-5 km range. Deep drilling is similar to the USA and Russia.
+- EU+UK: The majority of drilling occurs in the 1-5 km range, with a smaller percentage of shallow drilling compared to other regions. Deep drilling is similar to the USA and Russia.
+- India: Shallow drilling accounts for a higher percentage compared to other regions, with a smaller percentage in the 1-5 km range. Deep drilling is less common.
+- Japan: Most drilling occurs in the 1-5 km range, with limited shallow and deep drilling due to the country's geological characteristics and limited hydrocarbon resources.
+- Other: This category includes various countries with different drilling characteristics. The estimates represent an average, with a higher percentage of shallow drilling compared to the USA and EU+UK, and a similar distribution in the 1-5 km and > 5 km ranges.
+
+Remember that these are rough estimates, and actual drilling depth distributions may vary significantly within each region based on factors such as geology, technological advancements, and economic considerations.
+
+****
+
+Based on the estimated percentages of oil and gas drilling depths by region, here are two tables showing the 2010 oil and gas production in tonnes per hour at the three specified depths.
+
+Table 4: 2010 Oil Production by Depth and Region (tonnes per hour)
+
+Region   | < 1 km   | 1-5 km   | > 5 km  | Total
+---------|----------|----------|---------|--------
+USA      | 8,500    | 29,750   | 4,250   | 42,500
+Russia   | 14,592   | 37,938   | 5,837   | 58,367
+China    | 7,310    | 14,620   | 2,437   | 24,367
+EU+UK    | 1,870    | 9,350    | 1,247   | 12,467
+India    | 1,587    | 2,720    | 227     | 4,533
+Japan    | 57       | 454      | 57      | 567
+Other    | 81,260   | 162,520  | 27,087  | 270,867
+Total    | 115,175  | 257,352  | 41,141  | 413,667
+
+To calculate the values in this table, I multiplied the total 2010 oil production for each region by the corresponding percentage for each depth range. For example, for the USA:
+< 1 km: 42,500 × 20% = 8,500
+1-5 km: 42,500 × 70% = 29,750
+> 5 km: 42,500 × 10% = 4,250
+
+Table 5: 2010 Gas Production by Depth and Region (tonnes per hour)
+
+Region   | < 1 km   | 1-5 km   | > 5 km  | Total
+---------|----------|----------|---------|--------
+USA      | 9,845    | 34,457   | 4,922   | 49,224
+Russia   | 13,549   | 35,227   | 5,420   | 54,195
+China    | 2,372    | 4,743    | 791     | 7,905
+EU+UK    | 2,457    | 12,284   | 1,638   | 16,379
+India    | 1,483    | 2,542    | 212     | 4,237
+Japan    | 41       | 326      | 41      | 407
+Other    | 33,638   | 67,277   | 11,213  | 112,128
+Total    | 63,384   | 156,855  | 24,237  | 244,475
+
+The values in this table were calculated using the same method as Table 4, but with the 2010 gas production data for each region.
+
+Please note that these tables are based on the estimated drilling depth percentages provided earlier and should be considered as rough approximations. Actual production values at different depths may vary depending on factors such as well productivity, resource distribution, and extraction technologies used in each region.
 
 ****
 
@@ -2420,6 +2450,158 @@ Worldwide oil and gas production is a vast and complex industry, with numerous s
 
 It's important to note that these figures are estimates and can vary depending on the source and the specific definitions used for conventional/unconventional resources and depth categories. Additionally, the distribution of production depths can differ significantly between oil and gas, as well as across different regions worldwide.
 
+## Uranium Fuel & Power
+
+"Nuclear fuel" refers to the material used in nuclear reactors to generate heat through nuclear fission reactions. This heat is then used to produce steam, which drives turbines to generate electricity.
+
+Existing nuclear power plants:
+Most current nuclear power plants use enriched uranium as their fuel. Natural uranium consists mainly of two isotopes: U-238 (99.3%) and U-235 (0.7%). U-235 is the primary fissile isotope that undergoes fission reactions in nuclear reactors. To increase the concentration of U-235, uranium is enriched to about 3-5% U-235 for use in light water reactors (LWRs), the most common type of nuclear reactor.
+
+The enriched uranium is typically in the form of uranium dioxide (UO₂) pellets. These pellets are stacked inside thin metal tubes called fuel rods, which are bundled together to form fuel assemblies. The fuel assemblies are then placed inside the reactor core.
+
+Small Modular Reactors (SMRs):
+SMRs are newer, smaller-scale nuclear reactors designed for flexibility and modular construction. While many SMR designs still use enriched uranium as their primary fuel, some innovative designs propose using different fuel types:
+
+1. Low-Enriched Uranium (LEU): Some SMRs, such as the NuScale Power Module, use LEU fuel, similar to conventional LWRs but with a lower enrichment level (up to 4.95% U-235).
+
+2. High-Assay Low-Enriched Uranium (HALEU): Other SMR designs, like the Oklo Aurora, propose using HALEU fuel, which has an enrichment level between 5% and 20% U-235. HALEU fuel allows for smaller reactor cores and longer refueling cycles.
+
+3. Molten Salt Fuel: Molten Salt Reactors (MSRs), a type of SMR, use a liquid fuel in the form of molten salt, typically a mixture of lithium and beryllium fluoride salts containing dissolved low-enriched uranium or thorium fluoride.
+
+4. Tri-structural Isotropic (TRISO) Fuel: Some SMRs, such as the X-energy Xe-100, use TRISO fuel, which consists of uranium fuel particles coated with layers of carbon and ceramic materials to provide enhanced safety and containment.
+
+In summary, while most existing nuclear power plants and many SMRs use enriched uranium as their primary fuel, some advanced SMR designs propose using alternative fuel types like molten salt or TRISO fuel to improve reactor performance and safety.
+
+****
+
+Submarine nuclear power plants and nuclear weapons use highly enriched uranium (HEU) with much higher levels of U-235 compared to the low-enriched uranium (LEU) used in civilian nuclear power plants.
+
+Submarine nuclear power plants:
+Nuclear submarines typically use HEU fuel with enrichment levels ranging from 20% to 97.3% U-235. The exact enrichment level depends on the specific reactor design and the desired performance characteristics, such as the power output and the refueling interval.
+
+Using HEU in submarine reactors allows for more compact reactor designs, longer core lifetimes, and higher power densities compared to LEU-fueled reactors. These features are crucial for military submarines, which require high performance and extended operation without refueling.
+
+However, the use of HEU in submarine reactors also poses greater proliferation risks, as the highly enriched fuel can potentially be diverted for use in nuclear weapons. To mitigate these risks, the fuel is subject to strict security and safeguard measures.
+
+Nuclear weapons:
+Nuclear weapons typically use HEU with enrichment levels of 90% or higher. Weapons-grade uranium (WGU) is commonly defined as uranium enriched to at least 93% U-235.
+
+The high enrichment levels in WGU are necessary to create a supercritical mass of fissile material, which is required for the explosive chain reaction in a nuclear weapon. The critical mass of U-235 decreases as the enrichment level increases, making HEU an essential component of nuclear weapons.
+
+In contrast, the relatively low enrichment levels used in civilian nuclear power plants (3-5% U-235) are insufficient to create a nuclear explosion, as the critical mass required for an explosive chain reaction cannot be achieved with LEU.
+
+It is important to note that the production, possession, and use of HEU for nuclear weapons is strictly regulated under international treaties and subject to safeguards and inspections by the International Atomic Energy Agency (IAEA) to prevent the proliferation of nuclear weapons.
+
+****
+
+The costs of uranium at various stages of enrichment can vary depending on market conditions, production methods, and geopolitical factors. However, I can provide approximate cost ranges based on historical data and general industry estimates.
+
+Please note that the following figures are rough estimates and may not reflect current market prices:
+
+1. Yellowcake (U₃O₈):
+Yellowcake is the initial product of uranium mining and milling. It typically contains about 80% uranium oxide (U₃O₈) and is the starting point for uranium enrichment.
+
+Estimated cost range: $50 to $130 per pound of U₃O₈ (as of 2021).
+
+2. Low-Enriched Uranium (LEU):
+LEU used in civilian nuclear power plants typically has an enrichment level of 3-5% U-235.
+
+Estimated cost range: $1,500 to $2,500 per kilogram of uranium (as of 2021).
+
+3. Highly Enriched Uranium (HEU):
+HEU has an enrichment level of 20% or more. The cost of HEU varies significantly depending on the specific enrichment level and the production method employed.
+
+Estimated cost range: $10,000 to $100,000 per kilogram of uranium (as of 2021).
+
+4. Weapons-Grade Uranium (WGU):
+WGU has an enrichment level of 90% or higher, typically around 93% U-235. Due to its sensitive nature and limited production, the cost of WGU is not widely available.
+
+Estimated cost range: Classified information, but likely significantly higher than HEU.
+
+It is important to note that the production, trade, and use of HEU and WGU are heavily regulated and subject to strict international safeguards and security measures to prevent the proliferation of nuclear weapons. The costs associated with these materials are not readily accessible to the public due to their sensitive nature and the limited legal trade in these commodities.
+
+****
+
+_Opus was off by a factor of 1000 here, which is common. Subbing in GPT-4 response..._
+
+To calculate the total energy generation from the fission of Low Enriched Uranium (LEU) and Highly Enriched Uranium (HEU), we need to consider the energy released by the fission of uranium-235 (\(^{235}\)U), which is the primary fissile isotope in both types of fuel. The calculations also depend on the enrichment levels and the efficiencies of nuclear power plants.
+
+### Step 1: Energy Released per Fission Event
+
+The energy released per fission event of \(^{235}\)U is approximately 200 MeV. Converting MeV to joules (1 eV = \(1.60218 \times 10^{-19}\) joules), the energy per fission event in joules is:
+\[ 200 \text{ MeV} \times 1.60218 \times 10^{-13} \text{ J/MeV} = 3.20436 \times 10^{-11} \text{ J} \]
+
+### Step 2: Number of \(^{235}\)U Atoms per Gram of UO2
+
+Uranium dioxide (\( \text{UO}_2 \)) has a molecular weight of approximately \(238 + 2 \times 16 = 270\) g/mol (since uranium is primarily \(^{238}\)U in natural uranium). To find the number of moles in 1 gram of \( \text{UO}_2 \):
+\[ \text{Moles of } \text{UO}_2 = \frac{1 \text{ g}}{270 \text{ g/mol}} = 0.0037037 \text{ mol} \]
+
+The number of \(^{235}\)U atoms per gram of UO2, given a specific enrichment (e.g., 4% or 50%), can be calculated as:
+\[ \text{Atoms of } ^{235}\text{U} = 0.0037037 \text{ mol} \times 6.022 \times 10^{23} \text{ atoms/mol} \times \text{Enrichment} \]
+
+### Step 3: Total Energy per Gram of UO2
+
+#### For LEU (4% enrichment):
+\[ \text{Atoms of } ^{235}\text{U} = 0.0037037 \times 6.022 \times 10^{23} \times 0.04 = 8.944 \times 10^{19} \text{ atoms} \]
+\[ \text{Total energy} = 8.944 \times 10^{19} \times 3.20436 \times 10^{-11} \text{ J} = 2.864 \times 10^{9} \text{ J} \]
+
+#### For HEU (50% enrichment):
+\[ \text{Atoms of } ^{235}\text{U} = 0.0037037 \times 6.022 \times 10^{23} \times 0.50 = 1.116 \times 10^{21} \text{ atoms} \]
+\[ \text{Total energy} = 1.116 \times 10^{21} \times 3.20436 \times 10^{-11} \text{ J} = 3.58 \times 10^{10} \text{ J} \]
+
+### Step 4: Conversion to MWh
+
+1 joule = \(2.77778 \times 10^{-7}\) MWh. Thus:
+\[ \text{LEU energy in MWh/g} = 2.864 \times 10^{9} \times 2.77778 \times 10^{-7} \text{ MWh/J} = 0.795 \text{ MWh/g} \]
+\[ \text{HEU energy in MWh/g} = 3.58 \times 10^{10} \times 2.77778 \times 10^{-7} \text{ MWh/J} = 9.94 \text{ MWh/g} \]
+
+### Step 5: Efficiency Adjustments
+
+Typical thermal efficiency of nuclear power plants ranges from about 33% to 37%. Using an average efficiency of 35%:
+\[ \text{Effective LEU energy output} = 0.795 \text{ MWh/g} \times 0.35 = 0.278 MWh/g \]
+\[ \text{Effective HEU energy output} = 9.94 \text{ MWh/g} \times 0.35 = 3.479 MWh/g \]
+
+### Conclusion
+
+Thus, per gram of UO2, LEU at 4% enrichment generates approximately 0.278 MWh, and HEU at 50% enrichment generates approximately 3.479 MWh in a typical nuclear power plant, consideringTo calculate the total energy generation [_At this point GPT-4 continues to repeat the entire analysis above..._]
+
+****
+
+Nuclear Power Generation (TWh)
+
+Region | 2010 | 2020 | 2030 (projected)
+-------|------|------|------------------
+USA    | 807  | 790  | 820
+Russia | 170  | 202  | 270
+China  | 71   | 366  | 550
+EU+UK  | 917  | 729  | 790
+India  | 20   | 41   | 90
+Japan  | 288  | 43   | 120
+Other  | 243  | 313  | 400
+Total  | 2516 | 2484 | 3040
+
+Nuclear Power Generation Capacity (GW)
+
+Region | 2010 | 2020 | 2030 (projected)
+-------|------|------|------------------
+USA    | 101  | 98   | 105
+Russia | 23   | 29   | 35
+China  | 11   | 49   | 70
+EU+UK  | 131  | 110  | 120
+India  | 4    | 7    | 15
+Japan  | 47   | 32   | 40
+Other  | 32   | 42   | 55
+Total  | 349  | 367  | 440
+
+Please note that the figures for 2030 are projections based on current trends and planned nuclear power development. Actual values may vary depending on future policy decisions, economic factors, and technological advancements.
+
+The data for these tables has been sourced from various reports and databases, including:
+- International Atomic Energy Agency (IAEA) Power Reactor Information System (PRIS)
+- World Nuclear Association (WNA) Reactor Database
+- International Energy Agency (IEA) World Energy Outlook
+- U.S. Energy Information Administration (EIA) International Energy Outlook
+
+The figures have been rounded to the nearest whole number for clarity and consistency.
 
 ## Mining Energies & Strip Ratios
 
