@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name BiomeNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -20,6 +20,7 @@ enum {
 }
 
 
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _bioproductivity := 0.0
 var _biomass := 0.0
 var _biodiversity := 1.0 # min 1.0
@@ -57,26 +58,22 @@ func set_network_init(data: Array) -> void:
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# Changes and sets from the server entity.
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	
 	if dirty & DIRTY_BIOPRODUCTIVITY:
-		_bioproductivity += _float_data[_float_offset]
-		_float_offset += 1
+		_bioproductivity += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_BIOMASS:
-		_biomass += _float_data[_float_offset]
-		_float_offset += 1
+		_biomass += float_data[float_offset]
+		float_offset += 1
 	if dirty & DIRTY_BIODIVERSITY:
-		# WARNGING: _int_offset is invalid from server processing!
-		_biodiversity += _float_data[_float_offset]
-		_float_offset += 1
-
+		_biodiversity += float_data[float_offset]
 

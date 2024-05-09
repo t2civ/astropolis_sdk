@@ -189,7 +189,7 @@ Percent values. "Deposit" is a fictional concept that can be thought of as somet
 
 This table is for dev convenience. Internally, deposit is calculated from mass fraction, survey level, and variance. Mass fraction is determined by compositions_resources_proportions.tsv. We use deposit level from this table to calculate a minumum variance assuming a minimum survey level of 5 (which is a really good knowledge level), overriding any value supplied in compositions_resources_variances.tsv if the result is larger.
 
-Deposits are roughly tuned to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies-and-Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
+Deposits are roughly tuned to typical strip ratios ([AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Mining-Energies--Strip-Ratios)). A deposits level at the high end will allow extraction at the low end of the energy range:
 * Coal 3:1 to 10:1 -> 25-9% deposits (0.43 kWh/t at 25%, accounting for 100/70 grade conversion)
 * Iron 0.5:1 to 3:1 -> 67-25% deposits (0.62 kWh/t at 67%, accounting for 70/45 grade conversion)
 * Aluminum 0.5:1 to 2:1 -> 67-33% deposits (61 kWh/t at 67%, accounting for 30/45 grade conversion, /.52 mw)
@@ -214,7 +214,7 @@ Percent abundances from AI chats:
 [Metals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Metal-Abundances) (metal % -> ore %, where appropriate)  
 [Volatiles](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Volatiles)  
 [Moon Water and Helium-3](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Moon-Geology)  
-[Earth Fossil Fuels](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Kerogen-and-Fossil-Fuels-Deposits)  
+[Earth Fossil Fuels](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Fossil-Fuel-Deposits)  
 [Earth Fresh Water](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Earth-Fresh-Water)  
 [Industrial Minerals](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Minerals-Mining) (summed Earth crust minerals, less silicates; others are made up)  
 
@@ -246,6 +246,8 @@ Fields:
 * `public_sector` Fraction of facility that is public sector. For small facilities, generally 1.0 for space agencies and 0.0 for private companies. Larger facilities may be intermediate.
 * `is_unitary` True for small focused facilities (e.g., a research station or asteroid mine). False for larger settlements, habitats or spaceports. If true, we treat all operations as a single economic activity for the purpose of economy stats and taxation (e.g., we don't tax the asteroid mine for its solar panel generation). If false, each operation is treated like a separate buisness (here we assume that any power generators are selling into the grid).
 * `construction_mass` Total mass of all constructions. For 'homeworld' facilities this value is total anthropogenic mass.
+* `biomass` Total biomass (dry weight, =2x C value).
+* `bioproductivity` [Dev temp value; see below] Total bioproductivity (dry weight, =2x C value).
 * `biodiversity_fraction` Fraction of total biodiversity in this facility. Adds to >1.0 due to biodiversity sharing. Only used for 'homeworld' facilities that have a significant biome.
 * `information_fraction` Fraction of total information in this facility. Adds to >1.0 due to information sharing. Only use for 'homeworld' facilities that have a significant cyberspace.
 
@@ -283,12 +285,18 @@ For space agencies, we made up masses out of thin air:
 * ISRO 5e5 t
 * JAXA 5e5 t
 
-We have ISS at 420 tonnes and Tiangong at 22 tonnes from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS-and-Tiangong). We just slice up the ISS among NASA, Roscosmos, ESA and JAXA:
+We have ISS at 420 tonnes and Tiangong at 22 tonnes from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS--Tiangong). We just slice up the ISS among NASA, Roscosmos, ESA and JAXA:
 * ISS - Roscosmos 75 t (Zarya, Zvezda, etc.)
 * ISS - ESA 12.5 t (Columbus Laboratory)
 * ISS - JAXA 28.3 t (Kibo complex)
 * ISS - NASA 304.2 t (remainder)
 * Tiangong - 33 t (bumped 33% for future construction)
+
+#### biomass & bioproductivity
+
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Biomass--Bioproductivity). Table values are double the AI values to convert C to dry weight.
+
+_Dev note: The table bioproductivity value is temporary. In the future this will be generated dynamically by biome activity as an operation (from operations.tsv, like all activities)._
 
 #### biodiversity_fraction
 
@@ -326,7 +334,7 @@ Note: These tables are here for development convenience. Capacities are actually
 
 #### Renewables
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 Table data is 2010 installed capacity values converted to MW. Utilization (=capacity factor or efficiency) will likely be constant in the simularion so using either 2020 or projected 2030 values or some plausible compromise. Using 0.75 for all geothermal.
 
@@ -341,12 +349,13 @@ For reference, https://en.wikipedia.org/wiki/Capacity_factor lists values for:
 * UK offshore: ~26-41%, average ~35%
 (But continental Europe is less than UK, I believe...)
 
+#### Non-Renewables
 
-
+Using 2010 values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Non-Renewable-Power-Generation).
 
 #### ISS & Tiangong
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS-and-Tiangong).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#ISS--Tiangong).
 
 Using contemporary or anticipated values at sim start, rather than 2010.
 
@@ -356,7 +365,7 @@ Per https://www.nasa.gov/feature/facts-and-figures, ISS solar power is 75-90 kw.
 
 ## facilities_operations_capacity_factors.tsv
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 This table is only used for renewables. It sets the fixed capacity factor for each renewable operation at each game start facility.
 
@@ -364,9 +373,11 @@ This table is only used for renewables. It sets the fixed capacity factor for ea
 
 This table sets game start capacity to achieve specified effective rate for extraction operations considering target resource deposits. Capacity calculated from this value will override any value set in facilities_operations_capacities.tsv. E.g., if we want effective oil extraction at 200 and oil deposit is 1%, then we need capacity 20000. We can just set 200 here and capacity will be set correctly even if we change table deposit level later. 
 
-We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Production) and split these roughly 37% surface, 57% subsurface, 6% deep, adjusted for region (e.g., biased deeper in USA and Europe).
+We use regional production values from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil--Gas-Production) and split these roughly 37% surface, 57% subsurface, 6% deep, adjusted for region (e.g., biased deeper in USA and Europe).
 
 FIXME?: It's likely that real world capacities are greater than production. Ignoring that for now.
+
+**FIXME: Coal production >100x more than gas & oil? That seems like an AI conversion error.**
 
 2010 oil production:
 
@@ -407,7 +418,7 @@ FIXME?: It's likely that real world capacities are greater than production. Igno
 
 ## facilities_populations.tsv
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#World-population-and-agency-employees).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Population).
 
 Other sources:  
 https://en.wikipedia.org/wiki/List_of_countries_by_population_in_2010  
@@ -530,11 +541,11 @@ One "operation unit" corresponds to quantities in the operations.tsv row. In gen
     SERVICES      - Varies; often 1 unit/h of some intangible resource
 
     * For differentiated solids, output is multiplied by a 'deposits' fraction (shown
-      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource variance
+      in GUI as 0 - 100%). Deposits is a function of mass fraction, resource spatial variance,
       and a 'survey factor'.
 
 
-Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne extraction converts to 1.4 MW in the `electricity` field and one tonne in the `output_quantities` field.
+Use of 1 t/h is convenient for operation energy/electricity data, as that is often obtained in untis "MWh per tonne". So, e.g., 1.4 MWh per tonne mass conversion converts to 1.4 MW in the `electricity` field and one tonne in the `mass_conversion` field.
 
 Fields:
 * `op_class`, `op_group`, `module_class` and `stratum` refer to entities from the corresponding tables.
@@ -549,75 +560,63 @@ Notes:
 
 #### OPERATION_SOLAR_POWER, _WIND_POWER, _TIDAL_POWER, _HYDROPOWER, _GEOTHERMAL_POWER
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Solar-and-other-renewable-energy-generation).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Renewable-Power-Generation).
 
 Rate unit is 1 MW by definition. Utilization is subject to the environment.  
 See comments in [facilities_operations_xxxx.tsv](#facilities_operations_xxxxtsv).  
 For solar, utilization is a function of disance from sun and `solar_occlusion` (from bodies.tsv or override value from facilities.tsv).   
 For other renewables, table value in facilities_operations_utilizations.tsv never changes.
 
+#### OPERATION_METHANE_POWER
+
+Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Combustion-Power) we have:
+* 1.00 CH4 + 4.00 O2 -> 2.75 CO2 + 2.25 H2O (by weight)
+* 15.4 MWh/tonne heat.
+* Efficiencies 35-62% (much higher with district heating); average 50-55%. Assume 52%.
+
+Per 1 MW generation we have in t/h:
+* inputs: 0.125 CH4, 0.500 O2
+* outputs: 0.343 CO2, 0.281 H2O
+
+From [wiki CO2 emmisions data](https://en.wikipedia.org/wiki/Electricity_generation) we have 669 g CO2/kWh, or 0.67 tonne CO2/MWh. That's a bit off but consistent with low 35% efficiencies.
+
 #### OPERATION_COAL_POWER
-Combustion  
-Typical "bituminous" coal: 84.4% C, 5.4% H2, 6.7% O2, 1.8% S, 1.7% N2;   
-Energy density 24 MJ/kg, for 40% efficiency, "325 kg will power 100 W for yr";   
-https://en.wikipedia.org/wiki/Coal   
-0.325t/100Wyr x 1yr/365.25d x 10^6W/MW x 1MWd/86.4GJ -> 103 t coal/1000 GJ   
-Combustion:   
-(84% C) C + O2 -> CO2; mws 12.011 + 31.998 -> 44.009   
-(5.4% H2) 2 H2 + O2 -> 2 H2O; mws 4.032 + 31.998 -> 36.03   
-(1.8% S) S + O2 -> SO2; mws 32.06 + 31.998 -> 64.058   
-(1.7% N2) N2 -> N2 (ignoring NOx)   
-(6.7% O2) Assume cobusted so deduct from O2 input   
-Per 103 t coal,   
-86.5 C (in coal) + 230.5 O2 -> 317 CO2   
-5.56 H2 (in coal) + 44.1 O2 -> 49.7 H2O   
-1.85 S (in coal) + 1.85 O2 -> 3.70 SO2   
-6.90 O2 (in coal) - 6.90 O2 -> nothing   
-	-> + 1000 GJ power   
-t per 1000 GJ: 103 coal + 269 O2 -> 317 CO2 + 49.7 H2O + 3.70 SO2 + 1.75 N2   
-We could balance mass with 'ash' product if we want to go there.   
-This is close to wiki CO2 emmisions data: 1001 g CO2/kWh;   
-https://en.wikipedia.org/wiki/Electricity_generation   
-1001g/kWh x 10^-6t/g x 1e6kWh/3600 GJ -> 278 t CO2/1000 GJ   
+
+Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Combustion-Power) we have:
+* 1.00 Coal + 2.414 O2 -> 2.75 CO2 + 0.405 H2O (by weight, ignoring SO2, NO)
+* 8.669 MWh/tonne heat.
+* Efficiency 33-40%, state-of-the-art 45%. Assuming 36%.
+
+Per 1 MW generation we have in t/h:
+* inputs: 0.320 Coal, 0.774 O2
+* outputs: 0.881 CO2, 0.130 H2O
+* adjusted outputs: 0.953 CO2, 0.141 H2O (bump for mass conservation)
+
+From [wiki CO2 emmisions data](https://en.wikipedia.org/wiki/Electricity_generation) we have 1001 g CO2/kWh, or 1.0 tonne CO2/MWh.
 
 #### OPERATION_OIL_POWER
-Combustion  
-We're simplifying and burning oil directly rather than processing to fuel oil.   
-84% C, 12% H2, 3% S, 1% O2, 1% N2   
-https://en.wikipedia.org/wiki/Petroleum   
-Specific energy ~42 versus ~30 of Coal (1.4x)   
-https://en.wikipedia.org/wiki/Energy_density   
-Ajusting totals from Coal (in t),   
-t per 1000 GJ: 73.6 oil + 197 O2 -> 226 CO2 + 78.9 H2O + 1.47 SO2 + 0.735 N2   
-(Assuming 40% efficiency. Is this ok?)   
 
-#### OPERATION_REFINED_FUELS_POWER
-Combustion  
-Specific energy gasoline 46.4, kerosene 43 MJ/kg;   
-https://en.wikipedia.org/wiki/Energy_density   
-For octane, 1kg C8H18 + 3.51kg O2 -> 3.09kg CO2 + 1.42kg H20   
-https://en.wikipedia.org/wiki/Gasoline   
-If we use S.E. 44 MJ/kg, we have (in t):   
-t per 1000 GJ: 70.3 fuel + 247 O2 -> 217 CO2 + 99.8 H20   
-(Assuming 40% efficiency. Is this ok?)   
+Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Combustion-Power) we have:
+* 1.00 Oil + 3.40 O2 -> 3.16 CO2 + 1.24 H2O (by weight)
+* 12.0 MWh/tonne heat.
+* Efficiencies 35-50%; average 40-45%. Assume 42%.
+
+Per 1 MW generation we have in t/h:
+* inputs: 0.198 Oil, 0.675 O2
+* outputs: 0.627 CO2, 0.246 H2O
+
+(Ignoring NOx, etc.)
 
 #### OPERATION_ETHANOL_POWER
-Combustion  
-Specific energy 30 MJ/kg HHV   
-https://en.wikipedia.org/wiki/Energy_density   
-C2H5OH + 3 O2 -> 2 CO2 + 3 H2O; mws 46.069 + 95.994 -> 88.018 + 54.045   
-t per 1000 GJ: 103 ethanol + 214 O2 -> 197 CO2 + 121 H2O   
-(Assuming 40% efficiency. Is this ok?)   
 
-#### OPERATION_METHANE_POWER
-Combustion  
-Specific energy 55.6 MJ/kg HHV (natural gas 53.6)   
-https://en.wikipedia.org/wiki/Energy_density   
-CH4 + 2 O2 -> CO2 + 2 H2O; mws 16.043 + 63.996 -> 44.009 + 36.03   
-t per 1000 GJ: 55.6 methane + 222 O2 -> 153 CO2 + 125 H2O   
-This is close to wiki CO2 emmisions data: natural gas 669 g CO2/kWh,   
--> 186 t CO2/1000 GJ   
-https://en.wikipedia.org/wiki/Electricity_generation   
+Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Combustion-Power) we have:
+* 1.00 Ethanol + 2.09 O2 -> 1.91 CO2 + 1.17 H2O (by weight)
+* 8.26 MWh/tonne heat.
+* Efficiencies 30-50%; average 35-40%. Assume 37%.
+
+Per 1 MW generation we have in t/h:
+* inputs: 0.327 Ethanol, 0.684 O2
+* outputs: 0.627 CO2, 0.384 H2O
 
 #### OPERATION_HYDROGEN_POWER
 aka, fuel cells   
@@ -643,7 +642,7 @@ Assume 90% used for power, so 5.20 kg yellowcake / 1000 GJ power.
 
 #### OPERATION_OIL_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil--Gas-Energy-Input).
 
 AI value 0.499 MWh per tonne of oil is from US 2009 study, which probably represents conventional oil extraction.  
 Adjust for sim USA deposits (x 0.5%) -> 0.00250 MWh/t for 100% deposits. Use x2 for subsurface and x4 for deep.
@@ -654,7 +653,7 @@ Output is 100% Oil.
 
 #### OPERATION_GAS_xxxx_DRILLING
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil-and-Gas-Energy-Input).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Oil--Gas-Energy-Input).
 
 AI value 0.352 MWh per tonne of gas is from US 2011 study, which probably represents conventional gas extraction. We have USA subsurface deposit at 2%.
 
@@ -794,48 +793,54 @@ Categories for GUI sub-subpanel tabs in the Markets subpanel: Energy, Ores, Vola
 ## resources.tsv
 
 Fields:
-* `resource_class` See associated table.
+* `resource_class` GUI only. Sets the resource subtab under the markets tab.
 * `trade_class` Internal enum that affects physical transport mechanics.
-* `trade_unit` is the quantity for `start_price` and related GUI items (price, bid, ask), and sets the minimum quantity in internal trade mechanics.   
+* `trade_unit` Sets display unit in GUI. (May in the future affect trade mechanics.)   
 * `start_price` Rough Earth values in 2010 for sim start.
-* `mass_err_mult` Mulitiplyer for surveys.tsv/`mass_error`.
+* `mass_err_mult` Mulitiplyer for surveys.tsv `mass_error`.
 
-#### ELECTRICITY
-Cannot be transported, but traded w/in a Body. Special storage.
-LCOE on the order of $60/MWh (6 cents/kWh), say $100/MWh wholesale,
-x 1 MWh/3.6 GJ -> $27.8/GJ
-https://en.wikipedia.org/wiki/Cost_of_electricity_by_source
+#### start_price
 
-#### COAL
-$189/t; 2/22
+Using mostly 2010 prices from [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Resource-Prices).
 
-#### OIL
-$70/barrel oil x 7.33 barrels/t = $513/t
+Notes:
+* Ignoring the 2010 hydrogen spike and using $9000/t.
+* The "Uranium Fuel" prices are consistent with yellowcake. Per [wiki](https://en.wikipedia.org/wiki/Uranium_market), Prices for uranium oxide yellowcake bottomed in 2001 at $7/lb and topped in 2007 at $137/lb -> $15/kg to $304/kg.
+* Deuterium is $13/g and Helium-3 is $1695/g. I forgot the source of these numbers.
 
-#### REFINED_FUELS
-$3.57/gallon for kerosine -> or $1180/t
+#### RESOURCE_ELECTRICITY
 
-#### ETHANOL
-$849/t; 2/22 chemanalyst.com
+Can be traded locally only (not transportable) and has unique storage requirement (probably only batteries in the sim).
 
-#### METHANE
-$4/MMBtu, ~$4/1000ft3, ~$4/GJ x 0.049 GJ/kg x 1000 kg/t = $196/t
+_Dev note: All facilities currently have infinite storage for all resources!_
 
-#### HYDROGEN
-$1390/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
+#### RESOURCE_COAL, _OIL
 
-#### URANIUM_FUELS
-Prices for uranium oxide "yellowcake" bottomed in 2001 at $7/lb and topped in
-2007 at $137/lb;
-https://en.wikipedia.org/wiki/Uranium_market
-Found recent price $42.43/lb U3O8e (source?)
-x 2.20462 lb/t -> $93.54/kg
+These are Earth-specific extractable resources. They are simplified in the sim to be pure carbon and pure hydrocarbon, respectively. Not much chance that they will be part of our space economy.
 
-#### HELIUM3
-Wiki - "historically about $100/liter" (gas?? Presure?) "59 gram per liter at 1 atm".
-Assume price is at 1atm. Then, $100/59g.
+#### RESOURCE_REFINED_FUELS, _ETHANOL
 
-#### IRON_ORES
+Here for Earth economy. Not sure if either will be significant in a developed space economy.
+
+#### RESOURCE_METHANE, _ETHANE
+
+On Earth, these are the two main products of gas drilling and used mainly for power generation and materials synthesis, respectively. They are both important volatile constituents in the solar system. Trade/transport in cryogenic form.
+
+#### RESOURCE_HYDROGEN
+
+Rockets! Trade/transport in cryogenic form.
+
+#### RESOURCE_URANIUM_FUEL
+
+Assuming pure U3O8 with low 20% U-235 enrichment for use in typical civilian nuclear power plants.
+
+FIXME: Price is currently for yellowcake.
+
+#### RESOURCE_DEUTERIUM, _HELIUM3
+
+These will become significant with fusion power. Deuterium can be purified from water. Helium-3 is present in Luna's regolith.
+
+#### RESOURCE_IRON_ORES
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
@@ -843,7 +848,7 @@ Defined as 70% Fe by weight. This is a small bump from contemporary 62%.
 
 2010 price: $150/t x 70/62 -> $169/t.
 
-#### ALUMINIUM_ORES
+#### RESOURCE_ALUMINIUM_ORES
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
@@ -851,7 +856,7 @@ Defined as 30% aluminium (primary). This is really low for bauxite (the main ore
 
 2010 price: $2500/t x 30/45 -> $1667/t.
 
-#### INDUSTRIAL_METAL_ORES
+#### RESOURCE_INDUSTRIAL_METAL_ORES
 
 See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Industrial-Metals-Mining).
 
@@ -859,29 +864,23 @@ Catch-all for dozens of others besides iron & aluminium. We're using copper, nic
 
 Defined as 5% industrial metals by weight at 2010 price $1500/t.
 
-#### PRECIOUS_METAL_ORES
+#### RESOURCE_PRECIOUS_METAL_ORES
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Precious-Metals-and-Rare-Earths-Mining).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Precious-Metals--Rare-Earths-Mining).
 
 AI lists gold ore grades at 1-20 g/t for gold and 1-10 g/t for others (excluding silver which we're calling an "industrial metal"). That's consistent with Wiki sources that list high end of Earth Au ores at 0.0001-0.0030%. We're bumping up the benchmark to 0.01% to account for "native gold", since our sim assumes all extractable precious metal is in ore. Some additional benification can be assumed at the mine to compensate for transport fuel costs.
 
 Defined as 0.01% Precious Metals by weight (TODO: calculate ore price given pure gold 2010 price $39362/kg).
 
-#### RARE_EARTH_ORES
+#### RESOURCE_RARE_EARTH_ORES
 
-See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Precious-Metals-and-Rare-Earths-Mining).
+See [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/data/tables/README_AI_CHATS.md#Precious-Metals--Rare-Earths-Mining).
 
 La, Ce & Pr ore grades range 0.1-10%, but most others 0.1-1% (Sc is much less). We take the high end of the latter range for benchmark, and boost a bit considering that as pure refined metal rather than oxide. 2010 prices go from ~$20/kg for most to $50 for Y and $5000 for Sc. 
 
 Defined as 1% Rare Earths by weight at 2010 price $30/kg.
 
-#### INDUSTRIAL_MINERAL_ORES
-
-Defined as 30% Industrial Minerals by weight. (See '_IRON_ORES note on grade and
-benefication.)
-ooma price
-
-#### URANIUM_ORES
+#### RESOURCE_URANIUM_ORES
 
 Defined as 1% Fissile Fuels by weight (Earth grades range from 0.1% up to 18%,
 but 1% is typical). (See '_IRON_ORES note on grade and benefication.)   
@@ -890,193 +889,160 @@ For price assume 1% grade and 10% price of yellowcake, giving $93/t.
 TODO: fix numbers given that we abstract away yellowcake, which is an intermediate
 form customarily produced at the mine (but not in our simulation).
 
-#### INDUSTRIAL_MINERALS
+#### RESOURCE_INDUSTRIAL_MINERALS
 
-ooma price
+Catchall for non-metal minerals of economic value. For simplification we have direct extraction of usable minerals and skip the 'ores' resource and refining.
 
-#### HELIUM3_REGOLITH
+#### RESOURCE_THOLINS
 
-N/A Earth; no start price.
+N/A Earth; no start price. Must be useful for something!
 
-#### THOLINS
+#### RESOURCE_STONE
 
-N/A Earth; no start price.
+This represents stone in the ground or traded dimentional stone. Great for shielding or building monuments!
 
-#### STONE
+#### RESOURCE_REGOLITH
 
-This represents stone in the ground or traded dimentional stone.
+Mix of low-grade gravel, sand, clay, etc., that makes up the majority of rocky bodies together with 'stone'. It's also a major byproduct of ore refining. Good for shielding.
 
-#### REGOLITH
+#### RESOURCE_WATER, _OXYGEN, _NITROGEN, _CARBON_DIOXIDE, _CARBON_MONOXIDE, _AMMONIA, _SULFUR_DIOXIDE, _HELIUM, _ARGON_NEON, _KRYPTON_XENON
 
-Mix of low-grade gravel, sand, clay, etc.
+Volatiles! Some trade/transport as ice and others in cryogenic form.
 
-#### WATER
+Start prices from [wiki](https://en.wikipedia.org/wiki/Prices_of_chemical_elements):
+* $154/t OXYGEN
+* $140/t NITROGEN
+* $24,000/t HELIUM
+* $931/t ARGON_NEON
+* $290/kg KRYPTON_XENON (price is for the much cheaper Kr)
 
-Wide range of pricing; trucked values as low as $1/t.
+Start prices from [chemanalyst.com](chemanalyst.com):
+* $182/t CARBON_DIOXIDE
+* $28700/t CARBON_MONOXIDE
+* $1000/t AMMONIA
+  
+Others:
+* $312/t SULFUR_DIOXIDE (couldn't find so used sulfur)
 
-#### OXYGEN
+#### RESOURCE_STEEL
 
-$154/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
+Refined metal. Currently using price $1500/t in a random news article, early 2022.
 
-#### NITROGEN
-
-$140/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
-
-#### CARBON_DIOXIDE
-
-$182/t; chemanalyst.com
-
-#### CARBON_MONOXIDE
-
-$28700/t; chemanalyst.com
-
-#### ETHANE
-
-Couldn't find price but $600/t for methanol; chemanalyst.com
-
-#### AMMONIA
-
-$1000/t; chemanalyst.com
-
-#### SULFUR_DIOXIDE
-
-Couldn't find but $312/t for sulfur
-
-#### HELIUM
-
-$24,000/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
-
-#### ARGON_NEON
-
-$931/t; https://en.wikipedia.org/wiki/Prices_of_chemical_elements
-
-#### KRYPTON_XENON
-
-Kr & Xe; Kr is cheaper (by far) at $290/kg;
-https://en.wikipedia.org/wiki/Prices_of_chemical_elements
-
-#### STEEL
-
-$1500/t; random news article, early 2022.
-
-#### IRON
+#### RESOURCE_IRON
 
 Represent native iron (such as in planetory cores) or traded pig iron.
 
-#### INDUSTRIAL_METALS
+#### RESOURCE_ALUMINIUM
 
-Represents native metals (such as in planetory cores) or traded refined metals.
+Refined metal. Like iron, this one can't be lumped with 'industrial metals' because it is too different and singular in its natural abundance, distrubution, refining and industrial use.
 
-Al $1790/t, Ni $13900/t, Cu $6000/t; use Cu as proxy price.
-https://en.wikipedia.org/wiki/Prices_of_chemical_elements
+Going with non-US spelling because it sounds more exotic.
 
-#### PRECIOUS_METALS
+#### RESOURCE_INDUSTRIAL_METALS
 
-Represents native metals (such as in planetory cores) or traded refined metals.
+Catchall that represents native metals (such as in planetory cores) or traded refined metals other than iron and aluminium.
 
-Use Au as proxy at $60000/kg, 2/22.
+Some prices at [wiki](https://en.wikipedia.org/wiki/Prices_of_chemical_elements): Ni $13900/t, Cu $6000/t. Using Cu as proxy price.
 
-#### RARE_EARTHS
+#### RESOURCE_PRECIOUS_METALS
 
-Light REs ~$41,000/kg; Heavy REs ~$21,0000/kg
-We split the difference and call it $100,000/kg.
+Represents native metals (such as in planetory cores) or traded refined metals. For sim purposes we're excluding silver because it distorts abundances and pricing. (We can call silver an 'industrial metal'.) Using Au as proxy at $60/g, 2/22.
 
-#### CONCRETE
+#### RESOURCE_RARE_EARTHS
 
-random source?
+Light REs ~$41,000/kg; Heavy REs ~$21,0000/kg. We split the difference and call it $100,000/kg.
 
-#### GLASSES
+#### RESOURCE_CONCRETE
 
-ooma
+#### RESOURCE_GLASSES
 
-#### PLASTICS_POLYMERS
+#### RESOURCE_PLASTICS_POLYMERS
 
 $1200/t for styrene; chemanalyst.com
 
-#### SYNTHETIC_FIBERS
-
-Random source "average cost of non- aerospace grade is around $21.5/kg"
-
-#### INDUSTRIAL_SCRAP
-
-Steel scrap $0.23/lb x 2204 lbs/t = $506/t; random online source.
-
-#### SLAG
-
-$200/t; random online slag quote
-
-#### BULK_FOODS
-
-Grain, etc.; source?
-
-#### CRAFT_FOODS
-
-$20 bag of groceries. These are "luxury" in space.
-
-#### WOOD
-
-ooma
-
-#### BIOFIBERS
-
-ooma
-
-#### BIOFEEDSTOCK
-
-ooma
-
-#### SEWAGE
-
-ooma
-
-#### FINISHED_STRUCTURES
-
-ooma
-
-#### HEAVY_MACHINERY
-
-ooma
-
-#### ROBOTICS
-
-ooma
-
-#### ELECTRONICS
-
-ooma
-
-#### BATTERIES
-
-Tesla car battery on the order of ~$3-4k; call it $2000/t. 
-
-#### ADVANCED_COMPOSITES
+#### RESOURCE_ADVANCED_COMPOSITES
 
 $85/kg; aerospace cabon fiber, 2022 news article
 
-#### FERTILIZERS
+#### RESOURCE_INDUSTRIAL_CHEMICALS
+
+Catchall for coolants, solvents, etc. Pricing a bit higher than kerosine.
+
+#### RESOURCE_FINE_CHEMICALS
+
+Catchall for more expensive specialized chemicals.
+
+#### RESOURCE_INDUSTRIAL_SCRAP
+
+Steel scrap $0.23/lb x 2204 lbs/t = $506/t; random online source.
+
+#### RESOURCE_SLAG
+
+$200/t; random online slag quote
+
+#### RESOURCE_MODULAR_STEEL_STRUCT, _MODULAR_ALUMIN_STRUCT, _MODULAR_COMPOS_STRUCT
+
+These represent modules and structural components for general space construction. There are three kinds to provide some resource fungibility. Steel is by far the cheapest in materials, but heavier so not so great for launching from Earth. Aluminium (alloy) is your basic ISS module or structural component. The third is primarily constructed from advanced composites as an alternative to aluminium. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_HEAVY_MACHINERY
+
+Tractors, factory machines, big metal parts, etc. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_ROBOTICS
+
+From factory robots to androids (minus the brains). Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_ELECTRONICS
+
+Catchall for all the non-IC stuff. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_MICROCONTROLLERS
+
+Your washing machine has one. Probably also your toaster. Cheap and mass produced. Don't worry, they won't rise up against humanity. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_MICROPROCESSORS
+
+For consumer devices and server clusters. These have some degree of parallel processing, but perhaps not enough to support AI of any real significance. Produced only by specialized chip fabricators. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_NEURAL_PROCESSORS
+
+Evolved from Nvidia gaming GPUs. Perhaps we'll stop calling them GPUs eventually. This is the substrate for AI and future AGI. Produced only by the most advanced chip fabricators. Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_BATTERIES
+
+Catchall for all of the different sizes and kinds of battery. Since we have 'industrial metals' catchall we don't have to specify the battery chemistry.  Production counts toward the 'Manufacturing' development stat.
+
+Tesla car battery on the order of ~$3-4k; call it $2000/t. 
+
+#### RESOURCE_CONSUMER_GOODS
+
+Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_LUXURY_GOODS
+
+Production counts toward the 'Manufacturing' development stat.
+
+#### RESOURCE_BULK_FOODS
+
+Grain, etc.; source?
+
+#### RESOURCE_CRAFT_FOODS
+
+$20 bag of groceries. These are "luxury" in space.
+
+#### RESOURCE_PHARMACEUTICALS
+
+#### RESOURCE_WOOD
+
+#### RESOURCE_BIOFIBERS
+
+#### RESOURCE_BIOFEEDSTOCK
+
+#### RESOURCE_FERTILIZERS
 
 $717/t; 2022 news article.
 
-#### INDUSTRIAL_CHEMICALS
-
-ooma; presumably more than kerosine
-
-#### FINE_CHEMICALS
-
-ooma
-
-#### PHARMACEUTICALS
-
-ooma
-
-#### CONSUMER_GOODS
-
-ooma
-
-#### LUXURY_GOODS
-
-ooma
-
+#### RESOURCE_SEWAGE
 
 ## spacecrafts.tsv
 

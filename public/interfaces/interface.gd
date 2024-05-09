@@ -32,7 +32,7 @@ enum DirtyFlags {
 	DIRTY_FINANCIALS = 1 << 4,
 	DIRTY_POPULATION = 1 << 5,
 	DIRTY_BIOME = 1 << 6,
-	DIRTY_METAVERSE = 1 << 7,
+	DIRTY_CYBERSPACE = 1 << 7,
 	DIRTY_COMPOSITIONS = 1 << 8,
 }
 
@@ -43,7 +43,7 @@ const DIRTY_INVENTORY := DirtyFlags.DIRTY_INVENTORY
 const DIRTY_FINANCIALS := DirtyFlags.DIRTY_FINANCIALS
 const DIRTY_POPULATION := DirtyFlags.DIRTY_POPULATION
 const DIRTY_BIOME := DirtyFlags.DIRTY_BIOME
-const DIRTY_METAVERSE := DirtyFlags.DIRTY_METAVERSE
+const DIRTY_CYBERSPACE := DirtyFlags.DIRTY_CYBERSPACE
 const DIRTY_COMPOSITIONS := DirtyFlags.DIRTY_COMPOSITIONS
 
 enum EntityType {
@@ -76,7 +76,7 @@ enum ComponentType {
 	COMPONENT_FINANCIALS,
 	COMPONENT_POPULATION,
 	COMPONENT_BIOME,
-	COMPONENT_METAVERSE,
+	COMPONENT_CYBERSPACE,
 	COMPONENT_COMPOSITION,
 	N_COMPONENT_TYPES,
 }
@@ -86,7 +86,7 @@ const COMPONENT_INVENTORY := ComponentType.COMPONENT_INVENTORY
 const COMPONENT_FINANCIALS := ComponentType.COMPONENT_FINANCIALS
 const COMPONENT_POPULATION := ComponentType.COMPONENT_POPULATION
 const COMPONENT_BIOME := ComponentType.COMPONENT_BIOME
-const COMPONENT_METAVERSE := ComponentType.COMPONENT_METAVERSE
+const COMPONENT_CYBERSPACE := ComponentType.COMPONENT_CYBERSPACE
 const COMPONENT_COMPOSITION := ComponentType.COMPONENT_COMPOSITION
 const N_COMPONENT_TYPES := ComponentType.N_COMPONENT_TYPES
 
@@ -250,8 +250,8 @@ func get_biome() -> BiomeNet:
 	return get(&"biome")
 
 
-func get_metaverse() -> MetaverseNet:
-	return get(&"metaverse")
+func get_cyberspace() -> CyberspaceNet:
+	return get(&"cyberspace")
 
 
 # FIXME: Remove component methods below...

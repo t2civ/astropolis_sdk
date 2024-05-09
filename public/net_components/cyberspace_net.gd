@@ -1,12 +1,12 @@
-# metaverse_net.gd
+# cyberspace_net.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2024 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name MetaverseNet
-extends NetComponent
+class_name CyberspaceNet
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -14,58 +14,53 @@ extends NetComponent
 
 
 enum {
-	DIRTY_COMPUTATIONS = 1,
-	DIRTY_ENTROPY_MODEL = 1 << 1,
+	DIRTY_COMPUTATION_RATE = 1,
+	DIRTY_INFORMATION = 1 << 1,
 }
 
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 
-var _computations := 0.0
-var _entropy_model: Dictionary # see static/diversity.gd
-
-# TODO: histories including information using get_development_information()
+var _computation_rate := 0.0
+var _information := 1.0 # min 1.0
 
 
 func _init(is_new := false) -> void:
 	if !is_new: # loaded game
 		return
-	_entropy_model = {}
  
 # ********************************** READ *************************************
 # NOT all threadsafe!
 
-func get_computations() -> float:
-	return _computations
+func get_computation_rate() -> float:
+	return _computation_rate
 
 
-func get_development_information() -> float:
-	# NOT THREADSAFE !!!!
-	return diversity.get_shannon_entropy(_entropy_model) # in 'bits'
+func get_information() -> float:
+	return _information
 
 # ********************************** SYNC *************************************
 
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
-	_computations = data[1]
-	_entropy_model = data[2]
+	_computation_rate = data[1]
+	_information = data[2]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
+	# Changes and sets from the server entity.
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	var dirty := _int_data[_int_offset]
-	_int_offset += 1
+	var dirty := int_data[int_offset]
+	int_offset += 1
 	
-	if dirty & DIRTY_COMPUTATIONS:
-		_computations += _float_data[_float_offset]
-		_float_offset += 1
-	if dirty & DIRTY_ENTROPY_MODEL:
-		_add_diversity_model_delta(_entropy_model)
-
+	if dirty & DIRTY_COMPUTATION_RATE:
+		_computation_rate += float_data[float_offset]
+		float_offset += 1
+	if dirty & DIRTY_INFORMATION:
+		_information += float_data[float_offset]
 

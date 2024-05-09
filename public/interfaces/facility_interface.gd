@@ -39,7 +39,7 @@ var inventory := InventoryNet.new(true)
 var financials := FinancialsNet.new(true)
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
-var metaverse: MetaverseNet # when/if needed
+var cyberspace: CyberspaceNet # when/if needed
 
 
 
@@ -106,11 +106,11 @@ func get_development_economy() -> float:
 
 
 func get_development_energy() -> float:
-	return operations.get_development_energy()
+	return operations.get_energy_rate()
 
 
 func get_development_manufacturing() -> float:
-	return operations.get_development_manufacturing()
+	return operations.get_manufacturing_rate()
 
 
 func get_development_constructions() -> float:
@@ -118,14 +118,14 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	if metaverse:
-		return metaverse.get_computations()
+	if cyberspace:
+		return cyberspace.get_computation_rate()
 	return 0.0
 
 
 func get_development_information() -> float:
-	if metaverse:
-		return metaverse.get_development_information()
+	if cyberspace:
+		return cyberspace.get_information()
 	return 0.0
 
 
@@ -178,7 +178,7 @@ func set_network_init(data: Array) -> void:
 	var financials_data: Array = data[15]
 	var population_data: Array = data[16]
 	var biome_data: Array = data[17]
-	var metaverse_data: Array = data[18]
+	var cyberspace_data: Array = data[18]
 	
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -190,9 +190,9 @@ func set_network_init(data: Array) -> void:
 	if biome_data:
 		biome = BiomeNet.new(true)
 		biome.set_network_init(biome_data)
-	if metaverse_data:
-		metaverse = MetaverseNet.new(true)
-		metaverse.set_network_init(metaverse_data)
+	if cyberspace_data:
+		cyberspace = CyberspaceNet.new(true)
+		cyberspace.set_network_init(cyberspace_data)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -230,11 +230,11 @@ func sync_server_dirty(data: Array) -> void:
 		if !biome:
 			biome = BiomeNet.new(true)
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_METAVERSE:
-		if !metaverse:
-			metaverse = MetaverseNet.new(true)
-		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 3
+	if dirty & DIRTY_CYBERSPACE:
+		if !cyberspace:
+			cyberspace = CyberspaceNet.new(true)
+		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:

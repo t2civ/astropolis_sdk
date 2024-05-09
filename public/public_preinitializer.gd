@@ -20,6 +20,7 @@ func _init() -> void:
 	print("Astropolis %s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
+	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
 	IVGlobal.project_objects_instantiated.connect(_on_project_objects_instantiated)
 	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
 
@@ -96,15 +97,14 @@ func _init() -> void:
 	IVCoreInitializer.procedural_objects.erase(&"Composition") # using total replacement
 	
 	# static class changes
-	var unit_multipliers := IVUnits.unit_multipliers
-	unit_multipliers[&"flops"] = 1.0 / IVUnits.SECOND # base unit for computation
-	unit_multipliers[&"puhr"] = 1e16 * 3600.0 # 'processor unit hour'; 1e16 flops/s * hr
-	unit_multipliers[&"species"] = 1.0
-	unit_multipliers[&"t/d"] = IVUnits.TONNE / IVUnits.DAY
-	unit_multipliers[&"km^3"] = IVUnits.KM ** 3
-	
-	
 	IVQFormat.exponent_str = "e"
+
+
+func _on_data_tables_imported() -> void:
+	for trade_unit: StringName in IVTableData.tables[&"resources"][&"trade_unit"]:
+		# This adds some odd unit strings like '14 t' to the unit_multipliers
+		# dictionary for subsequent use by GUI. 
+		IVQConvert.convert_quantity(1.0, trade_unit)
 
 
 func _on_project_objects_instantiated() -> void:

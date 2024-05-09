@@ -6,7 +6,7 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name InventoryNet
-extends NetComponent
+extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -16,8 +16,10 @@ extends NetComponent
 #
 # All values in internal units!
 
+const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 
 # Interface read-only! Data flows server -> interface.
+var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _reserves: Array[float] # exists here; we may need it (>= 0.0)
 var _markets: Array[float] # exists here; Trader may commit (>= 0.0)
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
@@ -26,6 +28,7 @@ var _prices: Array[float] # last sale or set by Exchange (NAN if no price)
 var _bids: Array[float] # NAN if none
 var _asks: Array[float] # NAN if none
 
+var _sync := SyncHelper.new()
 
 
 func _init(is_new := false) -> void:
@@ -89,27 +92,27 @@ func set_network_init(data: Array) -> void:
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# apply delta & dirty flags
-	_int_data = data[1]
-	_float_data = data[2]
-	_int_offset = int_offset
-	_float_offset = float_offset
+	# Changes and sets from the server entity.
 	
-	var svr_qtr := _int_data[0]
+	var int_data: Array[int] = data[1]
+	var float_data: Array[float] = data[2]
+	
+	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
 	
-	_add_floats_delta(_reserves)
-	_add_floats_delta(_reserves, 64)
-	_add_floats_delta(_markets)
-	_add_floats_delta(_markets, 64)
-	_add_floats_delta(_in_transits)
-	_add_floats_delta(_in_transits, 64)
-	_add_floats_delta(_contracteds)
-	_add_floats_delta(_contracteds, 64)
-	_set_floats_dirty(_prices)
-	_set_floats_dirty(_prices, 64)
-	_set_floats_dirty(_bids)
-	_set_floats_dirty(_bids, 64)
-	_set_floats_dirty(_asks)
-	_set_floats_dirty(_asks, 64)
+	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
+	_sync.add_floats_delta(_reserves)
+	_sync.add_floats_delta(_reserves, 64)
+	_sync.add_floats_delta(_markets)
+	_sync.add_floats_delta(_markets, 64)
+	_sync.add_floats_delta(_in_transits)
+	_sync.add_floats_delta(_in_transits, 64)
+	_sync.add_floats_delta(_contracteds)
+	_sync.add_floats_delta(_contracteds, 64)
+	_sync.set_floats_dirty(_prices)
+	_sync.set_floats_dirty(_prices, 64)
+	_sync.set_floats_dirty(_bids)
+	_sync.set_floats_dirty(_bids, 64)
+	_sync.set_floats_dirty(_asks)
+	_sync.set_floats_dirty(_asks, 64)
 

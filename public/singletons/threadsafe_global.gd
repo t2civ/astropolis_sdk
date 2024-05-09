@@ -16,5 +16,5 @@ extends Node
 static var tables_aux := {} # derived tables & indexing; see public_preinitializer.gd
 
 # settings
-var total_biodiversity_pool := 1.3e6 # starting target 1.3e6
-var total_information_pool := 4.39e19 # starting target 4.39e19
+var total_biodiversity_pool := 1.3e6
+var total_information_pool := 4.4e19

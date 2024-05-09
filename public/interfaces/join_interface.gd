@@ -12,7 +12,7 @@ extends Interface
 ## which joins component data from Facilities, Bodies and other Joins. 
 ##
 ## Joins handle 5 components (Operations, Financials, Population, Biome and
-## Metaverse) that ultimately derive all data from Facilities. Note that Body
+## Cyberspace) that ultimately derive all data from Facilities. Note that Body
 ## and Player objects also act as Joins for these components.[br][br]
 ##
 ## There are two hard-coded Joins and the rest are procedurally made. They are
@@ -68,7 +68,7 @@ var operations: OperationsNet # always
 var financials: FinancialsNet # only player-specific Joins
 var population: PopulationNet # always
 var biome: BiomeNet # always
-var metaverse: MetaverseNet # always
+var cyberspace: CyberspaceNet # always
 
 # read-only!
 var join_id := -1
@@ -103,11 +103,11 @@ func get_development_economy() -> float:
 
 
 func get_development_energy() -> float:
-	return operations.get_development_energy()
+	return operations.get_energy_rate()
 
 
 func get_development_manufacturing() -> float:
-	return operations.get_development_manufacturing()
+	return operations.get_manufacturing_rate()
 
 
 func get_development_constructions() -> float:
@@ -115,14 +115,14 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	if metaverse:
-		return metaverse.get_computations()
+	if cyberspace:
+		return cyberspace.get_computation_rate()
 	return 0.0
 
 
 func get_development_information() -> float:
-	if metaverse:
-		return metaverse.get_development_information()
+	if cyberspace:
+		return cyberspace.get_information()
 	return 0.0
 
 
@@ -158,7 +158,7 @@ func set_network_init(data: Array) -> void:
 	var financials_data: Array = data[6]
 	var population_data: Array = data[7]
 	var biome_data: Array = data[8]
-	var metaverse_data: Array = data[9]
+	var cyberspace_data: Array = data[9]
 	operations = OperationsNet.new(true, !financials_data.is_empty())
 	operations.set_network_init(operations_data)
 	if financials_data:
@@ -168,8 +168,8 @@ func set_network_init(data: Array) -> void:
 	population.set_network_init(population_data)
 	biome = BiomeNet.new(true)
 	biome.set_network_init(biome_data)
-	metaverse = MetaverseNet.new(true)
-	metaverse.set_network_init(metaverse_data)
+	cyberspace = CyberspaceNet.new(true)
+	cyberspace.set_network_init(cyberspace_data)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -190,9 +190,9 @@ func sync_server_dirty(data: Array) -> void:
 		k += 2
 	if dirty & DIRTY_BIOME:
 		biome.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_METAVERSE:
-		metaverse.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 3
+	if dirty & DIRTY_CYBERSPACE:
+		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 	
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:
