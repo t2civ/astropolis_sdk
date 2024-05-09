@@ -1,23 +1,24 @@
 ## AI Chats
 [General Notes](#General-Notes)  
-[World population and agency employees](#World-population-and-agency-employees)  
+[Population](#Population)  
 [Anthropogenic Mass](#Anthropogenic-Mass)  
+[Biomass & Bioproductivity](#Biomass--Bioproductivity)  
 [Renewable Power Generation](#Renewable-Power-Generation)  
 [Non-Renewable Power Generation](#Non-Renewable-Power-Generation)  
-[ISS and Tiangong](#ISS-and-Tiangong)  
+[ISS & Tiangong](#ISS--Tiangong)  
 [Moon Geology](#Moon-Geology)  
 [Volatiles](#Volatiles)  
 [Metal Abundances](#Metal-Abundances)  
-[Kerogen and Fossil Fuels Deposits](#Kerogen-and-Fossil-Fuels-Deposits)  
+[Fossil Fuel Deposits](#Fossil-Fuel-Deposits)  
 [Earth Fresh Water](#Earth-Fresh-Water)  
-[Coal Combustion](#Coal-Combustion)  
-[Oil and Gas Energy Input](#Oil-and-Gas-Energy-Input)  
-[Oil and Gas Production](#Oil-and-Gas-Production)  
-[Mining Energies and Strip Ratio](#Mining-Energies-and-Strip-Ratio)  
+[Combustion Power](#Combustion-Power)  
+[Oil & Gas Energy Input](#Oil--Gas-Energy-Input)  
+[Oil & Gas Production](#Oil--Gas-Production)  
+[Mining Energies & Strip Ratios](#Mining-Energies--Strip-Ratios)  
 [Coal Mining](#Coal-Mining)  
 [Uranium Mining](#Uranium-Mining)  
 [Industrial Metals Mining](#Industrial-Metals-Mining)  
-[Precious Metals and Rare Earths Mining](#Precious-Metals-and-Rare-Earths-Mining)  
+[Precious Metals & Rare Earths Mining](#Precious-Metals--Rare-Earths-Mining)  
 [Industrial Minerals Mining](#Industrial-Minerals-Mining)  
 [Resource Prices](#Resource-Prices)
 
@@ -25,7 +26,7 @@
 
 Responses are usually Claude-3-Opus (if not indicated otherwise) but sometimes GPT-4. They both go off the rails sometimes and I can't say which is better yet. I favor Claude-3-Opus mainly because its formatting is more friendly to copy/paste here. See tables/README.md for conversion of real-world data to simulator table values.
 
-## World population and agency employees
+## Population
 
 | Region | 2000 | 2010 | 2020 | 2030 | 2040 | 2050 | 2100 |
 |--------|------|------|------|------|------|------|------|
@@ -107,6 +108,170 @@ As of the recent estimates (around the 2020s), here's a rough breakdown:
 7. **Other**: This category includes all other countries not specifically mentioned above, such as countries in Africa, South America, the rest of Asia, and Oceania. These regions include rapidly growing economies as well as many developing nations with less infrastructure development. **Estimated proportion: 15-20%**
 
 These estimates are very rough and depend on various assumptions about economic activity, development patterns, and construction materials used. The proportions can also change over time as different regions develop or reduce their infrastructure activities. Moreover, the actual situation might differ significantly based on new data or changes in global economic and development trends.
+
+## Biomass & Bioproductivity
+
+Bioproductivity, or the rate at which biomass is produced by living organisms, varies significantly across different regions of the world. The total global net primary production (NPP), which represents the total amount of carbon captured by plants through photosynthesis minus the carbon lost through respiration, is estimated to be around 104.9 petagrams of carbon per year (Pg C/yr) or 104.9 billion metric tons of carbon per year. This translates to approximately 11.96 million tonnes of carbon per hour.
+
+Regional differences in bioproductivity are influenced by factors such as climate, soil quality, and ecosystem type. Some of the most productive regions include:
+
+1. Tropical rainforests: Rainforests in the Amazon, Congo Basin, and Southeast Asia have high NPP values, ranging from 1,000 to 2,000 grams of carbon per square meter per year (g C/m²/yr) or 0.114 to 0.228 tonnes of carbon per hectare per hour.
+
+2. Temperate forests: Temperate forests in North America, Europe, and Asia have moderate NPP values, ranging from 600 to 1,500 g C/m²/yr or 0.068 to 0.171 tonnes of carbon per hectare per hour.
+
+3. Grasslands and savannas: Grasslands and savannas in Africa, South America, and Australia have NPP values ranging from 200 to 1,000 g C/m²/yr or 0.023 to 0.114 tonnes of carbon per hectare per hour.
+
+In contrast, regions with low bioproductivity include:
+
+1. Deserts: Deserts in Africa, Asia, and Australia have low NPP values, typically below 100 g C/m²/yr or 0.011 tonnes of carbon per hectare per hour.
+
+2. Tundra: Tundra regions in the Arctic and high-altitude areas have low NPP values due to cold temperatures and short growing seasons, ranging from 50 to 200 g C/m²/yr or 0.006 to 0.023 tonnes of carbon per hectare per hour.
+
+The total global biomass, which is the total mass of living organisms on Earth, is estimated to be around 550 billion tonnes of carbon. This is equivalent to approximately 1,100 billion tonnes of dry matter biomass. The distribution of biomass also varies across regions, with the highest biomass found in tropical rainforests, followed by temperate forests, and the lowest biomass in deserts and tundra regions.
+
+It is important to note that human activities, such as deforestation, land-use change, and climate change, can significantly impact bioproductivity and biomass distribution worldwide. Efforts to conserve and restore ecosystems are crucial for maintaining the Earth's bioproductivity and the various ecosystem services it provides.
+
+****
+
+To discuss bioproductivity and biomass in the specified land areas, I will provide estimates of their net primary production (NPP) and biomass per hectare, along with ratios expressing their values relative to the global average. Please note that these are rough estimates based on available data and may not account for all the variability within each region.
+
+1. USA:
+   - NPP: Approximately 600 g C/m²/yr or 0.068 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 1.2 (20% higher than the global average)
+   - Biomass: Estimated at 120 tonnes of carbon per hectare
+   - Biomass ratio to global average: 1.1 (10% higher than the global average)
+
+2. Russia:
+   - NPP: Approximately 400 g C/m²/yr or 0.046 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 0.8 (20% lower than the global average)
+   - Biomass: Estimated at 90 tonnes of carbon per hectare
+   - Biomass ratio to global average: 0.8 (20% lower than the global average)
+
+3. China:
+   - NPP: Approximately 700 g C/m²/yr or 0.080 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 1.4 (40% higher than the global average)
+   - Biomass: Estimated at 100 tonnes of carbon per hectare
+   - Biomass ratio to global average: 0.9 (10% lower than the global average)
+
+4. Europe:
+   - NPP: Approximately 600 g C/m²/yr or 0.068 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 1.2 (20% higher than the global average)
+   - Biomass: Estimated at 120 tonnes of carbon per hectare
+   - Biomass ratio to global average: 1.1 (10% higher than the global average)
+
+5. India:
+   - NPP: Approximately 800 g C/m²/yr or 0.091 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 1.6 (60% higher than the global average)
+   - Biomass: Estimated at 80 tonnes of carbon per hectare
+   - Biomass ratio to global average: 0.7 (30% lower than the global average)
+
+6. Japan:
+   - NPP: Approximately 1,000 g C/m²/yr or 0.114 tonnes of carbon per hectare per hour.
+   - NPP ratio to global average: 2.0 (100% higher than the global average)
+   - Biomass: Estimated at 140 tonnes of carbon per hectare
+   - Biomass ratio to global average: 1.3 (30% higher than the global average)
+
+These estimates show that bioproductivity and biomass vary significantly across the specified land areas. Factors such as climate, topography, land use, and ecosystem type contribute to these differences. For example, Japan and India have higher NPP ratios due to favorable climatic conditions and the presence of productive ecosystems, while Russia has lower values due to its vast expanse of tundra and boreal forests with lower productivity. It is important to note that these are general estimates, and actual values may vary depending on the specific location and ecosystem within each land area.
+
+****
+
+To calculate the total bioproductivity and total biomass for each region and the "Other" category, I will use the provided ratios and the land area of each region. The global land area (excluding Antarctica and Greenland) is approximately 13,000 million hectares.
+
+Land areas (in million hectares):
+- USA: 916
+- Russia: 1,638
+- China: 938
+- Europe: 1,015
+- India: 297
+- Japan: 36
+- Other: 8,160
+
+1. USA:
+   - Total bioproductivity: 916 * 1.2 = 1,099.2 million hectares of global average productivity
+   - Total biomass: 916 * 1.1 = 1,007.6 million hectares of global average biomass
+
+2. Russia:
+   - Total bioproductivity: 1,638 * 0.8 = 1,310.4 million hectares of global average productivity
+   - Total biomass: 1,638 * 0.8 = 1,310.4 million hectares of global average biomass
+
+3. China:
+   - Total bioproductivity: 938 * 1.4 = 1,313.2 million hectares of global average productivity
+   - Total biomass: 938 * 0.9 = 844.2 million hectares of global average biomass
+
+4. Europe:
+   - Total bioproductivity: 1,015 * 1.2 = 1,218.0 million hectares of global average productivity
+   - Total biomass: 1,015 * 1.1 = 1,116.5 million hectares of global average biomass
+
+5. India:
+   - Total bioproductivity: 297 * 1.6 = 475.2 million hectares of global average productivity
+   - Total biomass: 297 * 0.7 = 207.9 million hectares of global average biomass
+
+6. Japan:
+   - Total bioproductivity: 36 * 2.0 = 72.0 million hectares of global average productivity
+   - Total biomass: 36 * 1.3 = 46.8 million hectares of global average biomass
+
+7. Other:
+   - Total bioproductivity: 8,160 * 1.0 = 8,160.0 million hectares of global average productivity (assuming the "Other" category has a ratio of 1.0)
+   - Total biomass: 8,160 * 1.0 = 8,160.0 million hectares of global average biomass (assuming the "Other" category has a ratio of 1.0)
+
+In summary, the total bioproductivity and biomass for each region in terms of global average equivalent are:
+
+- USA: 1,099.2 and 1,007.6 million hectares
+- Russia: 1,310.4 and 1,310.4 million hectares
+- China: 1,313.2 and 844.2 million hectares
+- Europe: 1,218.0 and 1,116.5 million hectares
+- India: 475.2 and 207.9 million hectares
+- Japan: 72.0 and 46.8 million hectares
+- Other: 8,160.0 and 8,160.0 million hectares
+
+Please note that these calculations are based on the provided ratios and land areas, and the actual values may vary depending on the specific ecosystems and land use patterns within each region.
+
+****
+
+To calculate the total estimated bioproductivity in tonnes per hour and total estimated biomass in tonnes for each region, I will use the global average bioproductivity and biomass values from the previous discussion.
+
+Global average bioproductivity: 11.96 million tonnes of carbon per hour
+Global average biomass: 550 billion tonnes of carbon
+
+1. USA:
+   - Total bioproductivity: (1,099.2 / 13,000) * 11.96 = 1.01 million tonnes of carbon per hour
+   - Total biomass: (1,007.6 / 13,000) * 550 = 42.63 billion tonnes of carbon
+
+2. Russia:
+   - Total bioproductivity: (1,310.4 / 13,000) * 11.96 = 1.21 million tonnes of carbon per hour
+   - Total biomass: (1,310.4 / 13,000) * 550 = 55.45 billion tonnes of carbon
+
+3. China:
+   - Total bioproductivity: (1,313.2 / 13,000) * 11.96 = 1.21 million tonnes of carbon per hour
+   - Total biomass: (844.2 / 13,000) * 550 = 35.74 billion tonnes of carbon
+
+4. Europe:
+   - Total bioproductivity: (1,218.0 / 13,000) * 11.96 = 1.12 million tonnes of carbon per hour
+   - Total biomass: (1,116.5 / 13,000) * 550 = 47.27 billion tonnes of carbon
+
+5. India:
+   - Total bioproductivity: (475.2 / 13,000) * 11.96 = 0.44 million tonnes of carbon per hour
+   - Total biomass: (207.9 / 13,000) * 550 = 8.80 billion tonnes of carbon
+
+6. Japan:
+   - Total bioproductivity: (72.0 / 13,000) * 11.96 = 0.07 million tonnes of carbon per hour
+   - Total biomass: (46.8 / 13,000) * 550 = 1.98 billion tonnes of carbon
+
+7. Other:
+   - Total bioproductivity: (8,160.0 / 13,000) * 11.96 = 7.51 million tonnes of carbon per hour
+   - Total biomass: (8,160.0 / 13,000) * 550 = 345.38 billion tonnes of carbon
+
+In summary, the total estimated bioproductivity and biomass for each region are:
+
+- USA: 1.01 million tonnes of carbon per hour and 42.63 billion tonnes of carbon
+- Russia: 1.21 million tonnes of carbon per hour and 55.45 billion tonnes of carbon
+- China: 1.21 million tonnes of carbon per hour and 35.74 billion tonnes of carbon
+- Europe: 1.12 million tonnes of carbon per hour and 47.27 billion tonnes of carbon
+- India: 0.44 million tonnes of carbon per hour and 8.80 billion tonnes of carbon
+- Japan: 0.07 million tonnes of carbon per hour and 1.98 billion tonnes of carbon
+- Other: 7.51 million tonnes of carbon per hour and 345.38 billion tonnes of carbon
+
+Please note that these estimates are based on the global average values and the calculated ratios from the previous discussion. Actual values may vary depending on the specific ecosystems and land use patterns within each region.
 
 ## Renewable Power Generation
 
@@ -447,7 +612,7 @@ Projected 2030 Nameplate Power Generation Capacity (GW)
 
 Please note that these figures are projections based on current trends, policies, and announced plans. Actual values may differ depending on various factors such as economic conditions, policy changes, and technological advancements. The projections suggest a continued shift towards natural gas and a slight increase in nuclear capacity, while coal is expected to decline in most regions. Ethanol capacity is projected to grow slowly, but will still represent a small portion of total power generation capacity.
 
-## ISS and Tiangong
+## ISS & Tiangong
 
 The International Space Station (ISS) has a large solar array that provides power to the various modules and segments. Here's a breakdown of the solar power capacity and actual power generation for the USOS (United States Orbital Segment) and Zvezda segments:
 
@@ -1481,7 +1646,7 @@ Moons:
 In summary, the proportion of native metals versus metal ores varies greatly depending on the geological context. Earth's core and M-type asteroids are dominated by native metals, while Earth's crust and C-type asteroids are dominated by metal ores. The mantles of Earth and other silicate bodies contain a mix of native metals and metal oxides, with the proportions varying based on depth and local conditions.
 
 
-## Kerogen and Fossil Fuels Deposits
+## Fossil Fuel Deposits
 
 The distribution and abundance of fossil fuels (coal, oil, and gas) in Earth's crust is a complex topic that depends on various geological factors. Here's a detailed overview:
 
@@ -1777,7 +1942,7 @@ Water %wt (USA) = 100 × (8.83 × 10^15 tonnes) / (1.33 × 10^20 tonnes) = 0.006
 
 Please note that these calculations assume a uniform density of 2.7 g/cm^3 for the upper 5 km of the Earth's crust, which is a simplification. In reality, the density of the crust varies depending on the composition of the rocks and minerals present.
 
-## Coal Combustion
+## Combustion Power
 
 The primary chemical reaction in coal combustion power generation is the oxidation of carbon (C) to carbon dioxide (CO₂). However, coal also contains other elements such as hydrogen (H), sulfur (S), and nitrogen (N), which undergo oxidation reactions as well.
 
@@ -1878,7 +2043,114 @@ Total products per kg of coal:
 
 In summary, for every kg of coal combusted with the given composition, the reactants are 1 kg of coal and 2.414 kg of oxygen, and the products are 2.75 kg of carbon dioxide, 0.405 kg of water vapor, 0.04 kg of sulfur dioxide, and 0.064 kg of nitrogen monoxide.
 
-## Oil and Gas Energy Input
+****
+
+Natural Gas Combustion:
+Reaction:
+CH₄ (16 g/mol) + 2O₂ (64 g/mol) → CO₂ (44 g/mol) + 2H₂O (36 g/mol) + Heat
+Heat released: 55.5 MJ/kg of methane
+
+Per kg of methane:
+- Reactants:
+  - Methane: 1 kg
+  - Oxygen: 1 kg CH₄ × (2 mol O₂ / 1 mol CH₄) × (32 g/mol O₂ / 16 g/mol CH₄) = 4.00 kg O₂
+- Products:
+  - Carbon dioxide: 1 kg CH₄ × (1 mol CO₂ / 1 mol CH₄) × (44 g/mol CO₂ / 16 g/mol CH₄) = 2.75 kg CO₂
+  - Water vapor: 1 kg CH₄ × (2 mol H₂O / 1 mol CH₄) × (18 g/mol H₂O / 16 g/mol CH₄) = 2.25 kg H₂O
+
+Total heat: 55.5 MJ/kg × 0.000278 MWh/MJ × 1000 kg/tonne = 15.4 MWh/tonne
+
+Oil Combustion:
+Reaction:
+C₁₂H₂₃ (167 g/mol) + 17.75O₂ (568 g/mol) → 12CO₂ (528 g/mol) + 11.5H₂O (207 g/mol) + Heat
+Heat released: 43.1 MJ/kg of fuel oil
+
+Per kg of fuel oil:
+- Reactants:
+  - Fuel oil: 1 kg
+  - Oxygen: 1 kg C₁₂H₂₃ × (17.75 mol O₂ / 1 mol C₁₂H₂₃) × (32 g/mol O₂ / 167 g/mol C₁₂H₂₃) = 3.40 kg O₂
+- Products:
+  - Carbon dioxide: 1 kg C₁₂H₂₃ × (12 mol CO₂ / 1 mol C₁₂H₂₃) × (44 g/mol CO₂ / 167 g/mol C₁₂H₂₃) = 3.16 kg CO₂
+  - Water vapor: 1 kg C₁₂H₂₃ × (11.5 mol H₂O / 1 mol C₁₂H₂₃) × (18 g/mol H₂O / 167 g/mol C₁₂H₂₃) = 1.24 kg H₂O
+
+Total heat: 43.1 MJ/kg × 0.000278 MWh/MJ × 1000 kg/tonne = 12.0 MWh/tonne
+
+In summary:
+- Natural gas combustion:
+  - Reactants: 1 kg methane, 4.00 kg oxygen
+  - Products: 2.75 kg carbon dioxide, 2.25 kg water vapor
+  - Heat released: 55.5 MJ/kg or 15.4 MWh/tonne
+- Fuel oil combustion:
+  - Reactants: 1 kg fuel oil, 3.40 kg oxygen
+  - Products: 3.16 kg carbon dioxide, 1.24 kg water vapor
+  - Heat released: 43.1 MJ/kg or 12.0 MWh/tonne
+
+****
+
+Natural Gas Power Plant Efficiencies:
+Natural gas power plants have a wide range of efficiencies depending on the technology used:
+
+1. Simple cycle gas turbine plants: 35-40%
+2. Combined cycle gas turbine (CCGT) plants: 50-62%
+3. Cogeneration or combined heat and power (CHP) plants: 75-90% (overall efficiency, including both electricity and heat production)
+
+The worldwide average efficiency for natural gas power plants is approximately 50-55%, as CCGT plants are increasingly common due to their higher efficiency and lower emissions compared to simple cycle plants.
+
+Oil Power Plant Efficiencies:
+Oil-fired power plants typically have lower efficiencies compared to natural gas plants:
+
+1. Conventional steam turbine plants: 35-45%
+2. Combined cycle plants: 45-50%
+
+The worldwide average efficiency for oil-fired power plants is around 40-45%. However, oil is less commonly used for electricity generation compared to natural gas and coal due to its higher cost and greater environmental impact.
+
+Factors Affecting Power Plant Efficiencies:
+Several factors can influence the efficiency of natural gas and oil power plants:
+
+1. Plant design and technology: Advanced technologies, such as combined cycle systems, lead to higher efficiencies.
+2. Operating conditions: Efficiency can vary depending on the load factor, ambient temperature, and altitude.
+3. Fuel quality: The composition and purity of the fuel can affect combustion efficiency.
+4. Maintenance and age of the plant: Regular maintenance and upgrades can help maintain or improve efficiency, while older plants may have lower efficiencies due to wear and tear.
+
+In summary, natural gas power plants have efficiencies ranging from 35% to 62%, with a worldwide average of 50-55%, while oil power plants have efficiencies ranging from 35% to 50%, with a worldwide average of 40-45%. The actual efficiency of a specific plant depends on various factors, such as the technology used, operating conditions, and maintenance practices.
+
+****
+
+Ethanol Combustion:
+Reaction:
+C₂H₅OH (46 g/mol) + 3O₂ (96 g/mol) → 2CO₂ (88 g/mol) + 3H₂O (54 g/mol) + Heat
+Heat released: 29.7 MJ/kg of ethanol
+
+Per kg of ethanol:
+- Reactants:
+  - Ethanol: 1 kg
+  - Oxygen: 1 kg C₂H₅OH × (3 mol O₂ / 1 mol C₂H₅OH) × (32 g/mol O₂ / 46 g/mol C₂H₅OH) = 2.09 kg O₂
+- Products:
+  - Carbon dioxide: 1 kg C₂H₅OH × (2 mol CO₂ / 1 mol C₂H₅OH) × (44 g/mol CO₂ / 46 g/mol C₂H₅OH) = 1.91 kg CO₂
+  - Water vapor: 1 kg C₂H₅OH × (3 mol H₂O / 1 mol C₂H₅OH) × (18 g/mol H₂O / 46 g/mol C₂H₅OH) = 1.17 kg H₂O
+
+Total heat: 29.7 MJ/kg × 0.000278 MWh/MJ × 1000 kg/tonne = 8.26 MWh/tonne
+
+Ethanol Power Plant Efficiencies:
+Ethanol can be used as a fuel in power plants, either in pure form or blended with gasoline. The efficiency of ethanol power plants varies depending on the technology used:
+
+1. Ethanol-fired boilers with steam turbines: 30-35%
+2. Ethanol-fired gas turbines: 35-40%
+3. Ethanol-fired combined cycle plants: 45-50%
+
+The worldwide average efficiency for ethanol power plants is around 35-40%. However, ethanol is not as widely used for electricity generation as other fuels like natural gas, coal, or oil. Ethanol is more commonly used as a transportation fuel, either blended with gasoline or in pure form in flex-fuel vehicles.
+
+Factors Affecting Ethanol Power Plant Efficiencies:
+Similar to natural gas and oil power plants, several factors can influence the efficiency of ethanol power plants:
+
+1. Plant design and technology: Advanced technologies, such as combined cycle systems, lead to higher efficiencies.
+2. Operating conditions: Efficiency can vary depending on the load factor, ambient temperature, and altitude.
+3. Ethanol quality: The purity and water content of the ethanol can affect combustion efficiency.
+4. Maintenance and age of the plant: Regular maintenance and upgrades can help maintain or improve efficiency, while older plants may have lower efficiencies due to wear and tear.
+
+In summary, ethanol combustion releases 29.7 MJ/kg or 8.26 MWh/tonne of heat. Ethanol power plants have efficiencies ranging from 30% to 50%, with a worldwide average of 35-40%. The actual efficiency of a specific plant depends on factors such as the technology used, operating conditions, and maintenance practices. However, ethanol is less commonly used for electricity generation compared to other fuels.
+
+## Oil & Gas Energy Input
 
 Energy input requirements for oil and gas drilling can vary significantly depending on factors such as the depth of the well, the geology of the formation, and the specific drilling techniques employed. However, here is a general overview of the energy inputs involved in the drilling process:
 
@@ -1957,7 +2229,7 @@ Conventional gas: 0.14 to 0.46 MWh/tonne
 Unconventional gas: 0.46 to 1.39 MWh/tonne
 Please note that these calculations are based on the assumed energy content values and the provided EROI ranges. Actual values may vary depending on the specific characteristics of the oil and gas reserves and the extraction methods employed.
 
-## Oil and Gas Production
+## Oil & Gas Production
 
 _From GPT-4. Opus was going wildly off the rails for some reason._
 
@@ -2149,7 +2421,7 @@ Worldwide oil and gas production is a vast and complex industry, with numerous s
 It's important to note that these figures are estimates and can vary depending on the source and the specific definitions used for conventional/unconventional resources and depth categories. Additionally, the distribution of production depths can differ significantly between oil and gas, as well as across different regions worldwide.
 
 
-## Mining Energies and Strip Ratio
+## Mining Energies & Strip Ratios
 
 Here is a summary of typical ore grades, mine extraction byproducts, and energy requirements for mining various commodities:
 
@@ -2967,7 +3239,7 @@ It's important to note that the prices for concentrates, intermediate products, 
 
 In practice, the actual prices may vary depending on the specific grade, impurities, and other factors. Higher-grade ores or concentrates may command a premium over the benchmark prices, while lower-grade materials may be discounted.
 
-## Precious Metals and Rare Earths Mining
+## Precious Metals & Rare Earths Mining
 
 Here is a list of some common precious metals, rare earth elements, and the ores from which they are obtained, along with typical grades:
 
