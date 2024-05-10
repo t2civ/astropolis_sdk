@@ -33,7 +33,8 @@ enum DirtyFlags {
 	DIRTY_POPULATION = 1 << 5,
 	DIRTY_BIOME = 1 << 6,
 	DIRTY_CYBERSPACE = 1 << 7,
-	DIRTY_COMPOSITIONS = 1 << 8,
+	DIRTY_MARKETPLACE = 1 << 8,
+	DIRTY_COMPOSITIONS = 1 << 9,
 }
 
 const DIRTY_QUARTER := DirtyFlags.DIRTY_QUARTER
@@ -44,6 +45,7 @@ const DIRTY_FINANCIALS := DirtyFlags.DIRTY_FINANCIALS
 const DIRTY_POPULATION := DirtyFlags.DIRTY_POPULATION
 const DIRTY_BIOME := DirtyFlags.DIRTY_BIOME
 const DIRTY_CYBERSPACE := DirtyFlags.DIRTY_CYBERSPACE
+const DIRTY_MARKETPLACE := DirtyFlags.DIRTY_MARKETPLACE
 const DIRTY_COMPOSITIONS := DirtyFlags.DIRTY_COMPOSITIONS
 
 enum EntityType {
@@ -230,6 +232,8 @@ func get_facilities() -> Array[Interface]:
 
 # Components
 
+# FIXME: All these should return null. Subclass can override.
+
 func get_operations() -> OperationsNet:
 	return get(&"operations")
 
@@ -254,7 +258,12 @@ func get_cyberspace() -> CyberspaceNet:
 	return get(&"cyberspace")
 
 
-# FIXME: Remove component methods below...
+func get_marketplace(_player_id: int) -> MarketplaceNet:
+	# Overrides in FacilityInterface & BodyInterface.
+	return null
+
+
+# FIXME?: Remove component API below?
 
 
 # Inventory
@@ -297,6 +306,7 @@ func get_resource_in_stock(resource_type: int) -> float:
 
 func has_financials() -> bool:
 	return get(&"financials") != null
+
 
 
 # *****************************************************************************

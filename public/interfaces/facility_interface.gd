@@ -150,6 +150,9 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
+func get_marketplace(player_id: int) -> MarketplaceNet:
+	return body.get_marketplace(player_id)
+
 
 # *****************************************************************************
 # sync

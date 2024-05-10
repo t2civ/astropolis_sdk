@@ -36,6 +36,7 @@ var operations: OperationsNet # when/if needed
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
 var cyberspace: CyberspaceNet # when/if needed
+var marketplace: MarketplaceNet # when/if needed
 var compositions: Array[CompositionNet] = [] # resizable container - not threadsafe!
 
 
@@ -142,7 +143,19 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
-# Body specific
+# Marketplace
+
+func get_marketplace(_player_id: int) -> MarketplaceNet:
+	# TODO: alt_market for blockaded player
+	return marketplace
+
+
+
+func get_marketplace_price(type: int) -> float:
+	return marketplace.get_price(type)
+
+
+# Compositions
 
 func has_compositions() -> bool:
 	return !compositions.is_empty()
@@ -231,7 +244,8 @@ func set_network_init(data: Array) -> void:
 	var population_data: Array = data[9]
 	var biome_data: Array = data[10]
 	var cyberspace_data: Array = data[11]
-	var compositions_data: Array = data[12]
+	var marketplace_data: Array = data[12]
+	var compositions_data: Array = data[13]
 	
 	if operations_data:
 		operations = OperationsNet.new(true)
@@ -245,7 +259,9 @@ func set_network_init(data: Array) -> void:
 	if cyberspace_data:
 		cyberspace = CyberspaceNet.new(true)
 		cyberspace.set_network_init(cyberspace_data)
-	
+	if marketplace_data:
+		marketplace = MarketplaceNet.new(true)
+		marketplace.set_network_init(marketplace_data)
 	if compositions_data:
 		var n_compositions := compositions_data.size()
 		compositions.resize(n_compositions)
@@ -291,6 +307,11 @@ func sync_server_dirty(data: Array) -> void:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 3
+	if dirty & DIRTY_MARKETPLACE:
+		if !marketplace:
+			marketplace = MarketplaceNet.new(true)
+		marketplace.add_dirty(data, offsets[k], offsets[k + 1])
+		k += 2
 	if dirty & DIRTY_COMPOSITIONS:
 		var dirty_compositions := offsets[k]
 		k += 1
