@@ -121,6 +121,28 @@ func get_development_biodiversity() -> float:
 	return biodiversity
 
 
+# Components
+
+func get_operations() -> OperationsNet:
+	return operations
+
+
+func get_financials() -> FinancialsNet:
+	return financials
+
+
+func get_population() -> PopulationNet:
+	return population
+
+
+func get_biome() -> BiomeNet:
+	return biome
+
+
+func get_cyberspace() -> CyberspaceNet:
+	return cyberspace
+
+
 
 # *****************************************************************************
 # sync

@@ -230,82 +230,35 @@ func get_facilities() -> Array[Interface]:
 	# AI thread only!
 	return []
 
+
 # Components
 
-# FIXME: All these should return null. Subclass can override.
-
 func get_operations() -> OperationsNet:
-	return get(&"operations")
-
-
-func get_inventory() -> InventoryNet:
-	return get(&"inventory")
-
-
-func get_financials() -> FinancialsNet:
-	return get(&"financials")
-
-
-func get_population() -> PopulationNet:
-	return get(&"population")
-
-
-func get_biome() -> BiomeNet:
-	return get(&"biome")
-
-
-func get_cyberspace() -> CyberspaceNet:
-	return get(&"cyberspace")
-
-
-func get_marketplace(_player_id: int) -> MarketplaceNet:
-	# Overrides in FacilityInterface & BodyInterface.
 	return null
 
 
-# FIXME?: Remove component API below?
+func get_inventory() -> InventoryNet:
+	return null
 
 
-# Inventory
-
-func get_resource_price(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_price(resource_type)
+func get_financials() -> FinancialsNet:
+	return null
 
 
-func get_resource_bid(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_bid(resource_type)
+func get_population() -> PopulationNet:
+	return null
 
 
-func get_resource_ask(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_ask(resource_type)
+func get_biome() -> BiomeNet:
+	return null
 
 
-func get_resource_contracted(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_contracted(resource_type)
+func get_cyberspace() -> CyberspaceNet:
+	return null
 
 
-func get_resource_in_stock(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_in_stock(resource_type)
-
-# Financials
-
-func has_financials() -> bool:
-	return get(&"financials") != null
+func get_marketplace(_player_id: int) -> MarketplaceNet:
+	return null
 
 
 

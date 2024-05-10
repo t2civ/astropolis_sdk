@@ -27,6 +27,7 @@ enum {
 
 
 const N_COLUMNS := 6
+const N_DATA := 7
 
 const TRADE_CLASS_TEXTS := [ # correspond to TradeClasses
 	"",
@@ -88,6 +89,24 @@ var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_r
 	$TabContainer/Biologicals/Hdrs/Spacer,
 	$TabContainer/Cyber/Hdrs/Spacer,
 ]
+@onready var _inventory_hdrs: Array[Label] = [
+	$TabContainer/Energy/Hdrs/Hdr4,
+	$TabContainer/Ores/Hdrs/Hdr4,
+	$TabContainer/Volatiles/Hdrs/Hdr4,
+	$TabContainer/Materials/Hdrs/Hdr4,
+	$TabContainer/Manufactured/Hdrs/Hdr4,
+	$TabContainer/Biologicals/Hdrs/Hdr4,
+	$TabContainer/Cyber/Hdrs/Hdr4,
+]
+@onready var _contracted_hdrs: Array[Label] = [
+	$TabContainer/Energy/Hdrs/Hdr5,
+	$TabContainer/Ores/Hdrs/Hdr5,
+	$TabContainer/Volatiles/Hdrs/Hdr5,
+	$TabContainer/Materials/Hdrs/Hdr5,
+	$TabContainer/Manufactured/Hdrs/Hdr5,
+	$TabContainer/Biologicals/Hdrs/Hdr5,
+	$TabContainer/Cyber/Hdrs/Hdr5,
+]
 
 
 func _ready() -> void:
@@ -133,57 +152,84 @@ func _select_tab(tab: int) -> void:
 func _update_tab(_suppress_camera_move := false) -> void:
 	if !visible or !_state.is_running:
 		return
-	if !visible or !_state.is_running:
-		return
 	if current_tab == TAB_TRANSPORT:
 		_no_markets_label.hide()
 		_tab_container.show()
 		return
+		
 	var target_name := _selection_manager.get_selection_name()
-	if MainThreadGlobal.has_markets(target_name):
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(target_name))
+	var interface := MainThreadGlobal.get_interface_by_name(target_name)
+	if !interface:
+		_update_no_markets()
+		return
+	
+	var marketplace := interface.get_marketplace(-1)
+	var inventory := interface.get_inventory()
+	
+	if marketplace or inventory:
+		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(marketplace, inventory))
 	else:
-		_update_no_markets(MainThreadGlobal.has_development(target_name))
+		_update_no_markets()
 
 
-func _update_no_markets(has_development := false) -> void:
+func _update_no_markets() -> void:
 	_tab_container.hide()
-	_no_markets_label.text = (&"LABEL_NO_MARKETS_SELECT_ENTITY" if has_development
-			else &"LABEL_NO_MARKETS")
 	_no_markets_label.show()
 
 
 # *****************************************************************************
 # AI thread !!!!
 
-func _get_ai_data(target_name: StringName) -> void:
+func _get_ai_data(marketplace: MarketplaceNet, inventory: InventoryNet) -> void:
 	
-	var interface := Interface.get_interface_by_name(target_name)
-	if !interface:
-		_update_no_markets.call_deferred()
-		return
+	var is_marketplace := true if marketplace else false
+	var is_inventory := true if inventory else false
+	
 	var tab := current_tab
 	var resource_class_resources: Array = _resource_classes_resources[tab]
 	var data := []
 	var n_resources := resource_class_resources.size()
 	var i := 0
 	while i < n_resources:
+		
 		var resource_type: int = resource_class_resources[i]
+		var price := NAN
+		var bid := NAN
+		var ask := NAN
+		var volume := NAN
+		var in_stock := NAN
+		var contracted := NAN
+		
+		if is_marketplace:
+			price = marketplace.get_price(resource_type)
+			bid = marketplace.get_bid(resource_type)
+			ask = marketplace.get_ask(resource_type)
+			volume = marketplace.get_volume(resource_type)
+		if is_inventory:
+			in_stock = inventory.get_in_stock(resource_type)
+			contracted = inventory.get_contracted(resource_type)
+		
 		data.append(resource_type)
-		data.append(interface.get_resource_price(resource_type))
-		data.append(interface.get_resource_bid(resource_type))
-		data.append(interface.get_resource_ask(resource_type))
-		data.append(interface.get_resource_in_stock(resource_type))
-		data.append(interface.get_resource_contracted(resource_type))
+		data.append(price)
+		data.append(bid)
+		data.append(ask)
+		data.append(volume)
+		data.append(in_stock)
+		data.append(contracted)
 		i += 1
 	
-	_update_tab_display.call_deferred(tab, n_resources, data)
+	
+	
+	_update_tab_display.call_deferred(tab, n_resources, data, is_marketplace, is_inventory)
 	
 
 # *****************************************************************************
 # Main thread !!!!
 
-func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
+# TODO: Volume vs bid/ask toggle
+
+func _update_tab_display(tab: int, n_resources: int, data: Array, _is_marketplace: bool,
+		is_inventory: bool) -> void:
 	# We convert prices and quantities to trade_unit here. We're assuming
 	# all trade_units are multipliers, but that could change (e.g., if we
 	# implement floating currencies).
@@ -211,16 +257,21 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		vbox.add_child(hbox)
 		n_children += 1
 	
+	# header visibilities
+	_inventory_hdrs[tab].text = "Inventory" if is_inventory else ""
+	_contracted_hdrs[tab].text = "Contracted" if is_inventory else ""
+	
 	var currency_multiplier: float = unit_multipliers[&"$"]
 	
 	var i := 0
 	while i < n_resources:
-		var resource_type: int = data[i * N_COLUMNS]
-		var price: float = data[i * N_COLUMNS + 1]
-		var bid: float = data[i * N_COLUMNS + 2]
-		var ask: float = data[i * N_COLUMNS + 3]
-		var in_stock: float = data[i * N_COLUMNS + 4]
-		var contracted: float = data[i * N_COLUMNS + 5]
+		var resource_type: int = data[i * N_DATA]
+		var price: float = data[i * N_DATA + 1]
+		var bid: float = data[i * N_DATA + 2]
+		var ask: float = data[i * N_DATA + 3]
+		var volume: float = data[i * N_DATA + 4]
+		var in_stock: float = data[i * N_DATA + 5]
+		var contracted: float = data[i * N_DATA + 6]
 		
 		var trade_class: int = _trade_classes[resource_type]
 		var trade_unit: StringName = _trade_units[resource_type]
@@ -230,16 +281,22 @@ func _update_tab_display(tab: int, n_resources: int, data: Array) -> void:
 		var resource_text: String = (tr(_resource_names[resource_type])
 				+ " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")")
 		var price_text := "" if is_nan(price) else IVQFormat.number(price / price_multiplier, 3)
-		var bid_text := "" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3)
-		var ask_text := "" if is_nan(ask) else IVQFormat.number(ask / price_multiplier, 3)
-		var in_stock_text := IVQFormat.number(in_stock / unit_multiplier, 2)
-		var contracted_text := IVQFormat.number(contracted / unit_multiplier, 2)
+		var bid_ask_text := (
+			("-" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3))
+			+ "/"
+			+ ("-" if is_nan(ask) else IVQFormat.number(ask / price_multiplier, 3))
+		)
+		var volume_text := "" if is_nan(volume) or !volume else IVQFormat.number(volume, 2)
+		var in_stock_text := "" if is_nan(in_stock) else IVQFormat.number(
+				in_stock / unit_multiplier, 2)
+		var contracted_text := "" if is_nan(contracted) else IVQFormat.number(
+				contracted / unit_multiplier, 2)
 		
 		var hbox: HBoxContainer = vbox.get_child(i)
 		(hbox.get_child(0) as Label).text = resource_text
 		(hbox.get_child(1) as Label).text = price_text
-		(hbox.get_child(2) as Label).text = bid_text
-		(hbox.get_child(3) as Label).text = ask_text
+		(hbox.get_child(2) as Label).text = bid_ask_text
+		(hbox.get_child(3) as Label).text = volume_text
 		(hbox.get_child(4) as Label).text = in_stock_text
 		(hbox.get_child(5) as Label).text = contracted_text
 		i += 1

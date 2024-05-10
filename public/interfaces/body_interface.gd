@@ -32,6 +32,7 @@ var parent: BodyInterface # null for top body
 
 var satellites: Array[BodyInterface] = [] # resizable container - not threadsafe!
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
+
 var operations: OperationsNet # when/if needed
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
@@ -143,13 +144,30 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
-# Marketplace
+# Components
+
+func get_operations() -> OperationsNet:
+	return operations # possible null
+
+
+func get_population() -> PopulationNet:
+	return population # possible null
+
+
+func get_biome() -> BiomeNet:
+	return biome # possible null
+
+
+func get_cyberspace() -> CyberspaceNet:
+	return cyberspace # possible null
+
 
 func get_marketplace(_player_id: int) -> MarketplaceNet:
 	# TODO: alt_market for blockaded player
-	return marketplace
+	return marketplace # possible null
 
 
+# Marketplace
 
 func get_marketplace_price(type: int) -> float:
 	return marketplace.get_price(type)

@@ -12,18 +12,14 @@ extends Node
 # This global provides safe data access on the main thread, mainly for GUI.
 # Note that Interfaces gotten here are not threadsafe. For Interface access on
 # the main thread, use only Interface methods marked 'threadsafe'.
+#
+# Access on main thread only!
 
 signal interface_added(interface: Interface)
 signal interface_removed(interface: Interface)
 signal ai_thread_called(callable: Callable)
 
-
 const utils := preload("res://public/static/utils.gd")
-
-var local_player_name := &"PLAYER_NASA"
-var home_facility_name := &"FACILITY_PLANET_EARTH_PLAYER_NASA"
-
-# Access on main thread only!
 
 var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, etc.
 var body_selection_redirect := {} # redirect to single facility or local player facility

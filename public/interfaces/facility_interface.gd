@@ -150,8 +150,34 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
+# Components
+
+func get_operations() -> OperationsNet:
+	return operations
+
+
+func get_inventory() -> InventoryNet:
+	return inventory
+
+
+func get_financials() -> FinancialsNet:
+	return financials
+
+
+func get_population() -> PopulationNet:
+	return population # possible null
+
+
+func get_biome() -> BiomeNet:
+	return biome # possible null
+
+
+func get_cyberspace() -> CyberspaceNet:
+	return cyberspace # possible null
+
+
 func get_marketplace(player_id: int) -> MarketplaceNet:
-	return body.get_marketplace(player_id)
+	return body.get_marketplace(player_id) # possible null
 
 
 # *****************************************************************************
