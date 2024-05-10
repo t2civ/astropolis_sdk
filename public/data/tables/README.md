@@ -800,7 +800,13 @@ On Earth, the main product of gas drilling and used mainly for power generation.
 
 #### RESOURCE_HYDROGEN
 
-Rockets! Trade/transport in cryogenic form.
+Trade/transport in cryogenic form.
+
+#### RESOURCE_OXYGEN
+
+This is under 'energy' because it is a component in most propellant systems and many power generating systems. It's also fairly rare as a volatile outside of Earth. Trade/transport in cryogenic form.
+
+Start price from [wiki](https://en.wikipedia.org/wiki/Prices_of_chemical_elements): $154/t.
 
 #### RESOURCE_LOW_ENRICHED_URANIUM, _HIGHLY_ENRICHED_URANIUM
 
@@ -879,12 +885,11 @@ This represents stone in the ground or traded dimentional stone. Great for shiel
 
 Mix of low-grade gravel, sand, clay, etc., that makes up the majority of rocky bodies together with 'stone'. It's also a major byproduct of ore refining. Good for shielding.
 
-#### RESOURCE_WATER, _OXYGEN, _NITROGEN, _CARBON_DIOXIDE, _CARBON_MONOXIDE, _AMMONIA, _ETHANE, _SULFUR_DIOXIDE, _HELIUM, _ARGON_NEON, _KRYPTON_XENON
+#### RESOURCE_WATER, _NITROGEN, _CARBON_DIOXIDE, _CARBON_MONOXIDE, _AMMONIA, _ETHANE, _SULFUR_DIOXIDE, _HELIUM, _ARGON_NEON, _KRYPTON_XENON
 
 Volatiles! These are selected in particular because they are significant constituants of icy bodies and planet (and Titan) atmospheres, and/or have important industrial usage. A few are traded/transported as ice, but most in cryogenic form.
 
 Start prices from [wiki](https://en.wikipedia.org/wiki/Prices_of_chemical_elements):
-* $154/t OXYGEN
 * $140/t NITROGEN
 * $24,000/t HELIUM
 * $931/t ARGON_NEON
