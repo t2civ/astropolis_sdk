@@ -66,6 +66,8 @@ var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _resource_names: Array[StringName] = _tables[&"resources"][&"name"]
 var _trade_classes: Array[int] = _tables[&"resources"][&"trade_class"]
 var _trade_units: Array[StringName] = _tables[&"resources"][&"trade_unit"]
+var _gui_ea: Array[bool] = _tables[&"resources"][&"gui_ea"]
+var _currency_unit: Array[bool] = _tables[&"resources"][&"currency_unit"]
 var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_resources"]
 
 
@@ -278,12 +280,16 @@ func _update_tab_display(tab: int, n_resources: int, data: Array, _is_marketplac
 		var unit_multiplier: float = unit_multipliers[trade_unit]
 		var price_multiplier := currency_multiplier / unit_multiplier
 		
-		var resource_text: String = (tr(_resource_names[resource_type])
-				+ " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")")
-		var price_text := "" if is_nan(price) else IVQFormat.number(price / price_multiplier, 3)
+		var resource_text: String = tr(_resource_names[resource_type])
+		if _gui_ea[resource_type]:
+			resource_text += " (ea)"
+		else:
+			resource_text += " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")"
+		var price_text := ""
+		if price > 0.0 and !_currency_unit[resource_type]:
+			price_text = IVQFormat.number(price / price_multiplier, 3)
 		var bid_ask_text := (
-			("-" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3))
-			+ "/"
+			("-" if is_nan(bid) else IVQFormat.number(bid / price_multiplier, 3)) + "/"
 			+ ("-" if is_nan(ask) else IVQFormat.number(ask / price_multiplier, 3))
 		)
 		var volume_text := "" if is_nan(volume) or !volume else IVQFormat.number(volume, 2)

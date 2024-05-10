@@ -99,7 +99,7 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	return cyberspace.get_computation_rate()
+	return operations.get_total_computation()
 
 
 func get_development_information() -> float:

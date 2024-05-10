@@ -82,21 +82,8 @@ WOOD_HARVESTING_MANAGED_FOREST
 WOOD_HARVESTING_WILDERNESS																		
 BULK_FOODS_OCEAN_FISHING																		
 CRAFT_FOODS_OCEAN_FISHING																		
-SERVER_TIME																		
-PORT_SERVICES																		
-EXCHANGE_SERVICES																		
-WHOLESALERS																		
-RETAIL																		
-REGIONAL_ENTERTAINMENT																		
-RESTAURANTS_HOSPITALITY																		
-OUTDOOR_RECREATION																		
-SPORTS_GAMING																		
-MUSIC_TELEVISION_MOVIES																		
-RESEARCH_DEVELOPMENT																		
-EDUCATIONAL_SERVICES																		
-HEALTH_SERVICES																		
-LEGAL_SERVICES																		
-ACCOUNTING_SERVICES																		
+CPU_PROCESSING	37500	18750	11250	7500	3000	1500	7500											
+NPU_PROCESSING																		
 @ENUM_X_ENUM																		
 @DATA_TYPE=FLOAT																		
 @DATA_DEFAULT=0																		

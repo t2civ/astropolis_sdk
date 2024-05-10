@@ -66,8 +66,8 @@ const GRAVITATIONAL_CONSTANT := 6.67430e-11 * METER ** 3 / (KG * SECOND ** 2)
 
 # *********** Astropolis additions ***********
 
-const FLOPS := 1.0 / SECOND
-const PUHR := 1e16 * FLOPS * HOUR # fictional 'processor unit hour'; 1e16 flops/s * hr
+const FLOPS := 1.0 / SECOND # defined in-game as single-precision-equivilant
+const PUHR := 4e12 * FLOPS * HOUR # fictional 'processor unit hour': 4 TFLOPS * hr
 const SPP := 1.0 # biodiversity (effective species)
 const USD := 1e-6
 const Q := 1.0 # Short for the QSNINDC ;)
@@ -205,7 +205,15 @@ var unit_multipliers := {
 	
 	# computation
 	&"flops" : FLOPS,
+	&"kflops" : 1e3 * FLOPS,
+	&"Mflops" : 1e6 * FLOPS,
+	&"Gflops" : 1e9 * FLOPS,
+	&"Tflops" : 1e12 * FLOPS,
 	&"puhr" : PUHR, # fictional processor unit hour
+	&"kpuhr" : 1e3 * PUHR,
+	&"Mpuhr" : 1e6 * PUHR,
+	&"Gpuhr" : 1e9 * PUHR,
+	&"Tpuhr" : 1e12 * PUHR,
 	
 	# biodiversity
 	&"species" : SPP,
@@ -222,9 +230,7 @@ var unit_multipliers := {
 	&"$/kg" : USD / KG,
 	&"$/g" : USD / GRAM,
 	&"$/MWh" : USD / (1e6 * WATT * HOUR),
-	
 	&"$M/y" : 1e6 * USD / YEAR,
-	
 	
 # ********************************************
 }

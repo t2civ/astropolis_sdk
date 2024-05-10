@@ -112,8 +112,8 @@ func get_development_constructions() -> float:
 
 
 func get_development_computations() -> float:
-	if cyberspace:
-		return cyberspace.get_computation_rate()
+	if operations:
+		return operations.get_total_computation()
 	return 0.0
 
 
