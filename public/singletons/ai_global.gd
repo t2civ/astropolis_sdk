@@ -27,7 +27,5 @@ var is_autoplay := false
 var is_multiplayer_server := false
 var is_multiplayer_client := false
 
-var local_player_name := &"PLAYER_NASA"
-
 
 

@@ -33,7 +33,8 @@ enum DirtyFlags {
 	DIRTY_POPULATION = 1 << 5,
 	DIRTY_BIOME = 1 << 6,
 	DIRTY_CYBERSPACE = 1 << 7,
-	DIRTY_COMPOSITIONS = 1 << 8,
+	DIRTY_MARKETPLACE = 1 << 8,
+	DIRTY_COMPOSITIONS = 1 << 9,
 }
 
 const DIRTY_QUARTER := DirtyFlags.DIRTY_QUARTER
@@ -44,6 +45,7 @@ const DIRTY_FINANCIALS := DirtyFlags.DIRTY_FINANCIALS
 const DIRTY_POPULATION := DirtyFlags.DIRTY_POPULATION
 const DIRTY_BIOME := DirtyFlags.DIRTY_BIOME
 const DIRTY_CYBERSPACE := DirtyFlags.DIRTY_CYBERSPACE
+const DIRTY_MARKETPLACE := DirtyFlags.DIRTY_MARKETPLACE
 const DIRTY_COMPOSITIONS := DirtyFlags.DIRTY_COMPOSITIONS
 
 enum EntityType {
@@ -180,11 +182,11 @@ func get_development_manufacturing() -> float:
 	return 0.0
 
 
-func get_development_constructions() -> float:
+func get_development_construction() -> float:
 	return 0.0
 
 
-func get_development_computations() -> float:
+func get_development_computation() -> float:
 	return 0.0
 
 
@@ -228,75 +230,36 @@ func get_facilities() -> Array[Interface]:
 	# AI thread only!
 	return []
 
+
 # Components
 
 func get_operations() -> OperationsNet:
-	return get(&"operations")
+	return null
 
 
 func get_inventory() -> InventoryNet:
-	return get(&"inventory")
+	return null
 
 
 func get_financials() -> FinancialsNet:
-	return get(&"financials")
+	return null
 
 
 func get_population() -> PopulationNet:
-	return get(&"population")
+	return null
 
 
 func get_biome() -> BiomeNet:
-	return get(&"biome")
+	return null
 
 
 func get_cyberspace() -> CyberspaceNet:
-	return get(&"cyberspace")
+	return null
 
 
-# FIXME: Remove component methods below...
+func get_marketplace(_player_id: int) -> MarketplaceNet:
+	return null
 
-
-# Inventory
-
-func get_resource_price(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_price(resource_type)
-
-
-func get_resource_bid(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_bid(resource_type)
-
-
-func get_resource_ask(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_ask(resource_type)
-
-
-func get_resource_contracted(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_contracted(resource_type)
-
-
-func get_resource_in_stock(resource_type: int) -> float:
-	var inventory: InventoryNet = get(&"inventory")
-	if !inventory:
-		return NAN
-	return inventory.get_in_stock(resource_type)
-
-# Financials
-
-func has_financials() -> bool:
-	return get(&"financials") != null
 
 
 # *****************************************************************************

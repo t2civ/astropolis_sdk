@@ -168,6 +168,13 @@ func get_manufacturing_rate() -> float:
 	return sum
 
 
+func get_total_computation() -> float:
+	var sum := 0.0
+	for type in _n_operations: # TODO: Optimize w/ subset
+		sum += get_computation(type, true)
+	return sum
+
+
 # misc
 
 func has_financials() -> bool:
@@ -251,6 +258,15 @@ func get_fuel_rate(type: int) -> float:
 	if _operation_electricities[type] > 0.0:
 		return get_run_rate(type) * _table_operations[&"fuel_rate"][type] # power generator
 	return NAN
+
+
+func get_computation(type: int, positive_only := false) -> float:
+	var base_computation: float =  _table_operations[&"computation"][type]
+	if base_computation > 0.0:
+		return get_effective_rate(type) * base_computation # producer (ie, server cluster)
+	if positive_only:
+		return 0.0
+	return get_run_rate(type) * base_computation # user or NAN
 
 
 func get_n_operations_in_same_group(type: int) -> int:
@@ -345,6 +361,14 @@ func get_group_fuel_rate(op_group: int) -> float:
 	for type: int in _op_group_operations[op_group]:
 		sum += get_fuel_rate(type)
 	return sum
+
+
+func get_group_computation(op_group: int) -> float:
+	var sum := 0.0
+	for type: int in _op_group_operations[op_group]:
+		sum += get_computation(type)
+	return sum
+
 
 
 # **************************** INTERFACE MODIFY *******************************

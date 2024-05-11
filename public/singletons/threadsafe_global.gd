@@ -18,3 +18,10 @@ static var tables_aux := {} # derived tables & indexing; see public_preinitializ
 # settings
 var total_biodiversity_pool := 1.3e6
 var total_information_pool := 4.4e19
+var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
+
+
+# game
+var local_player_name := &"PLAYER_NASA"
+var home_facility_name := &"FACILITY_PLANET_EARTH_PLAYER_NASA"
+

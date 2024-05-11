@@ -113,14 +113,12 @@ func get_development_manufacturing() -> float:
 	return operations.get_manufacturing_rate()
 
 
-func get_development_constructions() -> float:
+func get_development_construction() -> float:
 	return operations.get_construction_mass()
 
 
-func get_development_computations() -> float:
-	if cyberspace:
-		return cyberspace.get_computation_rate()
-	return 0.0
+func get_development_computation() -> float:
+	return operations.get_total_computation()
 
 
 func get_development_information() -> float:
@@ -149,6 +147,35 @@ func get_development_biodiversity() -> float:
 		return biodiversity
 	return 0.0
 
+
+# Components
+
+func get_operations() -> OperationsNet:
+	return operations
+
+
+func get_inventory() -> InventoryNet:
+	return inventory
+
+
+func get_financials() -> FinancialsNet:
+	return financials
+
+
+func get_population() -> PopulationNet:
+	return population # possible null
+
+
+func get_biome() -> BiomeNet:
+	return biome # possible null
+
+
+func get_cyberspace() -> CyberspaceNet:
+	return cyberspace # possible null
+
+
+func get_marketplace(player_id: int) -> MarketplaceNet:
+	return body.get_marketplace(player_id) # possible null
 
 
 # *****************************************************************************
