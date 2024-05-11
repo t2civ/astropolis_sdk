@@ -105,13 +105,13 @@ func get_development_manufacturing() -> float:
 	return 0.0
 
 
-func get_development_constructions() -> float:
+func get_development_construction() -> float:
 	if operations:
 		return operations.get_construction_mass()
 	return 0.0
 
 
-func get_development_computations() -> float:
+func get_development_computation() -> float:
 	if operations:
 		return operations.get_total_computation()
 	return 0.0

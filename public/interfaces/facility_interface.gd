@@ -113,11 +113,11 @@ func get_development_manufacturing() -> float:
 	return operations.get_manufacturing_rate()
 
 
-func get_development_constructions() -> float:
+func get_development_construction() -> float:
 	return operations.get_construction_mass()
 
 
-func get_development_computations() -> float:
+func get_development_computation() -> float:
 	return operations.get_total_computation()
 
 
