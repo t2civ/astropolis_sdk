@@ -185,32 +185,41 @@ func _get_ai_data(target_name: StringName) -> void:
 	
 	for op_group in op_groups:
 		
+		var utilization := operations.get_group_utilization(op_group)
 		var electricity := operations.get_group_electricity(op_group)
 		electricity /= _unit_multipliers[&"MW"]
 		var flow := NAN
 		var revenue := operations.get_group_revenue(op_group)
 		revenue /= _unit_multipliers[&"$M/y"]
+		var margin := operations.get_group_gross_margin(op_group)
 		
-		if tab != TAB_ENERGY:
-			electricity = -electricity
-		if _op_group_process_groups[op_group] == PROCESS_GROUP_CONVERSION:
-			if tab == TAB_ENERGY:
-				flow = operations.get_group_fuel_rate(op_group)
-			else:
+		match tab:
+			TAB_ENERGY:
+				if _op_group_process_groups[op_group] == PROCESS_GROUP_CONVERSION:
+					flow = operations.get_group_fuel_rate(op_group)
+					flow /= _unit_multipliers[&"t/h"]
+			TAB_EXTRACTION:
+				electricity = -electricity
+				flow = operations.get_group_extraction_rate(op_group)
+				flow /= _unit_multipliers[&"t/h"]
+			TAB_REFINING, TAB_MANUFACTURING:
+				electricity = -electricity
 				flow = operations.get_group_mass_conversion_rate(op_group)
-			flow /= _unit_multipliers[&"t/h"]
-		elif _op_group_process_groups[op_group] == PROCESS_GROUP_EXTRACTION:
-			flow = operations.get_group_extraction_rate(op_group)
-			flow /= _unit_multipliers[&"t/h"]
-			
+				flow /= _unit_multipliers[&"t/h"]
+			TAB_BIOMES:
+				electricity = -electricity
+			TAB_SERVICES:
+				electricity = -electricity
+				flow = operations.get_group_computation(op_group)
+				flow /= _unit_multipliers[&"Pflops"]
 		
 		var group_data := [
 			_op_group_names[op_group],
-			operations.get_group_utilization(op_group),
+			utilization,
 			electricity,
 			flow,
 			revenue,
-			operations.get_group_gross_margin(op_group),
+			margin,
 		]
 		data.append(group_data)
 		
@@ -224,35 +233,47 @@ func _get_ai_data(target_name: StringName) -> void:
 		
 		for operation_type in operation_types:
 			
+			utilization = operations.get_utilization(operation_type)
 			electricity = operations.get_electricity_rate(operation_type)
 			electricity /= _unit_multipliers[&"MW"]
 			flow = NAN
 			revenue = operations.get_revenue_rate(operation_type)
 			revenue /= _unit_multipliers[&"$M/y"]
+			margin = operations.get_gross_margin(operation_type)
 			
-			if tab != TAB_ENERGY:
-				electricity = -electricity
-			if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
-				if tab == TAB_ENERGY:
-					flow = operations.get_fuel_rate(operation_type)
-				else:
+			match tab:
+				TAB_ENERGY:
+					if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
+						flow = operations.get_fuel_rate(operation_type)
+						flow /= _unit_multipliers[&"t/h"]
+				TAB_EXTRACTION:
+					electricity = -electricity
+					flow = operations.get_extraction_rate(operation_type)
+					flow /= _unit_multipliers[&"t/h"]
+				TAB_REFINING, TAB_MANUFACTURING:
+					electricity = -electricity
 					flow = operations.get_mass_conversion_rate(operation_type)
-				flow /= _unit_multipliers[&"t/h"]
-			elif _operation_process_groups[operation_type] == PROCESS_GROUP_EXTRACTION:
-				flow = operations.get_extraction_rate(operation_type)
-				flow /= _unit_multipliers[&"t/h"]
+					flow /= _unit_multipliers[&"t/h"]
+				TAB_BIOMES:
+					electricity = -electricity
+				TAB_SERVICES:
+					electricity = -electricity
+					flow = operations.get_computation(operation_type)
+					flow /= _unit_multipliers[&"Pflops"]
 			
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:
 				sublabel = _operation_names[operation_type]
+			
 			var operation_data := [
 				sublabel,
-				operations.get_utilization(operation_type),
+				utilization,
 				electricity,
 				flow,
 				revenue,
-				operations.get_gross_margin(operation_type),
+				margin,
 			]
+			
 			operations_data.append(operation_data)
 	
 	_update_tab_display.call_deferred(target_name, tab, n_op_groups, has_financials, data)

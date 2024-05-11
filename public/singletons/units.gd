@@ -209,11 +209,12 @@ var unit_multipliers := {
 	&"Mflops" : 1e6 * FLOPS,
 	&"Gflops" : 1e9 * FLOPS,
 	&"Tflops" : 1e12 * FLOPS,
+	&"Pflops" : 1e15 * FLOPS,
+	&"Eflops" : 1e18 * FLOPS,
 	&"puhr" : PUHR, # fictional processor unit hour
 	&"kpuhr" : 1e3 * PUHR,
 	&"Mpuhr" : 1e6 * PUHR,
 	&"Gpuhr" : 1e9 * PUHR,
-	&"Tpuhr" : 1e12 * PUHR,
 	
 	# biodiversity
 	&"species" : SPP,

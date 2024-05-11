@@ -1,6 +1,6 @@
 	op_group	sublabel	module_class	process_group	stratum	reverse	electricity	mass_extraction	is_solar	solar_offset	is_manufacturing	bioproductivity	fuel_rate	mass_conversion	computation	biological_crew	android_crew	carrying_capacity	carrying_capacity_group	area	extraction_resources	extraction_multiplier	input_resources	input_quantities	atmos_inputs	output_resources	output_quantities	atmos_outputs
 Type	INT	STRING_NAME	INT	INT	INT	INT	FLOAT	BOOL	BOOL	FLOAT	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	INT	FLOAT	ARRAY[INT]	FLOAT	ARRAY[INT]	ARRAY[FLOAT]	ARRAY[INT]	ARRAY[INT]	ARRAY[FLOAT]	ARRAY[INT]
-Unit							MW					t/h	t/h	t/h	kpuhr					km^2		t/h		t/h			t/h	
+Unit							MW					t/h	t/h	t/h	kpuhr/h					km^2		t/h		t/h			t/h	
 Default							0									0	0	0										
 Prefix/OPERATION_	OP_GROUP_	TXT_	MODULE_CLASS_	PROCESS_GROUP_	STRATUM_	OPERATION_													CARRYING_CAPACITY_GROUP_		RESOURCE_		RESOURCE_		RESOURCE_	RESOURCE_		RESOURCE_
 SOLAR_POWER	SOLAR_POWER		SOLAR_POWER	RENEWABLE			1		x																			
@@ -111,8 +111,8 @@ WOOD_HARVESTING_MANAGED_FOREST	MANAGED_FOREST		NATURAL_SPACES	DONT_PROCESS						
 WOOD_HARVESTING_WILDERNESS	WILDERNESS		NATURAL_SPACES	DONT_PROCESS						0.95		1						0.1	HUMAN	1								
 BULK_FOODS_OCEAN_FISHING	OCEANS		NATURAL_SPACES	DONT_PROCESS						0.95		1						0.001	HUMAN	1								
 CRAFT_FOODS_OCEAN_FISHING	OCEANS		NATURAL_SPACES	DONT_PROCESS						0.95		1						0.001	HUMAN	1								
-CPU_PROCESSING	SERVER_PROCESSING		SERVER_CLUSTERS	CONVERSION			-0.3								1											CPU_TIME	1 kpuhr	
-NPU_PROCESSING	SERVER_PROCESSING		SERVER_CLUSTERS	CONVERSION			-0.3								1											NPU_TIME	1 kpuhr	
+CPU_PROCESSING	SERVER_PROCESSING		SERVER_CLUSTERS	CONVERSION			-0.8								1											CPU_TIME	1 kpuhr/h	
+NPU_PROCESSING	SERVER_PROCESSING		SERVER_CLUSTERS	CONVERSION			-0.8								1											NPU_TIME	1 kpuhr/h	
 PORT_SERVICES	TRADE_SERVICES		PORTS	DONT_PROCESS																								
 EXCHANGE_SERVICES	TRADE_SERVICES		EXCHANGES	DONT_PROCESS																								
 WHOLESALERS	TRADE_SERVICES		URBAN_DEVELOPED	DONT_PROCESS																								
