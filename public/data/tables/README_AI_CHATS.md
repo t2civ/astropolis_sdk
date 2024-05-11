@@ -3931,5 +3931,8 @@ Conversions:
 
 Please note that the prices for hydrogen seem unusually high due to the low density of hydrogen and the conversion from gallons to metric tons.
 
+****
 
+I sure as hell don't know if I can copyright this file, but...  
+Astropolis is a registered trademark of Charlie Whitfield in the US.
 
