@@ -183,6 +183,8 @@ func _get_ai_data(target_name: StringName) -> void:
 	var op_groups: Array[int] = _op_classes_op_groups[tab]
 	var n_op_groups := op_groups.size()
 	
+	# TODO: We only want operations from operations.get_operations_of_interest().
+	
 	for op_group in op_groups:
 		
 		var utilization := operations.get_group_utilization(op_group)
