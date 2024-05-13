@@ -53,6 +53,7 @@ enum OpCommands {
 enum { # _dirty
 	DIRTY_GROSS_OUTPUT_LFQ = 1,
 	DIRTY_CONSTRUCTION_MASS = 1 << 1,
+	DIRTY_OPERATIONS_LIST = 1 << 2,
 }
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
@@ -68,6 +69,7 @@ var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _construction_mass := 0.0 # total mass of all _construction_mass
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
+
 var _capacities: Array[float] # set by facility modules
 var _run_rates: Array[float] # <= capacities; defines operation utilization
 var _effective_rates: Array[float] # almost always <= run_rates
@@ -88,10 +90,12 @@ var _target_utilizations: Array[float]
 # Operations data here
 var _has_financials := false
 var _is_facility := false
+var _operations_list: Array[int] # facility only; all types we have or want for margin test
 
 # interface dirty data (dirty indexes as bit flags)
 var _dirty_op_commands_1 := 0
-var _dirty_op_commands_2 := 0 # max 128
+var _dirty_op_commands_2 := 0
+var _dirty_op_commands_3 := 0 # max 192
 
 var _sync := SyncHelper.new()
 
@@ -107,7 +111,7 @@ static var _op_group_operations: Array[Array]
 static var _is_class_instanced := false
 
 
-func _init(is_new := false, has_financials_ := false, is_facility := false) -> void:
+func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_table_operations = _tables[&"operations"]
@@ -118,17 +122,17 @@ func _init(is_new := false, has_financials_ := false, is_facility := false) -> v
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_
-	_is_facility = is_facility
+	_is_facility = is_facility_
 	var n_populations: int = _table_n_rows[&"populations"]
 	_crews = ivutils.init_array(n_populations, 0.0, TYPE_FLOAT)
 	_capacities = ivutils.init_array(_n_operations, 0.0, TYPE_FLOAT)
 	_run_rates = _capacities.duplicate()
 	_effective_rates = _capacities.duplicate()
-	if !has_financials:
+	if !_has_financials:
 		return
 	_revenue_rates = _capacities.duplicate()
 	_cogs_rates = _capacities.duplicate()
-	if !is_facility:
+	if !_is_facility:
 		return
 	_gross_margins = ivutils.init_array(_n_operations, NAN, TYPE_FLOAT)
 	_op_logics = ivutils.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
@@ -180,6 +184,28 @@ func get_total_computation() -> float:
 func has_financials() -> bool:
 	# True for Facilities & Players and Joins of these two only.
 	return _has_financials
+
+
+func is_facility() -> bool:
+	return _is_facility
+
+
+func get_facility_operations_of_interest() -> Array[int]:
+	# Facility only. Facilities may have interest in operations they don't
+	# have yet.
+	return _operations_list
+
+
+func get_operations_of_interest() -> Array[int]:
+	# Facilities may have interest in operations they don't have yet. All
+	# others return a list of operations for which they have capacity > 0.0.
+	if _is_facility:
+		return _operations_list
+	var result: Array[int] = []
+	for type in _n_operations:
+		if _capacities[type]:
+			result.append(type)
+	return result
 
 
 func get_crew(population_type := -1) -> float:
@@ -380,8 +406,10 @@ func set_op_command(type: int, command: int) -> void:
 	_op_commands[type] = command
 	if type < 64:
 		_dirty_op_commands_1 |= 1 << type
-	else:
+	elif type < 128:
 		_dirty_op_commands_2 |= 1 << (type - 64)
+	else:
+		_dirty_op_commands_3 |= 1 << (type - 128)
 
 # ********************************** SYNC *************************************
 
@@ -425,26 +453,33 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.add_floats_delta(_crews)
 	_sync.add_floats_delta(_capacities)
 	_sync.add_floats_delta(_capacities, 64)
+	_sync.add_floats_delta(_capacities, 128)
 	_sync.add_floats_delta(_run_rates)
 	_sync.add_floats_delta(_run_rates, 64)
+	_sync.add_floats_delta(_run_rates, 128)
 	_sync.add_floats_delta(_effective_rates)
 	_sync.add_floats_delta(_effective_rates, 64)
+	_sync.add_floats_delta(_effective_rates, 128)
 	
 	if !_has_financials:
 		return
 	
 	_sync.add_floats_delta(_revenue_rates)
 	_sync.add_floats_delta(_revenue_rates, 64)
+	_sync.add_floats_delta(_revenue_rates, 128)
 	_sync.add_floats_delta(_cogs_rates)
 	_sync.add_floats_delta(_cogs_rates, 64)
+	_sync.add_floats_delta(_cogs_rates, 128)
 
 	if !_is_facility:
 		return
 	
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
 	_sync.set_floats_dirty(_gross_margins, 64) # not accumulator!
+	_sync.set_floats_dirty(_gross_margins, 128) # not accumulator!
 	_sync.set_ints_dirty(_op_logics) # not accumulator!
 	_sync.set_ints_dirty(_op_logics, 64) # not accumulator!
+	_sync.set_ints_dirty(_op_logics, 128) # not accumulator!
 
 
 func get_interface_dirty() -> Array:
