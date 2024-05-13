@@ -110,7 +110,7 @@ func get_development_energy() -> float:
 
 
 func get_development_manufacturing() -> float:
-	return operations.get_manufacturing_rate()
+	return operations.get_total_manufacturing()
 
 
 func get_development_construction() -> float:

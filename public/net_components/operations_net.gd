@@ -164,11 +164,10 @@ func get_energy_rate() -> float:
 	return sum
 
 
-func get_manufacturing_rate() -> float:
-	var mass_conversions: Array[float] = _table_operations[&"mass_conversion"]
+func get_total_manufacturing() -> float:
 	var sum := 0.0
-	for type: int in _tables_aux[&"is_manufacturing_operations"]:
-		sum += get_effective_rate(type) * mass_conversions[type]
+	for type in _n_operations: # TODO: Optimize w/ subset
+		sum += get_manufacturing(type, true)
 	return sum
 
 
@@ -283,6 +282,15 @@ func get_mass_conversion_rate(type: int) -> float:
 func get_fuel_rate(type: int) -> float:
 	if _operation_electricities[type] > 0.0:
 		return get_run_rate(type) * _table_operations[&"fuel_rate"][type] # power generator
+	return NAN
+
+
+func get_manufacturing(type: int, positive_only := false) -> float:
+	var base_manufacturing: float = _table_operations[&"manufacturing"][type]
+	if base_manufacturing > 0.0:
+		return get_effective_rate(type) * base_manufacturing # manufacturer
+	if positive_only:
+		return 0.0
 	return NAN
 
 
