@@ -102,16 +102,16 @@ func get_development_economy() -> float:
 	return operations.get_gross_output_lfq()
 
 
-func get_development_energy() -> float:
-	return operations.get_energy_rate()
-
-
-func get_development_manufacturing() -> float:
-	return operations.get_total_manufacturing()
+func get_development_energy_use() -> float:
+	return operations.get_energy_use()
 
 
 func get_development_construction() -> float:
-	return operations.get_construction_mass()
+	return operations.get_construction()
+
+
+func get_development_built_mass() -> float:
+	return operations.get_built_mass()
 
 
 func get_development_computation() -> float:
@@ -119,9 +119,10 @@ func get_development_computation() -> float:
 
 
 func get_development_information() -> float:
+	var total := operations.get_nominal_information()
 	if cyberspace:
-		return cyberspace.get_information()
-	return 0.0
+		total += cyberspace.get_information()
+	return total
 
 
 func get_development_bioproductivity() -> float:
@@ -131,9 +132,10 @@ func get_development_bioproductivity() -> float:
 
 
 func get_development_biomass() -> float:
+	var total := operations.get_nominal_biomass()
 	if biome:
-		return biome.get_biomass()
-	return 0.0
+		total += biome.get_biomass()
+	return total
 
 
 func get_development_biodiversity() -> float:

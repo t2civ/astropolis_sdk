@@ -66,6 +66,7 @@ const GRAVITATIONAL_CONSTANT := 6.67430e-11 * METER ** 3 / (KG * SECOND ** 2)
 
 # *********** Astropolis additions ***********
 
+const BIT := 1.0 # TODO: Backport to I, Voyager and use in unit_multipliers
 const FLOPS := 1.0 / SECOND # defined in-game as single-precision-equivilant
 const PUHR := 4e12 * FLOPS * HOUR # fictional 'processor unit hour': 4 TFLOPS * hr
 const SPP := 1.0 # biodiversity (effective species)

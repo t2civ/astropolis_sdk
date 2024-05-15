@@ -25,7 +25,7 @@
 
 ## General Notes
 
-Responses are usually Claude-3-Opus (if not indicated otherwise) but sometimes GPT-4. They both go off the rails sometimes and I can't say which is better yet. I favor Claude-3-Opus mainly because its formatting is more friendly to copy/paste here. See tables/README.md for conversion of real-world data to simulator table values.
+As of May, 2024, most responses are Claude-3-Opus with a few GPT-4. both go off the rails frequently, so validation and corrections are welcome. I favor Claude-3-Opus mainly because its formatting is more friendly to copy/paste here. See tables/README.md for conversion of real-world data to simulator table values.
 
 ## Population
 
@@ -3933,6 +3933,6 @@ Please note that the prices for hydrogen seem unusually high due to the low dens
 
 ****
 
-I sure as hell don't know if I can copyright this file, but...  
+According to GPT-4o, it is unlikely that I can claim copyright to the contents of this file.  
 Astropolis is a registered trademark of Charlie Whitfield in the US.
 
