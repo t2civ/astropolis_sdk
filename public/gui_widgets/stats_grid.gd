@@ -32,13 +32,13 @@ var content: Array[Array] = [
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number],
 	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.modified_named_number.bind(3,
 			IVQFormat.TextFormat.SHORT_MIXED_CASE, "$", "", 1.0 / IVUnits.unit_multipliers[&"$"])],
-	[&"LABEL_ENERGY", &"get_development_energy", IVQFormat.prefixed_unit.bind(&"W")],
-	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/h")],
-	[&"LABEL_CONSTRUCTION", &"get_development_construction", IVQFormat.prefixed_unit.bind(&"t")],
-	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flops")],
+	[&"LABEL_ENERGY_USE", &"get_development_energy_use", IVQFormat.prefixed_unit.bind(&"W")],
+	[&"LABEL_BUILT_MASS", &"get_development_built_mass", IVQFormat.prefixed_unit.bind(&"t")],
+	[&"LABEL_CONSTRUCTION", &"get_development_construction", IVQFormat.prefixed_unit.bind(&"t/h")],
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bit")],
-	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/h")],
+	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flops")],
 	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
+	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/h")],
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]
 

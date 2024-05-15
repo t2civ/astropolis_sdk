@@ -102,16 +102,16 @@ func get_development_economy() -> float:
 	return operations.get_gross_output_lfq()
 
 
-func get_development_energy() -> float:
-	return operations.get_energy_rate()
-
-
-func get_development_manufacturing() -> float:
-	return operations.get_total_manufacturing()
+func get_development_energy_use() -> float:
+	return operations.get_energy_use()
 
 
 func get_development_construction() -> float:
-	return operations.get_construction_mass()
+	return operations.get_construction()
+
+
+func get_development_built_mass() -> float:
+	return operations.get_built_mass()
 
 
 func get_development_computation() -> float:

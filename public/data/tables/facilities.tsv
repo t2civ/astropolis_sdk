@@ -1,4 +1,4 @@
-	is_start	body	player	public_sector	is_unitary	construction_mass	biomass	bioproductivity	biodiversity_fraction	information_fraction	solar_occlusion
+	is_start	body	player	public_sector	is_unitary	built_mass	biomass	bioproductivity	biodiversity_fraction	information_fraction	solar_occlusion
 Type	BOOL	STRING_NAME	INT	FLOAT	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT
 Unit						t	t	t/h			
 Default	TRUE			0		0	0	0	0	0	

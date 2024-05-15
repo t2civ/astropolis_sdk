@@ -93,21 +93,21 @@ func get_development_economy() -> float:
 	return 0.0
 
 
-func get_development_energy() -> float:
+func get_development_energy_use() -> float:
 	if operations:
-		return operations.get_energy_rate()
-	return 0.0
-
-
-func get_development_manufacturing() -> float:
-	if operations:
-		return operations.get_total_manufacturing()
+		return operations.get_energy_use()
 	return 0.0
 
 
 func get_development_construction() -> float:
 	if operations:
-		return operations.get_construction_mass()
+		return operations.get_construction()
+	return 0.0
+
+
+func get_development_built_mass() -> float:
+	if operations:
+		return operations.get_built_mass()
 	return 0.0
 
 
