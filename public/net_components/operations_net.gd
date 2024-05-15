@@ -50,10 +50,11 @@ enum OpCommands {
 	N_OP_COMMANDS,
 }
 
-enum { # _dirty
+enum {
 	DIRTY_GROSS_OUTPUT_LFQ = 1,
-	DIRTY_CONSTRUCTION_MASS = 1 << 1,
-	DIRTY_OPERATIONS_LIST = 1 << 2,
+	DIRTY_BUILT_MASS = 1 << 1,
+	DIRTY_NOMINAL_INFORMATION = 1 << 2,
+	DIRTY_OPERATIONS_LIST = 1 << 3,
 }
 
 const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
@@ -67,6 +68,7 @@ const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _built_mass := 0.0 # total mass of all things construced
+var _nominal_information := 0.0 # only if we don't have Cyberspace here!
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
 
@@ -168,6 +170,10 @@ func get_built_mass() -> float:
 	return _built_mass
 
 
+func get_nominal_information() -> float:
+	return _nominal_information
+
+
 func get_construction() -> float:
 	# This is really manufacturing. Manufacturing includes production of
 	# finished 'resources' and (in the future) will include in situ
@@ -183,6 +189,11 @@ func get_total_computation() -> float:
 	for type in _n_operations: # TODO: Optimize w/ subset
 		sum += get_computation(type, true)
 	return sum
+
+
+func get_nominal_biomass() -> float:
+	# FIXME: Terrible ad hoc solution for dev stats now.
+	return _crews[0] * 21.0 * IVUnits.KG # dry weight of a person ;)
 
 
 # misc
@@ -428,18 +439,19 @@ func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_gross_output_lfq = data[1]
 	_built_mass = data[2]
-	_crews = data[3]
-	_capacities = data[4]
-	_run_rates = data[5]
-	_effective_rates = data[6]
-	_revenue_rates = data[7]
-	_cogs_rates = data[8]
-	_gross_margins = data[9]
-	_op_logics = data[10]
-	_op_commands = data[11]
-	_target_utilizations = data[12]
-	_has_financials = data[13]
-	_is_facility = data[14]
+	_nominal_information = data[3]
+	_crews = data[4]
+	_capacities = data[5]
+	_run_rates = data[6]
+	_effective_rates = data[7]
+	_revenue_rates = data[8]
+	_cogs_rates = data[9]
+	_gross_margins = data[10]
+	_op_logics = data[11]
+	_op_commands = data[12]
+	_target_utilizations = data[13]
+	_has_financials = data[14]
+	_is_facility = data[15]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -456,8 +468,11 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_GROSS_OUTPUT_LFQ:
 		_gross_output_lfq += float_data[float_offset]
 		float_offset += 1
-	if dirty & DIRTY_CONSTRUCTION_MASS:
+	if dirty & DIRTY_BUILT_MASS:
 		_built_mass += float_data[float_offset]
+		float_offset += 1
+	if dirty & DIRTY_NOMINAL_INFORMATION:
+		_nominal_information += float_data[float_offset]
 		float_offset += 1
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)

@@ -103,7 +103,7 @@ func get_development_computation() -> float:
 
 
 func get_development_information() -> float:
-	return cyberspace.get_information()
+	return operations.get_nominal_information() + cyberspace.get_information()
 
 
 func get_development_bioproductivity() -> float:
@@ -111,7 +111,7 @@ func get_development_bioproductivity() -> float:
 
 
 func get_development_biomass() -> float:
-	return biome.get_biomass()
+	return operations.get_nominal_biomass() + biome.get_biomass()
 
 
 func get_development_biodiversity() -> float:

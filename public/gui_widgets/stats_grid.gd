@@ -37,7 +37,11 @@ var content: Array[Array] = [
 	[&"LABEL_CONSTRUCTION", &"get_development_construction", IVQFormat.prefixed_unit.bind(&"t/h")],
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bit")],
 	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flops")],
-	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
+	
+	[&"LABEL_BIOMASS", &"get_development_biomass",
+			IVQFormat.dynamic_unit.bind(IVQFormat.DynamicUnitType.MASS_G_KG_PREFIXED_T)],
+	#[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.prefixed_unit.bind(&"t")],
+	
 	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/h")],
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]

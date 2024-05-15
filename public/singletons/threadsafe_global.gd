@@ -16,8 +16,8 @@ extends Node
 static var tables_aux := {} # derived tables & indexing; see public_preinitializer.gd
 
 # settings
-var total_biodiversity_pool := 1.3e6
-var total_information_pool := 4.4e19
+var total_biodiversity_pool := 1.3e6 * IVUnits.SPP
+var total_information_pool := 1.3e21 * IVUnits.BIT
 var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
 
 
