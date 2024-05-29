@@ -6,11 +6,12 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name InfoCloner
+extends RefCounted
 
 # Clones InfoPanel on 'clone_and_pin_requested' signal.
 
 
-func _ivcore_init() -> void:
+func _init() -> void:
 	IVGlobal.system_tree_ready.connect(_on_system_tree_ready)
 
 
