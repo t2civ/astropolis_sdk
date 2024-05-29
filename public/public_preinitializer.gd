@@ -88,6 +88,7 @@ func _init() -> void:
 	# added/replaced classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
 	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
+	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
 	
 	# extended
 	IVCoreInitializer.procedural_objects[&"SelectionManager"] = SelectionManager
