@@ -48,42 +48,39 @@ func _init() -> void:
 	IVCoreSettings.table_project_enums.append(Enums.PlayerClasses)
 	IVCoreSettings.table_project_enums.append(Enums.ProcessGroup)
 	
-	IVCoreSettings.postprocess_tables.erase("res://addons/ivoyager_core/data/solar_system/spacecrafts.tsv")
-	IVCoreSettings.postprocess_tables.erase("res://addons/ivoyager_core/data/solar_system/wiki_extras.tsv")
+	var tables: Dictionary = IVCoreSettings.tables
+	tables.erase("wiki_extras")
 	
 	path_format = "res://public/data/tables/%s.tsv"
-	var postprocess_tables_append := [
-		# primary tables
-		path_format % "carrying_capacity_groups",
-		path_format % "compositions",
-		path_format % "facilities",
-		path_format % "module_classes",
-		path_format % "modules",
-		path_format % "op_classes",
-		path_format % "op_groups",
-		path_format % "operations",
-		path_format % "players",
-		path_format % "populations",
-		path_format % "resource_classes",
-		path_format % "resources",
-		path_format % "spacecrafts", # ivoyager replacement!
-		path_format % "strata",
-		path_format % "surveys",
-		# primary table mods (modify existing ivoyager tables)
-		path_format % "asset_adjustments_mod",
-		path_format % "planets_mod",
-		path_format % "moons_mod",
-		# enum x enum tables
-		path_format % "compositions_resources_deposits",
-		path_format % "compositions_resources_proportions",
-		path_format % "compositions_resources_variances",
-		path_format % "facilities_inventories",
-		path_format % "facilities_operations_capacities",
-		path_format % "facilities_operations_capacity_factors",
-		path_format % "facilities_operations_extractions",
-		path_format % "facilities_populations",
-	]
-	IVCoreSettings.postprocess_tables.append_array(postprocess_tables_append)
+	
+	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
+	tables.compositions = path_format % "compositions"
+	tables.facilities = path_format % "facilities"
+	tables.module_classes = path_format % "module_classes"
+	tables.modules = path_format % "modules"
+	tables.op_classes = path_format % "op_classes"
+	tables.op_groups = path_format % "op_groups"
+	tables.operations = path_format % "operations"
+	tables.players = path_format % "players"
+	tables.populations = path_format % "populations"
+	tables.resource_classes = path_format % "resource_classes"
+	tables.resources = path_format % "resources"
+	tables.spacecrafts = path_format % "spacecrafts" # ivoyager replacement!
+	tables.strata = path_format % "strata"
+	tables.surveys = path_format % "surveys"
+	# primary table mods (modify existing ivoyager tables)
+	tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
+	tables.planets_mod = path_format % "planets_mod"
+	tables.moons_mod = path_format % "moons_mod"
+	# enum x enum tables
+	tables.compositions_resources_deposits = path_format % "compositions_resources_deposits"
+	tables.compositions_resources_proportions = path_format % "compositions_resources_proportions"
+	tables.compositions_resources_variances = path_format % "compositions_resources_variances"
+	tables.facilities_inventories = path_format % "facilities_inventories"
+	tables.facilities_operations_capacities = path_format % "facilities_operations_capacities"
+	tables.facilities_operations_capacity_factors = path_format % "facilities_operations_capacity_factors"
+	tables.facilities_operations_extractions = path_format % "facilities_operations_extractions"
+	tables.facilities_populations = path_format % "facilities_populations"
 	
 	# added/replaced classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
