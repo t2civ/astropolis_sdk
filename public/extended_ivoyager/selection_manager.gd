@@ -70,5 +70,3 @@ func get_body_gui_name() -> String:
 	if !body_name:
 		return ""
 	return MainThreadGlobal.get_gui_name(body_name)
-
-

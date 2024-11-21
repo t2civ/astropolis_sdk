@@ -30,4 +30,3 @@ func _ready() -> void:
 	@warning_ignore("unsafe_method_access")
 	$"%ViewSaveFlow".init($"%ViewSaveButton", default_view_name, collection_name, is_cached,
 			view_flags, init_flags, reserved_view_names)
-

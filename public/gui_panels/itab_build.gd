@@ -16,4 +16,3 @@ const PERSIST_PROPERTIES: Array[StringName] = []
 
 func timer_update() -> void:
 	pass
-

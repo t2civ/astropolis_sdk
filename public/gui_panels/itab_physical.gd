@@ -53,6 +53,3 @@ func _update_selection(_suppress_camera_move := false) -> void:
 	_body_name = body_name
 	_selection_name = selection_name
 	_tab_resources.update_selection(body_name, selection_name)
-
-
-

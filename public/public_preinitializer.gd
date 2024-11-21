@@ -165,4 +165,3 @@ func _on_project_objects_instantiated() -> void:
 
 func _on_project_nodes_added() -> void:
 	pass
-

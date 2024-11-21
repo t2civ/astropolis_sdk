@@ -118,4 +118,3 @@ func _tab_listener(tab: int) -> void:
 	if _suppress_tab_listener:
 		return
 	_on_ready_tab = tab
-

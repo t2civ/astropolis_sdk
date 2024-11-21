@@ -63,4 +63,3 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	await IVGlobal.get_tree().process_frame
 	@warning_ignore("unsafe_method_access")
 	panel_clone.get_node("ControlMod").finish_move()
-

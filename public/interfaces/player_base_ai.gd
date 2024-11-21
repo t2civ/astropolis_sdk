@@ -13,6 +13,3 @@ extends PlayerInterface
 # all non-owner network peers. Only the owning player has the extended AI
 # class. To override the base AI locally, create a new class file that extends
 # this class or the Interface class and add line: "const OVERRIDE_AI := true".
-
-
-

@@ -112,5 +112,3 @@ func sync_server() -> void: # AI should call at end of process()
 	# Update to new system
 
 	_dirty = 0
-
-

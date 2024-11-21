@@ -498,4 +498,3 @@ class RowItem extends HBoxContainer:
 			group_button.text = OPEN_PREFIX + tr(_group_name)
 		else:
 			group_button.text = CLOSED_PREFIX + tr(_group_name)
-

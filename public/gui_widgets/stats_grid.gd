@@ -226,4 +226,3 @@ func _build_grid(data: Array) -> void:
 	
 	has_stats_changed.emit(true)
 	_grid.show()
-

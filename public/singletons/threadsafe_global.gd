@@ -24,4 +24,3 @@ var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
 # game
 var local_player_name := &"PLAYER_NASA"
 var home_facility_name := &"FACILITY_PLANET_EARTH_PLAYER_NASA"
-

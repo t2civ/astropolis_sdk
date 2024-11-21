@@ -145,4 +145,3 @@ func _update_history(svr_qtr: int) -> void:
 			_history_numbers[i].append(_numbers[i])
 			i += 1
 		run_qtr += 1
-

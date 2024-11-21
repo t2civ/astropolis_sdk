@@ -259,4 +259,3 @@ static func zero_array_of_float_arrays(array: Array[Array]) -> void:
 		while j > 0:
 			j -= 1
 			array[i][j] = 0.0
-

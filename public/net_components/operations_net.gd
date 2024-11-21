@@ -516,5 +516,3 @@ func get_interface_dirty() -> Array:
 	#_dirty_op_commands_1 = 0
 	#_dirty_op_commands_2 = 0
 	return data
-
-

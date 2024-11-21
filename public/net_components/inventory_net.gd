@@ -88,4 +88,3 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.add_floats_delta(_in_transits, 64)
 	_sync.add_floats_delta(_contracteds)
 	_sync.add_floats_delta(_contracteds, 64)
-
