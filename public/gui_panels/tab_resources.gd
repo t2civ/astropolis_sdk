@@ -436,4 +436,3 @@ class StratumVBox extends VBoxContainer:
 			_stratum_header.text = STRATUM_OPEN_PREFIX + _stratum_str
 			_resource_grid.show()
 			_memory[_memory_key] = true
-

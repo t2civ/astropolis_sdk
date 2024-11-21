@@ -51,4 +51,3 @@ func _update_selection(_suppress_camera_move := false) -> void:
 	if !_selection_manager.has_selection():
 		return
 	text = _selection_manager.get_body_gui_name() # modified from I, Voyager
-

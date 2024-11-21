@@ -89,4 +89,3 @@ func _update_selection(_dummy := false) -> void:
 		targets.append(body_name)
 	
 	_stats_grid.update_targets(targets, column_names)
-

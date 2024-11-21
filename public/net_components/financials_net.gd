@@ -138,4 +138,3 @@ func _update_quarter(svr_qtr: int) -> void:
 	_gross_output = 0.0
 	_cost_of_goods_sold = 0.0
 	# TODO: zero _accountings for income & cf items only
-

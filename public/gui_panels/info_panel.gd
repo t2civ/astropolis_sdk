@@ -88,4 +88,3 @@ func _clone_and_pin() -> void:
 
 func _close() -> void:
 	queue_free()
-

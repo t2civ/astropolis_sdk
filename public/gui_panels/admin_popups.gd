@@ -8,4 +8,3 @@
 class_name AdminPopups
 extends Control
 const SCENE := "res://public/gui_panels/admin_popups.tscn"
-

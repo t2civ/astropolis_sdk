@@ -219,4 +219,3 @@ func _on_gui_input(event: InputEvent, label: Label) -> void:
 	else:
 		var selection_name: StringName = lookup
 		_selection_manager.select_prefer_facility(selection_name)
-

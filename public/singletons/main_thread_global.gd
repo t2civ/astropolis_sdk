@@ -136,4 +136,3 @@ func add_interface(interface: Interface) -> void:
 func remove_interface(interface: Interface) -> void:
 	interfaces_by_name.erase(interface.name)
 	interface_removed.emit(interface)
-

@@ -95,4 +95,3 @@ func add_floats_delta(delta_array: Array[float], bits_offset := 0) -> void:
 		delta_array[i] += _float_data[_float_offset]
 		_float_offset += 1
 		flags &= ~lsb
-

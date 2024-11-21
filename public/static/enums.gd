@@ -101,4 +101,3 @@ enum AccountClass {
 }
 
 const ACCOUNTING_PROJECT_OFFSET := 10000
-

@@ -311,4 +311,3 @@ func _update_tab_display(tab: int, n_resources: int, data: Array, _is_marketplac
 
 	_no_markets_label.hide()
 	_tab_container.show()
-

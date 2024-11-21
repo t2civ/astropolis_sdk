@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bge38u16ro4w8"]
+[gd_scene load_steps=15 format=3 uid="uid://bge38u16ro4w8"]
 
 [ext_resource type="Script" path="res://public/gui_panels/selection_panel.gd" id="1"]
 [ext_resource type="PackedScene" path="res://public/gui_widgets/selection_label2.tscn" id="2"]
@@ -8,10 +8,9 @@
 [ext_resource type="PackedScene" path="res://public/gui_widgets/selection_image2.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://b02brsb71lrev" path="res://addons/ivoyager_core/gui_widgets/huds_popup_button.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://b1mkm7ajlvvm0" path="res://addons/ivoyager_core/gui_widgets/track_ckbxs.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://addons/ivoyager_core/gui_widgets/focal_length_buttons.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://public/gui_widgets/local_selections.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://bjf4qy5fngcu6" path="res://public/gui_widgets/local_selections.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://cwnvxi44ijkr4" path="res://addons/ivoyager_core/gui_widgets/up_lock_ckbx.tscn" id="12"]
-[ext_resource type="PackedScene" uid="uid://d20srsljisybk" path="res://addons/ivoyager_core/gui_widgets/focal_length_label.tscn" id="13"]
+[ext_resource type="PackedScene" uid="uid://chl27l6aiico8" path="res://addons/ivoyager_core/gui_widgets/focal_length_control.tscn" id="13_d8to3"]
 [ext_resource type="PackedScene" uid="uid://do2jvg01jte0i" path="res://addons/ivoyager_core/gui_widgets/view_save_button.tscn" id="14"]
 [ext_resource type="PackedScene" uid="uid://bvs2mb8bj8gfn" path="res://addons/ivoyager_core/gui_widgets/view_save_flow.tscn" id="15"]
 [ext_resource type="PackedScene" uid="uid://bcl70ysl6yces" path="res://addons/ivoyager_core/gui_widgets/view_button.tscn" id="16"]
@@ -123,10 +122,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="FocalLengthLabel" parent="VBox/BottomHBox" instance=ExtResource("13")]
-layout_mode = 2
-
-[node name="FocalLengthButtons" parent="VBox/BottomHBox" instance=ExtResource("9")]
+[node name="FocalLengthControl" parent="VBox/BottomHBox" instance=ExtResource("13_d8to3")]
 layout_mode = 2
 
 [node name="ControlMod" parent="." instance=ExtResource("3")]

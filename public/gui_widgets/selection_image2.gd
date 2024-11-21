@@ -72,4 +72,3 @@ func _update_image(_suppress_camera_move := false) -> void:
 	var texture_2d := _selection_manager.get_texture_2d()
 	if texture_2d:
 		texture = texture_2d
-

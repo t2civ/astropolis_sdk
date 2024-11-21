@@ -223,4 +223,3 @@ func add_facility(facility: Interface) -> void:
 func remove_facility(facility: Interface) -> void:
 	facilities.erase(facility)
 	is_facilities = !facilities.is_empty()
-

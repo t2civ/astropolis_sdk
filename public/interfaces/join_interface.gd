@@ -223,5 +223,3 @@ func sync_server_dirty(data: Array) -> void:
 		else:
 			run_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
-
-

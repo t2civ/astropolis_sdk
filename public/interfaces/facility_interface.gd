@@ -284,4 +284,3 @@ func _sync_ai_changes() -> void:
 		data.append(operations.get_interface_dirty())
 	_dirty = 0
 	AIGlobal.emit_signal("interface_changed", entity_type, facility_id, data)
-

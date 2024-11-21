@@ -63,4 +63,3 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		float_offset += 1
 	if dirty & DIRTY_INFORMATION:
 		_information += float_data[float_offset]
-

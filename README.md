@@ -31,4 +31,3 @@ I, Voyager's [Developers Page](https://www.ivoyager.dev/developers/) might be he
 The SDK repository contains submodules. To clone the SDK with its submodules in one step using Git:
 
 `git clone --recursive https://github.com/t2civ/astropolis_sdk`
-

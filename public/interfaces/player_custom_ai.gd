@@ -12,4 +12,3 @@ extends PlayerInterface
 # Setting OVERRIDE_AI = true makes this the selected AI for players.
 
 const OVERRIDE_AI := true
-

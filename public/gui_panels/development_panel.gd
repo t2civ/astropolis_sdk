@@ -43,4 +43,3 @@ func _delayed_1st_update() -> void:
 		await get_tree().process_frame
 		i += 1
 	($StatsGrid as StatsGrid).update()
-

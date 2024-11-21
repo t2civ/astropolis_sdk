@@ -84,4 +84,3 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_asks, 64)
 	_sync.set_floats_dirty(_volumes)
 	_sync.set_floats_dirty(_volumes, 64)
-

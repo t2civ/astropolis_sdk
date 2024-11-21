@@ -275,4 +275,3 @@ func calculate_volume_and_total_mass() -> void:
 			- inner_radius * inner_radius * inner_radius)
 	_total_mass = _volume * density
 	_needs_volume_mass_calculation = false
-
