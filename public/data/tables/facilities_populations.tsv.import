@@ -1,6 +1,6 @@
 [remap]
 
-importer="ivoyager.table_importer"
+importer="ivoyager.tables"
 type="IVTableResource"
 uid="uid://1ojrahef3yly"
 path="res://.godot/imported/facilities_populations.tsv-155aaf7a840793cbe082c6fdccd899ca.tres"

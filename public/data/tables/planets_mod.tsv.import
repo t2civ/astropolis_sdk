@@ -1,6 +1,6 @@
 [remap]
 
-importer="ivoyager.table_importer"
+importer="ivoyager.tables"
 type="IVTableResource"
 uid="uid://4t53f0452p3u"
 path="res://.godot/imported/planets_mod.tsv-084fb0e1de7aaca6257fad0d863d45d2.tres"

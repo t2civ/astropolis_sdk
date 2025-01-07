@@ -1,6 +1,6 @@
 [remap]
 
-importer="ivoyager.table_importer"
+importer="ivoyager.tables"
 type="IVTableResource"
 uid="uid://cwj1fut37qi2m"
 path="res://.godot/imported/carrying_capacity_groups.tsv-8c38713435e6f4c0c9def4c037a761b1.tres"
