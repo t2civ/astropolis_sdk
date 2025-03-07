@@ -30,10 +30,14 @@ func _init() -> void:
 	IVCoreSettings.project_name = "Astropolis"
 	IVCoreSettings.project_version = version # helps load file debug
 	IVCoreSettings.use_threads = USE_THREADS
-	IVCoreSettings.save_file_extension = "AstropolisSave"
-	IVCoreSettings.save_file_extension_name = "Astropolis Save"
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	IVCoreSettings.colors.great = Color.BLUE
+	
+	IVSave.file_extension = "AstropolisSave"
+	IVSave.file_description = "Astropolis Save"
+	IVSave.autosave_uses_suffix_generator = true
+	IVSave.quicksave_uses_suffix_generator = true
+	
 	
 	# translations
 	var path_format := "res://public/data/text/%s.translation"
@@ -115,6 +119,7 @@ func _on_project_objects_instantiated() -> void:
 	var settings_manager: IVSettingsManager = IVGlobal.program.SettingsManager
 	var defaults: Dictionary = settings_manager.defaults
 	defaults.save_base_name = "Astropolis"
+	defaults.autosave_time_min = 0
 	
 #	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
 #	model_builder.model_tables.append("spacecrafts")
