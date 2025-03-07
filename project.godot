@@ -33,6 +33,7 @@ IVCoreInitializer="*res://addons/ivoyager_core/editor_plugin/../singletons/core_
 ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
 MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
 AIGlobal="*res://public/singletons/ai_global.gd"
+IVSave="*res://addons/ivoyager_save/save.gd"
 
 [debug]
 
@@ -54,7 +55,7 @@ window/size/viewport_height=945
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ivoyager_core/plugin.cfg", "res://addons/ivoyager_tables/plugin.cfg", "res://addons/ivoyager_tree_saver/plugin.cfg", "res://addons/ivoyager_units/plugin.cfg")
+enabled=PackedStringArray("res://addons/ivoyager_core/plugin.cfg", "res://addons/ivoyager_save/plugin.cfg", "res://addons/ivoyager_tables/plugin.cfg", "res://addons/ivoyager_units/plugin.cfg")
 
 [filesystem]
 
