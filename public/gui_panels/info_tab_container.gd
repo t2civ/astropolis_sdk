@@ -61,7 +61,7 @@ func _ready() -> void:
 	add_child(_timer)
 	_timer.start() # 1 s interval unless we change
 	if !_is_new: # loaded game
-		IVGlobal.game_load_finished.connect(_on_game_load_finished, CONNECT_ONE_SHOT)
+		IVSave.load_finished.connect(_on_game_load_finished, CONNECT_ONE_SHOT)
 		return
 	add_child(itab_development)
 	add_child(itab_operations)
