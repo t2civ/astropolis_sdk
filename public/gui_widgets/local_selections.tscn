@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bjf4qy5fngcu6"]
 
-[ext_resource type="Script" path="res://public/gui_widgets/local_selections.gd" id="1"]
+[ext_resource type="Script" uid="uid://tdnb8ivuhnvk" path="res://public/gui_widgets/local_selections.gd" id="1"]
 
 [node name="LocalSelections" type="MarginContainer"]
 offset_right = 12.0

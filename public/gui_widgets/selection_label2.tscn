@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://bit8giu74do67"]
 
-[ext_resource path="res://public/gui_widgets/selection_label2.gd" type="Script" id=1]
+[ext_resource type="Script" uid="uid://d0jsmgc0swx7p" path="res://public/gui_widgets/selection_label2.gd" id="1"]
 
 [node name="SelectionLabel" type="Label"]
 offset_right = 40.0
 offset_bottom = 14.0
 text = "Earth"
-script = ExtResource( 1 )
+script = ExtResource("1")

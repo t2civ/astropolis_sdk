@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bd4dl3ewvjdms"]
 
-[ext_resource type="Script" path="res://public/gui_widgets/stats_grid.gd" id="1"]
+[ext_resource type="Script" uid="uid://d2lhu5ademjm8" path="res://public/gui_widgets/stats_grid.gd" id="1"]
 
 [node name="StatsGrid" type="MarginContainer"]
 offset_left = 7.0

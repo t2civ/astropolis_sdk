@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://crwfsrh6c5ik5"]
 
 [ext_resource type="PackedScene" uid="uid://bd4dl3ewvjdms" path="res://public/gui_widgets/stats_grid.tscn" id="1"]
-[ext_resource type="Script" path="res://public/gui_panels/itab_development.gd" id="2"]
+[ext_resource type="Script" uid="uid://ce81iouywmjyj" path="res://public/gui_panels/itab_development.gd" id="2"]
 
 [node name="Development" type="MarginContainer"]
 offset_left = 7.0

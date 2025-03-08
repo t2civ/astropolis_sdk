@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://fwbd14ssdko7"]
 
-[ext_resource type="Script" path="res://public/gui_panels/itab_budget.gd" id="1_g8qsv"]
+[ext_resource type="Script" uid="uid://vla5w6kysok1" path="res://public/gui_panels/itab_budget.gd" id="1_g8qsv"]
 
 [node name="Budget" type="MarginContainer"]
 offset_left = 7.0
