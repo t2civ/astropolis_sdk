@@ -17,10 +17,10 @@ extends IVSelectionManager
 
 
 static func get_or_make_selection(selection_name: StringName) -> IVSelection:
-	var selection_: IVSelection = IVGlobal.selections.get(selection_name)
+	var selection_: IVSelection = IVSelection.selections.get(selection_name)
 	if selection_:
 		return selection_
-	if IVGlobal.bodies.has(selection_name): # its a Body in the system
+	if IVBody.bodies.has(selection_name): # its a Body in the system
 		return make_selection_for_body(selection_name)
 	elif selection_name.begins_with("FACILITY_"):
 		return make_selection_for_facility(selection_name)
@@ -36,7 +36,7 @@ static func make_selection_for_facility(facility_name: StringName) -> IVSelectio
 	selection_.name = facility_name
 	selection_.gui_name = gui_name
 	selection_.up_selection_name = body_name
-	IVGlobal.selections[facility_name] = selection_
+	IVSelection.selections[facility_name] = selection_
 	return selection_
 
 

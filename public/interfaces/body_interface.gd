@@ -17,7 +17,7 @@ extends Interface
 # Warning! This object lives and dies on the AI thread! Containers and many
 # methods are not threadsafe. Accessing non-container properties is safe.
 #
-# To get the SceenTree "body" node (class IVBody) use IVGlobal.bodies[body_name].
+# To get the SceenTree "body" node (class IVBody) use IVBody.bodies[body_name].
 # Be aware that SceenTree works on the Main thread!
 
 static var body_interfaces: Array[BodyInterface] = [] # indexed by body_id
