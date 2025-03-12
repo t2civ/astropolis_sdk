@@ -84,7 +84,7 @@ const Q := 1.0 # Short for the QSNINDC ;)
 #
 # We look for unit symbol first in unit_multipliers and then in unit_lambdas.
 
-var unit_multipliers := {
+var unit_multipliers: Dictionary[StringName, float] = {
 	# Duplicated symbols have leading underscore.
 	# See IVQFormat for unit display strings.
 	
@@ -237,7 +237,7 @@ var unit_multipliers := {
 # ********************************************
 }
 
-var unit_lambdas := {
+var unit_lambdas: Dictionary[StringName, Callable] = {
 	&"degC" : func convert_celsius(x: float, to_internal := true) -> float:
 		return x + 273.15 if to_internal else x - 273.15,
 	&"degF" : func convert_fahrenheit(x: float, to_internal := true) -> float:
