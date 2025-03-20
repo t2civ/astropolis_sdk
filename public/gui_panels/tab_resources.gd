@@ -14,7 +14,7 @@ const SUPER_CLOSED_PREFIX := "> "
 const STRATUM_OPEN_PREFIX := "  \u2304 "
 const STRATUM_CLOSED_PREFIX := "  > "
 const RESOURCE_INDENT := "        "
-const IS_SPACECRAFT := IVEnums.BodyFlags.IS_SPACECRAFT
+const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
@@ -73,7 +73,7 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		return
 	
 	if !body_interface.has_compositions():
-		var is_unknown := not body_interface.body_flags & IS_SPACECRAFT
+		var is_unknown := not body_interface.body_flags & BODYFLAGS_SPACECRAFT
 		_update_no_resources.call_deferred(is_unknown)
 		return
 	

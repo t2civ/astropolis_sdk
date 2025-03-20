@@ -9,8 +9,8 @@ class_name ITabDevelopment
 extends MarginContainer
 const SCENE := "res://public/gui_panels/itab_development.tscn"
 
-const BodyFlags: Dictionary = IVEnums.BodyFlags
-const BodyFlags2: Dictionary = Enums.BodyFlags2
+const BodyFlags := IVBody.BodyFlags
+const BodyFlags2 := Enums.BodyFlags2
 const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 
 const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
@@ -59,14 +59,14 @@ func _update_selection(_dummy := false) -> void:
 	var targets: Array[StringName] = []
 	var column_names: Array[StringName] = []
 	
-	if body_flags & BodyFlags.IS_PLANET:
+	if body_flags & BodyFlags.BODYFLAGS_PLANET:
 		targets.append(selection_name) # Facility or Body name
 		column_names.append(&"LABEL_PLANETARY")
 		if body_name == &"PLANET_EARTH":
 			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
 			column_names.append(&"LABEL_LUNAR")
 			column_names.append(&"LABEL_CISLUNAR_SPACE")
-		elif body_flags & BodyFlags2.GUI_HAS_MOONS:
+		elif body_flags & BodyFlags2.BODYFLAGS_GUI_HAS_MOONS:
 			targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
 			column_names.append(&"LABEL_MOONS")
 			column_names.append(StringName(tr(body_name) + " " + tr(&"LABEL_LOCAL_SPACE")))
@@ -75,7 +75,7 @@ func _update_selection(_dummy := false) -> void:
 		targets.append(StringName("JOIN_" + body_name + "_SPACE" + player_join_name))
 		
 	
-	elif body_flags & BodyFlags.IS_STAR:
+	elif body_flags & BodyFlags.BODYFLAGS_STAR:
 		targets.append(StringName("JOIN_" + body_name + "_PLANETS" + player_join_name))
 		targets.append(StringName("JOIN_" + body_name + "_MOONS" + player_join_name))
 		targets.append(StringName("JOIN_" + body_name + "_PLANETOIDS" + player_join_name))
