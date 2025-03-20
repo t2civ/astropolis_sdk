@@ -20,7 +20,7 @@ const SCENE := "res://public/gui_panels/info_panel.tscn"
 signal clone_and_pin_requested(info_panel: InfoPanel)
 
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",

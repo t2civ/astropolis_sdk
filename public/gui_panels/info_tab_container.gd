@@ -11,7 +11,7 @@ extends TabContainer
 # Added by code to allow persistence of info subpanels.
 # TODO: Generalize so we don't have to maintain subpanel classes here.
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"memory",
 	&"_on_ready_tab",

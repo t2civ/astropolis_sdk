@@ -13,7 +13,7 @@ const BodyFlags := IVBody.BodyFlags
 const BodyFlags2 := Enums.BodyFlags2
 const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = []
 
 var _state: Dictionary = IVGlobal.state

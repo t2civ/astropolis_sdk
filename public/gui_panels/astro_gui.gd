@@ -10,7 +10,7 @@ extends Control
 const SCENE := "res://public/gui_panels/astro_gui.tscn"
 
 
-const PERSIST_MODE := IVEnums.PERSIST_PROPERTIES_ONLY # child GUIs are persisted
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY # child GUIs are persisted
 
 
 func _ready() -> void:

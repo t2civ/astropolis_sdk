@@ -38,7 +38,7 @@ const CLOSED_PREFIX := ">   "
 const SINGULAR_PREFIX := "     "
 const SUB_PREFIX := "         "
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"current_tab",
 	&"_on_ready_tab",

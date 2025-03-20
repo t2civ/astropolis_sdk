@@ -10,7 +10,7 @@ extends MarginContainer
 
 # Added by code to allow persistence of info subpanels.
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 
 var info_tab_container: InfoTabContainer
 

@@ -10,7 +10,7 @@ extends MarginContainer
 const SCENE := "res://public/gui_panels/itab_physical.tscn"
 
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = []
 
 var _state: Dictionary = IVGlobal.state
