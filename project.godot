@@ -11,9 +11,9 @@ config_version=5
 [application]
 
 config/name="Astropolis SDK"
-config/version="v0.0.5.dev"
+config/version="v0.0.5"
 run/main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
-config/features=PackedStringArray("4.3")
+config/features=PackedStringArray("4.4")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="res://public/pale_blue_dot.png"
 config/icon="res://public/astropolis-icon-128.png"
@@ -27,13 +27,13 @@ IVUnits="*res://public/singletons/units.gd"
 IVQConvert="*res://addons/ivoyager_units/qconvert.gd"
 IVQFormat="*res://addons/ivoyager_units/qformat.gd"
 IVTableData="*res://addons/ivoyager_tables/table_data.gd"
+IVSave="*res://addons/ivoyager_save/save.gd"
 IVGlobal="*res://addons/ivoyager_core/editor_plugin/../singletons/global.gd"
 IVCoreSettings="*res://addons/ivoyager_core/editor_plugin/../singletons/core_settings.gd"
 IVCoreInitializer="*res://addons/ivoyager_core/editor_plugin/../singletons/core_initializer.gd"
 ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
 MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
 AIGlobal="*res://public/singletons/ai_global.gd"
-IVSave="*res://addons/ivoyager_save/save.gd"
 
 [debug]
 

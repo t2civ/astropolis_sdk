@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=3 uid="uid://bge38u16ro4w8"]
 
-[ext_resource type="Script" path="res://public/gui_panels/selection_panel.gd" id="1"]
-[ext_resource type="PackedScene" path="res://public/gui_widgets/selection_label2.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="3"]
+[ext_resource type="Script" uid="uid://cbwffti2dulg3" path="res://public/gui_panels/selection_panel.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bit8giu74do67" path="res://public/gui_widgets/selection_label2.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bh05kj1lc1y01" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://b5k2m7jen3jwm" path="res://addons/ivoyager_core/gui_widgets/range_label.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://welwpw4boyv8" path="res://addons/ivoyager_core/gui_widgets/lat_long_label.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://public/gui_widgets/selection_image2.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://7gwifgtfl1k4" path="res://public/gui_widgets/selection_image2.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://b02brsb71lrev" path="res://addons/ivoyager_core/gui_widgets/huds_popup_button.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://b1mkm7ajlvvm0" path="res://addons/ivoyager_core/gui_widgets/track_ckbxs.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://bjf4qy5fngcu6" path="res://public/gui_widgets/local_selections.tscn" id="10"]
@@ -76,7 +76,7 @@ layout_mode = 2
 
 [node name="Home" parent="VBox/MainHBox/RightVBox/ViewSaveFlow" instance=ExtResource("16")]
 layout_mode = 2
-text = "BUTTON_HOME"
+text = "VIEW_HOME"
 
 [node name="LocalSelections" parent="VBox/MainHBox/RightVBox" instance=ExtResource("10")]
 layout_mode = 2
@@ -91,15 +91,15 @@ layout_mode = 2
 
 [node name="Zoom" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "BUTTON_ZOOM"
+text = "VIEW_ZOOM"
 
 [node name="Fortyfive" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "BUTTON_45_DEG"
+text = "VIEW_FORTYFIVE"
 
 [node name="Top" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "BUTTON_TOP"
+text = "VIEW_TOP"
 
 [node name="Spacer1" type="Control" parent="VBox/BottomHBox"]
 layout_mode = 2

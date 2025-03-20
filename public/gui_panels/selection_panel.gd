@@ -7,8 +7,9 @@
 # *****************************************************************************
 extends PanelContainer
 
+const ViewFlags := IVView.ViewFlags
 
-const PERSIST_MODE := IVEnums.PERSIST_PROPERTIES_ONLY
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",
@@ -20,8 +21,8 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 var default_view_name := &"LABEL_VIEW1" # will increment if taken
 var collection_name := &"SP"
 var is_cached := false # if false, persisted via gamesave
-var view_flags := IVView.ALL
-var init_flags := IVView.ALL_CAMERA
+var view_flags := ViewFlags.VIEWFLAGS_ALL
+var init_flags := ViewFlags.VIEWFLAGS_ALL_CAMERA
 var reserved_view_names: Array[StringName] = [&"BUTTON_HOME"]
 
 

@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://q7isgrok4sox"]
 
-[ext_resource type="Script" path="res://public/gui_panels/navigation_panel.gd" id="1"]
+[ext_resource type="Script" uid="uid://gsswxjj47863" path="res://public/gui_panels/navigation_panel.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://crmkiyfceanog" path="res://addons/ivoyager_core/gui_widgets/camera_lock_ckbx.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bh05kj1lc1y01" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://wcxctits85co" path="res://addons/ivoyager_core/gui_widgets/sun_slice_button.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://drl4tb0hbqhl" path="res://addons/ivoyager_core/gui_widgets/speed_buttons.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://cc3uu3jh0620y" path="res://addons/ivoyager_core/gui_widgets/speed_label.tscn" id="6"]

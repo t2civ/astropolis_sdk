@@ -50,11 +50,11 @@ enum RandomPlayer {
 }
 
 enum BodyFlags2 {
-	IS_STATION = 1 << 40,
-	GUI_HAS_MOONS = 1 << 41,
-	GUI_HAS_ONE_MOON = 1 << 42, # Earth
-	GUI_CLOUDS = 1 << 43, # Gas Giants; for Development "surface" replacement
-	GUI_CLOUDS_SURFACE = 1 << 44, # Venus only; for Development "surface" replacement
+	BODYFLAGS_STATION = 1 << 40,
+	BODYFLAGS_GUI_HAS_MOONS = 1 << 41,
+	BODYFLAGS_GUI_HAS_ONE_MOON = 1 << 42, # Earth
+	BODYFLAGS_GUI_CLOUDS = 1 << 43, # Gas Giants; for Development "surface" replacement
+	BODYFLAGS_GUI_CLOUDS_SURFACE = 1 << 44, # Venus only; for Development "surface" replacement
 }
 
 

@@ -31,7 +31,6 @@ func _init() -> void:
 	IVCoreSettings.project_version = version # helps load file debug
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
-	IVCoreSettings.colors.great = Color.BLUE
 	
 	IVSave.file_extension = "AstropolisSave"
 	IVSave.file_description = "Astropolis Save"

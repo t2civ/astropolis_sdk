@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://brffnqlna42m5"]
 
-[ext_resource type="Script" path="res://public/gui_panels/astro_gui.gd" id="1"]
+[ext_resource type="Script" uid="uid://d26utdh8umbay" path="res://public/gui_panels/astro_gui.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bge38u16ro4w8" path="res://public/gui_panels/selection_panel.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://public/gui_panels/navigation_panel.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://q7isgrok4sox" path="res://public/gui_panels/navigation_panel.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://d3vwfhbjnmt1q" path="res://public/gui_panels/development_panel.tscn" id="4"]
 
 [node name="AstroGUI" type="Control"]

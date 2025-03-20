@@ -39,7 +39,7 @@ const TRADE_CLASS_TEXTS := [ # correspond to TradeClasses
 	"",
 ]
 
-const PERSIST_MODE := IVEnums.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"vol_toggle",
 	&"current_tab",

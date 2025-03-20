@@ -17,7 +17,7 @@ extends MarginContainer
 const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
 const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY
-const IS_STAR := IVEnums.BodyFlags.IS_STAR
+const BODYFLAGS_STAR := IVBody.BodyFlags.BODYFLAGS_STAR
 
 var section_names: Array[String] = [
 	tr(&"LABEL_SPACEFARING_POLITIES"),
@@ -108,7 +108,7 @@ func _set_selections_on_ai_thread(body_name: StringName) -> void:
 	if !body:
 		_is_busy = false
 		return
-	var is_star := bool(body.body_flags & IS_STAR)
+	var is_star := bool(body.body_flags & BODYFLAGS_STAR)
 	_set_selections_recursive(body, is_star, true)
 	# TODO: Sort results in some sensible way
 	_update_labels.call_deferred()
