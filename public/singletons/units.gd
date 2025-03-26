@@ -20,13 +20,21 @@
 # *****************************************************************************
 extends Node
 
-# Replacement singleton 'IVUnits'.
-#
-# Copied from ivoyager_table_importer/singletons/units.gd with additions.
+## Replacement IVUnits singleton
+##
+## This file replaces the plugin template file at addons/ivoyager_units/units.gd.
+## Sim scale ([constant METER]) is changed and game units have been added.[br][br]
+##
+## WARNING: Lighting and shadows are EXTREMELY sensitive to scale, and the
+## specific issues (and best setting) vary with Godot versions. See class file
+## comments in the Planetarium's 
+## [url=https://github.com/ivoyager/planetarium/blob/master/planetarium/units.gd]
+## units.gd[/url] for a running record of issues and the current recommended
+## METER value.
 
 # SI base units
 const SECOND := 1.0
-const METER := 1.0
+const METER := 2e-3
 const KG := 1.0
 const AMPERE := 1.0
 const KELVIN := 1.0
@@ -84,6 +92,7 @@ const Q := 1.0 # Short for the QSNINDC ;)
 #
 # We look for unit symbol first in unit_multipliers and then in unit_lambdas.
 
+## Conversion multipliers for units that are linear with zero-intersect.
 var unit_multipliers: Dictionary[StringName, float] = {
 	# Duplicated symbols have leading underscore.
 	# See IVQFormat for unit display strings.
@@ -237,6 +246,8 @@ var unit_multipliers: Dictionary[StringName, float] = {
 # ********************************************
 }
 
+## Conversion lambdas for units that are nonlinear or have non-zero intersect,
+## e.g., celsius and fahrenheit.
 var unit_lambdas: Dictionary[StringName, Callable] = {
 	&"degC" : func convert_celsius(x: float, to_internal := true) -> float:
 		return x + 273.15 if to_internal else x - 273.15,
