@@ -72,7 +72,7 @@ func _init() -> void:
 	tables.strata = path_format % "strata"
 	tables.surveys = path_format % "surveys"
 	# primary table mods (modify existing ivoyager tables)
-	tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
+	#tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
 	tables.planets_mod = path_format % "planets_mod"
 	tables.moons_mod = path_format % "moons_mod"
 	# enum x enum tables
