@@ -20,6 +20,7 @@ func _init() -> void:
 	print("Astropolis %s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
+	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
 	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
 	IVGlobal.project_objects_instantiated.connect(_on_project_objects_instantiated)
 	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
@@ -37,24 +38,47 @@ func _init() -> void:
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
 	
+	# added/replaced classes
+	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
+	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
+	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
+	
+	# extended
+	IVCoreInitializer.procedural_objects[&"SelectionManager"] = SelectionManager
+	
+	# removed
+	IVCoreInitializer.program_refcounteds.erase(&"CompositionBuilder")
+	IVCoreInitializer.procedural_objects.erase(&"Composition") # using total replacement
 	
 	# translations
 	var path_format := "res://public/data/text/%s.translation"
-	IVCoreSettings.translations.append(path_format % "entities.en")
-	IVCoreSettings.translations.append(path_format % "gui.en")
-	IVCoreSettings.translations.append(path_format % "hints.en")
-	IVCoreSettings.translations.append(path_format % "text.en")
+	IVTranslationImporter.translations.append(path_format % "entities.en")
+	IVTranslationImporter.translations.append(path_format % "gui.en")
+	IVTranslationImporter.translations.append(path_format % "hints.en")
+	IVTranslationImporter.translations.append(path_format % "text.en")
 	
-	# tables
-	IVCoreSettings.table_project_enums.append(Enums.Types)
-	IVCoreSettings.table_project_enums.append(Enums.TradeClasses)
-	IVCoreSettings.table_project_enums.append(Enums.PlayerClasses)
-	IVCoreSettings.table_project_enums.append(Enums.ProcessGroup)
+	# static class changes
+	IVQFormat.exponent_str = "e"
+
+
+func _on_project_object_instantiated(object: Object) -> void:
+	var table_initializer := object as IVTableInitializer
+	if table_initializer:
+		_on_table_initializer_instantiated(table_initializer)
+
+
+func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) -> void:
+	# WARNING: Static vars could be modified earlier, but we need to wait so
+	# core can do some modding related changes first.
+	IVTableInitializer.table_project_enums.append(Enums.Types)
+	IVTableInitializer.table_project_enums.append(Enums.TradeClasses)
+	IVTableInitializer.table_project_enums.append(Enums.PlayerClasses)
+	IVTableInitializer.table_project_enums.append(Enums.ProcessGroup)
 	
-	var tables: Dictionary = IVCoreSettings.tables
+	var tables := IVTableInitializer.tables
 	tables.erase("wiki_extras")
 	
-	path_format = "res://public/data/tables/%s.tsv"
+	var path_format := "res://public/data/tables/%s.tsv"
 	
 	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
 	tables.compositions = path_format % "compositions"
@@ -84,21 +108,6 @@ func _init() -> void:
 	tables.facilities_operations_capacity_factors = path_format % "facilities_operations_capacity_factors"
 	tables.facilities_operations_extractions = path_format % "facilities_operations_extractions"
 	tables.facilities_populations = path_format % "facilities_populations"
-	
-	# added/replaced classes
-	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
-	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
-	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
-	
-	# extended
-	IVCoreInitializer.procedural_objects[&"SelectionManager"] = SelectionManager
-	
-	# removed
-	IVCoreInitializer.program_refcounteds.erase(&"CompositionBuilder")
-	IVCoreInitializer.procedural_objects.erase(&"Composition") # using total replacement
-	
-	# static class changes
-	IVQFormat.exponent_str = "e"
 
 
 func _on_data_tables_imported() -> void:
