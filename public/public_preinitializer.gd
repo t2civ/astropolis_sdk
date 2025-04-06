@@ -33,11 +33,6 @@ func _init() -> void:
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
-	IVSave.file_extension = "AstropolisSave"
-	IVSave.file_description = "Astropolis Save"
-	IVSave.autosave_uses_suffix_generator = true
-	IVSave.quicksave_uses_suffix_generator = true
-	
 	# added/replaced classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
 	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
@@ -57,8 +52,18 @@ func _init() -> void:
 	IVTranslationImporter.translations.append(path_format % "hints.en")
 	IVTranslationImporter.translations.append(path_format % "text.en")
 	
-	# static class changes
+	# Units plugin
 	IVQFormat.exponent_str = "e"
+	
+	# Save plugin
+	IVSave.file_extension = "AstropolisSave"
+	IVSave.file_description = "Astropolis Save"
+	IVSave.autosave_uses_suffix_generator = true
+	IVSave.quicksave_uses_suffix_generator = true
+	
+	# Core plugin static files
+	IVSettingsManager.defaults[&"save_base_name"] = "Astropolis"
+	IVSettingsManager.defaults[&"autosave_time_min"] = 0
 
 
 func _on_project_object_instantiated(object: Object) -> void:
@@ -123,11 +128,6 @@ func _on_project_objects_instantiated() -> void:
 	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
 	timekeeper.date_format = timekeeper.DATE_FORMAT_Y_M_D_Q_YQ_YM
 	timekeeper.start_speed = 0
-	
-	var settings_manager: IVSettingsManager = IVGlobal.program.SettingsManager
-	var defaults: Dictionary = settings_manager.defaults
-	defaults.save_base_name = "Astropolis"
-	defaults.autosave_time_min = 0
 	
 #	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
 #	model_builder.model_tables.append("spacecrafts")
