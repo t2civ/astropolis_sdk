@@ -30,7 +30,7 @@ var _is_facility := false
 
 var _sync := SyncHelper.new()
 
-static var _tables: Dictionary = IVTableData.tables
+static var _db_tables := IVTableData.db_tables
 static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 static var _n_populations: int
 static var _table_populations: Dictionary
@@ -43,7 +43,7 @@ func _init(is_new := false, is_facility_ := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_n_populations = _table_n_rows[&"populations"]
-		_table_populations = _tables[&"populations"]
+		_table_populations = _db_tables[&"populations"]
 		_carrying_capacity_groups = _table_populations[&"carrying_capacity_group"]
 		_carrying_capacity_group2s = _table_populations[&"carrying_capacity_group2"]
 	if !is_new: # game load

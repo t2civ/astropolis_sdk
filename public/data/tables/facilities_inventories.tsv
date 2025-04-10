@@ -17,7 +17,7 @@ SPACECRAFT_ISS_PLAYER_ROSCOSMOS
 SPACECRAFT_ISS_PLAYER_ESA																																																																	
 SPACECRAFT_ISS_PLAYER_JAXA																																																																	
 SPACECRAFT_TIANGONG_PLAYER_CNSA																																																																	
-@ENUM_X_ENUM																																																																	
+@ENTITY_X_ENTITY																																																																	
 @DATA_TYPE=FLOAT																																																																	
 @DATA_UNIT=t																																																																	
 @DATA_DEFAULT=0																																																																	

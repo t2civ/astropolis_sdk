@@ -18,16 +18,16 @@ const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
-var _tables: Dictionary = IVTableData.tables
+var _db_tables := IVTableData.db_tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _is_extraction_resources: Array[int] = _tables_aux[&"extraction_resources"]
 var _n_is_extraction_resources := _is_extraction_resources.size()
-var _resource_sort_overrides: Array[int] = _tables[&"resources"][&"sort_override"]
-var _init_opens: Array[bool] = _tables[&"compositions"][&"init_open"]
-var _hide_variances: Array[bool] = _tables[&"resources"][&"hide_variances"]
-var _stratum_names: Array[StringName] = _tables[&"strata"][&"name"]
-var _survey_names: Array[StringName] = _tables[&"surveys"][&"name"]
-var _survey_substring: Array[StringName] = _tables[&"surveys"][&"substring"]
+var _resource_sort_overrides: Array[int] = _db_tables[&"resources"][&"sort_override"]
+var _init_opens: Array[bool] = _db_tables[&"compositions"][&"init_open"]
+var _hide_variances: Array[bool] = _db_tables[&"resources"][&"hide_variances"]
+var _stratum_names: Array[StringName] = _db_tables[&"strata"][&"name"]
+var _survey_names: Array[StringName] = _db_tables[&"surveys"][&"name"]
+var _survey_substring: Array[StringName] = _db_tables[&"surveys"][&"substring"]
 var _composition_types: Dictionary # table name enumeration
 
 var _body_name: StringName
@@ -309,7 +309,7 @@ class StratumVBox extends VBoxContainer:
 	
 	const N_COLUMNS := 4
 	
-	var _resource_names: Array[StringName] = IVTableData[&"tables"][&"resources"][&"name"]
+	var _resource_names: Array[StringName] = IVTableData.db_tables[&"resources"][&"name"]
 	
 	var _stratum_header := Button.new()
 	var _resource_grid := GridContainer.new()

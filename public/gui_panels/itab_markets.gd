@@ -61,13 +61,13 @@ var _suppress_tab_listener := true
 var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
-var _tables: Dictionary = IVTableData.tables
+var _db_tables := IVTableData.db_tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _resource_names: Array[StringName] = _tables[&"resources"][&"name"]
-var _trade_classes: Array[int] = _tables[&"resources"][&"trade_class"]
-var _trade_units: Array[StringName] = _tables[&"resources"][&"trade_unit"]
-var _gui_ea: Array[bool] = _tables[&"resources"][&"gui_ea"]
-var _currency_unit: Array[bool] = _tables[&"resources"][&"currency_unit"]
+var _resource_names: Array[StringName] = _db_tables[&"resources"][&"name"]
+var _trade_classes: Array[int] = _db_tables[&"resources"][&"trade_class"]
+var _trade_units: Array[StringName] = _db_tables[&"resources"][&"trade_unit"]
+var _gui_ea: Array[bool] = _db_tables[&"resources"][&"gui_ea"]
+var _currency_unit: Array[bool] = _db_tables[&"resources"][&"currency_unit"]
 var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_resources"]
 
 

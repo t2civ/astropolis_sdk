@@ -102,7 +102,7 @@ var _dirty_op_commands_3 := 0 # max 192
 var _sync := SyncHelper.new()
 
 # localized indexing & table data
-static var _tables: Dictionary = IVTableData.tables
+static var _db_tables := IVTableData.db_tables
 static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 static var _table_operations: Dictionary
@@ -116,7 +116,7 @@ static var _is_class_instanced := false
 func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_table_operations = _tables[&"operations"]
+		_table_operations = _db_tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
 		_operation_electricities = _table_operations[&"electricity"]
 		_operation_process_groups = _table_operations[&"process_group"]

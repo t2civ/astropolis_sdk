@@ -4,7 +4,7 @@ WIND_POWER	0.4	0.3	0.35	0.38	0.35	0.35	0.35	0.4	0.3	0.35	0.38	0.35	0.35
 TIDAL_POWER	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28	0.28					
 HYDROPOWER	0.41	0.43	0.4	0.3	0.35	0.33	0.37	0.41	0.43	0.4	0.3	0.35	0.33					
 GEOTHERMAL_POWER	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75	0.75					
-@ENUM_X_ENUM																		
+@ENTITY_X_ENTITY																		
 @DATA_TYPE=FLOAT																		
 @DATA_DEFAULT=NAN																		
 @TRANSPOSE																		

@@ -58,14 +58,14 @@ var _suppress_tab_listener := true
 var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
-var _tables: Dictionary = IVTableData.tables
+var _db_tables := IVTableData.db_tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _operation_names: Array[StringName] = _tables[&"operations"][&"name"]
-var _operation_sublabels: Array[StringName] = _tables[&"operations"][&"sublabel"]
-var _operation_process_groups: Array[int] = _tables[&"operations"][&"process_group"]
-var _op_group_names: Array[StringName] = _tables[&"op_groups"][&"name"]
-var _op_group_process_groups: Array[int] = _tables[&"op_groups"][&"process_group"]
-var _op_group_show_singular: Array[bool] = _tables[&"op_groups"][&"show_singular"]
+var _operation_names: Array[StringName] = _db_tables[&"operations"][&"name"]
+var _operation_sublabels: Array[StringName] = _db_tables[&"operations"][&"sublabel"]
+var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_group"]
+var _op_group_names: Array[StringName] = _db_tables[&"op_groups"][&"name"]
+var _op_group_process_groups: Array[int] = _db_tables[&"op_groups"][&"process_group"]
+var _op_group_show_singular: Array[bool] = _db_tables[&"op_groups"][&"show_singular"]
 var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
 var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
 
