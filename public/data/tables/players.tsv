@@ -1,5 +1,5 @@
 	player_class	is_start	gui_hide	is_playable	part_of	polity	homeworld
-Type	INT	BOOL	BOOL	BOOL	INT	STRING_NAME	STRING_NAME
+Type	Enums.PlayerClasses	BOOL	BOOL	BOOL	TABLE_ROW	STRING_NAME	STRING_NAME
 Default		TRUE					PLANET_EARTH
 Unit							
 Prefix/PLAYER_	PLAYER_CLASS_				PLAYER_	POLITY_	

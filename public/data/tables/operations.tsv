@@ -1,5 +1,5 @@
 	op_group	sublabel	module_class	process_group	stratum	reverse	electricity	mass_extraction	is_solar	solar_offset	mass_conversion	fuel_rate	manufacturing	bioproduction	computation	biological_crew	android_crew	carrying_capacity	carrying_capacity_group	area	extraction_resources	extraction_multiplier	input_resources	input_quantities	atmos_inputs	output_resources	output_quantities	atmos_outputs
-Type	INT	STRING_NAME	INT	INT	INT	INT	FLOAT	BOOL	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	INT	FLOAT	ARRAY[INT]	FLOAT	ARRAY[INT]	ARRAY[FLOAT]	ARRAY[INT]	ARRAY[INT]	ARRAY[FLOAT]	ARRAY[INT]
+Type	TABLE_ROW	STRING_NAME	TABLE_ROW	Enums.ProcessGroup	TABLE_ROW	TABLE_ROW	FLOAT	BOOL	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	TABLE_ROW	FLOAT	ARRAY[TABLE_ROW]	FLOAT	ARRAY[TABLE_ROW]	ARRAY[FLOAT]	ARRAY[TABLE_ROW]	ARRAY[TABLE_ROW]	ARRAY[FLOAT]	ARRAY[TABLE_ROW]
 Unit							MW				t/h	t/h	t/h	t/h	kpuhr/h					km^2		t/h		t/h			t/h	
 Default							0									0	0	0										
 Prefix/OPERATION_	OP_GROUP_	TXT_	MODULE_CLASS_	PROCESS_GROUP_	STRATUM_	OPERATION_													CARRYING_CAPACITY_GROUP_		RESOURCE_		RESOURCE_		RESOURCE_	RESOURCE_		RESOURCE_

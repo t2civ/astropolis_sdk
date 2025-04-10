@@ -75,10 +75,6 @@ func _on_project_object_instantiated(object: Object) -> void:
 func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) -> void:
 	# WARNING: Static vars could be modified earlier, but we need to wait so
 	# core can do some modding related changes first.
-	IVTableInitializer.table_project_enums.append(Enums.Types)
-	IVTableInitializer.table_project_enums.append(Enums.TradeClasses)
-	IVTableInitializer.table_project_enums.append(Enums.PlayerClasses)
-	IVTableInitializer.table_project_enums.append(Enums.ProcessGroup)
 	
 	var tables := IVTableInitializer.tables
 	tables.erase("wiki_extras")

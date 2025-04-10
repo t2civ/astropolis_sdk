@@ -1,5 +1,5 @@
 	resource_class	trade_class	trade_unit	start_price	gui_ea	currency_unit	unique_type	is_extraction	is_volatile	sort_override	hide_variances	mass_err_mult
-Type	INT	INT	STRING_NAME	FLOAT	BOOL	BOOL	INT	BOOL	BOOL	INT	BOOL	FLOAT
+Type	TABLE_ROW	Enums.TradeClasses	STRING_NAME	FLOAT	BOOL	BOOL	Enums.Types	BOOL	BOOL	INT	BOOL	FLOAT
 Unit				$/t								
 Default			t							0		1
 Prefix/RESOURCE_	RESOURCE_CLASS_	TRADE_CLASS_										
