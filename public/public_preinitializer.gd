@@ -38,12 +38,8 @@ func _init() -> void:
 	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
 	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
 	
-	# extended
-	IVCoreInitializer.procedural_objects[&"SelectionManager"] = SelectionManager
-	
 	# removed
 	IVCoreInitializer.program_refcounteds.erase(&"CompositionBuilder")
-	IVCoreInitializer.procedural_objects.erase(&"Composition") # using total replacement
 	
 	# translations
 	var path_format := "res://public/data/text/%s.translation"
