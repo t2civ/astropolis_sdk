@@ -42,7 +42,7 @@ var _selection: IVSelection
 
 
 func _ready() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear)
+	IVGlobal.about_to_free_procedural_nodes.connect(_clear_procedural)
 	($TRButtons/Pin as Button).pressed.connect(_clone_and_pin)
 	if is_pinned:
 		($TRButtons/Close as Button).pressed.connect(_close)
@@ -52,8 +52,7 @@ func _ready() -> void:
 		($TRButtons/Close as Button).hide()
 
 
-func _clear() -> void:
-#	parent_selection_manager = null
+func _clear_procedural() -> void:
 	selection_manager = null
 	_selection = null
 
