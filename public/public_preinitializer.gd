@@ -52,6 +52,7 @@ func _init() -> void:
 	IVQFormat.exponent_str = "e"
 	
 	# Save plugin
+	IVSave.input_enabled = true
 	IVSave.file_extension = "AstropolisSave"
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
