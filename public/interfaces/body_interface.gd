@@ -30,7 +30,7 @@ var is_facilities := false
 
 var parent: BodyInterface # null for top body
 
-var satellites: Array[BodyInterface] = [] # resizable container - not threadsafe!
+var satellites: Dictionary[StringName, BodyInterface] # resizable container - not threadsafe!
 var facilities: Array[Interface] = [] # resizable container - not threadsafe!
 
 var operations: OperationsNet # when/if needed
@@ -359,13 +359,13 @@ func sync_server_dirty(data: Array) -> void:
 
 
 func add_satellite(satellite: BodyInterface) -> void:
-	assert(!satellites.has(satellite))
-	satellites.append(satellite)
+	assert(!satellites.has(satellite.name))
+	satellites[satellite.name] = satellite
 	is_satellites = true
 
 
 func remove_satellite(satellite: BodyInterface) -> void:
-	satellites.erase(satellite)
+	satellites.erase(satellite.name)
 	is_satellites = !satellites.is_empty()
 
 
