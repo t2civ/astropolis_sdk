@@ -1,5 +1,5 @@
 	op_class	process_group	show_singular
-Type	INT	INT	BOOL
+Type	TABLE_ROW	Enums.ProcessGroup	BOOL
 Default			
 Unit			
 Prefix/OP_GROUP_	OP_CLASS_	PROCESS_GROUP_	

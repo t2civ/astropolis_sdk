@@ -1,11 +1,11 @@
-	spacecraft	station	file_prefix	en.wikipedia	symbol	show_in_nav_panel	parent	body_class	model_type	epoch	a	e	i	Om	w	M0	n	P	Pw	Pnode	ref_plane	orbit_RA	orbit_dec	tidally_locked	axis_locked	rotation_period	right_ascension	declination	GM	m_radius	mean_density	magnitude	albedo	solar_occlusion
-Type	BOOL	BOOL	STRING_NAME	STRING	STRING	BOOL	STRING_NAME	INT	INT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING_NAME	FLOAT	FLOAT	BOOL	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT
-Default	TRUE				\u25CC			SPACECRAFT	SPACECRAFT	0														TRUE	TRUE				0	0	0	0	0	0.5
-Unit										d	km		deg	deg	deg	deg	deg/d	d	a	a		deg	deg			d	deg	deg	km^3/s^2	m	g/cm^3			
-Prefix/SPACECRAFT_								BODY_CLASS_	MODEL_																									
-ISS		x	ISS	International_Space_Station		x	PLANET_EARTH				6786.5	0.0003279	51.6453	323.0932	182.5211	317.8761	5579.9691768				Equatorial								0.0000001	30				
-TIANGONG		x	Tiangong	Tiangong_space_station		x	PLANET_EARTH		SMALL_C_BODY		6753.5	0.0005825	41.4727	120.7294	229.1472	112.8289	5623.0750944				Equatorial								0.0000001	20				
-# replaces ivoyager/solar_system/																																		
-# spacecrafts.tsv																																		
-# https://www.heavens-above.com/																																		
-# FIXME: epoch, Om & w																																		
+	spacecraft	station	use_pitch_yaw	lazy_model	sleep	file_prefix	en.wiki	symbol	show_in_nav_panel	parent	body_class	model_type	semi_major_axis	eccentricity	inclination	longitude_ascending_node	argument_periapsis	mean_anomaly_at_epoch	mean_motion	nodal_period	apsidal_period	reference_plane_type	orbit_right_ascention	orbit_declination	tidally_locked	axis_locked	rotation_period	right_ascension	declination	gravitational_parameter	mean_radius	mean_density	magnitude	albedo	solar_occlusion
+Type	BOOL	BOOL	BOOL	BOOL	BOOL	STRING_NAME	STRING	STRING	BOOL	STRING_NAME	TABLE_ROW	TABLE_ROW	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	IVOrbit.ReferencePlane	FLOAT	FLOAT	BOOL	BOOL	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT
+Default	TRUE		TRUE	TRUE	TRUE			\u25CC			SPACECRAFT	SPACECRAFT													TRUE	TRUE				0	0	0	0	0	0.5
+Unit													km		deg	deg	deg	deg	deg/d	a	a		deg	deg			d	deg	deg	km^3/s^2	m	g/cm^3			
+Prefix/SPACECRAFT_											BODY_CLASS_	MODEL_										REFERENCE_PLANE_													
+ISS		x				ISS	International_Space_Station		x	PLANET_EARTH			6786.5	0.0003279	51.6453	323.0932	182.5211	317.8761	5579.9691768			EQUATORIAL								0.0000001	30				
+TIANGONG		x				Tiangong	Tiangong_space_station		x	PLANET_EARTH		SMALL_C_BODY	6753.5	0.0005825	41.4727	120.7294	229.1472	112.8289	5623.0750944			EQUATORIAL								0.0000001	20				
+# replaces ivoyager/solar_system/																																			
+# spacecrafts.tsv																																			
+# https://www.heavens-above.com/																																			
+# FIXME: epoch, Om & w																																			

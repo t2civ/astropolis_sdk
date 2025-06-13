@@ -1,5 +1,5 @@
 	init_open	body_class	body	stratum	polity	outer_depth	thickness	spherical_fraction	area	density	#volume	#mass	#inner_pressure	survey
-Type	BOOL	INT	STRING_NAME	INT	STRING_NAME	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	INT
+Type	BOOL	TABLE_ROW	STRING_NAME	TABLE_ROW	STRING_NAME	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	TABLE_ROW
 Unit						km	km		km^2	g/cm^3	km^3	t	Pa	
 Default						0								
 Prefix/COMPOSITION_		BODY_CLASS_		STRATUM_	POLITY_									SURVEY_

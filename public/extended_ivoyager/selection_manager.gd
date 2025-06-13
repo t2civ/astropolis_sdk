@@ -16,6 +16,11 @@ extends IVSelectionManager
 # TODO: Depreciate unused 'is_body' and 'spatial' in base I, Voyager class?
 
 
+static func _static_init() -> void:
+	replacement_subclass = SelectionManager
+
+
+
 static func get_or_make_selection(selection_name: StringName) -> IVSelection:
 	var selection_: IVSelection = IVSelection.selections.get(selection_name)
 	if selection_:

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Astropolis SDK"
-config/version="v0.0.5"
+config/version="v0.0.6.dev"
 run/main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
 config/features=PackedStringArray("4.4")
 boot_splash/bg_color=Color(0, 0, 0, 1)
@@ -31,6 +31,7 @@ IVSave="*res://addons/ivoyager_save/save.gd"
 IVGlobal="*res://addons/ivoyager_core/editor_plugin/../singletons/global.gd"
 IVCoreSettings="*res://addons/ivoyager_core/editor_plugin/../singletons/core_settings.gd"
 IVCoreInitializer="*res://addons/ivoyager_core/editor_plugin/../singletons/core_initializer.gd"
+IVAstronomy="*res://addons/ivoyager_core/editor_plugin/../singletons/astronomy.gd"
 ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
 MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
 AIGlobal="*res://public/singletons/ai_global.gd"
@@ -135,6 +136,8 @@ motion_fix_enabled=true
 
 [rendering]
 
+lights_and_shadows/directional_shadow/size=16384
+lights_and_shadows/directional_shadow/16_bits=false
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 
 [shader_globals]
@@ -154,8 +157,4 @@ iv_fragment_id_cycler={
 iv_fragment_id_range={
 "type": "float",
 "value": 0.0
-}
-iv_sun_global_positions={
-"type": "mat3",
-"value": Basis(0, 0, 0, 0, 0, 0, 0, 0, 0)
 }

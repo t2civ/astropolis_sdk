@@ -43,7 +43,7 @@ MOON_PHOBOS_STRATUM_BULK
 MOON_DEIMOS_STRATUM_BULK																												
 PLANET_CERES_STRATUM_CRUST																												
 PLANET_CERES_STRATUM_MANTLE																												
-@ENUM_X_ENUM																												
+@ENTITY_X_ENTITY																												
 @DATA_TYPE=FLOAT																												
 @DATA_UNIT=0.01																												
 @DATA_DEFAULT=NAN																												

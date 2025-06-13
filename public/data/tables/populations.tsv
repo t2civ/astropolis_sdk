@@ -1,5 +1,5 @@
 	carrying_capacity_group	carrying_capacity_group2	is_biological	is_mechanical	is_corporeal	is_virtual	is_subsentient	required_space	reproduction_rate	#comments
-Type	INT	INT	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	FLOAT	
+Type	TABLE_ROW	TABLE_ROW	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	FLOAT	
 Unit									1/y	
 Default								1	0	
 Prefix/POPULATION_	CARRYING_CAPACITY_GROUP_	CARRYING_CAPACITY_GROUP_								

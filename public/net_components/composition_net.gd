@@ -66,7 +66,7 @@ var _needs_volume_mass_calculation := true
 var _sync := SyncHelper.new()
 
 # indexing
-static var _tables: Dictionary = IVTableData.tables
+static var _db_tables := IVTableData.db_tables
 static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 static var _extraction_resources: Array[int] # maps index to resource_type
 static var _resource_extractions: Array[int] # maps resource_type to index
@@ -88,10 +88,10 @@ func _init(is_new := false, _is_server := false) -> void:
 		_is_class_instanced = true
 		_extraction_resources = _tables_aux[&"extraction_resources"]
 		_resource_extractions = _tables_aux[&"resource_extractions"]
-		_survey_density_errors = _tables[&"surveys"][&"density_error"]
-		_survey_mass_errors = _tables[&"surveys"][&"mass_error"]
-		_survey_deposits_sigma = _tables[&"surveys"][&"deposits_sigma"]
-		_res_mass_err_mult = _tables[&"resources"][&"mass_err_mult"]
+		_survey_density_errors = _db_tables[&"surveys"][&"density_error"]
+		_survey_mass_errors = _db_tables[&"surveys"][&"mass_error"]
+		_survey_deposits_sigma = _db_tables[&"surveys"][&"deposits_sigma"]
+		_res_mass_err_mult = _db_tables[&"resources"][&"mass_err_mult"]
 		
 	if !is_new: # loaded game
 		return

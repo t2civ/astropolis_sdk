@@ -151,8 +151,8 @@ func _set_selections_recursive(body: BodyInterface, is_star: bool, root_call := 
 			_offworld.append(label_text)
 		_pressed_lookup[label_text] = body.name
 	
-	for satellite in body.satellites:
-		_set_selections_recursive(satellite, is_star)
+	for satellite_name in body.satellites:
+		_set_selections_recursive(body.satellites[satellite_name], is_star)
 
 
 func _update_labels() -> void:

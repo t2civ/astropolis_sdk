@@ -129,7 +129,7 @@ static var _date: Array = IVGlobal.date # Gregorian [year, month, day] (ints)
 @warning_ignore("unused_private_class_variable")
 static var _clock: Array = IVGlobal.clock # UT [hour, minute, second] (ints)
 @warning_ignore("unused_private_class_variable")
-static var _tables: Dictionary = IVTableData.tables
+static var _db_tables := IVTableData.db_tables
 @warning_ignore("unused_private_class_variable")
 static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 

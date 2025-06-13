@@ -43,7 +43,7 @@ MOON_PHOBOS_STRATUM_BULK			1		1		0.2	0.04	0.04	20	0.2	2	0.1	1	0.2				1	1	1	1	1	1
 MOON_DEIMOS_STRATUM_BULK			1		1		0.2	0.04	0.04	20	0.2	2	0.1	1	0.2				1	1	1	1	1	1	1	1	1	1
 PLANET_CERES_STRATUM_CRUST			0.8		0.8		1	0.17	0.2	100	1	10	0.5	1	0.2				0.8	0.8	0.8	0.8	0.8	0.8	0.8	0.8	0.8	0.8
 PLANET_CERES_STRATUM_MANTLE			0.6		0.2		0.75	0.14	0.15	75	0.75	7.5	0.37	0.75	0.2				0.2	0.2	0.2	0.2	0.2	0.2	0.2	0.2	0.2	0.2
-@ENUM_X_ENUM																												
+@ENTITY_X_ENTITY																												
 @DATA_TYPE=FLOAT																												
 @DATA_DEFAULT=0																												
 # game start values																												

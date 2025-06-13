@@ -1,5 +1,5 @@
 	module_class	op_quantity	virtual	earthlike	active_atmos	tidal_hydro	rivers	min_gravity	constant_sun	stratum
-Type	INT	FLOAT	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	BOOL	INT
+Type	TABLE_ROW	FLOAT	BOOL	BOOL	BOOL	BOOL	BOOL	FLOAT	BOOL	TABLE_ROW
 Default										
 Unit										
 Prefix/MODULE_	MODULE_CLASS_									STRATUM_
