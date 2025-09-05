@@ -52,7 +52,7 @@ enum OpCommands {
 
 enum {
 	DIRTY_GROSS_OUTPUT_LFQ = 1,
-	DIRTY_BUILT_MASS = 1 << 1,
+	DIRTY_CONSTRUCTIONS = 1 << 1,
 	DIRTY_NOMINAL_INFORMATION = 1 << 2,
 	DIRTY_OPERATIONS_LIST = 1 << 3,
 }
@@ -67,7 +67,7 @@ const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 # Interface read-only! Data flows server -> interface.
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
-var _built_mass := 0.0 # total mass of all things construced
+var _constructions := 0.0 # total mass of all things construced
 var _nominal_information := 0.0 # only if we don't have Cyberspace here!
 
 var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
@@ -157,7 +157,7 @@ func get_gross_output_lfq() -> float:
 	return _gross_output_lfq
 
 
-func get_energy_use() -> float:
+func get_power() -> float:
 	# Generation only for the development statistic.
 	# For now, we just sum electricity generators. TODO: Handle solar foundries, etc.
 	var sum := 0.0
@@ -166,16 +166,16 @@ func get_energy_use() -> float:
 	return sum
 
 
-func get_built_mass() -> float:
-	return _built_mass
+func get_constructions() -> float:
+	return _constructions
 
 
 func get_nominal_information() -> float:
 	return _nominal_information
 
 
-func get_construction() -> float:
-	# This is really manufacturing. Manufacturing includes production of
+func get_total_manufacturing() -> float:
+	# Manufacturing includes production of
 	# finished 'resources' and (in the future) will include in situ
 	# contruction: i.e., a facility that is upgrading itself.
 	var sum := 0.0
@@ -438,7 +438,7 @@ func set_op_command(type: int, command: int) -> void:
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_gross_output_lfq = data[1]
-	_built_mass = data[2]
+	_constructions = data[2]
 	_nominal_information = data[3]
 	_crews = data[4]
 	_capacities = data[5]
@@ -468,8 +468,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_GROSS_OUTPUT_LFQ:
 		_gross_output_lfq += float_data[float_offset]
 		float_offset += 1
-	if dirty & DIRTY_BUILT_MASS:
-		_built_mass += float_data[float_offset]
+	if dirty & DIRTY_CONSTRUCTIONS:
+		_constructions += float_data[float_offset]
 		float_offset += 1
 	if dirty & DIRTY_NOMINAL_INFORMATION:
 		_nominal_information += float_data[float_offset]
