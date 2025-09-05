@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xa13t044uf5u" path="res://public/gui_panels/development_panel.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bh05kj1lc1y01" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="2"]
-[ext_resource type="PackedScene" uid="uid://bd4dl3ewvjdms" path="res://public/gui_widgets/stats_grid.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://c420hurdjt53n" path="res://public/gui_widgets/dev_stats.tscn" id="2_8b386"]
 
 [node name="DevelopmentPanel" type="PanelContainer"]
 offset_right = 424.0
@@ -12,7 +12,7 @@ size_flags_vertical = 0
 mouse_filter = 1
 script = ExtResource("1")
 
-[node name="StatsGrid" parent="." instance=ExtResource("3")]
+[node name="DevStats" parent="." instance=ExtResource("2_8b386")]
 layout_mode = 2
 
 [node name="ControlMod" parent="." instance=ExtResource("2")]

@@ -1,11 +1,11 @@
-# stats_grid.gd
+# dev_stats.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name StatsGrid
+class_name DevStats
 extends MarginContainer
 
 # IDEA: Click on value to cycle representation. E.g., for population:

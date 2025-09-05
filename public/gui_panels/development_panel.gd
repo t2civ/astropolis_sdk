@@ -18,12 +18,12 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 
 
 func _ready() -> void:
-	theme = IVGlobal.themes.main_menu
+	#theme = IVGlobal.themes.main_menu
 	($ControlMod as IVControlDraggable).init_min_size(-1, Vector2.ZERO)
 	var style_box := StyleBoxFlat.new()
 	style_box.bg_color = Color(1.0, 1.0, 1.0, 0.05) # almost transparent
 	set("theme_override_styles/panel", style_box)
-	($Timer as Timer).timeout.connect(($StatsGrid as StatsGrid).update)
+	($Timer as Timer).timeout.connect(($DevStats as DevStats).update)
 	IVGlobal.system_tree_ready.connect(_delayed_timer_start)
 	IVGlobal.simulator_started.connect(_delayed_1st_update)
 	@warning_ignore("unsafe_property_access")
@@ -42,4 +42,4 @@ func _delayed_1st_update() -> void:
 	while i < 8: # add more if needed
 		await get_tree().process_frame
 		i += 1
-	($StatsGrid as StatsGrid).update()
+	($DevStats as DevStats).update()
