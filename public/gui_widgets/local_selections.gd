@@ -5,6 +5,7 @@
 # Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
+class_name LocalSelections
 extends MarginContainer
 
 # Contains local selections for info panel navigation:
@@ -14,28 +15,8 @@ extends MarginContainer
 #    Offworld Facilities (-> in orbit or satellite bodies w/ facility)
 #    System Facilities (star selection only; -> in orbit or satellite bodies w/ facility)
 
-const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
-const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
-const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY
-const BODYFLAGS_STAR := IVBody.BodyFlags.BODYFLAGS_STAR
-
-var section_names: Array[String] = [
-	tr(&"LABEL_SPACEFARING_POLITIES"),
-	tr(&"LABEL_SPACE_AGENCIES"),
-	tr(&"LABEL_SPACE_COMPANIES"),
-	tr(&"LABEL_OFFWORLD_FACILITIES"),
-	tr(&"LABEL_SYSTEM_FACILITIES"),
-]
-
-var open_prefix := "\u2304   "
-var closed_prefix := ">   "
-var sub_prefix := "       "
-var is_open_sections: Array[bool] = [false, false, false, true, true]
-
-var _state: Dictionary = IVGlobal.state
-
-var _pressed_lookup := {} # interface name or section int, indexed by label.text
 var _selection_manager: SelectionManager
+var _selection_lookup: Dictionary[String, StringName] = {} # item text -> selection name
 
 var _polities: Array[String] = []
 var _agencies: Array[String] = []
@@ -43,52 +24,52 @@ var _companies: Array[String] = []
 var _offworld: Array[String] = []
 var _system: Array[String] = []
 
-var _section_arrays: Array[Array] = [_polities, _agencies, _companies, _offworld, _system]
-var _n_sections := section_names.size()
+var _section_content: Array[Array] = [_polities, _agencies, _companies, _offworld, _system]
+var _n_sections := _section_content.size()
 
 var _is_busy := false # don't update if getting data on ai thread (cheap mutex)
 
-
-@onready var _vbox: VBoxContainer = $ScrollContainer/VBox
+@onready var _scroll_container: ScrollContainer = $ScrollContainer
 @onready var _no_facilities: Label = $NoFacilities
+@onready var _section_foldables: Array[FoldableContainer] = [
+	$ScrollContainer/VBox/Polities,
+	$ScrollContainer/VBox/Agencies,
+	$ScrollContainer/VBox/Companies,
+	$ScrollContainer/VBox/Offworld,
+	$ScrollContainer/VBox/System,
+]
+@onready var _section_vboxes: Array[VBoxContainer] = [
+	$ScrollContainer/VBox/Polities/VBox,
+	$ScrollContainer/VBox/Agencies/VBox,
+	$ScrollContainer/VBox/Companies/VBox,
+	$ScrollContainer/VBox/Offworld/VBox,
+	$ScrollContainer/VBox/System/VBox,
+]
 
 
 func _ready() -> void:
-	IVGlobal.simulator_started.connect(_update)
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear)
+	IVGlobal.about_to_free_procedural_nodes.connect(_clear_procedural)
+	IVGlobal.simulator_started.connect(_connect_selection_manager)
+	if IVGlobal.state[&"is_started_or_about_to_start"]:
+		_connect_selection_manager()
+
+
+func _clear_procedural() -> void:
+	_selection_manager = null
+
+
+func _connect_selection_manager(_dummy := false) -> void:
+	if _selection_manager:
+		_selection_manager.selection_changed.disconnect(_update)
+	_selection_manager = IVSelectionManager.get_selection_manager(self)
+	_selection_manager.selection_changed.connect(_update)
 	_update()
 
 
-func _clear() -> void:
-	_selection_manager = null
-	_polities.clear()
-	_agencies.clear()
-	_companies.clear()
-	_offworld.clear()
-	_system.clear()
-	_pressed_lookup.clear()
-	for child in _vbox.get_children():
-		child.queue_free()
-
-
-func _init_after_system_built() -> void:
-	_selection_manager = IVSelectionManager.get_selection_manager(self)
-	_selection_manager.selection_changed.connect(_update)
-	var section := 0
-	while section < _n_sections:
-		var section_text := section_names[section]
-		_pressed_lookup[open_prefix + section_text] = section
-		_pressed_lookup[closed_prefix + section_text] = section
-		section += 1
-
-
 func _update(_dummy := false) -> void:
+	# Main thread
 	if _is_busy:
 		return
-	if !_state.is_system_built:
-		return
-	if !_selection_manager:
-		_init_after_system_built()
 	var selection := _selection_manager.get_selection()
 	if !selection:
 		return
@@ -99,11 +80,15 @@ func _update(_dummy := false) -> void:
 
 func _set_selections_on_ai_thread(body_name: StringName) -> void:
 	# AI thread!
+	const BODYFLAGS_STAR := IVBody.BodyFlags.BODYFLAGS_STAR
+	
 	_polities.clear()
 	_agencies.clear()
 	_companies.clear()
 	_offworld.clear()
 	_system.clear()
+	_selection_lookup.clear()
+	
 	var body: BodyInterface = Interface.get_interface_by_name(body_name)
 	if !body:
 		_is_busy = false
@@ -111,20 +96,22 @@ func _set_selections_on_ai_thread(body_name: StringName) -> void:
 	var is_star := bool(body.body_flags & BODYFLAGS_STAR)
 	_set_selections_recursive(body, is_star, true)
 	# TODO: Sort results in some sensible way
-	_update_labels.call_deferred()
+	
+	_update_foldables.call_deferred()
 
 
 func _set_selections_recursive(body: BodyInterface, is_star: bool, root_call := false) -> void:
 	# AI thread!
-	for facility_ in body.get_facilities(): # FIXME Godot 4.2: loop type
-		var facility: FacilityInterface = facility_
-		
-		# add facility for all players here
+	const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
+	const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
+	const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY
+	
+	# add players that have a facility here
+	for facility: FacilityInterface in body.get_facilities():
 		var player := facility.player
 		var player_gui_name := player.gui_name
 		if !player_gui_name: # hidden player
 			continue
-		var label_text := sub_prefix + player_gui_name
 		var player_class_array: Array
 		match player.player_class:
 			PLAYER_CLASS_POLITY:
@@ -135,87 +122,69 @@ func _set_selections_recursive(body: BodyInterface, is_star: bool, root_call := 
 				player_class_array = _companies
 			_:
 				assert(false, "Unknown player_class")
-		
-		if !player_class_array.has(label_text):
-			player_class_array.append(label_text)
-			_pressed_lookup[label_text] = facility.name
+		if !player_class_array.has(player_gui_name):
+			player_class_array.append(player_gui_name)
+			_selection_lookup[player_gui_name] = facility.name
 		elif player.homeworld == body.name: # has precedence over any others
-			_pressed_lookup[label_text] = facility.name
+			_selection_lookup[player_gui_name] = facility.name
 	
+	# add "offworld" or "system" bodies that have facilities
 	if !root_call and body.has_development():
 		# add body
-		var label_text := sub_prefix + body.gui_name
+		var body_gui_name := body.gui_name
 		if is_star:
-			_system.append(label_text)
+			_system.append(body_gui_name)
 		else:
-			_offworld.append(label_text)
-		_pressed_lookup[label_text] = body.name
+			_offworld.append(body_gui_name)
+		_selection_lookup[body_gui_name] = body.name
 	
+	# recurse satallites
 	for satellite_name in body.satellites:
 		_set_selections_recursive(body.satellites[satellite_name], is_star)
 
 
-func _update_labels() -> void:
+func _update_foldables() -> void:
 	# Main thread
-	var n_labels := _vbox.get_child_count()
-	var label: Label
-	var child_index := 0
-	var section := 0
 	var has_facilities := false
-	while section < _n_sections:
-		var section_data: Array[String] = _section_arrays[section]
-		var n_items := section_data.size()
-		if n_items > 0:
+	for i in _n_sections:
+		if _section_content[i]:
 			has_facilities = true
-		while n_labels <= n_items + child_index: # enough if open
-			label = Label.new()
-			label.mouse_filter = MOUSE_FILTER_PASS
-			label.gui_input.connect(_on_gui_input.bind(label))
-			_vbox.add_child(label)
-			n_labels += 1
-		var is_open := is_open_sections[section]
-		label = _vbox.get_child(child_index)
-		child_index += 1
-		if n_items == 0:
-			label.hide()
-		elif !is_open:
-			label.text = closed_prefix + section_names[section]
-			label.show()
+			_section_foldables[i].show()
+			_update_foldable(i)
 		else:
-			label.text = open_prefix + section_names[section]
-			label.show()
-			for label_text in section_data:
-				label = _vbox.get_child(child_index)
-				label.show()
-				label.text = label_text
-				child_index += 1
-		section += 1
-	
-	_is_busy = false # safe to call again
-	
+			_section_foldables[i].hide()
+	_scroll_container.visible = has_facilities
 	_no_facilities.visible = !has_facilities
-	
-	while child_index < n_labels:
-		label = _vbox.get_child(child_index)
-		label.hide()
-		child_index += 1
+	_is_busy = false # safe to call again
 
 
-func _on_gui_input(event: InputEvent, label: Label) -> void:
-	var event_mouse_button := event as InputEventMouseButton
-	if !event_mouse_button:
-		return
-	if !event_mouse_button.pressed:
-		return
-	if event_mouse_button.button_index != MOUSE_BUTTON_LEFT:
-		return
-	# 'lookup' will either be an integer (section index) or string (selection target)
-	var lookup: Variant = _pressed_lookup.get(label.text)
-	if typeof(lookup) == TYPE_INT: # toggle section
-		if !_is_busy:
-			var section: int = lookup
-			is_open_sections[section] = !is_open_sections[section]
-			_update_labels()
-	else:
-		var selection_name: StringName = lookup
-		_selection_manager.select_prefer_facility(selection_name)
+func _update_foldable(index: int) -> void:
+	# Main thread
+	var vbox := _section_vboxes[index]
+	var n_buttons := vbox.get_child_count()
+	var content: Array[String] = _section_content[index]
+	var n_items := content.size()
+	# add buttons as needed
+	while n_buttons < n_items:
+		var button := Button.new()
+		button.pressed.connect(_on_pressed.bind(button))
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		vbox.add_child(button)
+		n_buttons += 1
+	# set button texts
+	var item_index := 0
+	while item_index < n_items:
+		var button: Button = vbox.get_child(item_index)
+		button.text = content[item_index]
+		button.show()
+		item_index += 1
+	# hide unused
+	while item_index < n_buttons:
+		var button: Button = vbox.get_child(item_index)
+		button.hide()
+		item_index += 1
+
+
+func _on_pressed(button: Button) -> void:
+	var selection_name := _selection_lookup[button.text]
+	_selection_manager.select_prefer_facility(selection_name)

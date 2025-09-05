@@ -13,6 +13,49 @@ horizontal_scroll_mode = 0
 
 [node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="Polities" type="FoldableContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+folded = true
+title = "LABEL_SPACEFARING_POLITIES"
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Polities"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="Agencies" type="FoldableContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+title = "LABEL_SPACE_AGENCIES"
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Agencies"]
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="Companies" type="FoldableContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+title = "LABEL_SPACE_COMPANIES"
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Companies"]
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="Offworld" type="FoldableContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+title = "LABEL_OFFWORLD_FACILITIES"
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Offworld"]
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="System" type="FoldableContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+title = "LABEL_SYSTEM_FACILITIES"
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/System"]
+layout_mode = 2
+theme_override_constants/separation = -5
 
 [node name="NoFacilities" type="Label" parent="."]
 layout_mode = 2
