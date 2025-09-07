@@ -18,7 +18,6 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 
 
 func _ready() -> void:
-	#theme = IVGlobal.themes.main_menu
 	($ControlMod as IVControlDraggable).init_min_size(-1, Vector2.ZERO)
 	var style_box := StyleBoxFlat.new()
 	style_box.bg_color = Color(1.0, 1.0, 1.0, 0.05) # almost transparent

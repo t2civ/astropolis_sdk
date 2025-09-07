@@ -45,30 +45,39 @@ layout_mode = 2
 
 [node name="QuicksaveButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("3_i2htc")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="SaveButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("3_xuubu")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="QuickloadButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("5_vdgku")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="LoadButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("4_kbjfe")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="OptionsButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("5_kwp21")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="HotkeysButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("6_x4sms")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="ExitButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("7_v41v0")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="QuitButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("8_tdvsq")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="ResumeButton" parent="MainMenuBasePopup/MarginContainer/VBoxContainer" instance=ExtResource("9_m7bfy")]
 layout_mode = 2
+theme_type_variation = &"LargeFont"
 
 [node name="SaveDialog" parent="." instance=ExtResource("10_67h44")]
 

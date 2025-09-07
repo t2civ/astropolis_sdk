@@ -62,6 +62,10 @@ enabled=PackedStringArray("res://addons/ivoyager_core/plugin.cfg", "res://addons
 
 import/blender/enabled=false
 
+[gui]
+
+theme/custom="uid://c1ce75roeyk17"
+
 [importer_defaults]
 
 texture={
