@@ -93,6 +93,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.spacecrafts = path_format % "spacecrafts" # ivoyager replacement!
 	tables.strata = path_format % "strata"
 	tables.surveys = path_format % "surveys"
+	tables.views = path_format % "views" # ivoyager replacement!
 	# primary table mods (modify existing ivoyager tables)
 	#tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
 	tables.planets_mod = path_format % "planets_mod"

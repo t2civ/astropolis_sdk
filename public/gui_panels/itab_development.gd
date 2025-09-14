@@ -19,22 +19,22 @@ const PERSIST_PROPERTIES: Array[StringName] = []
 var _state: Dictionary = IVGlobal.state
 var _selection_manager: SelectionManager
 
-@onready var _stats_grid: StatsGrid = $StatsGrid
+@onready var _dev_stats: DevStats = $DevStats
 @onready var _no_dev_label: Label = $NoDevLabel
 
 
 func _ready() -> void:
 	IVGlobal.update_gui_requested.connect(_update_selection)
 	visibility_changed.connect(_update_selection)
-	_stats_grid.has_stats_changed.connect(_update_no_development)
+	_dev_stats.has_stats_changed.connect(_update_no_development)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)
 	_selection_manager.selection_changed.connect(_update_selection)
-	_stats_grid.min_columns = 4
+	_dev_stats.min_columns = 4
 	_update_selection()
 
 
 func timer_update() -> void:
-	_stats_grid.update()
+	_dev_stats.update()
 
 
 func _update_no_development(has_stats: bool) -> void:
@@ -88,4 +88,4 @@ func _update_selection(_dummy := false) -> void:
 	else:
 		targets.append(body_name)
 	
-	_stats_grid.update_targets(targets, column_names)
+	_dev_stats.update_targets(targets, column_names)

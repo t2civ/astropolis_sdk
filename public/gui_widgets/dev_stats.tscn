@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bd4dl3ewvjdms"]
+[gd_scene load_steps=2 format=3 uid="uid://c420hurdjt53n"]
 
-[ext_resource type="Script" uid="uid://d2lhu5ademjm8" path="res://public/gui_widgets/stats_grid.gd" id="1"]
+[ext_resource type="Script" uid="uid://c480t3cso0yga" path="res://public/gui_widgets/dev_stats.gd" id="1_n73i3"]
 
-[node name="StatsGrid" type="MarginContainer"]
+[node name="DevStats" type="MarginContainer"]
 offset_left = 7.0
 offset_top = 7.0
 offset_right = 17.0
@@ -13,7 +13,7 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-script = ExtResource("1")
+script = ExtResource("1_n73i3")
 
 [node name="Grid" type="GridContainer" parent="."]
 layout_mode = 2
