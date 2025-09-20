@@ -17,7 +17,7 @@ const USE_THREADS := false
 func _init() -> void:
 	
 	var version: String = ProjectSettings.get_setting("application/config/version")
-	print("Astropolis %s - https://t2civ.com" % version)
+	print("Astropolis v%s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
 	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
@@ -28,8 +28,6 @@ func _init() -> void:
 	# properties
 	AIGlobal.verbose = AI_VERBOSE
 	AIGlobal.verbose2 = AI_VERBOSE2
-	IVCoreSettings.project_name = "Astropolis"
-	IVCoreSettings.project_version = version # helps load file debug
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
