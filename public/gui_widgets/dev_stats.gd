@@ -38,8 +38,7 @@ var content: Array[Array] = [
 	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flops")],
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bit")],
 	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(&"t/h")],
-	[&"LABEL_BIOMASS", &"get_development_biomass",
-			IVQFormat.dynamic_unit.bind(IVQFormat.DynamicUnitType.MASS_G_KG_PREFIXED_T)],
+	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.dynamic_unit.bind(&"mass_g_kg_prefixed_t")],
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]
 

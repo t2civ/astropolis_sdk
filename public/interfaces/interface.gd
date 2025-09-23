@@ -100,6 +100,8 @@ const INTERVAL := 7.0 * IVUnits.DAY
 static var interfaces: Array[Interface] = [] # indexed by interface_id
 static var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, JOIN_OFFWORLD, etc.
 
+static var ai_bus := AIBus.new()
+
 
 var interface_id := -1
 var entity_type := -1 # server entity
@@ -144,7 +146,7 @@ var _is_local_use_ai := false # local player sets/unsets
 
 
 func _init() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear_circular_references)
+	IVGlobal.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
 
 
 func remove() -> void:
@@ -350,4 +352,4 @@ func _clear_circular_references() -> void:
 #
 #
 #func _reset_ai() -> void:
-#	use_this_ai = _is_server_ai or (_is_local_player and (_is_local_use_ai or AIGlobal.is_autoplay))
+#	use_this_ai = _is_server_ai or (_is_local_player and (_is_local_use_ai or _ai_bus.is_autoplay))

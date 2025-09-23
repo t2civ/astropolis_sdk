@@ -34,7 +34,6 @@ IVCoreInitializer="*res://addons/ivoyager_core/editor_plugin/../singletons/core_
 IVAstronomy="*res://addons/ivoyager_core/editor_plugin/../singletons/astronomy.gd"
 ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
 MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
-AIGlobal="*res://public/singletons/ai_global.gd"
 
 [debug]
 

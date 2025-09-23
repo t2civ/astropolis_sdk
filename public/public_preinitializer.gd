@@ -11,7 +11,7 @@ extends RefCounted
 const AI_VERBOSE := false
 const AI_VERBOSE2 := false
 const IVOYAGER_VERBOSE := false
-const USE_THREADS := false
+const USE_THREADS := true
 
 
 func _init() -> void:
@@ -26,8 +26,8 @@ func _init() -> void:
 	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
 
 	# properties
-	AIGlobal.verbose = AI_VERBOSE
-	AIGlobal.verbose2 = AI_VERBOSE2
+	AIBus.verbose = AI_VERBOSE
+	AIBus.verbose2 = AI_VERBOSE2
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
