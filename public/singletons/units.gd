@@ -30,7 +30,16 @@ extends Node
 ## comments in the Planetarium's 
 ## [url=https://github.com/ivoyager/planetarium/blob/master/planetarium/units.gd]
 ## units.gd[/url] for a running record of issues and the current recommended
-## METER value.
+## METER value.[br][br]
+##
+## See [IVQConvert] for unit quantity conversion API. In short, unit strings are
+## first tested in [member unit_multipliers] and then in [member unit_lambdas].
+## If not found in either, the unit string may be parsed as a compound unit.
+## Parsed compound units may be memoized for faster subsequent usage by adding
+## to [member unit_multipliers].[br][br]
+##
+## See [IVQFormat] for quantity GUI display API. Display symbol is often but
+## not always the same as the unit dictionary key.
 
 # SI base units
 const SECOND := 1.0
@@ -83,16 +92,13 @@ const Q := 1.0 # Short for the QSNINDC ;)
 
 # ********************************************
 
-# Unit symbols below mostly follow:
-# https://en.wikipedia.org/wiki/International_System_of_Units
-#
-# IVConvert.convert_quantity() can convert compound units such as 'm/s^2'.
-# However, dictionary lookup is faster so consider adding commonly used
-# compound units as keys in unit_multipliers. 
-#
-# We look for unit symbol first in unit_multipliers and then in unit_lambdas.
 
 ## Conversion multipliers for units that are linear with zero-intersect.
+## Internal unit symbols must be unique. However, redundant symbol usage can
+## be specified for display in [IVQFormat] (e.g., &"g" for gram and &"g0" for
+## g-force both display as "g"). 
+## Default units are mostly (but not all) SI units that follow:
+## [url]https://en.wikipedia.org/wiki/International_System_of_Units[/url].
 var unit_multipliers: Dictionary[StringName, float] = {
 	# Duplicated symbols have leading underscore.
 	# See IVQFormat for unit display strings.
@@ -143,7 +149,7 @@ var unit_multipliers: Dictionary[StringName, float] = {
 	&"c" : SPEED_OF_LIGHT,
 	# acceleration/gravity
 	&"m/s^2" : METER / SECOND ** 2,
-	&"_g" : STANDARD_GRAVITY,
+	&"g0" : STANDARD_GRAVITY,
 	# angular velocity
 	&"rad/s" : 1.0 / SECOND, 
 	&"deg/d" : DEG / DAY,
@@ -246,11 +252,16 @@ var unit_multipliers: Dictionary[StringName, float] = {
 # ********************************************
 }
 
-## Conversion lambdas for units that are nonlinear or have non-zero intersect,
-## e.g., celsius and fahrenheit.
+## Conversion lambdas for units that are nonlinear or have non-zero intersect
+## (e.g., celsius and fahrenheit). All lambdas must have method signature
+## [code](x: float, to_internal: bool)[/code] where [param x] is the quantity
+## and [param to_internal] specifies conversion to internal (true) or from
+## internal (false).
 var unit_lambdas: Dictionary[StringName, Callable] = {
-	&"degC" : func convert_celsius(x: float, to_internal := true) -> float:
+	&"degC" : func convert_celsius(x: float, to_internal: bool) -> float:
+		# Assumes Kelvin is the internal unit.
 		return x + 273.15 if to_internal else x - 273.15,
-	&"degF" : func convert_fahrenheit(x: float, to_internal := true) -> float:
+	&"degF" : func convert_fahrenheit(x: float, to_internal: bool) -> float:
+		# Assumes Kelvin is the internal unit.
 		return  (x + 459.67) / 1.8 if to_internal else x * 1.8 - 459.67,
 }

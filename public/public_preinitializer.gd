@@ -109,9 +109,8 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 
 func _on_data_tables_imported() -> void:
 	for trade_unit: StringName in IVTableData.db_tables[&"resources"][&"trade_unit"]:
-		# This adds some odd unit strings like '14 t' to the unit_multipliers
-		# dictionary for subsequent use by GUI. 
-		IVQConvert.convert_quantity(1.0, trade_unit)
+		# Add all trade_unit strings to unit_multipliers for subsequent direct access.
+		IVQConvert.include_compound_unit(trade_unit)
 
 
 func _on_project_objects_instantiated() -> void:
