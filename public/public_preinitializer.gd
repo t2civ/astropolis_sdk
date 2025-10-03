@@ -11,13 +11,13 @@ extends RefCounted
 const AI_VERBOSE := false
 const AI_VERBOSE2 := false
 const IVOYAGER_VERBOSE := false
-const USE_THREADS := false
+const USE_THREADS := true
 
 
 func _init() -> void:
 	
 	var version: String = ProjectSettings.get_setting("application/config/version")
-	print("Astropolis %s - https://t2civ.com" % version)
+	print("Astropolis v%s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
 	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
@@ -26,10 +26,8 @@ func _init() -> void:
 	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
 
 	# properties
-	AIGlobal.verbose = AI_VERBOSE
-	AIGlobal.verbose2 = AI_VERBOSE2
-	IVCoreSettings.project_name = "Astropolis"
-	IVCoreSettings.project_version = version # helps load file debug
+	AIBus.verbose = AI_VERBOSE
+	AIBus.verbose2 = AI_VERBOSE2
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
@@ -111,9 +109,8 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 
 func _on_data_tables_imported() -> void:
 	for trade_unit: StringName in IVTableData.db_tables[&"resources"][&"trade_unit"]:
-		# This adds some odd unit strings like '14 t' to the unit_multipliers
-		# dictionary for subsequent use by GUI. 
-		IVQConvert.convert_quantity(1.0, trade_unit)
+		# Add all trade_unit strings to unit_multipliers for subsequent direct access.
+		IVQConvert.include_compound_unit(trade_unit)
 
 
 func _on_project_objects_instantiated() -> void:

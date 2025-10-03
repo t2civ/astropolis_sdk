@@ -15,7 +15,6 @@ const STRATUM_OPEN_PREFIX := "  \u2304 "
 const STRATUM_CLOSED_PREFIX := "  > "
 const RESOURCE_INDENT := "        "
 const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
-const LENGTH_M_KM := IVQFormat.DynamicUnitType.LENGTH_M_KM
 
 
 var _db_tables := IVTableData.db_tables
@@ -202,7 +201,7 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 		
 		var stratum_str := tr(_stratum_names[stratum_type]) + " ("
 		if body_radius != thickness:
-			stratum_str += IVQFormat.dynamic_unit(thickness, LENGTH_M_KM, 2) + "; "
+			stratum_str += IVQFormat.dynamic_unit(thickness, &"length_m_km", 2) + "; "
 		stratum_str += IVQFormat.fixed_unit(density, &"g/cm^3", 2) + "; "
 		stratum_str += IVQFormat.fixed_unit(total_mass, &"t", 2) + "; "
 		stratum_str += tr(survey_name).to_lower() + ")"

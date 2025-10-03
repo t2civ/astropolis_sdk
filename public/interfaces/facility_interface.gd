@@ -283,4 +283,4 @@ func _sync_ai_changes() -> void:
 	if _dirty & DIRTY_OPERATIONS:
 		data.append(operations.get_interface_dirty())
 	_dirty = 0
-	AIGlobal.emit_signal("interface_changed", entity_type, facility_id, data)
+	ai_bus.emit_signal("interface_changed", entity_type, facility_id, data)
