@@ -6,13 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://b5k2m7jen3jwm" path="res://addons/ivoyager_core/gui_widgets/range_label.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://welwpw4boyv8" path="res://addons/ivoyager_core/gui_widgets/lat_long_label.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://7gwifgtfl1k4" path="res://public/gui_widgets/selection_image2.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cr2k471sfa7fd" path="res://addons/ivoyager_core/gui_widgets/view_collection.tscn" id="6_kidbc"]
 [ext_resource type="PackedScene" uid="uid://b02brsb71lrev" path="res://addons/ivoyager_core/gui_widgets/huds_popup_button.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://b1mkm7ajlvvm0" path="res://addons/ivoyager_core/gui_widgets/track_ckbxs.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://bjf4qy5fngcu6" path="res://public/gui_widgets/local_selections.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://cwnvxi44ijkr4" path="res://addons/ivoyager_core/gui_widgets/up_lock_ckbx.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://chl27l6aiico8" path="res://addons/ivoyager_core/gui_widgets/focal_length_control.tscn" id="13_d8to3"]
 [ext_resource type="PackedScene" uid="uid://do2jvg01jte0i" path="res://addons/ivoyager_core/gui_widgets/view_save_button.tscn" id="14"]
-[ext_resource type="PackedScene" uid="uid://bvs2mb8bj8gfn" path="res://addons/ivoyager_core/gui_widgets/view_save_flow.tscn" id="15"]
 [ext_resource type="PackedScene" uid="uid://bcl70ysl6yces" path="res://addons/ivoyager_core/gui_widgets/view_button.tscn" id="16"]
 
 [node name="SelectionPanel" type="PanelContainer"]
@@ -63,20 +63,24 @@ expand_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ViewSaveFlow" parent="VBox/MainHBox/RightVBox" instance=ExtResource("15")]
+[node name="ViewCollection" parent="VBox/MainHBox/RightVBox" instance=ExtResource("6_kidbc")]
+layout_mode = 2
+collection_name = "SP"
+is_cached = false
+
+[node name="HUDsPopupButton" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("7")]
+layout_mode = 2
+
+[node name="ViewSaveButton" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("14")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HUDsPopupButton" parent="VBox/MainHBox/RightVBox/ViewSaveFlow" instance=ExtResource("7")]
+[node name="Home" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("16")]
 layout_mode = 2
-
-[node name="ViewSaveButton" parent="VBox/MainHBox/RightVBox/ViewSaveFlow" instance=ExtResource("14")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Home" parent="VBox/MainHBox/RightVBox/ViewSaveFlow" instance=ExtResource("16")]
-layout_mode = 2
-text = "VIEW_HOME"
+text = "Home"
+default_view = &"VIEW_HOME"
+editable = true
+renamable = true
 
 [node name="LocalSelections" parent="VBox/MainHBox/RightVBox" instance=ExtResource("10")]
 layout_mode = 2
@@ -91,15 +95,18 @@ layout_mode = 2
 
 [node name="Zoom" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "VIEW_ZOOM"
+text = "Zoom"
+default_view = &"VIEW_ZOOM"
 
 [node name="Fortyfive" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "VIEW_FORTYFIVE"
+text = "45°"
+default_view = &"VIEW_FORTYFIVE"
 
 [node name="Top" parent="VBox/BottomHBox" instance=ExtResource("16")]
 layout_mode = 2
-text = "VIEW_TOP"
+text = "Top"
+default_view = &"VIEW_TOP"
 
 [node name="Spacer1" type="Control" parent="VBox/BottomHBox"]
 layout_mode = 2
