@@ -18,7 +18,6 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 
 
 func _ready() -> void:
-	($ControlMod as IVControlDraggable).init_min_size(-1, Vector2.ZERO)
 	var style_box := StyleBoxFlat.new()
 	style_box.bg_color = Color(1.0, 1.0, 1.0, 0.05) # almost transparent
 	set("theme_override_styles/panel", style_box)

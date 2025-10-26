@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://bge38u16ro4w8"]
+[gd_scene load_steps=16 format=3 uid="uid://bge38u16ro4w8"]
 
 [ext_resource type="Script" uid="uid://cbwffti2dulg3" path="res://public/gui_panels/selection_panel.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bit8giu74do67" path="res://public/gui_widgets/selection_label2.tscn" id="2"]
-[ext_resource type="PackedScene" uid="uid://bh05kj1lc1y01" path="res://addons/ivoyager_core/gui_mods/control_draggable.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://b5k2m7jen3jwm" path="res://addons/ivoyager_core/gui_widgets/range_label.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://welwpw4boyv8" path="res://addons/ivoyager_core/gui_widgets/lat_long_label.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://7gwifgtfl1k4" path="res://public/gui_widgets/selection_image2.tscn" id="6"]
@@ -13,6 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://cwnvxi44ijkr4" path="res://addons/ivoyager_core/gui_widgets/up_lock_ckbx.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://chl27l6aiico8" path="res://addons/ivoyager_core/gui_widgets/focal_length_control.tscn" id="13_d8to3"]
 [ext_resource type="PackedScene" uid="uid://do2jvg01jte0i" path="res://addons/ivoyager_core/gui_widgets/view_save_button.tscn" id="14"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/gui_helpers/control_mod_resizable.tscn" id="14_05gyw"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/gui_helpers/control_mod_draggable.tscn" id="15_jg165"]
 [ext_resource type="PackedScene" uid="uid://bcl70ysl6yces" path="res://addons/ivoyager_core/gui_widgets/view_button.tscn" id="16"]
 
 [node name="SelectionPanel" type="PanelContainer"]
@@ -132,4 +133,7 @@ mouse_filter = 2
 [node name="FocalLengthControl" parent="VBox/BottomHBox" instance=ExtResource("13_d8to3")]
 layout_mode = 2
 
-[node name="ControlMod" parent="." instance=ExtResource("3")]
+[node name="ControlModResizable" parent="." instance=ExtResource("14_05gyw")]
+sizes = Array[Vector2]([Vector2(435, 291), Vector2(575, 354), Vector2(712, 421)])
+
+[node name="ControlModDraggable" parent="." instance=ExtResource("15_jg165")]

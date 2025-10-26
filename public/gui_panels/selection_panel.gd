@@ -7,7 +7,6 @@
 # *****************************************************************************
 extends PanelContainer
 
-const ViewFlags := IVView.ViewFlags
 
 const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY
 const PERSIST_PROPERTIES: Array[StringName] = [
