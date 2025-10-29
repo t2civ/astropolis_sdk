@@ -15,10 +15,3 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_right",
 	&"anchor_bottom",
 ]
-
-
-func _ready() -> void:
-	@warning_ignore("unsafe_method_access")
-	$"%AsteroidsHScroll".add_bodies_from_table("asteroids")
-	@warning_ignore("unsafe_method_access")
-	$"%SpacecraftsHScroll".add_bodies_from_table("spacecrafts")
