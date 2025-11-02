@@ -26,10 +26,11 @@ script = ExtResource("1")
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="NavButton" parent="HBox" instance=ExtResource("3_e3pm4")]
+[node name="SunButton" parent="HBox" instance=ExtResource("3_e3pm4")]
 layout_mode = 2
 body_name = &"STAR_SUN"
 use_texture_slice = true
+focus_selected_on_sim_start = true
 
 [node name="RightSideContent" type="MarginContainer" parent="HBox"]
 layout_mode = 2
@@ -75,6 +76,7 @@ layout_mode = 2
 [node name="NavButtonsSystem" parent="HBox/RightSideContent/RightVBox" instance=ExtResource("7_68igy")]
 layout_mode = 2
 size_flags_stretch_ratio = 7.5
+focus_selected_on_sim_start = true
 
 [node name="AsteroidsScroll" type="ScrollContainer" parent="HBox/RightSideContent/RightVBox"]
 layout_mode = 2
@@ -87,6 +89,7 @@ vertical_scroll_mode = 0
 layout_mode = 2
 size_flags_vertical = 3
 body_tables = Array[StringName]([&"asteroids"])
+focus_selected_on_sim_start = true
 
 [node name="SpacecraftsScroll" type="ScrollContainer" parent="HBox/RightSideContent/RightVBox"]
 layout_mode = 2
@@ -99,6 +102,7 @@ vertical_scroll_mode = 0
 layout_mode = 2
 size_flags_vertical = 3
 body_tables = Array[StringName]([&"spacecrafts"])
+focus_selected_on_sim_start = true
 
 [node name="ControlModResizable" parent="." instance=ExtResource("9_68igy")]
 sizes = Array[Vector2]([Vector2(435, 291), Vector2(575, 354), Vector2(712, 421)])
