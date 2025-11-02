@@ -62,4 +62,4 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	# delay and do some finish work
 	await IVGlobal.get_tree().process_frame
 	@warning_ignore("unsafe_method_access")
-	panel_clone.get_node("ControlMod").finish_move()
+	panel_clone.get_node(^"ControlModDraggable").finish_move()
