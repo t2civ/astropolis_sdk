@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://y7dhw1cn7iu"]
+[gd_scene load_steps=25 format=3 uid="uid://y7dhw1cn7iu"]
 
 [ext_resource type="Script" uid="uid://ojr7qpuqfd3p" path="res://public/universe.gd" id="1_vasii"]
 [ext_resource type="PackedScene" uid="uid://0r58al8slcnw" path="res://addons/ivoyager_core/ui_main/fragment_identifier.tscn" id="2_21dkt"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://q7isgrok4sox" path="res://public/ui_main/navigation_panel.tscn" id="8_scetr"]
 [ext_resource type="PackedScene" uid="uid://bge38u16ro4w8" path="res://public/ui_main/selection_panel.tscn" id="9_mfayk"]
 [ext_resource type="PackedScene" uid="uid://pjw4ki1qswq0" path="res://addons/ivoyager_core/ui_widgets/hotkeys_button.tscn" id="9_ots8j"]
-[ext_resource type="PackedScene" uid="uid://d3sw2xlbcfxc" path="res://core/gui/splash_screen.tscn" id="10_b1kl6"]
 [ext_resource type="PackedScene" uid="uid://dcw1843unaohr" path="res://addons/ivoyager_core/ui_widgets/quit_button.tscn" id="10_esi8j"]
 [ext_resource type="PackedScene" uid="uid://4wg2jxr7g6t2" path="res://addons/ivoyager_core/ui_widgets/resume_button.tscn" id="11_3j5ud"]
 [ext_resource type="PackedScene" uid="uid://rppwkgmgwt24" path="res://addons/ivoyager_save/gui/quicksave_button.tscn" id="11_xcwwf"]
@@ -70,9 +69,6 @@ offset_right = 0.0
 offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 0
-
-[node name="SplashScreen" parent="TopUI" instance=ExtResource("10_b1kl6")]
-layout_mode = 1
 
 [node name="MainMenuBasePopup" parent="TopUI" instance=ExtResource("7_uuhop")]
 size = Vector2i(182, 100)
