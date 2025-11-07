@@ -31,13 +31,10 @@ func _init() -> void:
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
-	# added/replaced classes
+	# changed classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
-	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
-	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
-	
-	# removed
 	IVCoreInitializer.program_refcounteds.erase(&"CompositionBuilder")
+	IVCoreInitializer.tree_program_nodes.append(&"AstropolisGUI")
 	
 	# translations
 	var path_format := "res://public/data/text/%s.translation"

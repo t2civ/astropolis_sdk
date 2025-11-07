@@ -1,0 +1,136 @@
+[gd_scene load_steps=16 format=3 uid="uid://bge38u16ro4w8"]
+
+[ext_resource type="Script" uid="uid://cbwffti2dulg3" path="res://public/ui_main/selection_panel.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bit8giu74do67" path="res://public/ui_widgets/selection_label2.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://b5k2m7jen3jwm" path="res://addons/ivoyager_core/ui_widgets/range_label.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://welwpw4boyv8" path="res://addons/ivoyager_core/ui_widgets/lat_long_label.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://7gwifgtfl1k4" path="res://public/ui_widgets/selection_image2.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cr2k471sfa7fd" path="res://addons/ivoyager_core/ui_widgets/view_collection.tscn" id="6_kidbc"]
+[ext_resource type="PackedScene" uid="uid://b02brsb71lrev" path="res://addons/ivoyager_core/ui_widgets/huds_popup_button.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://b1mkm7ajlvvm0" path="res://addons/ivoyager_core/ui_widgets/track_ckbxs.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://bjf4qy5fngcu6" path="res://public/ui_widgets/local_selections.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://cwnvxi44ijkr4" path="res://addons/ivoyager_core/ui_widgets/up_lock_ckbx.tscn" id="12"]
+[ext_resource type="PackedScene" uid="uid://chl27l6aiico8" path="res://addons/ivoyager_core/ui_widgets/focal_length_control.tscn" id="13_d8to3"]
+[ext_resource type="PackedScene" uid="uid://do2jvg01jte0i" path="res://addons/ivoyager_core/ui_widgets/view_save_button.tscn" id="14"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="14_05gyw"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="15_jg165"]
+[ext_resource type="PackedScene" uid="uid://bcl70ysl6yces" path="res://addons/ivoyager_core/ui_widgets/view_button.tscn" id="16"]
+
+[node name="SelectionPanel" type="PanelContainer"]
+offset_right = 893.0
+offset_bottom = 354.0
+script = ExtResource("1")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MainHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="LeftVBox" type="VBoxContainer" parent="VBox/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SelectionLabel2" parent="VBox/MainHBox/LeftVBox" instance=ExtResource("2")]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBox2" type="HBoxContainer" parent="VBox/MainHBox/LeftVBox"]
+layout_mode = 2
+
+[node name="RangeLabel" parent="VBox/MainHBox/LeftVBox/HBox2" instance=ExtResource("4")]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="LatLongLabel" parent="VBox/MainHBox/LeftVBox/HBox2" instance=ExtResource("5")]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0.0 N 0.0 W"
+horizontal_alignment = 1
+
+[node name="SelectionImage" parent="VBox/MainHBox/LeftVBox" instance=ExtResource("6")]
+layout_mode = 2
+expand_mode = 1
+
+[node name="RightVBox" type="VBoxContainer" parent="VBox/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ViewCollection" parent="VBox/MainHBox/RightVBox" instance=ExtResource("6_kidbc")]
+layout_mode = 2
+collection_name = "SP"
+is_cached = false
+
+[node name="HUDsPopupButton" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("7")]
+layout_mode = 2
+
+[node name="ViewSaveButton" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("14")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Home" parent="VBox/MainHBox/RightVBox/ViewCollection" instance=ExtResource("16")]
+layout_mode = 2
+text = "Home"
+default_view = &"VIEW_HOME"
+editable = true
+renamable = true
+
+[node name="LocalSelections" parent="VBox/MainHBox/RightVBox" instance=ExtResource("10")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VSpacer" type="Control" parent="VBox"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="BottomHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Zoom" parent="VBox/BottomHBox" instance=ExtResource("16")]
+layout_mode = 2
+text = "Zoom"
+default_view = &"VIEW_ZOOM"
+
+[node name="Fortyfive" parent="VBox/BottomHBox" instance=ExtResource("16")]
+layout_mode = 2
+text = "45°"
+default_view = &"VIEW_FORTYFIVE"
+
+[node name="Top" parent="VBox/BottomHBox" instance=ExtResource("16")]
+layout_mode = 2
+text = "Top"
+default_view = &"VIEW_TOP"
+
+[node name="Spacer1" type="Control" parent="VBox/BottomHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="UpLockCkbx" parent="VBox/BottomHBox" instance=ExtResource("12")]
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="VBox/BottomHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TrackCkbxs" parent="VBox/BottomHBox" instance=ExtResource("8")]
+layout_mode = 2
+
+[node name="Spacer3" type="Control" parent="VBox/BottomHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="FocalLengthControl" parent="VBox/BottomHBox" instance=ExtResource("13_d8to3")]
+layout_mode = 2
+
+[node name="ControlModResizable" parent="." instance=ExtResource("14_05gyw")]
+sizes = Array[Vector2]([Vector2(435, 291), Vector2(575, 354), Vector2(712, 421)])
+
+[node name="ControlModDraggable" parent="." instance=ExtResource("15_jg165")]

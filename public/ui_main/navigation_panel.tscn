@@ -1,0 +1,103 @@
+[gd_scene load_steps=11 format=3 uid="uid://q7isgrok4sox"]
+
+[ext_resource type="Script" uid="uid://gsswxjj47863" path="res://public/ui_main/navigation_panel.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://crmkiyfceanog" path="res://addons/ivoyager_core/ui_widgets/camera_lock_ckbx.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://t13lvtablxvu" path="res://addons/ivoyager_core/ui_widgets/nav_button.tscn" id="3_e3pm4"]
+[ext_resource type="PackedScene" uid="uid://drl4tb0hbqhl" path="res://addons/ivoyager_core/ui_widgets/speed_buttons.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://cc3uu3jh0620y" path="res://addons/ivoyager_core/ui_widgets/speed_label.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cjtauq7kev3vl" path="res://addons/ivoyager_core/ui_widgets/nav_buttons_system.tscn" id="7_68igy"]
+[ext_resource type="PackedScene" uid="uid://b8lhpum4e5tps" path="res://addons/ivoyager_core/ui_widgets/date_time_label.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://3ofokqme2067" path="res://addons/ivoyager_core/ui_widgets/nav_buttons_box.tscn" id="8_68igy"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="9_68igy"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="10_e3pm4"]
+
+[node name="NavigationPanel" type="PanelContainer"]
+offset_right = 486.0
+offset_bottom = 59.0
+script = ExtResource("1")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SunButton" parent="HBox" instance=ExtResource("3_e3pm4")]
+layout_mode = 2
+body_name = &"STAR_SUN"
+use_texture_slice = true
+focus_selected_on_sim_start = true
+
+[node name="RightSideContent" type="MarginContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 9.0
+mouse_filter = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="RightVBox" type="VBoxContainer" parent="HBox/RightSideContent"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopHBox" type="HBoxContainer" parent="HBox/RightSideContent/RightVBox"]
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="CameraLockCkbx" parent="HBox/RightSideContent/RightVBox/TopHBox" instance=ExtResource("2")]
+layout_mode = 2
+
+[node name="Spacer1" type="Control" parent="HBox/RightSideContent/RightVBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="DateTimeLabel" parent="HBox/RightSideContent/RightVBox/TopHBox" instance=ExtResource("8")]
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="HBox/RightSideContent/RightVBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="SpeedLabel" parent="HBox/RightSideContent/RightVBox/TopHBox" instance=ExtResource("6")]
+layout_mode = 2
+
+[node name="SpeedButtons" parent="HBox/RightSideContent/RightVBox/TopHBox" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="NavButtonsSystem" parent="HBox/RightSideContent/RightVBox" instance=ExtResource("7_68igy")]
+layout_mode = 2
+size_flags_stretch_ratio = 7.5
+focus_selected_on_sim_start = true
+
+[node name="AsteroidsScroll" type="ScrollContainer" parent="HBox/RightSideContent/RightVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+draw_focus_border = true
+vertical_scroll_mode = 0
+
+[node name="AsteroidsBox" parent="HBox/RightSideContent/RightVBox/AsteroidsScroll" instance=ExtResource("8_68igy")]
+layout_mode = 2
+size_flags_vertical = 3
+body_tables = Array[StringName]([&"asteroids"])
+focus_selected_on_sim_start = true
+
+[node name="SpacecraftsScroll" type="ScrollContainer" parent="HBox/RightSideContent/RightVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+draw_focus_border = true
+vertical_scroll_mode = 0
+
+[node name="SpacecraftsBox" parent="HBox/RightSideContent/RightVBox/SpacecraftsScroll" instance=ExtResource("8_68igy")]
+layout_mode = 2
+size_flags_vertical = 3
+body_tables = Array[StringName]([&"spacecrafts"])
+focus_selected_on_sim_start = true
+
+[node name="ControlModResizable" parent="." instance=ExtResource("9_68igy")]
+sizes = Array[Vector2]([Vector2(435, 291), Vector2(575, 354), Vector2(712, 421)])
+
+[node name="ControlModDraggable" parent="." instance=ExtResource("10_e3pm4")]

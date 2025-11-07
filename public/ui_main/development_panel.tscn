@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://d3vwfhbjnmt1q"]
+
+[ext_resource type="Script" uid="uid://xa13t044uf5u" path="res://public/ui_main/development_panel.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://c420hurdjt53n" path="res://public/ui_widgets/dev_stats.tscn" id="2_8b386"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="3_kt62g"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="4_dnvb5"]
+
+[node name="DevelopmentPanel" type="PanelContainer"]
+offset_right = 424.0
+offset_bottom = 209.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 1
+script = ExtResource("1")
+
+[node name="DevStats" parent="." instance=ExtResource("2_8b386")]
+layout_mode = 2
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="ControlModResizable" parent="." instance=ExtResource("4_dnvb5")]
+
+[node name="ControlModDraggable" parent="." instance=ExtResource("3_kt62g")]
