@@ -146,7 +146,7 @@ var _is_local_use_ai := false # local player sets/unsets
 
 
 func _init() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
+	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
 
 
 func remove() -> void:

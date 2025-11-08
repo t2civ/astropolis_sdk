@@ -45,13 +45,13 @@ var _selection: IVSelection
 func _ready() -> void:
 	# After system built (this panel only...)
 	
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear_procedural)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	($TRButtons/Pin as Button).pressed.connect(_clone_and_pin)
 	if is_pinned:
 		($TRButtons/Close as Button).pressed.connect(_close)
 		_init_after_system()
 	else:
-		IVGlobal.system_tree_ready.connect(_init_after_system, CONNECT_ONE_SHOT)
+		IVStateManager.system_tree_ready.connect(_init_after_system, CONNECT_ONE_SHOT)
 		($TRButtons/Close as Button).hide()
 
 

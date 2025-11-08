@@ -111,7 +111,7 @@ var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_r
 
 
 func _ready() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
 	visibility_changed.connect(_update_tab)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)
 	_selection_manager.selection_changed.connect(_update_tab)

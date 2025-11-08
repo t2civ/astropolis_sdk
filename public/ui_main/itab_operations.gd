@@ -108,7 +108,7 @@ var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
 
 
 func _ready() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
 	visibility_changed.connect(_update_tab)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)
 	_selection_manager.selection_changed.connect(_update_tab)

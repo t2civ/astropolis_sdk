@@ -22,8 +22,8 @@ func _init() -> void:
 	
 	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
 	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
-	IVGlobal.project_objects_instantiated.connect(_on_project_objects_instantiated)
-	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
+	IVStateManager.project_objects_instantiated.connect(_on_project_objects_instantiated)
+	IVStateManager.project_nodes_added.connect(_on_project_nodes_added)
 
 	# properties
 	AIBus.verbose = AI_VERBOSE

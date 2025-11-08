@@ -15,13 +15,13 @@ const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY # child GUIs are persiste
 
 func _ready() -> void:
 	hide()
-	IVGlobal.simulator_started.connect(show)
-	IVGlobal.about_to_free_procedural_nodes.connect(hide)
-	IVGlobal.system_tree_built_or_loaded.connect(_on_system_tree_built_or_loaded)
+	IVStateManager.simulator_started.connect(show)
+	IVStateManager.about_to_free_procedural_nodes.connect(hide)
+	IVStateManager.system_tree_built.connect(_on_system_tree_built)
 	IVGlobal.show_hide_gui_requested.connect(show_hide_gui)
 
 
-func _on_system_tree_built_or_loaded(is_new_game: bool) -> void:
+func _on_system_tree_built(is_new_game: bool) -> void:
 	if !is_new_game:
 		return
 	var info_panel: InfoPanel = IVFiles.make_object_or_scene(InfoPanel) # FIXME: create()

@@ -13,7 +13,7 @@ extends RefCounted
 # TODO: Move code to InfoPanel, now that self reference is ok.
 
 func _init() -> void:
-	IVGlobal.system_tree_ready.connect(_on_system_tree_ready)
+	IVStateManager.system_tree_ready.connect(_on_system_tree_ready)
 
 
 func _on_system_tree_ready(_is_new_game: bool) -> void:

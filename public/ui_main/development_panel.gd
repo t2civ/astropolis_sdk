@@ -22,9 +22,9 @@ func _ready() -> void:
 	#style_box.bg_color = Color(1.0, 1.0, 1.0, 0.05) # almost transparent
 	#set("theme_override_styles/panel", style_box)
 	($Timer as Timer).timeout.connect(($DevStats as DevStats).update)
-	IVGlobal.system_tree_ready.connect(_delayed_timer_start)
-	IVGlobal.simulator_started.connect(_delayed_1st_update)
-	IVGlobal.about_to_free_procedural_nodes.connect(($Timer as Timer).stop)
+	IVStateManager.system_tree_ready.connect(_delayed_timer_start)
+	IVStateManager.simulator_started.connect(_delayed_1st_update)
+	IVStateManager.about_to_free_procedural_nodes.connect(($Timer as Timer).stop)
 
 
 func _delayed_timer_start(_is_new_game: bool) -> void:

@@ -28,7 +28,7 @@ var body_selection_redirect := {} # redirect to single facility or local player 
 # *****************************************************************************
 
 func _ready() -> void:
-	IVGlobal.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
 
 
 func _clear() -> void:
