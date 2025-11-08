@@ -54,8 +54,8 @@ func _init() -> void:
 	IVSave.quicksave_uses_suffix_generator = true
 	
 	# Core plugin static files
-	IVSettingsManager.defaults[&"save_base_name"] = "Astropolis"
-	IVSettingsManager.defaults[&"autosave_time_min"] = 0
+	IVSettingsManager.set_default(&"save_base_name", "Astropolis")
+	IVSettingsManager.set_default(&"autosave_time_min", 0)
 
 
 func _on_project_object_instantiated(object: Object) -> void:
