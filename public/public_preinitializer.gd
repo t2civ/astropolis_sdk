@@ -46,11 +46,11 @@ func _init() -> void:
 	IVQFormat.exponent_str = "e"
 	
 	# Save plugin
-	IVSave.input_enabled = true
 	IVSave.file_extension = "AstropolisSave"
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
+	IVSave.configure_save_plugin()
 	
 	# Core plugin static files
 	IVSettingsManager.set_default(&"save_base_name", "Astropolis")
