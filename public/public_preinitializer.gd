@@ -20,10 +20,9 @@ func _init() -> void:
 	print("Astropolis v%s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
-	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
+	IVGlobal.core_init_object_instantiated.connect(_on_init_object_instantiated)
 	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
-	IVStateManager.project_objects_instantiated.connect(_on_project_objects_instantiated)
-	IVStateManager.project_nodes_added.connect(_on_project_nodes_added)
+	IVStateManager.core_init_program_objects_instantiated.connect(_on_program_objects_instantiated)
 
 	# properties
 	AIBus.verbose = AI_VERBOSE
@@ -58,7 +57,7 @@ func _init() -> void:
 	IVSettingsManager.set_default(&"autosave_time_min", 0)
 
 
-func _on_project_object_instantiated(object: Object) -> void:
+func _on_init_object_instantiated(object: Object) -> void:
 	var table_initializer := object as IVTableInitializer
 	if table_initializer:
 		_on_table_initializer_instantiated(table_initializer)
@@ -110,7 +109,7 @@ func _on_data_tables_imported() -> void:
 		IVQConvert.include_compound_unit(trade_unit)
 
 
-func _on_project_objects_instantiated() -> void:
+func _on_program_objects_instantiated() -> void:
 	# program object changes
 	
 	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
@@ -162,7 +161,3 @@ func _on_project_objects_instantiated() -> void:
 		var process_group := IVTableData.get_db_int(&"operations", &"process_group", operation_type)
 		assert(process_group == IVTableData.get_db_int(&"op_groups", &"process_group", op_group),
 				"Inconsistant 'process_group' in 'operations.tsv' and 'op_groups.tsv'")
-
-
-func _on_project_nodes_added() -> void:
-	pass
