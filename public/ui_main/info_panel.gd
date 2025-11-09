@@ -79,7 +79,7 @@ func _init_after_system(_dummy := false) -> void:
 
 
 func _update_selection(_dummy := false) -> void:
-	if !visible or !IVStateManager.is_running:
+	if !visible or !IVStateManager.running:
 		return
 	_header_label.text = selection_manager.get_gui_name()
 

@@ -39,6 +39,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func show_hide_gui(is_toggle := true, is_show := true) -> void:
-	if not IVStateManager.is_system_built:
+	if not IVStateManager.built_system:
 		return
 	visible = !visible if is_toggle else is_show

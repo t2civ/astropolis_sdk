@@ -151,7 +151,7 @@ func _select_tab(tab: int) -> void:
 
 
 func _update_tab(_suppress_camera_move := false) -> void:
-	if !visible or !IVStateManager.is_running:
+	if !visible or !IVStateManager.running:
 		return
 	if current_tab == TAB_TRANSPORT:
 		_no_markets_label.hide()

@@ -149,7 +149,7 @@ func _select_tab(tab: int) -> void:
 
 
 func _update_tab(_dummy := false) -> void:
-	if !visible or !IVStateManager.is_running:
+	if !visible or !IVStateManager.running:
 		return
 	var target_name := _selection_manager.get_selection_name()
 	

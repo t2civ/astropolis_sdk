@@ -34,7 +34,7 @@ func timer_update() -> void:
 
 
 func _refresh() -> void:
-	if !visible or !IVStateManager.is_running:
+	if !visible or !IVStateManager.running:
 		return
 	if !_body_name or !_selection_name:
 		_update_selection()
@@ -42,7 +42,7 @@ func _refresh() -> void:
 
 
 func _update_selection(_suppress_camera_move := false) -> void:
-	if !visible or !IVStateManager.is_running:
+	if !visible or !IVStateManager.running:
 		return
 	var selection_name := _selection_manager.get_selection_name() # body or facility
 	if !selection_name:
