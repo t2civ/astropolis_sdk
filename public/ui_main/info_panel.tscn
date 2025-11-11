@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://c5n3nwrrxe07r"]
 
 [ext_resource type="Script" uid="uid://cohtpyhdjibmc" path="res://public/ui_main/info_panel.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="3_pdqiu"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_components/control_mod_resizable.tscn" id="3_pdqiu"]
 [ext_resource type="PackedScene" uid="uid://bk1wcjtaqcyyd" path="res://addons/ivoyager_core/ui_widgets/selection_buttons.tscn" id="4"]
-[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="4_nj1io"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_components/control_mod_draggable.tscn" id="4_nj1io"]
 
 [node name="InfoPanel" type="PanelContainer"]
 anchors_preset = 7

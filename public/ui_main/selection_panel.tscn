@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://cwnvxi44ijkr4" path="res://addons/ivoyager_core/ui_widgets/up_lock_ckbx.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://chl27l6aiico8" path="res://addons/ivoyager_core/ui_widgets/focal_length_control.tscn" id="13_d8to3"]
 [ext_resource type="PackedScene" uid="uid://do2jvg01jte0i" path="res://addons/ivoyager_core/ui_widgets/view_save_button.tscn" id="14"]
-[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="14_05gyw"]
-[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="15_jg165"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_components/control_mod_resizable.tscn" id="14_05gyw"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_components/control_mod_draggable.tscn" id="15_jg165"]
 [ext_resource type="PackedScene" uid="uid://bcl70ysl6yces" path="res://addons/ivoyager_core/ui_widgets/view_button.tscn" id="16"]
 
 [node name="SelectionPanel" type="PanelContainer"]

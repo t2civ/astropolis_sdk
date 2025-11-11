@@ -8,8 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://cjtauq7kev3vl" path="res://addons/ivoyager_core/ui_widgets/nav_buttons_system.tscn" id="7_68igy"]
 [ext_resource type="PackedScene" uid="uid://b8lhpum4e5tps" path="res://addons/ivoyager_core/ui_widgets/date_time_label.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://3ofokqme2067" path="res://addons/ivoyager_core/ui_widgets/nav_buttons_box.tscn" id="8_68igy"]
-[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_helpers/control_mod_resizable.tscn" id="9_68igy"]
-[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_helpers/control_mod_draggable.tscn" id="10_e3pm4"]
+[ext_resource type="PackedScene" uid="uid://bkcj6agxxgfw" path="res://addons/ivoyager_core/ui_components/control_mod_resizable.tscn" id="9_68igy"]
+[ext_resource type="PackedScene" uid="uid://bxe2h5vrmrjfs" path="res://addons/ivoyager_core/ui_components/control_mod_draggable.tscn" id="10_e3pm4"]
 
 [node name="NavigationPanel" type="PanelContainer"]
 offset_right = 486.0
