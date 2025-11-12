@@ -27,6 +27,9 @@ var _selection_manager: SelectionManager
 
 
 func _ready() -> void:
+	
+	# FIXME: SelectionManager handling & UI refresh
+	
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	IVGlobal.ui_dirty.connect(_update_selection)
 	IVStateManager.about_to_start_simulator.connect(_connect_selection_manager)

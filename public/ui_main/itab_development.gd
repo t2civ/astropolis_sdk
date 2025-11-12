@@ -25,6 +25,9 @@ var _selection_manager: SelectionManager
 
 
 func _ready() -> void:
+	
+	# FIXME: SelectionManager handling & UI refresh
+	
 	IVGlobal.ui_dirty.connect(_update_selection)
 	visibility_changed.connect(_update_selection)
 	_dev_stats.has_stats_changed.connect(_update_no_development)

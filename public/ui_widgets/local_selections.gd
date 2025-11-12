@@ -48,6 +48,9 @@ var _is_busy := false # don't update if getting data on ai thread (cheap mutex)
 
 
 func _ready() -> void:
+	
+	# FIXME: SelectionManager handling & UI refresh
+	
 	IVGlobal.ui_dirty.connect(_update_selection)
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	IVStateManager.about_to_start_simulator.connect(_connect_selection_manager)

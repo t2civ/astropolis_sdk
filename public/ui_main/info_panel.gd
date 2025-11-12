@@ -45,6 +45,9 @@ var _selection: IVSelection
 func _ready() -> void:
 	# After system built (this panel only...)
 	
+	# FIXME: SelectionManager handling & UI refresh
+	
+	
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	($TRButtons/Pin as Button).pressed.connect(_clone_and_pin)
 	if is_pinned:
