@@ -21,36 +21,27 @@
 # *****************************************************************************
 extends Label
 
-# GUI widget. An ancestor Control must have member selection_manager.
+## Label widget that displays the selection name as plain text.
+##
+## Modified from I, Voyager widget to display body name, not the selection name
+## (these are different when selecting NASA, for example).[br][br]
+##
+## Expects an ancestor Control with property [param selection_manager] set
+## before [signal IVStateManager.system_tree_ready].
 
 var _selection_manager: SelectionManager
 
 
 func _ready() -> void:
-	
-	# FIXME: SelectionManager handling & UI refresh
-	
-	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
-	IVGlobal.ui_dirty.connect(_update_selection)
-	IVStateManager.about_to_start_simulator.connect(_connect_selection_manager)
-	if IVStateManager.started_or_about_to_start:
-		_connect_selection_manager()
+	IVWidgets.connect_selection_manager(self, &"_on_selection_manager_changed",
+			[&"selection_changed", &"_update_selection"])
 
 
-func _clear_procedural() -> void:
-	if _selection_manager:
-		_selection_manager.selection_changed.disconnect(_update_selection)
-		_selection_manager = null
-
-
-func _connect_selection_manager(_dummy := false) -> void:
-	# every sim start
-	_selection_manager = IVSelectionManager.get_selection_manager(self)
-	assert(_selection_manager, "Did not find valid 'selection_manager' above this node")
-	_selection_manager.selection_changed.connect(_update_selection)
+func _on_selection_manager_changed(selection_manager: IVSelectionManager) -> void:
+	_selection_manager = selection_manager
+	if selection_manager:
+		_update_selection()
 
 
 func _update_selection(_dummy := false) -> void:
-	if not _selection_manager.has_selection():
-		return
 	text = _selection_manager.get_body_gui_name() # modified from I, Voyager

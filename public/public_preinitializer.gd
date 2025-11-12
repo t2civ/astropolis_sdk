@@ -113,7 +113,7 @@ func _on_program_objects_instantiated() -> void:
 	# program object changes
 	
 	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
-	timekeeper.date_format = timekeeper.DATE_FORMAT_Y_M_D_Q_YQ_YM
+	timekeeper.date_format = IVTimekeeper.DateFormat.DATE_FORMAT_Y_M_D_Q_YQ_YM
 	timekeeper.start_speed = 0
 	
 #	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
