@@ -25,7 +25,7 @@ var _selection_manager: SelectionManager
 
 
 func _ready() -> void:
-	IVGlobal.update_gui_requested.connect(_update_selection)
+	IVGlobal.ui_dirty.connect(_update_selection)
 	visibility_changed.connect(_update_selection)
 	_dev_stats.has_stats_changed.connect(_update_no_development)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)

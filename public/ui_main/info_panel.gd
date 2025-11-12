@@ -69,7 +69,7 @@ func _init_after_system(_dummy := false) -> void:
 		# This is the original (non-cloned) InfoPanel and a new game!
 		selection_manager = IVSelectionManager.get_selection_manager(self)
 	selection_manager.selection_changed.connect(_update_selection)
-	IVGlobal.update_gui_requested.connect(_update_selection)
+	IVGlobal.ui_dirty.connect(_update_selection)
 	visibility_changed.connect(_update_selection)
 	_update_selection()
 	

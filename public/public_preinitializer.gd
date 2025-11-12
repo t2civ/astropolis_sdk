@@ -20,8 +20,8 @@ func _init() -> void:
 	print("Astropolis v%s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
-	IVGlobal.core_init_object_instantiated.connect(_on_init_object_instantiated)
-	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
+	IVStateManager.core_init_object_instantiated.connect(_on_init_object_instantiated)
+	IVGlobal.data_tables_postprocessed.connect(_on_data_tables_postprocessed)
 	IVStateManager.core_init_program_objects_instantiated.connect(_on_program_objects_instantiated)
 
 	# properties
@@ -103,7 +103,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.facilities_populations = path_format % "facilities_populations"
 
 
-func _on_data_tables_imported() -> void:
+func _on_data_tables_postprocessed() -> void:
 	for trade_unit: StringName in IVTableData.db_tables[&"resources"][&"trade_unit"]:
 		# Add all trade_unit strings to unit_multipliers for subsequent direct access.
 		IVQConvert.include_compound_unit(trade_unit)

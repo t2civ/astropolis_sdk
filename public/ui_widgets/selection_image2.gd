@@ -29,7 +29,7 @@ var _selection_manager: IVSelectionManager
 
 func _ready() -> void:
 	set_default_cursor_shape(CURSOR_POINTING_HAND)
-	IVGlobal.update_gui_requested.connect(_update_selection)
+	IVGlobal.ui_dirty.connect(_update_selection)
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	IVStateManager.about_to_start_simulator.connect(_connect_selection_manager)
 	if IVStateManager.started_or_about_to_start:
