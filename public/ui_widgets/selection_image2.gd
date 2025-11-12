@@ -21,7 +21,10 @@
 # *****************************************************************************
 extends TextureRect
 
-# GUI widget. An ancestor Control must have member "selection_manager".
+## TextureRect widget that displays the current selection texture_2d. Acts like
+## a button for "re-selection" (re-centers the selection).
+##
+## FIXME: Needs focus state display. Make this an image in a Button like [IVNavButton].
 
 var _hint_extension := "\n\n" + tr(&"HINT_SELECTION_IMAGE")
 var _selection_manager: IVSelectionManager
@@ -30,45 +33,35 @@ var _selection_manager: IVSelectionManager
 func _ready() -> void:
 	set_default_cursor_shape(CURSOR_POINTING_HAND)
 	IVGlobal.ui_dirty.connect(_update_selection)
-	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
-	IVStateManager.about_to_start_simulator.connect(_connect_selection_manager)
-	if IVStateManager.started_or_about_to_start:
-		_connect_selection_manager()
-
-
-func _clear_procedural() -> void:
-	if _selection_manager:
-		_selection_manager.selection_changed.disconnect(_update_selection)
-		_selection_manager = null
-
-
-func _connect_selection_manager(_dummy := false) -> void:
-	# every sim start
-	_selection_manager = IVSelectionManager.get_selection_manager(self)
-	assert(_selection_manager, "Did not find valid 'selection_manager' above this node")
-	_selection_manager.selection_changed.connect(_update_selection)
+	IVWidgets.connect_selection_manager(self, &"_on_selection_manager_changed",
+			[&"selection_changed", &"_update_selection"])
 
 
 func _gui_input(event: InputEvent) -> void:
 	var mouse_button_event := event as InputEventMouseButton
 	if !mouse_button_event:
 		return
-	if mouse_button_event.pressed and mouse_button_event.button_index == MOUSE_BUTTON_LEFT:
-		# image click centers and "levels" the target body
-		# Below modified from I, Voyager:
-		var body_name := _selection_manager.get_body_name()
-		if body_name != _selection_manager.get_selection_name():
-			_selection_manager.select_by_name(body_name)
-			return
-		# End modification
-		IVGlobal.move_camera_requested.emit(_selection_manager.selection, 0,
-				Vector3(-INF, -INF, -INF), Vector3.ZERO)
+	if !mouse_button_event.pressed:
+		return
+	if mouse_button_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if !_selection_manager:
+		return
+	# Modified from I, Voyager: this could be an "up" selection from a facility
+	var body_name := _selection_manager.get_body_name()
+	if body_name != _selection_manager.get_selection_name():
+		_selection_manager.select_by_name(body_name)
+		return
+	# End modification
+	_selection_manager.select(_selection_manager.get_selection())
+
+
+func _on_selection_manager_changed(selection_manager: IVSelectionManager) -> void:
+	_selection_manager = selection_manager
+	if selection_manager:
+		_update_selection()
 
 
 func _update_selection(_dummy := false) -> void:
-	if not _selection_manager.has_selection():
-		return
 	tooltip_text = tr(_selection_manager.get_body_name()) + _hint_extension
-	var texture_2d := _selection_manager.get_texture_2d()
-	if texture_2d:
-		texture = texture_2d
+	texture = _selection_manager.get_texture_2d()
