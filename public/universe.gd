@@ -27,10 +27,4 @@ extends Node3D
 const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY ## Don't free on load.
 const PERSIST_PROPERTIES: Array[StringName] = [&"persist"]
 
-
 var persist := {}
-
-
-func _ready() -> void:
-	if IVCoreSettings.pause_only_stops_time:
-		process_mode = PROCESS_MODE_ALWAYS
