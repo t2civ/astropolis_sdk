@@ -12,10 +12,10 @@ config_version=5
 
 config/name="Astropolis SDK"
 config/version="0.0.6.dev"
-run/main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
+run/main_scene="uid://y7dhw1cn7iu"
 config/features=PackedStringArray("4.5")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/image="res://public/pale_blue_dot.png"
+boot_splash/show_image=false
 config/icon="res://public/astropolis-icon-128.png"
 main_scene="res://addons/ivoyager_core/tree_nodes/universe.tscn"
 name="Astropolis SDK"
@@ -34,6 +34,8 @@ IVCoreInitializer="*res://addons/ivoyager_core/editor_plugin/../singletons/core_
 IVAstronomy="*res://addons/ivoyager_core/editor_plugin/../singletons/astronomy.gd"
 ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
 MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
+IVSettingsManager="*res://addons/ivoyager_core/editor_plugin/../singletons/settings_manager.gd"
+IVStateManager="*res://addons/ivoyager_core/editor_plugin/../singletons/state_manager.gd"
 
 [debug]
 
@@ -50,8 +52,8 @@ gdscript/warnings/static_called_on_instance=0
 
 [display]
 
-window/size/viewport_width=1800
-window/size/viewport_height=945
+window/size/viewport_width=2000
+window/size/viewport_height=1200
 
 [editor_plugins]
 

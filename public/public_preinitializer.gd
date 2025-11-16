@@ -20,10 +20,9 @@ func _init() -> void:
 	print("Astropolis v%s - https://t2civ.com" % version)
 	print("USE_THREADS = %s" % USE_THREADS)
 	
-	IVGlobal.project_object_instantiated.connect(_on_project_object_instantiated)
-	IVGlobal.data_tables_imported.connect(_on_data_tables_imported)
-	IVGlobal.project_objects_instantiated.connect(_on_project_objects_instantiated)
-	IVGlobal.project_nodes_added.connect(_on_project_nodes_added)
+	IVStateManager.core_init_object_instantiated.connect(_on_init_object_instantiated)
+	IVGlobal.data_tables_postprocessed.connect(_on_data_tables_postprocessed)
+	IVStateManager.core_init_program_objects_instantiated.connect(_on_program_objects_instantiated)
 
 	# properties
 	AIBus.verbose = AI_VERBOSE
@@ -31,13 +30,10 @@ func _init() -> void:
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
 	
-	# added/replaced classes
+	# changed classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
-	IVCoreInitializer.gui_nodes[&"AstroGUI"] = AstroGUI
-	IVCoreInitializer.gui_nodes[&"AdminPopups"] = AdminPopups
-	
-	# removed
 	IVCoreInitializer.program_refcounteds.erase(&"CompositionBuilder")
+	IVCoreInitializer.tree_program_nodes.append(&"AstropolisGUI")
 	
 	# translations
 	var path_format := "res://public/data/text/%s.translation"
@@ -50,18 +46,18 @@ func _init() -> void:
 	IVQFormat.exponent_str = "e"
 	
 	# Save plugin
-	IVSave.input_enabled = true
 	IVSave.file_extension = "AstropolisSave"
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
+	IVSave.configure_save_plugin()
 	
 	# Core plugin static files
-	IVSettingsManager.defaults[&"save_base_name"] = "Astropolis"
-	IVSettingsManager.defaults[&"autosave_time_min"] = 0
+	IVSettingsManager.set_default(&"save_base_name", "Astropolis")
+	IVSettingsManager.set_default(&"autosave_time_min", 0)
 
 
-func _on_project_object_instantiated(object: Object) -> void:
+func _on_init_object_instantiated(object: Object) -> void:
 	var table_initializer := object as IVTableInitializer
 	if table_initializer:
 		_on_table_initializer_instantiated(table_initializer)
@@ -107,17 +103,17 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.facilities_populations = path_format % "facilities_populations"
 
 
-func _on_data_tables_imported() -> void:
+func _on_data_tables_postprocessed() -> void:
 	for trade_unit: StringName in IVTableData.db_tables[&"resources"][&"trade_unit"]:
 		# Add all trade_unit strings to unit_multipliers for subsequent direct access.
 		IVQConvert.include_compound_unit(trade_unit)
 
 
-func _on_project_objects_instantiated() -> void:
+func _on_program_objects_instantiated() -> void:
 	# program object changes
 	
 	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
-	timekeeper.date_format = timekeeper.DATE_FORMAT_Y_M_D_Q_YQ_YM
+	timekeeper.date_format = IVTimekeeper.DateFormat.DATE_FORMAT_Y_M_D_Q_YQ_YM
 	timekeeper.start_speed = 0
 	
 #	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
@@ -165,7 +161,3 @@ func _on_project_objects_instantiated() -> void:
 		var process_group := IVTableData.get_db_int(&"operations", &"process_group", operation_type)
 		assert(process_group == IVTableData.get_db_int(&"op_groups", &"process_group", op_group),
 				"Inconsistant 'process_group' in 'operations.tsv' and 'op_groups.tsv'")
-
-
-func _on_project_nodes_added() -> void:
-	pass

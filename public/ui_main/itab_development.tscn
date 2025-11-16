@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://crwfsrh6c5ik5"]
+
+[ext_resource type="Script" uid="uid://ce81iouywmjyj" path="res://public/ui_main/itab_development.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://c420hurdjt53n" path="res://public/ui_widgets/dev_stats.tscn" id="2_bdbif"]
+
+[node name="Development" type="MarginContainer"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 568.0
+offset_bottom = 347.0
+script = ExtResource("2")
+
+[node name="DevStats" parent="." instance=ExtResource("2_bdbif")]
+layout_mode = 2
+
+[node name="NoDevLabel" type="Label" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "LABEL_NO_DEVELOPMENT"
