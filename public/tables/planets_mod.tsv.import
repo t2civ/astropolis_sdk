@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://4t53f0452p3u"
+path="res://.godot/imported/planets_mod.tsv-fe2f0865e06b00474d75717c2b0eb0ec.tres"
+
+[deps]
+
+source_file="res://public/tables/planets_mod.tsv"
+dest_files=["res://.godot/imported/planets_mod.tsv-fe2f0865e06b00474d75717c2b0eb0ec.tres"]
+
+[params]
+

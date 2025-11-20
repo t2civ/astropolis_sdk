@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://creposvgqo8vj"
+path="res://.godot/imported/operations.tsv-597c24e87fb079bc232afe4b29e44841.tres"
+
+[deps]
+
+source_file="res://public/tables/operations.tsv"
+dest_files=["res://.godot/imported/operations.tsv-597c24e87fb079bc232afe4b29e44841.tres"]
+
+[params]
+

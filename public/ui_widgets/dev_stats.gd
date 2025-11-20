@@ -15,9 +15,7 @@ extends MarginContainer
 
 signal has_stats_changed(has_stats: bool)
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 const SHORT_MIXED_CASE := IVQFormat.TextFormat.SHORT_MIXED_CASE
-
 
 # GUI values - parent should set only once at init
 #var update_interval := 1.0 # seconds

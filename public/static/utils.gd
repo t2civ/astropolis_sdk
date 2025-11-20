@@ -8,7 +8,6 @@
 class_name Utils
 extends Object
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 
 
 const LOG2_64 := { # indexed by power-of-2s from 2^0 to 2^63

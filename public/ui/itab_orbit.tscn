@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://fetfj0d1dv7i"]
+
+[ext_resource type="Script" uid="uid://dtfh87c8s4pwf" path="res://public/ui/itab_orbit.gd" id="1_tab7w"]
+
+[node name="Orbit" type="MarginContainer"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 568.0
+offset_bottom = 347.0
+script = ExtResource("1_tab7w")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Everything about this Body's orbit here,
+and tools to change if applicable!"
+horizontal_alignment = 1
+vertical_alignment = 1

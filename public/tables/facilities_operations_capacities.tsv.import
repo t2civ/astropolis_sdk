@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://bmkj8s2d55g7j"
+path="res://.godot/imported/facilities_operations_capacities.tsv-6a7874e80539f9399b9c7cfa856895fa.tres"
+
+[deps]
+
+source_file="res://public/tables/facilities_operations_capacities.tsv"
+dest_files=["res://.godot/imported/facilities_operations_capacities.tsv-6a7874e80539f9399b9c7cfa856895fa.tres"]
+
+[params]
+

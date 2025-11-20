@@ -36,7 +36,7 @@ func _init() -> void:
 	IVCoreInitializer.tree_program_nodes.append(&"AstropolisGUI")
 	
 	# translations
-	var path_format := "res://public/data/text/%s.translation"
+	var path_format := "res://public/text/%s.translation"
 	IVTranslationImporter.translations.append(path_format % "entities.en")
 	IVTranslationImporter.translations.append(path_format % "gui.en")
 	IVTranslationImporter.translations.append(path_format % "hints.en")
@@ -70,7 +70,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	var tables := IVTableInitializer.tables
 	tables.erase("wiki_extras")
 	
-	var path_format := "res://public/data/tables/%s.tsv"
+	var path_format := "res://public/tables/%s.tsv"
 	
 	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
 	tables.compositions = path_format % "compositions"

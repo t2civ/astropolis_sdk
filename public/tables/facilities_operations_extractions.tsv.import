@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://csj8cs36euar3"
+path="res://.godot/imported/facilities_operations_extractions.tsv-957323fb39d798c204948c77734556ba.tres"
+
+[deps]
+
+source_file="res://public/tables/facilities_operations_extractions.tsv"
+dest_files=["res://.godot/imported/facilities_operations_extractions.tsv-957323fb39d798c204948c77734556ba.tres"]
+
+[params]
+
