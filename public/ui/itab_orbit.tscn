@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://fetfj0d1dv7i"]
 
-[ext_resource type="Script" uid="uid://dtfh87c8s4pwf" path="res://public/ui_main/itab_orbit.gd" id="1_tab7w"]
+[ext_resource type="Script" uid="uid://dtfh87c8s4pwf" path="res://public/ui/itab_orbit.gd" id="1_tab7w"]
 
 [node name="Orbit" type="MarginContainer"]
 offset_left = 7.0

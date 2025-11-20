@@ -7,7 +7,7 @@
 # *****************************************************************************
 class_name ITabOrbit
 extends MarginContainer
-const SCENE := "res://public/ui_main/itab_orbit.tscn"
+const SCENE := "res://public/ui/itab_orbit.tscn"
 
 
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL

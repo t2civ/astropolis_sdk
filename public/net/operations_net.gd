@@ -57,12 +57,6 @@ enum {
 	DIRTY_OPERATIONS_LIST = 1 << 3,
 }
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
-const utils := preload("res://public/static/utils.gd")
-
-const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
-const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
-const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 # Interface read-only! Data flows server -> interface.
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -114,6 +108,7 @@ static var _is_class_instanced := false
 
 
 func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> void:
+	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_table_operations = _db_tables[&"operations"]
@@ -126,8 +121,8 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_has_financials = has_financials_
 	_is_facility = is_facility_
 	var n_populations: int = _table_n_rows[&"populations"]
-	_crews = ivutils.init_array(n_populations, 0.0, TYPE_FLOAT)
-	_capacities = ivutils.init_array(_n_operations, 0.0, TYPE_FLOAT)
+	_crews = arrays.init_array(n_populations, 0.0, TYPE_FLOAT)
+	_capacities = arrays.init_array(_n_operations, 0.0, TYPE_FLOAT)
 	_run_rates = _capacities.duplicate()
 	_effective_rates = _capacities.duplicate()
 	if !_has_financials:
@@ -136,10 +131,10 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_cogs_rates = _capacities.duplicate()
 	if !_is_facility:
 		return
-	_gross_margins = ivutils.init_array(_n_operations, NAN, TYPE_FLOAT)
-	_op_logics = ivutils.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
-	_op_commands = ivutils.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
-	_target_utilizations = ivutils.init_array(_n_operations, 1.0, TYPE_FLOAT)
+	_gross_margins = arrays.init_array(_n_operations, NAN, TYPE_FLOAT)
+	_op_logics = arrays.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
+	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
+	_target_utilizations = arrays.init_array(_n_operations, 1.0, TYPE_FLOAT)
 
 
 # ********************************** READ *************************************
@@ -148,6 +143,7 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 # dev totals
 
 func get_crew(population_type := -1) -> float:
+	const utils := preload("uid://bxjs8bk7ksxr2")
 	if population_type == -1:
 		return utils.get_float_array_sum(_crews)
 	return _crews[population_type]

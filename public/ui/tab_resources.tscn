@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://gx25hb7eiwyc"]
 
-[ext_resource type="Script" uid="uid://b8q8xibf7e2q5" path="res://public/ui_main/tab_resources.gd" id="1_f7hkn"]
+[ext_resource type="Script" uid="uid://b8q8xibf7e2q5" path="res://public/ui/tab_resources.gd" id="1_f7hkn"]
 
 [node name="TabResources" type="MarginContainer"]
 offset_right = 289.0

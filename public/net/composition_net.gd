@@ -33,10 +33,6 @@ enum { # _dirty bit flags
 	DIRTY_ESTIMATION = 1 << 2,
 }
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
-
-const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
-const FOUR_PI := 4.0 * PI
 
 
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -84,6 +80,7 @@ static var _is_class_instanced := false
 
 
 func _init(is_new := false, _is_server := false) -> void:
+	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_extraction_resources = _tables_aux[&"extraction_resources"]
@@ -96,7 +93,7 @@ func _init(is_new := false, _is_server := false) -> void:
 	if !is_new: # loaded game
 		return
 	var n_is_extraction_resources := _extraction_resources.size()
-	masses = ivutils.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
+	masses = arrays.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
 	variances = masses.duplicate()
 
 # ********************************** READ *************************************
@@ -269,6 +266,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 # *****************************************************************************
 
 func calculate_volume_and_total_mass() -> void:
+	const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
 	var inner_radius := outer_radius - thickness
 	_volume = spherical_fraction * FOUR_THIRDS_PI * (
 			outer_radius * outer_radius * outer_radius

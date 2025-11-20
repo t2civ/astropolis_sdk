@@ -25,7 +25,6 @@ enum { # _dirty
 	DIRTY_COST_OF_GOODS_SOLD = 1 << 2,
 }
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
 
 # interface sync
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -47,11 +46,12 @@ var _n_accountings := 10 # WIP
 
 
 func _init(is_new := false) -> void:
+	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !is_new: # game load
 		return
 	
 	# debug dev
-	_accountings = ivutils.init_array(_n_accountings, 0.0, TYPE_FLOAT)
+	_accountings = arrays.init_array(_n_accountings, 0.0, TYPE_FLOAT)
 
 
 # ********************************** READ *************************************

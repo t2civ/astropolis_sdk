@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://chu54nuudbsla"]
 
-[ext_resource type="Script" uid="uid://djj1jh6goxycx" path="res://public/ui_main/itab_operations.gd" id="1"]
+[ext_resource type="Script" uid="uid://djj1jh6goxycx" path="res://public/ui/itab_operations.gd" id="1"]
 
 [node name="Operations" type="MarginContainer"]
 offset_left = 7.0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://crwfsrh6c5ik5"]
 
-[ext_resource type="Script" uid="uid://ce81iouywmjyj" path="res://public/ui_main/itab_development.gd" id="2"]
+[ext_resource type="Script" uid="uid://ce81iouywmjyj" path="res://public/ui/itab_development.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://c420hurdjt53n" path="res://public/ui_widgets/dev_stats.tscn" id="2_bdbif"]
 
 [node name="Development" type="MarginContainer"]

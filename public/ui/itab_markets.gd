@@ -7,7 +7,7 @@
 # *****************************************************************************
 class_name ITabMarkets
 extends MarginContainer
-const SCENE := "res://public/ui_main/itab_markets.tscn"
+const SCENE := "res://public/ui/itab_markets.tscn"
 
 # Tabs follow row enumerations in resource_classes.tsv.
 #

@@ -7,7 +7,7 @@
 # *****************************************************************************
 class_name ITabPhysical
 extends MarginContainer
-const SCENE := "res://public/ui_main/itab_physical.tscn"
+const SCENE := "res://public/ui/itab_physical.tscn"
 
 
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL

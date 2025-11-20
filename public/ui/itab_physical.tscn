@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b0phrvqurbyl3"]
 
-[ext_resource type="Script" uid="uid://btbscvk5cf3ga" path="res://public/ui_main/itab_physical.gd" id="1_nm23w"]
-[ext_resource type="PackedScene" uid="uid://gx25hb7eiwyc" path="res://public/ui_main/tab_resources.tscn" id="2_0p2yf"]
+[ext_resource type="Script" uid="uid://btbscvk5cf3ga" path="res://public/ui/itab_physical.gd" id="1_nm23w"]
+[ext_resource type="PackedScene" uid="uid://gx25hb7eiwyc" path="res://public/ui/tab_resources.tscn" id="2_0p2yf"]
 
 [node name="Physical" type="MarginContainer"]
 offset_left = 7.0

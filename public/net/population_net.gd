@@ -14,8 +14,6 @@ extends RefCounted
 #
 # Arrays indexed by population_type unless noted otherwise.
 
-const ivutils := preload("res://addons/ivoyager_core/static/utils.gd")
-const utils := preload("res://public/static/utils.gd")
 
 # All data flows server -> interface.
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -40,6 +38,7 @@ static var _is_class_instanced := false
 
 
 func _init(is_new := false, is_facility_ := false) -> void:
+	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_n_populations = _table_n_rows[&"populations"]
@@ -48,14 +47,14 @@ func _init(is_new := false, is_facility_ := false) -> void:
 		_carrying_capacity_group2s = _table_populations[&"carrying_capacity_group2"]
 	if !is_new: # game load
 		return
-	_numbers = ivutils.init_array(_n_populations, 0.0, TYPE_FLOAT)
-	_history_numbers = ivutils.init_array(_n_populations, [] as Array[float], TYPE_ARRAY)
+	_numbers = arrays.init_array(_n_populations, 0.0, TYPE_FLOAT)
+	_history_numbers = arrays.init_array(_n_populations, [] as Array[float], TYPE_ARRAY)
 	if !is_facility_:
 		return
 	_is_facility = true
 	_intrinsic_growths = _numbers.duplicate()
 	var n_carrying_capacity_groups: int = _table_n_rows.carrying_capacity_groups
-	_carrying_capacities = ivutils.init_array(n_carrying_capacity_groups, 0.0, TYPE_FLOAT)
+	_carrying_capacities = arrays.init_array(n_carrying_capacity_groups, 0.0, TYPE_FLOAT)
 	_migration_pressures = _numbers.duplicate()
 
 
@@ -63,6 +62,7 @@ func _init(is_new := false, is_facility_ := false) -> void:
 
 
 func get_number(type := -1) -> float:
+	const utils := preload("uid://bxjs8bk7ksxr2")
 	if type == -1:
 		return utils.get_float_array_sum(_numbers)
 	return _numbers[type]

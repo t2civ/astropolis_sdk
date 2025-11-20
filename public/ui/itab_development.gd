@@ -9,7 +9,7 @@ class_name ITabDevelopment
 extends MarginContainer
 
 
-const SCENE := "res://public/ui_main/itab_development.tscn"
+const SCENE := "res://public/ui/itab_development.tscn"
 
 const BodyFlags := IVBody.BodyFlags
 const BodyFlags2 := Enums.BodyFlags2

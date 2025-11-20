@@ -9,7 +9,7 @@ class_name InfoPanel
 extends PanelContainer
 
 
-const SCENE := "res://public/ui_main/info_panel.tscn"
+const SCENE := "res://public/ui/info_panel.tscn"
 
 # TODO: We could move clone logic here now that self referencing is ok.
 
@@ -36,7 +36,6 @@ var selection_manager: SelectionManager
 var is_pinned := false
 
 var _build_subpanels := false
-var _selection: IVSelection
 
 @onready var _header_label: Label = $HeaderLabel
 
@@ -60,7 +59,6 @@ func _ready() -> void:
 
 func _clear_procedural() -> void:
 	selection_manager = null
-	_selection = null
 
 
 func set_build_subpanels(build_subpanels: bool) -> void:

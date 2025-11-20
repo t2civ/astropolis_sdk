@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c6r8oclclur5a"]
 
-[ext_resource type="Script" uid="uid://8wl38lvy1qbe" path="res://public/ui_main/itab_markets.gd" id="1"]
+[ext_resource type="Script" uid="uid://8wl38lvy1qbe" path="res://public/ui/itab_markets.gd" id="1"]
 
 [node name="Markets" type="MarginContainer"]
 offset_left = 7.0

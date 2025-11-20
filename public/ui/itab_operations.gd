@@ -7,7 +7,7 @@
 # *****************************************************************************
 class_name ITabOperations
 extends MarginContainer
-const SCENE := "res://public/ui_main/itab_operations.tscn"
+const SCENE := "res://public/ui/itab_operations.tscn"
 
 # Tabs follow row enumerations in op_classes.tsv.
 # TODO: complete localizations

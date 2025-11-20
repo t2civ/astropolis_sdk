@@ -1,13 +1,13 @@
-# itab_budget.gd
+# itab_build.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name ITabBudget
+class_name ITabBuild
 extends MarginContainer
-const SCENE := "res://public/ui_main/itab_budget.tscn"
+const SCENE := "res://public/ui/itab_build.tscn"
 
 
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
