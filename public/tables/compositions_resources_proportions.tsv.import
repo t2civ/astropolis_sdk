@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://d04f3752hv3de"
+path="res://.godot/imported/compositions_resources_proportions.tsv-37b307e02b1c832f2a50fcb85d72c9f7.tres"
+
+[deps]
+
+source_file="res://public/tables/compositions_resources_proportions.tsv"
+dest_files=["res://.godot/imported/compositions_resources_proportions.tsv-37b307e02b1c832f2a50fcb85d72c9f7.tres"]
+
+[params]
+

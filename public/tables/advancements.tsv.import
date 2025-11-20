@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://t2sthucsxis3"
+path="res://.godot/imported/advancements.tsv-c707d9cebf06277c5024e2db7e6af511.tres"
+
+[deps]
+
+source_file="res://public/tables/advancements.tsv"
+dest_files=["res://.godot/imported/advancements.tsv-c707d9cebf06277c5024e2db7e6af511.tres"]
+
+[params]
+

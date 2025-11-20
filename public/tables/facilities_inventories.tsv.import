@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://c56ggjw22ltqi"
+path="res://.godot/imported/facilities_inventories.tsv-a173ffe04dc883a0493401d90860d7fd.tres"
+
+[deps]
+
+source_file="res://public/tables/facilities_inventories.tsv"
+dest_files=["res://.godot/imported/facilities_inventories.tsv-a173ffe04dc883a0493401d90860d7fd.tres"]
+
+[params]
+

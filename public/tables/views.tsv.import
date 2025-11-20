@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://bsbi51hqo22vo"
+path="res://.godot/imported/views.tsv-33825a0598274af5486eca51bd8478fb.tres"
+
+[deps]
+
+source_file="res://public/tables/views.tsv"
+dest_files=["res://.godot/imported/views.tsv-33825a0598274af5486eca51bd8478fb.tres"]
+
+[params]
+

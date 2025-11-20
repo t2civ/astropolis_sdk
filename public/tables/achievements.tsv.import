@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://dmf877n300f3p"
+path="res://.godot/imported/achievements.tsv-1c017e86f8356a70aa1f1bbce09fd32d.tres"
+
+[deps]
+
+source_file="res://public/tables/achievements.tsv"
+dest_files=["res://.godot/imported/achievements.tsv-1c017e86f8356a70aa1f1bbce09fd32d.tres"]
+
+[params]
+
