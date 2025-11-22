@@ -75,11 +75,10 @@ func _update_selection(_dummy := false) -> void:
 	# Main thread
 	if _is_busy:
 		return
-	var selection := _selection_manager.get_selection()
-	if !selection:
+	if not _selection_manager.has_selection():
 		return
 	_is_busy = true
-	var body_name := selection.get_body_name()
+	var body_name := _selection_manager.get_body_name()
 	MainThreadGlobal.call_ai_thread(_set_selections_on_ai_thread.bind(body_name))
 
 
@@ -192,4 +191,4 @@ func _update_foldable(index: int) -> void:
 
 func _on_pressed(button: Button) -> void:
 	var selection_name := _selection_lookup[button.text]
-	_selection_manager.select_prefer_facility(selection_name)
+	_selection_manager.select_by_name(selection_name)

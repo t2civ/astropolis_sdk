@@ -48,7 +48,7 @@ func _update_no_development(has_stats: bool) -> void:
 func _update_selection(_dummy := false) -> void:
 	if !visible or !IVStateManager.running:
 		return
-	var selection_name := _selection_manager.get_selection_name()
+	var selection_name := _selection_manager.get_name()
 	if !selection_name:
 		return
 	# Selection is either a Facility or Body. It's a Facility if user selected

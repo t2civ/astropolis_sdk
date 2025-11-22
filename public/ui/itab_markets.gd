@@ -158,7 +158,7 @@ func _update_tab(_suppress_camera_move := false) -> void:
 		_tab_container.show()
 		return
 		
-	var target_name := _selection_manager.get_selection_name()
+	var target_name := _selection_manager.get_name()
 	var interface := MainThreadGlobal.get_interface_by_name(target_name)
 	if !interface:
 		_update_no_markets()

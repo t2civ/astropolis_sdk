@@ -48,7 +48,7 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	# Modified from I, Voyager: this could be an "up" selection from a facility
 	var body_name := _selection_manager.get_body_name()
-	if body_name != _selection_manager.get_selection_name():
+	if body_name != _selection_manager.get_name():
 		_selection_manager.select_by_name(body_name)
 		return
 	# End modification

@@ -27,11 +27,10 @@ func _on_system_tree_ready(_is_new_game: bool) -> void:
 func _pin_info_panel(info_panel: InfoPanel) -> void:
 	print("Pin InfoPanel")
 
-	# clone selection_manager (clone will be non-listening)
+	# clone selection_manager (clone doesn't get shortcut input)
 	var selection_manager: SelectionManager = info_panel.selection_manager
 	var sm_clone: SelectionManager = SelectionManager.new()
 	sm_clone.set_selection_and_history(selection_manager.get_selection_and_history())
-	sm_clone.is_action_listener = false
 
 	# clone subpanel tree w/ persist properties
 	var itc: InfoTabContainer = info_panel.get_node("InfoTabMargin/InfoTabContainer")
@@ -56,7 +55,6 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	# build the tree
 	var astro_gui: AstropolisGUI = IVGlobal.program[&"AstropolisGUI"]
 	astro_gui.add_child(panel_clone)
-	panel_clone.add_child(sm_clone)
 	panel_clone.add_child(itm_clone)
 	# TODO: Smarter positioning of cloned panel
 	panel_clone.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_KEEP_SIZE)
