@@ -28,7 +28,8 @@ func _init() -> void:
 	AIBus.verbose = AI_VERBOSE
 	AIBus.verbose2 = AI_VERBOSE2
 	IVCoreSettings.use_threads = USE_THREADS
-	IVCoreSettings.start_time = 10.0 * IVUnits.YEAR
+	IVCoreSettings.start_time_date_clock = [2025, 1, 1, 12, 0, 0]
+	IVCoreSettings.start_time_is_terrestrial_time = false
 	
 	# changed classes
 	IVCoreInitializer.program_refcounteds[&"InfoCloner"] = InfoCloner
@@ -113,7 +114,6 @@ func _on_program_objects_instantiated() -> void:
 	# program object changes
 	
 	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
-	timekeeper.date_format = IVTimekeeper.DateFormat.DATE_FORMAT_Y_M_D_Q_YQ_YM
 	timekeeper.start_speed = 0
 	
 #	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
