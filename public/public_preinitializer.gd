@@ -113,12 +113,10 @@ func _on_data_tables_postprocessed() -> void:
 func _on_program_objects_instantiated() -> void:
 	# program object changes
 	
-	var timekeeper: IVTimekeeper = IVGlobal.program.Timekeeper
-	timekeeper.start_speed = 0
+	var speed_manager: IVSpeedManager = IVGlobal.program.SpeedManager
+	speed_manager.start_speed = 0
 	
-#	var model_builder: IVModelBuilder = IVGlobal.program.ModelBuilder
-#	model_builder.model_tables.append("spacecrafts")
-	
+
 	
 	# table additions (subtables, re-indexings, or other useful table items)
 	var db_tables := IVTableData.db_tables

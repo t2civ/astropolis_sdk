@@ -14,8 +14,7 @@ extends IVSelectionManager
 
 
 static func _static_init() -> void:
-	_create_subclass = SelectionManager
-
+	replacement_subclass = SelectionManager
 
 
 
