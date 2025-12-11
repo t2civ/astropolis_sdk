@@ -125,11 +125,11 @@ var use_this_ai := false # read-only
 static var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 
 @warning_ignore("unused_private_class_variable")
-static var _times: Array = IVGlobal.times # [time (s, J2000), engine_time (s), solar_day (d)] (floats)
+static var _times: Array = IVGlobal.times
 @warning_ignore("unused_private_class_variable")
-static var _date: Array = IVGlobal.date # Gregorian [year, month, day] (ints)
+static var _date: Array = IVGlobal.date
 @warning_ignore("unused_private_class_variable")
-static var _clock: Array = IVGlobal.clock # UT [hour, minute, second] (ints)
+static var _clock: Array = IVGlobal.clock
 @warning_ignore("unused_private_class_variable")
 static var _db_tables := IVTableData.db_tables
 @warning_ignore("unused_private_class_variable")
