@@ -8,12 +8,16 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Astropolis SDK"
 config/version="0.0.6"
 run/main_scene="uid://y7dhw1cn7iu"
-config/features=PackedStringArray("4.5")
+config/features=PackedStringArray("4.6")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://public/astropolis-icon-128.png"
@@ -23,24 +27,26 @@ icon="res://jupiter-icon-128.png"
 
 [autoload]
 
-IVUnits="*res://public/singletons/units.gd"
-IVQConvert="*res://addons/ivoyager_units/qconvert.gd"
-IVQFormat="*res://addons/ivoyager_units/qformat.gd"
-IVTableData="*res://addons/ivoyager_tables/table_data.gd"
-IVSave="*res://addons/ivoyager_save/save.gd"
-IVAstronomy="*res://addons/ivoyager_core/editor/../singletons/astronomy.gd"
-IVGlobal="*res://addons/ivoyager_core/editor/../singletons/global.gd"
-IVCoreSettings="*res://addons/ivoyager_core/editor/../singletons/core_settings.gd"
-IVCoreInitializer="*res://addons/ivoyager_core/editor/../singletons/core_initializer.gd"
-IVSettingsManager="*res://addons/ivoyager_core/editor/../singletons/settings_manager.gd"
-IVStateManager="*res://addons/ivoyager_core/editor/../singletons/state_manager.gd"
-ThreadsafeGlobal="*res://public/singletons/threadsafe_global.gd"
-MainThreadGlobal="*res://public/singletons/main_thread_global.gd"
+IVUnits="*uid://v6mo5lufq6qb"
+IVQConvert="*uid://c8hrxn2mc6635"
+IVQFormat="*uid://b6qll4nfpigux"
+IVTableData="*uid://kimqfyyqxcfo"
+IVSave="*uid://kbxq8bdqtdhn"
+IVAstronomy="*uid://g2r1xgmex1as"
+IVGlobal="*uid://dlo5sdgqt41do"
+IVCoreSettings="*uid://q3dwrk3lnx0f"
+IVCoreInitializer="*uid://chh7oxyc16wm0"
+IVSettingsManager="*uid://b8tkwtacbefl6"
+IVStateManager="*uid://dfigrpveqtlg2"
+ThreadsafeGlobal="*uid://bp7ff1a7mxpeg"
+MainThreadGlobal="*uid://chrgypyaklpov"
 
 [debug]
 
 file_logging/enable_file_logging=true
-gdscript/warnings/exclude_addons=false
+gdscript/warnings/directory_rules={
+"res://addons": 1
+}
 gdscript/warnings/unused_signal=false
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/unsafe_property_access=1
