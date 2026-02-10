@@ -1,15 +1,20 @@
-# I, Voyager project ignores:
+# Astropolis SDK .gitignore (whitelist format)
 
-/.godot/
-export.cfg
-export_presets.cfg
+# ignore everything
+*
+
+# whitelist
+!addons/**
+!public/**
+!.gitattributes
+!.gitignore
+!.gitmodules
+!.ivoyager_override.cfg
+!LICENCE.txt
+!project.godot
+!README.md
+
+# ignore in whitelist
+addons/ivoyager_assets/
 *.translation
-/addons/ivoyager_assets/
-/export/
 ~*
-
-# Astropolis SDK:
-override.cfg
-ivoyager_override2.cfg
-/assets/
-/core/
