@@ -76,6 +76,7 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="MainMenuBasePopup" parent="TopUI" unique_id=1771413689 instance=ExtResource("7_uuhop")]
+position = Vector2i(0, 0)
 size = Vector2i(182, 100)
 
 [node name="QuicksaveButton" parent="TopUI/MainMenuBasePopup" unique_id=1771438481 instance=ExtResource("11_xcwwf")]
