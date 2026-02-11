@@ -596,17 +596,6 @@ Per 1 MW generation we have in t/h:
 
 (Ignoring NOx, etc.)
 
-#### OPERATION_ETHANOL_POWER
-
-Per [AI Chat](https://github.com/t2civ/astropolis_sdk/blob/master/public/tables/README_AI_CHATS.md#Combustion-Power) we have:
-* 1.00 Ethanol + 2.09 O2 -> 1.91 CO2 + 1.17 H2O (by weight)
-* 8.26 MWh/tonne heat.
-* Efficiencies 30-50%; average 35-40%. Assume 37%.
-
-Per 1 MW generation we have in t/h:
-* inputs: 0.327 Ethanol, 0.684 O2
-* outputs: 0.627 CO2, 0.384 H2O
-
 #### OPERATION_HYDROGEN_POWER
 
 AKA, fuel cells. This isn't added yet because it isn't important for Earth economy. But it will be a significant power source in a space economy.
