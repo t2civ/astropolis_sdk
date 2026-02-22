@@ -159,7 +159,10 @@ static func deduct_weighted_float_arrays(base: Array[Array], base_weights: Array
 				base[i][j] = (base[i][j] * base_weights[i] - deduct[i][j] * deduct_weights[i]) / divisor
 
 
-static func normalize_float_array(array: Array[float], normalized_sum: float) -> void:
+## If [param error_inf] is set, zero-sum condition is indicated by INF at index
+## 0 (only). Default behavior is to return a zero-sum array unchanged.
+static func normalize_float_array(array: Array[float], normalized_sum := 1.0,
+		error_inf := false) -> void:
 	# if array sums to 0.0, returns an array of INF values
 	var sum := 0.0
 	var size := array.size()
@@ -168,7 +171,8 @@ static func normalize_float_array(array: Array[float], normalized_sum: float) ->
 		sum += array[i]
 		i += 1
 	if sum == 0.0:
-		array.fill(INF) # test array[0] == INF for failure
+		if error_inf:
+			array[0] = INF # test array[0] == INF for zero sum condition
 		return
 	var multiplier := normalized_sum / sum
 	i = 0

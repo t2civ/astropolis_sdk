@@ -24,7 +24,7 @@ extends RefCounted
 # from data table values (which are assumed to be public estimations).
 #
 # All resource indexing here is for the 'is_extraction == true' subset.
-# Arrays are never resized after init, so they are threadsafe to read.
+# Arrays are threadsafe (they are never resized after init).
 # All Composition data flows server -> interface.
 
 enum { # _dirty bit flags
@@ -38,26 +38,28 @@ enum { # _dirty bit flags
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 var compositions_index := -1
 var name: StringName
-var stratum_type := -1 # strata.tsv
+var stratum_group := -1 # stratum_groups.tsv
 var polity_name: StringName # "" for commons
 
 var body_radius := 0.0 # same as Body.m_radius
 var outer_radius := 0.0 # could be > body_radius (e.g., atmosphere)
-var thickness := 0.0 # of the strata, =body_radius for undifferentiated body
+var thickness := 0.0 # =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
 var density := 0.0
 
 var masses: Array[float]
-var variances: Array[float] # spatial heterogeneity; this is good for mining!
+var masses_cv: Array[float]
+var dispersions: Array[float] # spatial heterogeneity; good for mining!
+var dispersions_cv: Array[float]
 
 var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
 
 var is_atmosphere: bool # from strata.tsv
 
-# derive as needed
+# derive when needed
 var _volume := 0.0
 var _total_mass := 0.0
-var _needs_volume_mass_calculation := true
+var _dirty_volume_mass := true
 
 var _sync := SyncHelper.new()
 
@@ -71,6 +73,7 @@ static var _survey_mass_errors: Array[float]
 static var _survey_deposits_sigma: Array[float]
 static var _res_mass_err_mult: Array[float]
 static var _is_class_instanced := false
+static var _n_extraction_resources: int
 
 
 # TODO: Operations/Extractions organized by strata
@@ -89,12 +92,14 @@ func _init(is_new := false, _is_server := false) -> void:
 		_survey_mass_errors = _db_tables[&"surveys"][&"mass_error"]
 		_survey_deposits_sigma = _db_tables[&"surveys"][&"deposits_sigma"]
 		_res_mass_err_mult = _db_tables[&"resources"][&"mass_err_mult"]
+		_n_extraction_resources = _extraction_resources.size()
 		
 	if !is_new: # loaded game
 		return
-	var n_is_extraction_resources := _extraction_resources.size()
-	masses = arrays.init_array(n_is_extraction_resources, 0.0, TYPE_FLOAT)
-	variances = masses.duplicate()
+	masses = arrays.init_array(_n_extraction_resources, 0.0, TYPE_FLOAT)
+	masses_cv = masses.duplicate()
+	dispersions = masses.duplicate()
+	dispersions_cv = masses.duplicate()
 
 # ********************************** READ *************************************
 # all threadsafe
@@ -112,14 +117,14 @@ func is_whole_area() -> bool:
 
 
 func get_volume() -> float:
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
+	if _dirty_volume_mass:
+		reset_volume_mass()
 	return _volume
 
 
 func get_total_mass() -> float:
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
+	if _dirty_volume_mass:
+		reset_volume_mass()
 	return _total_mass
 
 
@@ -132,75 +137,52 @@ func get_mass(resource_type: int) -> float:
 func get_mass_fraction(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
+	if _dirty_volume_mass:
+		reset_volume_mass()
 	return masses[index] / _total_mass
 
 
-func get_variance(resource_type: int) -> float:
+func get_dispersion(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	return variances[index]
+	return dispersions[index]
 
 
-func get_variance_fraction(resource_type: int) -> float:
-	# Fractional variance vanishes as mass approaches 0 or 100% of the total
+## Return is [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits,
+## kn_deposits], where abundance and kn_deposits are fractions of 1.0 and
+## dispersion is in log10 units.
+## FIXME: kn_deposits = base_deposits for now. Needs survey_level adjustment.
+func get_resource_data(resource_type: int) -> Array[float]:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var mass: float = masses[index]
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
-	var p := mass / _total_mass
-	return variances[index] * p * (1.0 - p)
+	if _dirty_volume_mass:
+		reset_volume_mass()
+	var abundance := masses[index] / _total_mass
+	var abundance_sd := abundance * masses_cv[index]
+	var dispersion := dispersions[index]
+	var dispersion_sd := dispersion * dispersions_cv[index]
+	var base_deposits := minf(1.0, abundance * 10 ** dispersion)
+	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits, base_deposits]
 
 
-func get_density_error() -> float:
-	var error: float = _survey_density_errors[survey_type]
-	return density * error
-
-
-func get_mass_error(resource_type: int) -> float:
-	var index: int = _resource_extractions[resource_type]
-	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
-	return masses[index] * error
-
-
-func get_mass_error_fraction(resource_type: int) -> float:
-	# Fractional error vanishes as mass approaches 0 or 100% of the total
-	var index: int = _resource_extractions[resource_type]
-	assert(index != -1, "resource_type must have is_extraction == true")
-	var error: float = _survey_mass_errors[survey_type] * _res_mass_err_mult[resource_type]
-	var mass: float = masses[index]
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
-	var p := mass / _total_mass
-	return error * p * (1.0 - p)
-
-
-func get_deposit_boost(resource_type: int) -> float:
-	# Must have a boost from our survey AND variance
-	var index: int = _resource_extractions[resource_type]
-	assert(index != -1, "resource_type must have is_extraction == true")
-	return _survey_deposits_sigma[survey_type] * variances[index]
-
-
+# FIXME: Remove or update for changes
 func get_deposit_fraction(resource_type: int, zero_if_no_boost := false) -> float:
 	# Fictional concept, roughly related to scrape ratio at best known deposits.
 	# Max 1.0.
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var deposits_boost: float = _survey_deposits_sigma[survey_type] * variances[index]
+	var deposits_boost: float = _survey_deposits_sigma[survey_type] * dispersions[index]
 	if zero_if_no_boost and deposits_boost == 0.0:
 		return 0.0 # allows hide in GUI if deposits would equal mass_fraction
 	var mass: float = masses[index]
-	if _needs_volume_mass_calculation:
-		calculate_volume_and_total_mass()
+	if _dirty_volume_mass:
+		reset_volume_mass()
 	var p := mass / _total_mass # mass fraction
 	var fractional_deposits := p + deposits_boost * p * (1.0 - p) # boost from p
 	return minf(fractional_deposits, 1.0)
 
 
+# FIXME: Remove or update for changes
 func get_deposits_fraction(resource_types: Array[int]) -> float:
 	# E.g., [methane_type, ethane_type, helium_type] for total 'gas' deposits.
 	# >1.0 possible but shouldn't happen for actual extraction subsets.
@@ -218,7 +200,7 @@ func set_network_init(data: Array) -> void:
 	# NOT reference-safe!
 	compositions_index = data[0]
 	name = data[1]
-	stratum_type = data[2]
+	stratum_group = data[2]
 	polity_name = data[3]
 	body_radius = data[4]
 	outer_radius = data[5]
@@ -226,9 +208,11 @@ func set_network_init(data: Array) -> void:
 	spherical_fraction = data[7]
 	density = data[8]
 	masses = data[9]
-	variances = data[10]
-	survey_type = data[11]
-	is_atmosphere = data[12]
+	masses_cv = data[10]
+	dispersions = data[11]
+	dispersions_cv = data[12]
+	survey_type = data[13]
+	is_atmosphere = data[14]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -254,22 +238,26 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		float_offset += 1
 		density = float_data[float_offset]
 		float_offset += 1
-		_needs_volume_mass_calculation = true
+		_dirty_volume_mass = true
 	if dirty & DIRTY_ESTIMATION:
 		survey_type = int_data[int_offset]
 		int_offset += 1
+		masses_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)
+		float_offset += _n_extraction_resources
+		dispersions_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)
+		float_offset += _n_extraction_resources
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(masses)
-	_sync.set_floats_dirty(variances)
+	_sync.set_floats_dirty(dispersions)
 
 # *****************************************************************************
 
-func calculate_volume_and_total_mass() -> void:
+func reset_volume_mass() -> void:
 	const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
 	var inner_radius := outer_radius - thickness
 	_volume = spherical_fraction * FOUR_THIRDS_PI * (
 			outer_radius * outer_radius * outer_radius
 			- inner_radius * inner_radius * inner_radius)
 	_total_mass = _volume * density
-	_needs_volume_mass_calculation = false
+	_dirty_volume_mass = false

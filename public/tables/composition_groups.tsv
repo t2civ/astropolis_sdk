@@ -1,0 +1,36 @@
+	is_atmosphere	is_deposits	#comments
+Type	BOOL	BOOL	
+Prefix/STRATUM_			
+# generics			
+BULK		x	i.e., undifferentiated
+ATMOSPHERE	x		
+SURFACE		x	
+REGOLITH		x	
+CRUST		x	
+UPPER_CRUST		x	
+LOWER_CRUST		x	
+MANTLE		x	
+UPPER_MANTLE		x	
+LOWER_MANTLE		x	
+MANTLE_CORE		x	
+CORE			
+OUTER_CORE			
+INNER_CORE			
+# likely body-specifics			
+OCEAN			
+OCEAN_FLOOR		x	
+OCEAN_CRUST		x	
+CONT_SURFACE		x	On Earth, 0-1 km (-0.8 km to 0.2 km from ref sea level)
+CONT_SURFACE_ANTARCTICA		x	
+CONT_SUBSURF		x	On Earth, 1-5 km
+CONT_SUBSURF_ANTARCTICA		x	
+CONT_DEEP		x	On Earth, 5-9 km
+CONT_DEEP_ANTARCTICA		x	
+CONT_ULTRA_DEEP		x	On Earth, 9 to 19 km
+CONT_ULTRA_DEEP_ANTARCTICA		x	
+CONT_EXTREME_DEEP		x	On Earth, 19 to 29 km
+CONT_EXTREME_DEEP_ANTARCTICA		x	
+CONT_LOWER_CRUST		x	On Earth 29 to 41 km
+POLAR_SHADED_REGOLITH		x	Lunar PSR; assuming 0.001 surface area (~40000 km^2)
+CRUST_TERRAE		x	Lunar highlands
+CRUST_MARIA		x	Lunar seas

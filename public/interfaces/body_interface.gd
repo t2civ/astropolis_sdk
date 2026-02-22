@@ -202,7 +202,7 @@ func get_composition_density(index: int) -> float:
 
 
 func get_composition_stratum_type(index: int) -> int:
-	return compositions[index].stratum_type
+	return compositions[index].stratum_group
 
 
 func get_compostion_thickness(index: int) -> float:
@@ -226,29 +226,16 @@ func get_composition_masses(index: int) -> Array[float]:
 	return compositions[index].masses
 
 
-func get_composition_variances(index: int) -> Array[float]:
-	return compositions[index].variances
+func get_composition_dispersions(index: int) -> Array[float]:
+	return compositions[index].dispersions
 
 
 func get_composition_survey_type(index: int) -> int:
 	return compositions[index].survey_type
 
 
-func get_composition_mass_error_fraction(index: int, resource_type: int) -> float:
-	return compositions[index].get_mass_error_fraction(resource_type)
-
-
-func get_composition_variance(index: int, resource_type: int) -> float:
-	return compositions[index].get_variance(resource_type)
-
-
-func get_composition_variance_fraction(index: int, resource_type: int) -> float:
-	return compositions[index].get_variance_fraction(resource_type)
-
-
-func get_composition_deposit_fraction(index: int, resource_type: int, zero_if_no_boost := false
-		) -> float:
-	return compositions[index].get_deposit_fraction(resource_type, zero_if_no_boost)
+func get_composition_resource_data(index: int, resource_type: int) -> Array[float]:
+	return compositions[index].get_resource_data(resource_type)
 
 
 # *****************************************************************************

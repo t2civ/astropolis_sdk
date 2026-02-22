@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://ckoldddnw63u1"
+path="res://.godot/imported/composition_groups.tsv-23d151cdcdb624c9e7adffbc47d35784.tres"
+
+[deps]
+
+source_file="res://public/tables/composition_groups.tsv"
+dest_files=["res://.godot/imported/composition_groups.tsv-23d151cdcdb624c9e7adffbc47d35784.tres"]
+
+[params]
+
