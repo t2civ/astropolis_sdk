@@ -1,22 +1,20 @@
-# composition_net.gd
+# stratum_net.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name CompositionNet
+class_name StratumNet
 extends RefCounted
 
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
 # will be removed.
 #
-# This is a replacement (NOT a subclass) for I, Voyager's IVComposition class.
-#
-# A Body can have any number of Compositions, each representing a geological
-# layer and/or polity territory. A spacecraft Body will have 0 Compositions.
-# The vast majority of asteroids will have one (undifferentiated) Composition.
+# A Body can have any number of Strata, each representing a geological
+# layer and/or polity territory. A spacecraft Body will have 0 Strata.
+# The vast majority of asteroids will have one (undifferentiated) Stratum.
 #
 # AI and GUI have access to estimated values only; server has actual.
 # This component is different than others because it syncs offset values to
@@ -25,18 +23,18 @@ extends RefCounted
 #
 # All resource indexing here is for the 'is_extraction == true' subset.
 # Arrays are threadsafe (they are never resized after init).
-# All Composition data flows server -> interface.
+# All Stratum data flows server -> interface.
 
 enum { # _dirty bit flags
 	DIRTY_HEADERS = 1,
 	DIRTY_STRATUM = 1 << 1,
-	DIRTY_ESTIMATION = 1 << 2,
+	DIRTY_SURVEY = 1 << 2,
 }
 
 
 
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
-var compositions_index := -1
+var strata_index := -1
 var name: StringName
 var stratum_group := -1 # stratum_groups.tsv
 var polity_name: StringName # "" for commons
@@ -198,7 +196,7 @@ func get_deposits_fraction(resource_types: Array[int]) -> float:
 
 func set_network_init(data: Array) -> void:
 	# NOT reference-safe!
-	compositions_index = data[0]
+	strata_index = data[0]
 	name = data[1]
 	stratum_group = data[2]
 	polity_name = data[3]
@@ -239,7 +237,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		density = float_data[float_offset]
 		float_offset += 1
 		_dirty_volume_mass = true
-	if dirty & DIRTY_ESTIMATION:
+	if dirty & DIRTY_SURVEY:
 		survey_type = int_data[int_offset]
 		int_offset += 1
 		masses_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)

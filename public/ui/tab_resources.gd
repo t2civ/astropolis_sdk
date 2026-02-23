@@ -33,7 +33,7 @@ var _body_name: StringName
 var _selection_name: StringName
 var _memory := {} # keep open/closed states
 
-@onready var _compositions_vbox: VBoxContainer = %CompositionsVBox
+@onready var _strata_vbox: VBoxContainer = %StrataVBox
 @onready var _missing_label: Label = $MissingLabel
 
 
@@ -71,38 +71,38 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		_update_no_resources.call_deferred()
 		return
 	
-	if !body_interface.has_compositions():
+	if !body_interface.has_strata():
 		var is_unknown := not body_interface.body_flags & BODYFLAGS_SPACECRAFT
 		_update_no_resources.call_deferred(is_unknown)
 		return
 	
-	var composition_polities := []
+	var stratum_polities := []
 	var open_at_init: Array[bool] = []
 	
-	var n_compositions := body_interface.get_n_compositions()
+	var n_strata := body_interface.get_n_strata()
 
-	for i in n_compositions:
-		var composition_polity := body_interface.get_composition_polity(i)
-		if polity_name and composition_polity and polity_name != composition_polity:
+	for i in n_strata:
+		var stratum_polity := body_interface.get_stratum_polity(i)
+		if polity_name and stratum_polity and polity_name != stratum_polity:
 			continue
 		var init_open: bool
-		if !composition_polities.has(composition_polity):
-			composition_polities.append(composition_polity)
-			init_open = polity_name == composition_polity # "" == "" at body for commons
+		if !stratum_polities.has(stratum_polity):
+			stratum_polities.append(stratum_polity)
+			init_open = polity_name == stratum_polity # "" == "" at body for commons
 			open_at_init.append(init_open)
-		var masses := body_interface.get_composition_masses(i)
-		#var dispersions := body_interface.get_composition_dispersions(i)
-		var total_mass := body_interface.get_composition_total_mass(i)
-		var survey_type := body_interface.get_composition_survey_type(i)
+		var masses := body_interface.get_stratum_masses(i)
+		#var dispersions := body_interface.get_stratum_dispersions(i)
+		var total_mass := body_interface.get_stratum_total_mass(i)
+		var survey_type := body_interface.get_stratum_survey_type(i)
 		
 		var resources_data := []
-		# Composition resource indexes must be converted to resource_type.
+		# Stratum resource indexes must be converted to resource_type.
 		for j in _n_is_extraction_resources:
 			var mass: float = masses[j]
 			if mass == 0.0:
 				continue
 			var resource_type: int = _is_extraction_resources[j]
-			var distribution_data := body_interface.get_composition_resource_data(i, resource_type)
+			var distribution_data := body_interface.get_stratum_resource_data(i, resource_type)
 			var resource_data := [resource_type, distribution_data]
 			resources_data.append(resource_data)
 		
@@ -113,23 +113,23 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			survey_name = _survey_names[survey_type]
 		
 		init_open = true
-		var composition_name := body_interface.get_composition_name(i)
-		var composition_type: int = _stratum_types.get(composition_name, -1)
-		if composition_type != -1:
-			init_open = _init_opens[composition_type]
+		var stratum_name := body_interface.get_stratum_name(i)
+		var stratum_type: int = _stratum_types.get(stratum_name, -1)
+		if stratum_type != -1:
+			init_open = _init_opens[stratum_type]
 		
 		resources_data.append(total_mass)
-		resources_data.append(body_interface.get_composition_density(i))
+		resources_data.append(body_interface.get_stratum_density(i))
 		resources_data.append(body_interface.get_compostion_thickness(i))
 		resources_data.append(body_interface.get_compostion_body_radius(i))
 		resources_data.append(survey_name)
-		resources_data.append(body_interface.get_composition_stratum_type(i))
+		resources_data.append(body_interface.get_stratum_stratum_type(i))
 		resources_data.append(init_open)
-		resources_data.append(composition_polity)
+		resources_data.append(stratum_polity)
 		
 		data.append(resources_data)
 	
-	_update_display.call_deferred(selection_name, composition_polities, open_at_init, data)
+	_update_display.call_deferred(selection_name, stratum_polities, open_at_init, data)
 
 
 func _sort_resources(a: Array, b: Array) -> bool:
@@ -145,30 +145,30 @@ func _sort_resources(a: Array, b: Array) -> bool:
 # *****************************************************************************
 # Main thread !!!!
 
-func _update_display(selection_name: StringName, composition_polities: Array,
+func _update_display(selection_name: StringName, stratum_polities: Array,
 		open_at_init: Array[bool], data: Array) -> void:
 
-	# TODO: Sort composition_polities in some sensible way
-	var n_polities := composition_polities.size()
-	var n_polity_vboxes := _compositions_vbox.get_child_count()
+	# TODO: Sort stratum_polities in some sensible way
+	var n_polities := stratum_polities.size()
+	var n_polity_vboxes := _strata_vbox.get_child_count()
 	
 	# add OwnerVBoxes as needed
 	while n_polity_vboxes < n_polities:
 		var polity_vbox := PolityVBox.new(_memory)
-		_compositions_vbox.add_child(polity_vbox)
+		_strata_vbox.add_child(polity_vbox)
 		n_polity_vboxes += 1
 
 	# set OwnerVBoxes we'll use & hide extras
 	var i := 0
 	while i < n_polities:
-		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
-		var polity_name: StringName = composition_polities[i]
+		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
+		var polity_name: StringName = stratum_polities[i]
 		var init_open: bool = open_at_init[i]
 		polity_vbox.set_vbox(selection_name, polity_name, init_open)
 		polity_vbox.show()
 		i += 1
 	while i < n_polity_vboxes:
-		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
+		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
 		polity_vbox.hide()
 		i += 1
 	
@@ -177,7 +177,7 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 	i = 0
 	while i < n_strata:
 		var resources_data: Array = data[i]
-		var composition_polity: StringName = resources_data.pop_back()
+		var stratum_polity: StringName = resources_data.pop_back()
 		var init_open: bool = resources_data.pop_back()
 		var stratum_group: int = resources_data.pop_back()
 		var survey_name: StringName = resources_data.pop_back()
@@ -194,24 +194,24 @@ func _update_display(selection_name: StringName, composition_polities: Array,
 		stratum_str += IVQFormat.fixed_unit(total_mass, &"t", 2) + "; "
 		stratum_str += tr(survey_name).to_lower() + ")"
 		
-		var polity_index := composition_polities.find(composition_polity)
-		var polity_vbox: PolityVBox = _compositions_vbox.get_child(polity_index)
+		var polity_index := stratum_polities.find(stratum_polity)
+		var polity_vbox: PolityVBox = _strata_vbox.get_child(polity_index)
 		polity_vbox.add_stratum(stratum_str, init_open, resources_data)
 		i += 1
 	
 	i = 0
 	while i < n_polities:
-		var polity_vbox: PolityVBox = _compositions_vbox.get_child(i)
+		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
 		polity_vbox.finish_strata()
 		i += 1
 	
 	_missing_label.hide()
-	_compositions_vbox.show()
+	_strata_vbox.show()
 
 
 
 func _update_no_resources(is_unknown := true) -> void:
-	_compositions_vbox.hide()
+	_strata_vbox.hide()
 	_missing_label.text = (&"LABEL_UNKNOWN_RESOURCES_PARENTHESIS" if is_unknown
 			else &"LABEL_NO_RESOURCES_PARENTHESIS")
 	_missing_label.show()

@@ -88,14 +88,9 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	
 	tables.strata = path_format % "strata"
 	tables.stratum_groups = path_format % "stratum_groups"
-	
-	#tables.compositions = path_format % "compositions"
-	#tables.composition_groups = path_format % "composition_groups"
-	
 	tables.surveys = path_format % "surveys"
 	tables.views = path_format % "views" # ivoyager replacement!
 	# primary table mods (modify existing ivoyager tables)
-	#tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
 	tables.planets_mod = path_format % "planets_mod"
 	tables.moons_mod = path_format % "moons_mod"
 	# entity x entity tables
@@ -104,12 +99,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.facilities_operations_capacity_factors = path_format % "facilities_operations_capacity_factors"
 	tables.facilities_operations_extractions = path_format % "facilities_operations_extractions"
 	tables.facilities_populations = path_format % "facilities_populations"
-	
 	tables.strata_resources = path_format % "strata_resources"
-	
-	#tables.compositions_resources_variances = path_format % "compositions_resources_variances"
-	#tables.compositions_resources_deposits = path_format % "compositions_resources_deposits"
-	#tables.compositions_resources_proportions = path_format % "compositions_resources_proportions"
 
 
 func _on_data_tables_postprocessed() -> void:
