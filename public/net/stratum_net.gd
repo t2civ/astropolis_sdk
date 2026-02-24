@@ -40,7 +40,7 @@ var stratum_group := -1 # stratum_groups.tsv
 var polity_name: StringName # "" for commons
 
 var body_radius := 0.0 # same as Body.m_radius
-var outer_radius := 0.0 # could be > body_radius (e.g., atmosphere)
+var inner_radius := 0.0 # 0.0 for undifferentiated body
 var thickness := 0.0 # =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
 var density := 0.0
@@ -101,18 +101,6 @@ func _init(is_new := false, _is_server := false) -> void:
 
 # ********************************** READ *************************************
 # all threadsafe
-
-func is_bulk() -> bool:
-	return outer_radius == thickness and spherical_fraction == 1.0
-
-
-func is_whole_depth() -> bool:
-	return outer_radius == thickness
-
-
-func is_whole_area() -> bool:
-	return spherical_fraction == 1.0
-
 
 func get_volume() -> float:
 	if _dirty_volume_mass:
@@ -200,7 +188,7 @@ func set_network_init(data: Array) -> void:
 	stratum_group = data[2]
 	polity_name = data[3]
 	body_radius = data[4]
-	outer_radius = data[5]
+	inner_radius = data[5]
 	thickness = data[6]
 	spherical_fraction = data[7]
 	density = data[8]
@@ -227,7 +215,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_STRATUM:
 		body_radius = float_data[float_offset]
 		float_offset += 1
-		outer_radius = float_data[float_offset]
+		inner_radius = float_data[float_offset]
 		float_offset += 1
 		thickness = float_data[float_offset]
 		float_offset += 1
@@ -252,7 +240,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 func reset_volume_mass() -> void:
 	const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
-	var inner_radius := outer_radius - thickness
+	var outer_radius := inner_radius + thickness
 	_volume = spherical_fraction * FOUR_THIRDS_PI * (
 			outer_radius * outer_radius * outer_radius
 			- inner_radius * inner_radius * inner_radius)
