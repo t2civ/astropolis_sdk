@@ -31,6 +31,9 @@ enum { # _dirty bit flags
 	DIRTY_SURVEY = 1 << 2,
 }
 
+const MIN_EXTRACTION_SURVEY_LEVEL := 2.5 # Min for discovered; any extraction boosts to this level
+const BASE_EXTRACTION_SURVEY_LEVEL := 4.0 # at this, discovered = abundance * 10 ** eff_dispersion
+const DISPERSION_SURVEY_MULTIPLIER := 1.0 / BASE_EXTRACTION_SURVEY_LEVEL
 
 
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -50,7 +53,8 @@ var masses_cv: Array[float]
 var dispersions: Array[float] # spatial heterogeneity; good for mining!
 var dispersions_cv: Array[float]
 
-var survey_type := -1 # surveys.tsv, table errors give estimation uncertainties
+var survey_level := 0.0
+var survey_type := -1 # surveys.tsv
 
 var is_atmosphere: bool # from strata.tsv
 
@@ -135,9 +139,8 @@ func get_dispersion(resource_type: int) -> float:
 
 
 ## Return is [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits,
-## kn_deposits], where abundance and kn_deposits are fractions of 1.0 and
+## discovered], where abundance and discovered are fractions of 1.0 and
 ## dispersion is in log10 units.
-## FIXME: kn_deposits = base_deposits for now. Needs survey_level adjustment.
 func get_resource_data(resource_type: int) -> Array[float]:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
@@ -148,7 +151,11 @@ func get_resource_data(resource_type: int) -> Array[float]:
 	var dispersion := dispersions[index]
 	var dispersion_sd := dispersion * dispersions_cv[index]
 	var base_deposits := minf(1.0, abundance * 10 ** dispersion)
-	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits, base_deposits]
+	var discovered := 0.0
+	if survey_level >= MIN_EXTRACTION_SURVEY_LEVEL:
+		var eff_dispersion := dispersion * survey_level * DISPERSION_SURVEY_MULTIPLIER
+		discovered = minf(1.0, abundance * 10 ** eff_dispersion)
+	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits, discovered]
 
 
 func get_base_deposit(resource_type: int) -> float:
@@ -162,8 +169,16 @@ func get_base_deposit(resource_type: int) -> float:
 
 
 func get_discovered(resource_type: int) -> float:
-	# FIXME: discovered == base_deposits for now. Needs survey_level adjustment.
-	return get_base_deposit(resource_type)
+	# Same as get_base_deposit() if survey_level == BASEBASE_EXTRACTION_SURVEY_LEVEL.
+	if survey_level < MIN_EXTRACTION_SURVEY_LEVEL:
+		return 0.0
+	var index: int = _resource_extractions[resource_type]
+	assert(index != -1, "resource_type must have is_extraction == true")
+	if _dirty_volume_mass:
+		reset_volume_mass()
+	var abundance := masses[index] / _total_mass
+	var eff_dispersion := dispersions[index] * survey_level * DISPERSION_SURVEY_MULTIPLIER
+	return minf(1.0, abundance * 10 ** eff_dispersion)
 
 
 func get_max_discovered(resource_types: Array[int]) -> float:
@@ -196,8 +211,9 @@ func set_network_init(data: Array) -> void:
 	masses_cv = data[10]
 	dispersions = data[11]
 	dispersions_cv = data[12]
-	survey_type = data[13]
-	is_atmosphere = data[14]
+	survey_level = data[13]
+	survey_type = data[14]
+	is_atmosphere = data[15]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -225,6 +241,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		float_offset += 1
 		_dirty_volume_mass = true
 	if dirty & DIRTY_SURVEY:
+		survey_level = float_data[float_offset]
+		float_offset += 1
 		survey_type = int_data[int_offset]
 		int_offset += 1
 		masses_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)

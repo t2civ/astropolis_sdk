@@ -15,6 +15,7 @@ const STRATUM_OPEN_PREFIX := "  \u2304 "
 const STRATUM_CLOSED_PREFIX := "  > "
 const RESOURCE_INDENT := "        "
 const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
+const MIN_DISCOVERED_BOOST := 1.1 # Don't show unless this much better than mean
 
 
 var _db_tables := IVTableData.db_tables
@@ -367,7 +368,9 @@ class StratumVBox extends VBoxContainer:
 			var mean_sd := distribution_data[1] * 100
 			var dispersion := distribution_data[2]
 			var dispersion_sd := distribution_data[3]
-			var discovered := distribution_data[4] * 100
+			var discovered := distribution_data[5] * 100
+			if discovered < mean * MIN_DISCOVERED_BOOST:
+				discovered = 0.0
 			
 			# TODO: Error format (1.0 ± 0.2)e-6
 		
