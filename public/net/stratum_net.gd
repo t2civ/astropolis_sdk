@@ -163,32 +163,31 @@ func get_resource_data(resource_type: int) -> Array[float]:
 	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits, base_deposits]
 
 
-# FIXME: Remove or update for changes
-func get_deposit_fraction(resource_type: int, zero_if_no_boost := false) -> float:
-	# Fictional concept, roughly related to scrape ratio at best known deposits.
-	# Max 1.0.
+func get_base_deposit(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	var deposits_boost: float = _survey_deposits_sigma[survey_type] * dispersions[index]
-	if zero_if_no_boost and deposits_boost == 0.0:
-		return 0.0 # allows hide in GUI if deposits would equal mass_fraction
-	var mass: float = masses[index]
 	if _dirty_volume_mass:
 		reset_volume_mass()
-	var p := mass / _total_mass # mass fraction
-	var fractional_deposits := p + deposits_boost * p * (1.0 - p) # boost from p
-	return minf(fractional_deposits, 1.0)
+	var abundance := masses[index] / _total_mass
+	var dispersion := dispersions[index]
+	return minf(1.0, abundance * 10 ** dispersion)
 
 
-# FIXME: Remove or update for changes
-func get_deposits_fraction(resource_types: Array[int]) -> float:
-	# E.g., [methane_type, ethane_type, helium_type] for total 'gas' deposits.
-	# >1.0 possible but shouldn't happen for actual extraction subsets.
-	var sum := 0.0
+func get_discovered(resource_type: int) -> float:
+	# FIXME: discovered == base_deposits for now. Needs survey_level adjustment.
+	return get_base_deposit(resource_type)
+
+
+func get_max_discovered(resource_types: Array[int]) -> float:
+	# Roughly related to "scrape ratio" (inversely) for best target resource.
+	var max_discovered := 0.0
 	for resource_type in resource_types:
-		sum += get_deposit_fraction(resource_type)
-	return sum
-
+		var discovered := get_discovered(resource_type)
+		if discovered == 1.0:
+			return 1.0
+		if max_discovered < discovered:
+			max_discovered = discovered
+	return max_discovered
 
 # *****************************************************************************
 # sync

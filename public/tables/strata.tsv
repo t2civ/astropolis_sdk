@@ -2,21 +2,21 @@
 Type	BOOL	TABLE_ROW	STRING_NAME	STRING_NAME	TABLE_ROW	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING
 Unit						km	km		km^2	km^3	g/cm^3	kg		
 Default														
-Prefix/STRATUM_		BODY_CLASS_			STRATUM_GROUP_									
+Prefix/STRATUM_		BODY_CLASS_		POLITY_	STRATUM_GROUP_									
 PLANET_EARTH_ATMOSPHERE			PLANET_EARTH		ATMOSPHERE	0	65	1	5.21e8	3.35e10	1.54e-4	5.15e18	10	Near-perfect knowledge; routine global atmospheric monitoring
 PLANET_EARTH_OCEAN			PLANET_EARTH		OCEAN	3.69	3.69	0.708	3.61e8	1.33e9	1.025	1.36e21	8.0	Well-characterized bulk chemistry; extensive oceanographic data
 PLANET_EARTH_OCEAN_FLOOR			PLANET_EARTH		OCEAN_FLOOR	3.79	0.1	0.659	3.36e8	3.36e7	1.8	6.05e19	2.0	DSDP/ODP/IODP sampling; vast areas unsampled
 PLANET_EARTH_OCEAN_CRUST			PLANET_EARTH		OCEAN_CRUST	11	6.9	0.659	3.36e8	2.32e9	2.9	6.73e21	1.0	Inferred from ophiolites and sparse deep drilling; seismic constraints
-PLANET_EARTH_ANTARCTICA_CONT_ICE_BODIES			PLANET_EARTH		CONT_ICE_BODIES	0	2.14	0.0241	1.23e7	2.63e7	0.90	2.37e19	5.5	Extensive ice-core drilling and radar profiling; simple bulk composition
-PLANET_EARTH_ANTARCTICA_CONT_WATER_BODIES			PLANET_EARTH		CONT_WATER_BODIES	0	0.046	1.96e-7	1.00e2	4.60e0	1.0	4.60e12	2.0	Negligible exposed liquid water; some seasonal meltwater ponds in Dry Valleys
-PLANET_EARTH_ANTARCTICA_CONT_LAND			PLANET_EARTH		CONT_LAND	0.1	0.1	0.0275	1.40e7	1.40e6	2.0	2.80e18	1.5	Ice-covered; minimal surface geological exploration
-PLANET_EARTH_ANTARCTICA_CONT_SHELF			PLANET_EARTH		CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	1.0	Ice-covered shelf; very sparse geological data from limited coring
-PLANET_EARTH_ANTARCTICA_CONT_NEAR_SURFACE			PLANET_EARTH		CONT_NEAR_SURFACE	0.5	0.4	0.0314	1.60e7	6.40e6	2.45	1.57e19	0.8	Ice-covered; virtually no direct geological data at this depth
-PLANET_EARTH_ANTARCTICA_CONT_SUBSURFACE			PLANET_EARTH		CONT_SUBSURFACE	2	1.5	0.0314	1.60e7	2.40e7	2.55	6.12e19	0.5	Virtually no subsurface data beneath ice sheet
-PLANET_EARTH_ANTARCTICA_CONT_DEEP_SUBSURFACE			PLANET_EARTH		CONT_DEEP_SUBSURFACE	5	3.0	0.0314	1.60e7	4.80e7	2.65	1.27e20	0.3	No deep drilling; inferred from seismic and gravity models only
-PLANET_EARTH_ANTARCTICA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH		CONT_EXTREME_SUBSURFACE	12	7.0	0.0314	1.60e7	1.12e8	2.75	3.08e20	0.3	No direct data; seismic and gravity models only
-PLANET_EARTH_ANTARCTICA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH		CONT_ULTRA_SUBSURFACE	20	8.0	0.0314	1.60e7	1.28e8	2.85	3.65e20	0.3	No direct data; poorly constrained seismic and gravity models
-PLANET_EARTH_ANTARCTICA_CONT_LOWER_CRUST			PLANET_EARTH		CONT_LOWER_CRUST	35	15.0	0.0314	1.60e7	2.40e8	2.95	7.08e20	0.3	Poorly constrained seismic and gravity models only
+PLANET_EARTH_ANTARCTICA_CONT_ICE_BODIES			PLANET_EARTH		ANTARCTIC_CONT_ICE_BODIES	0	2.14	0.0241	1.23e7	2.63e7	0.90	2.37e19	5.5	Extensive ice-core drilling and radar profiling; simple bulk composition
+PLANET_EARTH_ANTARCTICA_CONT_WATER_BODIES			PLANET_EARTH		ANTARCTIC_CONT_WATER_BODIES	0	0.046	1.96e-7	1.00e2	4.60e0	1.0	4.60e12	2.0	Negligible exposed liquid water; some seasonal meltwater ponds in Dry Valleys
+PLANET_EARTH_ANTARCTICA_CONT_LAND			PLANET_EARTH		ANTARCTIC_CONT_LAND	0.1	0.1	0.0275	1.40e7	1.40e6	2.0	2.80e18	1.5	Ice-covered; minimal surface geological exploration
+PLANET_EARTH_ANTARCTICA_CONT_SHELF			PLANET_EARTH		ANTARCTIC_CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	1.0	Ice-covered shelf; very sparse geological data from limited coring
+PLANET_EARTH_ANTARCTICA_CONT_NEAR_SURFACE			PLANET_EARTH		ANTARCTIC_CONT_NEAR_SURFACE	0.5	0.4	0.0314	1.60e7	6.40e6	2.45	1.57e19	0.8	Ice-covered; virtually no direct geological data at this depth
+PLANET_EARTH_ANTARCTICA_CONT_SUBSURFACE			PLANET_EARTH		ANTARCTIC_CONT_SUBSURFACE	2	1.5	0.0314	1.60e7	2.40e7	2.55	6.12e19	0.5	Virtually no subsurface data beneath ice sheet
+PLANET_EARTH_ANTARCTICA_CONT_DEEP_SUBSURFACE			PLANET_EARTH		ANTARCTIC_CONT_DEEP_SUBSURFACE	5	3.0	0.0314	1.60e7	4.80e7	2.65	1.27e20	0.3	No deep drilling; inferred from seismic and gravity models only
+PLANET_EARTH_ANTARCTICA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH		ANTARCTIC_CONT_EXTREME_SUBSURFACE	12	7.0	0.0314	1.60e7	1.12e8	2.75	3.08e20	0.3	No direct data; seismic and gravity models only
+PLANET_EARTH_ANTARCTICA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH		ANTARCTIC_CONT_ULTRA_SUBSURFACE	20	8.0	0.0314	1.60e7	1.28e8	2.85	3.65e20	0.3	No direct data; poorly constrained seismic and gravity models
+PLANET_EARTH_ANTARCTICA_CONT_LOWER_CRUST			PLANET_EARTH		ANTARCTIC_CONT_LOWER_CRUST	35	15.0	0.0314	1.60e7	2.40e8	2.95	7.08e20	0.3	Poorly constrained seismic and gravity models only
 PLANET_EARTH_MANTLE			PLANET_EARTH		MANTLE	2890	2871	1	5.07e8	8.97e11	4.47	4.01e24	0.5	Seismic tomography and gravity models; xenolith constraints only
 PLANET_EARTH_CORE			PLANET_EARTH		CORE	6371	3481	1	1.52e8	1.77e11	11.0	1.95e24	0.3	Seismic + geochemical/cosmochemical models; no direct sampling
 PLANET_EARTH_USA_CONT_ICE_BODIES			PLANET_EARTH	USA	CONT_ICE_BODIES	0	0.10	1.71e-4	8.70e4	8.70e3	0.90	7.83e15	5.5	Alaska glaciers well-monitored; USGS mass-balance programs
