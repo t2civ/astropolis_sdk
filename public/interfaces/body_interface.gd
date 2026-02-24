@@ -324,16 +324,26 @@ func sync_server_dirty(data: Array) -> void:
 		marketplace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_STRATA:
-		var dirty_strata := offsets[k]
+		var dirty_strata_1 := offsets[k]
 		k += 1
 		var i := 0
-		while dirty_strata:
-			if dirty_strata & 1:
-				var stratum: StratumNet = strata[i]
+		while dirty_strata_1:
+			if dirty_strata_1 & 1:
+				var stratum := strata[i]
 				stratum.add_dirty(data, offsets[k], offsets[k + 1])
 				k += 2
 			i += 1
-			dirty_strata >>= 1
+			dirty_strata_1 >>= 1
+		var dirty_strata_2 := offsets[k]
+		k += 1
+		i = 64
+		while dirty_strata_2:
+			if dirty_strata_2 & 1:
+				var stratum := strata[i]
+				stratum.add_dirty(data, offsets[k], offsets[k + 1])
+				k += 2
+			i += 1
+			dirty_strata_2 >>= 1
 	
 	
 	assert(int_data[0] >= run_qtr)
