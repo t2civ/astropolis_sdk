@@ -78,5 +78,4 @@ E_EDUCATIONAL_SERVICES	CYBER	CYBER	$M	1 $/$M		x
 E_HEALTH_SERVICES	CYBER	CYBER	$M	1 $/$M		x					
 E_LEGAL_SERVICES	CYBER	CYBER	$M	1 $/$M		x					
 E_ACCOUNTING_SERVICES	CYBER	CYBER	$M	1 $/$M		x					
-# max rows 128											
-# max is_extraction 64											
+# max is_extraction 63											

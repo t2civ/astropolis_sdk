@@ -63,8 +63,6 @@ var _volume := 0.0
 var _total_mass := 0.0
 var _dirty_volume_mass := true
 
-var _sync := SyncHelper.new()
-
 # indexing
 static var _db_tables := IVTableData.db_tables
 static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
@@ -218,6 +216,7 @@ func set_network_init(data: Array) -> void:
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	# Changes and sets from the server entity.
+	const BIT_INDEXES := Utils.BIT_INDEXES
 	
 	var int_data: Array[int] = data[1]
 	var float_data: Array[float] = data[2]
@@ -250,9 +249,23 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		dispersions_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)
 		float_offset += _n_extraction_resources
 	
-	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
-	_sync.set_floats_dirty(masses)
-	_sync.set_floats_dirty(dispersions)
+	var flags := int_data[int_offset]
+	int_offset += 1
+	while flags:
+		var lsb := flags & -flags
+		var index := BIT_INDEXES[lsb]
+		masses[index] = float_data[float_offset]
+		float_offset += 1
+		flags &= ~lsb
+	flags = int_data[int_offset]
+	int_offset += 1
+	while flags:
+		var lsb := flags & -flags
+		var index := BIT_INDEXES[lsb]
+		dispersions[index] = float_data[float_offset]
+		float_offset += 1
+		flags &= ~lsb
+
 
 # *****************************************************************************
 

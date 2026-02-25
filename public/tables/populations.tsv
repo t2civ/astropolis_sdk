@@ -12,4 +12,4 @@ EMBODIED_ANDROID	ANDROID	HUMAN		x	x					# AGI or approximate human sim in mech b
 EMBODIED_HUMAN	HUMAN		x		x					# A "downloaded" person
 MOD_AQUATIC	AQUATIC		x		x					# Modified for Earth aquatic environment
 MOD_AMPHIBIOUS	AQUATIC	HUMAN	x		x					# Modified for Earth land or aquatic environment
-# max 64										
+# max 63										

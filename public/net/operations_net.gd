@@ -89,9 +89,7 @@ var _is_facility := false
 var _operations_list: Array[int] # facility only; all types we have or want for margin test
 
 # interface dirty data (dirty indexes as bit flags)
-var _dirty_op_commands_1 := 0
-var _dirty_op_commands_2 := 0
-var _dirty_op_commands_3 := 0 # max 192
+var _dirty_op_commands: Array[int] = []
 
 var _sync := SyncHelper.new()
 
@@ -135,6 +133,9 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_op_logics = arrays.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
 	_target_utilizations = arrays.init_array(_n_operations, 1.0, TYPE_FLOAT)
+	@warning_ignore("integer_division")
+	var n_op_flags := (_n_operations - 1) / 63 + 1
+	_op_commands.resize(n_op_flags)
 
 
 # ********************************** READ *************************************
@@ -422,12 +423,7 @@ func set_op_command(type: int, command: int) -> void:
 	if _op_commands[type] == command:
 		return
 	_op_commands[type] = command
-	if type < 64:
-		_dirty_op_commands_1 |= 1 << type
-	elif type < 128:
-		_dirty_op_commands_2 |= 1 << (type - 64)
-	else:
-		_dirty_op_commands_3 |= 1 << (type - 128)
+	_sync.set_dirty(_dirty_op_commands, type)
 
 # ********************************** SYNC *************************************
 
@@ -474,41 +470,23 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_crews)
 	_sync.add_floats_delta(_capacities)
-	_sync.add_floats_delta(_capacities, 64)
-	_sync.add_floats_delta(_capacities, 128)
 	_sync.add_floats_delta(_run_rates)
-	_sync.add_floats_delta(_run_rates, 64)
-	_sync.add_floats_delta(_run_rates, 128)
 	_sync.add_floats_delta(_effective_rates)
-	_sync.add_floats_delta(_effective_rates, 64)
-	_sync.add_floats_delta(_effective_rates, 128)
 	
 	if !_has_financials:
 		return
 	
 	_sync.add_floats_delta(_revenue_rates)
-	_sync.add_floats_delta(_revenue_rates, 64)
-	_sync.add_floats_delta(_revenue_rates, 128)
 	_sync.add_floats_delta(_cogs_rates)
-	_sync.add_floats_delta(_cogs_rates, 64)
-	_sync.add_floats_delta(_cogs_rates, 128)
 
 	if !_is_facility:
 		return
 	
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
-	_sync.set_floats_dirty(_gross_margins, 64) # not accumulator!
-	_sync.set_floats_dirty(_gross_margins, 128) # not accumulator!
 	_sync.set_ints_dirty(_op_logics) # not accumulator!
-	_sync.set_ints_dirty(_op_logics, 64) # not accumulator!
-	_sync.set_ints_dirty(_op_logics, 128) # not accumulator!
 
 
 func get_interface_dirty() -> Array:
 	# TODO: parallel server pattern
 	var data := []
-	#_append_dirty(data, _op_commands, _dirty_op_commands_1)
-	#_append_dirty(data, _op_commands, _dirty_op_commands_2, 64)
-	#_dirty_op_commands_1 = 0
-	#_dirty_op_commands_2 = 0
 	return data
