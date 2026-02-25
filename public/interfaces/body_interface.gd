@@ -286,7 +286,7 @@ func set_network_init(data: Array) -> void:
 	
 
 func sync_server_dirty(data: Array) -> void:
-	
+	const SIGN_BIT := 1 << 63
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
@@ -324,26 +324,47 @@ func sync_server_dirty(data: Array) -> void:
 		marketplace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
 	if dirty & DIRTY_STRATA:
-		var dirty_strata_1 := offsets[k]
-		k += 1
-		var i := 0
-		while dirty_strata_1:
-			if dirty_strata_1 & 1:
-				var stratum := strata[i]
-				stratum.add_dirty(data, offsets[k], offsets[k + 1])
-				k += 2
-			i += 1
-			dirty_strata_1 >>= 1
-		var dirty_strata_2 := offsets[k]
-		k += 1
-		i = 64
-		while dirty_strata_2:
-			if dirty_strata_2 & 1:
-				var stratum := strata[i]
-				stratum.add_dirty(data, offsets[k], offsets[k + 1])
-				k += 2
-			i += 1
-			dirty_strata_2 >>= 1
+		var flag_index := 0
+		var more_dirty := 1
+		while more_dirty:
+			var dirty_strata := offsets[k]
+			k += 1
+			more_dirty = dirty_strata & SIGN_BIT
+			dirty_strata &= ~SIGN_BIT
+			var i := flag_index * 63
+			while dirty_strata:
+				if dirty_strata & 1:
+					var stratum := strata[i]
+					stratum.add_dirty(data, offsets[k], offsets[k + 1])
+					k += 2
+				i += 1
+				dirty_strata >>= 1
+			flag_index += 1
+		
+		
+		
+		
+		
+		#var dirty_strata_1 := offsets[k]
+		#k += 1
+		#var i := 0
+		#while dirty_strata_1:
+			#if dirty_strata_1 & 1:
+				#var stratum := strata[i]
+				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
+				#k += 2
+			#i += 1
+			#dirty_strata_1 >>= 1
+		#var dirty_strata_2 := offsets[k]
+		#k += 1
+		#i = 63
+		#while dirty_strata_2:
+			#if dirty_strata_2 & 1:
+				#var stratum := strata[i]
+				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
+				#k += 2
+			#i += 1
+			#dirty_strata_2 >>= 1
 	
 	
 	assert(int_data[0] >= run_qtr)
