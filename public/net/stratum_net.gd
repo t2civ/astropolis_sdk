@@ -31,13 +31,8 @@ enum { # _dirty bit flags
 	DIRTY_SURVEY = 1 << 2,
 }
 
-const MIN_EXTRACTION_SURVEY_LEVEL := 2.5 # Min for discovered; any extraction boosts to this level
-const BASE_EXTRACTION_SURVEY_LEVEL := 4.0 # at this, discovered = abundance * 10 ** eff_dispersion
-const DISPERSION_SURVEY_MULTIPLIER := 1.0 / BASE_EXTRACTION_SURVEY_LEVEL
-
-
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
-var strata_index := -1
+var stratum_index := -1
 var name: StringName
 var stratum_group := -1 # stratum_groups.tsv
 var polity_name: StringName # "" for commons
@@ -46,22 +41,19 @@ var body_radius := 0.0 # same as Body.m_radius
 var inner_radius := 0.0 # 0.0 for undifferentiated body
 var thickness := 0.0 # =body_radius for undifferentiated body
 var spherical_fraction := 0.0 # of theoretical whole sphere strata
+var volume := 0.0
 var density := 0.0
+var total_mass := 0.0
+var is_atmosphere: bool # from strata.tsv
+var survey_level := 0.0
+var survey_type := -1 # surveys.tsv
 
 var masses: Array[float]
 var masses_cv: Array[float]
 var dispersions: Array[float] # spatial heterogeneity; good for mining!
 var dispersions_cv: Array[float]
+var discoveries: Array[float] # derived from mass/total, dispersion, and survey_level
 
-var survey_level := 0.0
-var survey_type := -1 # surveys.tsv
-
-var is_atmosphere: bool # from strata.tsv
-
-# derive when needed
-var _volume := 0.0
-var _total_mass := 0.0
-var _dirty_volume_mass := true
 
 # indexing
 static var _db_tables := IVTableData.db_tables
@@ -72,8 +64,8 @@ static var _survey_density_errors: Array[float] # coeff of variation
 static var _survey_mass_errors: Array[float]
 static var _survey_deposits_sigma: Array[float]
 static var _res_mass_err_mult: Array[float]
-static var _is_class_instanced := false
 static var _n_extraction_resources: int
+static var _is_class_instanced := false
 
 
 # TODO: Operations/Extractions organized by strata
@@ -82,7 +74,7 @@ static var _n_extraction_resources: int
 
 
 
-func _init(is_new := false, _is_server := false) -> void:
+func _init(is_new := false) -> void:
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
@@ -100,20 +92,17 @@ func _init(is_new := false, _is_server := false) -> void:
 	masses_cv = masses.duplicate()
 	dispersions = masses.duplicate()
 	dispersions_cv = masses.duplicate()
+	discoveries = masses.duplicate()
 
 # ********************************** READ *************************************
 # all threadsafe
 
 func get_volume() -> float:
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	return _volume
+	return volume
 
 
 func get_total_mass() -> float:
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	return _total_mass
+	return total_mass
 
 
 func get_mass(resource_type: int) -> float:
@@ -125,9 +114,7 @@ func get_mass(resource_type: int) -> float:
 func get_mass_fraction(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	return masses[index] / _total_mass
+	return masses[index] / total_mass
 
 
 func get_dispersion(resource_type: int) -> float:
@@ -136,58 +123,43 @@ func get_dispersion(resource_type: int) -> float:
 	return dispersions[index]
 
 
-## Return is [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits,
-## discovered], where abundance and discovered are fractions of 1.0 and
+## Return is [abundance, abundance_sd, dispersion, dispersion_sd, base_deposit,
+## discovered], where abundance, base_deposit and discovered are fractions and
 ## dispersion is in log10 units.
 func get_resource_data(resource_type: int) -> Array[float]:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	var abundance := masses[index] / _total_mass
+	var abundance := masses[index] / total_mass
 	var abundance_sd := abundance * masses_cv[index]
 	var dispersion := dispersions[index]
 	var dispersion_sd := dispersion * dispersions_cv[index]
-	var base_deposits := minf(1.0, abundance * 10 ** dispersion)
-	var discovered := 0.0
-	if survey_level >= MIN_EXTRACTION_SURVEY_LEVEL:
-		var eff_dispersion := dispersion * survey_level * DISPERSION_SURVEY_MULTIPLIER
-		discovered = minf(1.0, abundance * 10 ** eff_dispersion)
-	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposits, discovered]
+	var base_deposit := minf(1.0, abundance * 10 ** dispersion)
+	var discovered := discoveries[index]
+	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposit, discovered]
 
 
 func get_base_deposit(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	var abundance := masses[index] / _total_mass
+	var abundance := masses[index] / total_mass
 	var dispersion := dispersions[index]
 	return minf(1.0, abundance * 10 ** dispersion)
 
 
 func get_discovered(resource_type: int) -> float:
-	# Same as get_base_deposit() if survey_level == BASEBASE_EXTRACTION_SURVEY_LEVEL.
-	if survey_level < MIN_EXTRACTION_SURVEY_LEVEL:
-		return 0.0
+	# Roughly related to "scrape ratio" (inversely).
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
-	if _dirty_volume_mass:
-		reset_volume_mass()
-	var abundance := masses[index] / _total_mass
-	var eff_dispersion := dispersions[index] * survey_level * DISPERSION_SURVEY_MULTIPLIER
-	return minf(1.0, abundance * 10 ** eff_dispersion)
+	return discoveries[index]
 
 
 func get_max_discovered(resource_types: Array[int]) -> float:
 	# Roughly related to "scrape ratio" (inversely) for best target resource.
 	var max_discovered := 0.0
 	for resource_type in resource_types:
-		var discovered := get_discovered(resource_type)
-		if discovered == 1.0:
-			return 1.0
-		if max_discovered < discovered:
-			max_discovered = discovered
+		var index: int = _resource_extractions[resource_type]
+		assert(index != -1, "resource_type must have is_extraction == true")
+		max_discovered = maxf(max_discovered, discoveries[index])
 	return max_discovered
 
 # *****************************************************************************
@@ -196,7 +168,7 @@ func get_max_discovered(resource_types: Array[int]) -> float:
 
 func set_network_init(data: Array) -> void:
 	# NOT reference-safe!
-	strata_index = data[0]
+	stratum_index = data[0]
 	name = data[1]
 	stratum_group = data[2]
 	polity_name = data[3]
@@ -204,14 +176,17 @@ func set_network_init(data: Array) -> void:
 	inner_radius = data[5]
 	thickness = data[6]
 	spherical_fraction = data[7]
-	density = data[8]
-	masses = data[9]
-	masses_cv = data[10]
-	dispersions = data[11]
-	dispersions_cv = data[12]
-	survey_level = data[13]
-	survey_type = data[14]
-	is_atmosphere = data[15]
+	volume = data[8]
+	density = data[9]
+	total_mass = data[10]
+	is_atmosphere = data[11]
+	survey_level = data[12]
+	survey_type = data[13]
+	masses = data[14]
+	masses_cv = data[15]
+	dispersions = data[16]
+	dispersions_cv = data[17]
+	discoveries = data[18]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -238,7 +213,6 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		float_offset += 1
 		density = float_data[float_offset]
 		float_offset += 1
-		_dirty_volume_mass = true
 	if dirty & DIRTY_SURVEY:
 		survey_level = float_data[float_offset]
 		float_offset += 1
@@ -247,6 +221,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		masses_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)
 		float_offset += _n_extraction_resources
 		dispersions_cv = float_data.slice(float_offset, float_offset + _n_extraction_resources)
+		float_offset += _n_extraction_resources
+		discoveries = float_data.slice(float_offset, float_offset + _n_extraction_resources)
 		float_offset += _n_extraction_resources
 	
 	var flags := int_data[int_offset]
@@ -265,15 +241,11 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		dispersions[index] = float_data[float_offset]
 		float_offset += 1
 		flags &= ~lsb
-
-
-# *****************************************************************************
-
-func reset_volume_mass() -> void:
-	const FOUR_THIRDS_PI := 4.0 / 3.0 * PI
-	var outer_radius := inner_radius + thickness
-	_volume = spherical_fraction * FOUR_THIRDS_PI * (
-			outer_radius * outer_radius * outer_radius
-			- inner_radius * inner_radius * inner_radius)
-	_total_mass = _volume * density
-	_dirty_volume_mass = false
+	flags = int_data[int_offset]
+	int_offset += 1
+	while flags:
+		var lsb := flags & -flags
+		var index := BIT_INDEXES[lsb]
+		discoveries[index] = float_data[float_offset]
+		float_offset += 1
+		flags &= ~lsb
