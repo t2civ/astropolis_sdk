@@ -212,7 +212,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			TAB_SERVICES:
 				electricity = -electricity
 				flow = operations.get_group_computation(op_group)
-				flow /= _unit_multipliers[&"Pflops"]
+				flow /= _unit_multipliers[&"Pflop/s"]
 		
 		var group_data := [
 			_op_group_names[op_group],
@@ -260,7 +260,7 @@ func _get_ai_data(target_name: StringName) -> void:
 				TAB_SERVICES:
 					electricity = -electricity
 					flow = operations.get_computation(operation_type)
-					flow /= _unit_multipliers[&"Pflops"]
+					flow /= _unit_multipliers[&"Pflop/s"]
 			
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:

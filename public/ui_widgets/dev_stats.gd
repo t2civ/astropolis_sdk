@@ -36,7 +36,7 @@ var content: Array[Array] = [
 	[&"LABEL_CONSTRUCTIONS", &"get_development_constructions", IVQFormat.prefixed_unit.bind(&"t")],
 	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/h")],
 	[&"LABEL_INFORMATION", &"get_development_information", IVQFormat.prefixed_unit.bind(&"bit")],
-	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flops")],
+	[&"LABEL_COMPUTATION", &"get_development_computation", IVQFormat.prefixed_unit.bind(&"flop/s")],
 	[&"LABEL_BIOMASS", &"get_development_biomass", IVQFormat.dynamic_unit.bind(
 			&"mass_g_kg_prefixed_t")],
 	[&"LABEL_BIOPRODUCTIVITY", &"get_development_bioproductivity", IVQFormat.prefixed_unit.bind(
