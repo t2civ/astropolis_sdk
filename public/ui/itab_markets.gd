@@ -21,7 +21,7 @@ enum {
 	TAB_MATERIALS,
 	TAB_MANUFACTURED,
 	TAB_BIOLOGICALS,
-	TAB_CYBER,
+	TAB_SERVICES,
 	TAB_TRANSPORT,
 }
 
@@ -88,7 +88,7 @@ var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_r
 	$TabContainer/Materials/Hdrs/Spacer,
 	$TabContainer/Manufactured/Hdrs/Spacer,
 	$TabContainer/Biologicals/Hdrs/Spacer,
-	$TabContainer/Cyber/Hdrs/Spacer,
+	$TabContainer/Services/Hdrs/Spacer,
 ]
 @onready var _inventory_hdrs: Array[Label] = [
 	$TabContainer/Energy/Hdrs/Hdr4,
@@ -97,7 +97,7 @@ var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_r
 	$TabContainer/Materials/Hdrs/Hdr4,
 	$TabContainer/Manufactured/Hdrs/Hdr4,
 	$TabContainer/Biologicals/Hdrs/Hdr4,
-	$TabContainer/Cyber/Hdrs/Hdr4,
+	$TabContainer/Services/Hdrs/Hdr4,
 ]
 @onready var _contracted_hdrs: Array[Label] = [
 	$TabContainer/Energy/Hdrs/Hdr5,
@@ -106,7 +106,7 @@ var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_r
 	$TabContainer/Materials/Hdrs/Hdr5,
 	$TabContainer/Manufactured/Hdrs/Hdr5,
 	$TabContainer/Biologicals/Hdrs/Hdr5,
-	$TabContainer/Cyber/Hdrs/Hdr5,
+	$TabContainer/Services/Hdrs/Hdr5,
 ]
 
 
@@ -123,7 +123,7 @@ func _ready() -> void:
 	$TabContainer/Materials.name = &"TAB_MKS_MATERIALS"
 	$TabContainer/Manufactured.name = &"TAB_MKS_MANUFACTURED"
 	$TabContainer/Biologicals.name = &"TAB_MKS_BIOLOGICALS"
-	$TabContainer/Cyber.name = &"TAB_MKS_CYBER"
+	$TabContainer/Services.name = &"TAB_MKS_SERVICES"
 	for col0_spacer in _col0_spacers:
 		col0_spacer.custom_minimum_size.x = _name_column_width
 	_tab_container.set_current_tab(_on_ready_tab)
