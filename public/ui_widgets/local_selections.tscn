@@ -1,63 +1,63 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjf4qy5fngcu6"]
+[gd_scene format=3 uid="uid://bjf4qy5fngcu6"]
 
 [ext_resource type="Script" uid="uid://tdnb8ivuhnvk" path="res://public/ui_widgets/local_selections.gd" id="1"]
 
-[node name="LocalSelections" type="MarginContainer"]
+[node name="LocalSelections" type="MarginContainer" unique_id=1077397465]
 offset_right = 12.0
 offset_bottom = 12.0
 script = ExtResource("1")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=978279844]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer" unique_id=849551058]
 layout_mode = 2
 theme_override_constants/separation = -2
 
-[node name="Polities" type="FoldableContainer" parent="ScrollContainer/VBox"]
+[node name="Polities" type="FoldableContainer" parent="ScrollContainer/VBox" unique_id=303047140]
 layout_mode = 2
 folded = true
 title = "LABEL_SPACEFARING_POLITIES"
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Polities"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Polities" unique_id=113550534]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="Agencies" type="FoldableContainer" parent="ScrollContainer/VBox"]
+[node name="Agencies" type="FoldableContainer" parent="ScrollContainer/VBox" unique_id=1630156057]
 layout_mode = 2
 title = "LABEL_SPACE_AGENCIES"
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Agencies"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Agencies" unique_id=1692085819]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="Companies" type="FoldableContainer" parent="ScrollContainer/VBox"]
+[node name="Companies" type="FoldableContainer" parent="ScrollContainer/VBox" unique_id=919542458]
 layout_mode = 2
 title = "LABEL_SPACE_COMPANIES"
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Companies"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Companies" unique_id=200410012]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="Offworld" type="FoldableContainer" parent="ScrollContainer/VBox"]
+[node name="Offworld" type="FoldableContainer" parent="ScrollContainer/VBox" unique_id=1737972186]
 layout_mode = 2
 title = "LABEL_OFFWORLD_FACILITIES"
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Offworld"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/Offworld" unique_id=223477987]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="System" type="FoldableContainer" parent="ScrollContainer/VBox"]
+[node name="System" type="FoldableContainer" parent="ScrollContainer/VBox" unique_id=406889300]
 layout_mode = 2
 title = "LABEL_SYSTEM_FACILITIES"
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/System"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBox/System" unique_id=1874794124]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="NoFacilities" type="Label" parent="."]
+[node name="NoFacilities" type="Label" parent="." unique_id=513522]
 layout_mode = 2
 size_flags_vertical = 1
 text = "(No Facilities)"
