@@ -219,11 +219,14 @@ func _get_ai_data(target_name: StringName) -> void:
 	var has_financials := operations.has_financials()
 	
 	var op_groups: Array[int] = _op_classes_op_groups[tab]
-	var n_op_groups := op_groups.size()
-	
-	# TODO: We only want operations from operations.get_operations_of_interest().
+	var n_op_groups := 0 # that we can have
 	
 	for op_group in op_groups:
+		
+		if not operations.is_of_interest_group(op_group):
+			continue
+		
+		n_op_groups += 1
 		
 		var utilization := operations.get_group_utilization(op_group)
 		var electricity := operations.get_group_electricity(op_group)
