@@ -75,8 +75,8 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	
 	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
 	tables.facilities = path_format % "facilities"
-	tables.module_classes = path_format % "module_classes"
-	tables.modules = path_format % "modules"
+	#tables.module_classes = path_format % "module_classes"
+	#tables.modules = path_format % "modules"
 	tables.op_classes = path_format % "op_classes"
 	tables.op_groups = path_format % "op_groups"
 	tables.operations = path_format % "operations"
