@@ -16,6 +16,7 @@ enum {
 	TAB_ENERGY,
 	TAB_EXTRACTION,
 	TAB_REFINING,
+	TAB_CONVERSION,
 	TAB_MANUFACTURING,
 	TAB_BIOMES,
 	TAB_SERVICES,
@@ -50,6 +51,7 @@ var base_column_width := 55.0
 
 var headers_texts: Array[Array] = [
 	["Capacity\n(%)", "Power\n(MW)", "Fuel\n(-t/h)", "Revenue\n($M/y)", "Margin\n(gr; %)"],
+	["Capacity\n(%)", "Power\n(-MW)", "Rate\n(t/h)", "Revenue\n($M/y)", "Margin\n(gr; %)"],
 	["Capacity\n(%)", "Power\n(-MW)", "Rate\n(t/h)", "Revenue\n($M/y)", "Margin\n(gr; %)"],
 	["Capacity\n(%)", "Power\n(-MW)", "Rate\n(t/h)", "Revenue\n($M/y)", "Margin\n(gr; %)"],
 	["Capacity\n(%)", "Power\n(-MW)", "Rate\n(t/h)", "Revenue\n($M/y)", "Margin\n(gr; %)"],
@@ -89,6 +91,7 @@ var _fold_icon_substitute := MeshTexture.new()
 	%EnergyHdrs,
 	%ExtractionHdrs,
 	%RefiningHdrs,
+	%ConversionHdrs,
 	%ManufacturingHdrs,
 	%BiomesHdrs,
 	%ServicesHdrs,
@@ -98,6 +101,7 @@ var _fold_icon_substitute := MeshTexture.new()
 	$"%EnergyVBox",
 	$"%ExtractionVBox",
 	$"%RefiningVBox",
+	$"%ConversionVBox",
 	$"%ManufacturingVBox",
 	$"%BiomesVBox",
 	$"%ServicesVBox",
@@ -116,14 +120,15 @@ func _ready() -> void:
 	$TabContainer/Energy.name = &"TAB_OPS_ENERGY"
 	$TabContainer/Extraction.name = &"TAB_OPS_EXTRACTION"
 	$TabContainer/Refining.name = &"TAB_OPS_REFINING"
+	$TabContainer/Conversion.name = &"TAB_OPS_CONVERSION"
 	$TabContainer/Manufacturing.name = &"TAB_OPS_MANUFACTURING"
 	$TabContainer/Biomes.name = &"TAB_OPS_BIOMES"
 	$TabContainer/Services.name = &"TAB_OPS_SERVICES"
 	
-	_revenue_hdrs.resize(6)
-	_margin_hdrs.resize(6)
+	_revenue_hdrs.resize(7)
+	_margin_hdrs.resize(7)
 	
-	for tab in 6:
+	for tab in 7:
 		var header_texts := headers_texts[tab]
 		var tab_headers := _headers[tab]
 		tab_headers.add_spacer(true)
@@ -245,7 +250,7 @@ func _get_ai_data(target_name: StringName) -> void:
 				electricity = -electricity
 				flow = operations.get_group_extraction_rate(op_group)
 				flow /= _unit_multipliers[&"t/h"]
-			TAB_REFINING, TAB_MANUFACTURING:
+			TAB_REFINING, TAB_CONVERSION, TAB_MANUFACTURING:
 				electricity = -electricity
 				flow = operations.get_group_mass_conversion_rate(op_group)
 				flow /= _unit_multipliers[&"t/h"]
@@ -293,7 +298,7 @@ func _get_ai_data(target_name: StringName) -> void:
 					electricity = -electricity
 					flow = operations.get_extraction_rate(operation_type)
 					flow /= _unit_multipliers[&"t/h"]
-				TAB_REFINING, TAB_MANUFACTURING:
+				TAB_REFINING, TAB_CONVERSION, TAB_MANUFACTURING:
 					electricity = -electricity
 					flow = operations.get_mass_conversion_rate(operation_type)
 					flow /= _unit_multipliers[&"t/h"]

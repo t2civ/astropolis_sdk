@@ -72,10 +72,30 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Manufacturing" type="VBoxContainer" parent="TabContainer" unique_id=255789671]
+[node name="Conversion" type="VBoxContainer" parent="TabContainer" unique_id=1485846283]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
+
+[node name="ConversionHdrs" type="HBoxContainer" parent="TabContainer/Conversion" unique_id=1532816047]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="TabContainer/Conversion" unique_id=1477796697]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ConversionVBox" type="VBoxContainer" parent="TabContainer/Conversion/Scroll" unique_id=956367206]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Manufacturing" type="VBoxContainer" parent="TabContainer" unique_id=255789671]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
 
 [node name="ManufacturingHdrs" type="HBoxContainer" parent="TabContainer/Manufacturing" unique_id=39840862]
 unique_name_in_owner = true
@@ -95,7 +115,7 @@ size_flags_vertical = 3
 [node name="Biomes" type="VBoxContainer" parent="TabContainer" unique_id=2060197592]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 4
+metadata/_tab_index = 5
 
 [node name="BiomesHdrs" type="HBoxContainer" parent="TabContainer/Biomes" unique_id=2102459856]
 unique_name_in_owner = true
@@ -115,7 +135,7 @@ size_flags_vertical = 3
 [node name="Services" type="VBoxContainer" parent="TabContainer" unique_id=1689382855]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 5
+metadata/_tab_index = 6
 
 [node name="ServicesHdrs" type="HBoxContainer" parent="TabContainer/Services" unique_id=61892508]
 unique_name_in_owner = true

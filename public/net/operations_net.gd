@@ -279,7 +279,8 @@ func get_electricity_rate(type: int, positive_only := false) -> float:
 
 
 func get_extraction_rate(type: int) -> float:
-	return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
+	#return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
+	return get_effective_rate(type)
 
 
 func get_mass_conversion_rate(type: int) -> float:
