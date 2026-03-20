@@ -74,10 +74,9 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	var path_format := "res://public/tables/%s.tsv"
 	
 	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
-	tables.compositions = path_format % "compositions"
 	tables.facilities = path_format % "facilities"
-	tables.module_classes = path_format % "module_classes"
-	tables.modules = path_format % "modules"
+	#tables.module_classes = path_format % "module_classes"
+	#tables.modules = path_format % "modules"
 	tables.op_classes = path_format % "op_classes"
 	tables.op_groups = path_format % "op_groups"
 	tables.operations = path_format % "operations"
@@ -86,22 +85,21 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.resource_classes = path_format % "resource_classes"
 	tables.resources = path_format % "resources"
 	tables.spacecrafts = path_format % "spacecrafts" # ivoyager replacement!
+	
 	tables.strata = path_format % "strata"
+	tables.stratum_groups = path_format % "stratum_groups"
 	tables.surveys = path_format % "surveys"
 	tables.views = path_format % "views" # ivoyager replacement!
 	# primary table mods (modify existing ivoyager tables)
-	#tables.asset_adjustments_mod = path_format % "asset_adjustments_mod"
 	tables.planets_mod = path_format % "planets_mod"
 	tables.moons_mod = path_format % "moons_mod"
 	# entity x entity tables
-	tables.compositions_resources_deposits = path_format % "compositions_resources_deposits"
-	tables.compositions_resources_proportions = path_format % "compositions_resources_proportions"
-	tables.compositions_resources_variances = path_format % "compositions_resources_variances"
 	tables.facilities_inventories = path_format % "facilities_inventories"
 	tables.facilities_operations_capacities = path_format % "facilities_operations_capacities"
 	tables.facilities_operations_capacity_factors = path_format % "facilities_operations_capacity_factors"
 	tables.facilities_operations_extractions = path_format % "facilities_operations_extractions"
 	tables.facilities_populations = path_format % "facilities_populations"
+	tables.strata_resources = path_format % "strata_resources"
 
 
 func _on_data_tables_postprocessed() -> void:

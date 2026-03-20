@@ -1,22 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://gx25hb7eiwyc"]
+[gd_scene format=3 uid="uid://gx25hb7eiwyc"]
 
 [ext_resource type="Script" uid="uid://b8q8xibf7e2q5" path="res://public/ui/tab_resources.gd" id="1_f7hkn"]
 
-[node name="TabResources" type="MarginContainer"]
+[node name="TabResources" type="MarginContainer" unique_id=1220276871]
 offset_right = 289.0
 offset_bottom = 23.0
 size_flags_horizontal = 3
 script = ExtResource("1_f7hkn")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1554209960]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="CompositionsVBox" type="VBoxContainer" parent="ScrollContainer"]
+[node name="StrataVBox" type="VBoxContainer" parent="ScrollContainer" unique_id=864077271]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MissingLabel" type="Label" parent="."]
+[node name="MissingLabel" type="Label" parent="." unique_id=120448634]
 layout_mode = 2
 text = "LABEL_NO_RESOURCES_PARENTHESIS"
 horizontal_alignment = 1

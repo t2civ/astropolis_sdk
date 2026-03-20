@@ -77,10 +77,6 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(_prices)
-	_sync.set_floats_dirty(_prices, 64)
 	_sync.set_floats_dirty(_bids)
-	_sync.set_floats_dirty(_bids, 64)
 	_sync.set_floats_dirty(_asks)
-	_sync.set_floats_dirty(_asks, 64)
 	_sync.set_floats_dirty(_volumes)
-	_sync.set_floats_dirty(_volumes, 64)

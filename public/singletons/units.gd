@@ -84,8 +84,8 @@ const GRAVITATIONAL_CONSTANT := 6.67430e-11 * METER ** 3 / (KG * SECOND ** 2)
 # *********** Astropolis additions ***********
 
 const BIT := 1.0 # TODO: Backport to I, Voyager and use in unit_multipliers
-const FLOPS := 1.0 / SECOND # defined in-game as single-precision-equivilant
-const PUHR := 4e12 * FLOPS * HOUR # fictional 'processor unit hour': 4 TFLOPS * hr
+const FLOP := 1.0 # Time integral of FLOPS
+const FLOPS := FLOP / SECOND # Same as real-world FLOPS except FP32-equivilant
 const SPP := 1.0 # biodiversity (effective species)
 const USD := 1e-6
 const Q := 1.0 # Short for the QSNINDC ;)
@@ -224,17 +224,30 @@ var unit_multipliers: Dictionary[StringName, float] = {
 	&"t/h" : TONNE / HOUR,
 	
 	# computation
-	&"flops" : FLOPS,
-	&"kflops" : 1e3 * FLOPS,
-	&"Mflops" : 1e6 * FLOPS,
-	&"Gflops" : 1e9 * FLOPS,
-	&"Tflops" : 1e12 * FLOPS,
-	&"Pflops" : 1e15 * FLOPS,
-	&"Eflops" : 1e18 * FLOPS,
-	&"puhr" : PUHR, # fictional processor unit hour
-	&"kpuhr" : 1e3 * PUHR,
-	&"Mpuhr" : 1e6 * PUHR,
-	&"Gpuhr" : 1e9 * PUHR,
+	&"flop" : FLOP,
+	&"kflop" : 1e3 * FLOP,
+	&"Mflop" : 1e6 * FLOP,
+	&"Gflop" : 1e9 * FLOP,
+	&"Tflop" : 1e12 * FLOP,
+	&"Pflop" : 1e15 * FLOP,
+	&"Eflop" : 1e18 * FLOP,
+	&"Zflop" : 1e21 * FLOP,
+	&"Yflop" : 1e24 * FLOP,
+	&"Rflop" : 1e27 * FLOP,
+	&"Qflop" : 1e30 * FLOP,
+	
+	# computation rate
+	&"flop/s" : FLOPS,
+	&"kflop/s" : 1e3 * FLOPS,
+	&"Mflop/s" : 1e6 * FLOPS,
+	&"Gflop/s" : 1e9 * FLOPS,
+	&"Tflop/s" : 1e12 * FLOPS,
+	&"Pflop/s" : 1e15 * FLOPS,
+	&"Eflop/s" : 1e18 * FLOPS,
+	&"Zflop/s" : 1e21 * FLOPS,
+	&"Yflop/s" : 1e24 * FLOPS,
+	&"Rflop/s" : 1e27 * FLOPS,
+	&"Qflop/s" : 1e30 * FLOPS,
 	
 	# biodiversity
 	&"species" : SPP,

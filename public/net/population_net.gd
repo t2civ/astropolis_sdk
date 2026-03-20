@@ -125,14 +125,14 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 		_update_history(svr_qtr) # before new quarter changes
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
-	_sync.add_floats_delta(_numbers)
+	_sync.add_floats_delta_63(_numbers)
 	
 	if !_is_facility:
 		return
 	
-	_sync.set_floats_dirty(_intrinsic_growths)
-	_sync.set_floats_dirty(_carrying_capacities)
-	_sync.set_floats_dirty(_migration_pressures)
+	_sync.set_floats_dirty_63(_intrinsic_growths)
+	_sync.set_floats_dirty_63(_carrying_capacities)
+	_sync.set_floats_dirty_63(_migration_pressures)
 
 
 func _update_history(svr_qtr: int) -> void:

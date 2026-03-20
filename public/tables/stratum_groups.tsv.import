@@ -1,0 +1,14 @@
+[remap]
+
+importer="ivoyager.tables"
+type="IVTableResource"
+uid="uid://dwka0guh5s1ou"
+path="res://.godot/imported/stratum_groups.tsv-2521b15e958f1771d4029752c7dd48e4.tres"
+
+[deps]
+
+source_file="res://public/tables/stratum_groups.tsv"
+dest_files=["res://.godot/imported/stratum_groups.tsv-2521b15e958f1771d4029752c7dd48e4.tres"]
+
+[params]
+

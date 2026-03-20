@@ -38,7 +38,7 @@ var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
 var cyberspace: CyberspaceNet # when/if needed
 var marketplace: MarketplaceNet # when/if needed
-var compositions: Array[CompositionNet] = [] # resizable container - not threadsafe!
+var strata: Array[StratumNet] = [] # resizable container - not threadsafe!
 
 
 
@@ -179,76 +179,63 @@ func get_marketplace_price(type: int) -> float:
 	return marketplace.get_price(type)
 
 
-# Compositions
+# Strata
 
-func has_compositions() -> bool:
-	return !compositions.is_empty()
-
-
-func get_n_compositions() -> int:
-	return compositions.size()
+func has_strata() -> bool:
+	return !strata.is_empty()
 
 
-func get_composition_name(index: int) -> StringName:
-	return compositions[index].name
+func get_n_strata() -> int:
+	return strata.size()
 
 
-func get_composition_polity(index: int) -> StringName:
-	return compositions[index].polity_name
+func get_stratum_name(index: int) -> StringName:
+	return strata[index].name
 
 
-func get_composition_density(index: int) -> float:
-	return compositions[index].density
+func get_stratum_polity(index: int) -> StringName:
+	return strata[index].polity_name
 
 
-func get_composition_stratum_type(index: int) -> int:
-	return compositions[index].stratum_type
+func get_stratum_density(index: int) -> float:
+	return strata[index].density
+
+
+func get_stratum_stratum_type(index: int) -> int:
+	return strata[index].stratum_group
 
 
 func get_compostion_thickness(index: int) -> float:
-	return compositions[index].thickness
+	return strata[index].thickness
 
 
-func get_composition_volume(index: int) -> float:
-	return compositions[index].get_volume()
+func get_stratum_volume(index: int) -> float:
+	return strata[index].get_volume()
 
 
-func get_composition_total_mass(index: int) -> float:
-	return compositions[index].get_total_mass()
+func get_stratum_total_mass(index: int) -> float:
+	return strata[index].get_total_mass()
 
 
 func get_compostion_body_radius(index: int) -> float:
 	# TODO: depreciate this after we have access to IVBody properties
-	return compositions[index].body_radius
+	return strata[index].body_radius
 
 
-func get_composition_masses(index: int) -> Array[float]:
-	return compositions[index].masses
+func get_stratum_masses(index: int) -> Array[float]:
+	return strata[index].masses
 
 
-func get_composition_variances(index: int) -> Array[float]:
-	return compositions[index].variances
+func get_stratum_dispersions(index: int) -> Array[float]:
+	return strata[index].dispersions
 
 
-func get_composition_survey_type(index: int) -> int:
-	return compositions[index].survey_type
+func get_stratum_survey_type(index: int) -> int:
+	return strata[index].survey_type
 
 
-func get_composition_mass_error_fraction(index: int, resource_type: int) -> float:
-	return compositions[index].get_mass_error_fraction(resource_type)
-
-
-func get_composition_variance(index: int, resource_type: int) -> float:
-	return compositions[index].get_variance(resource_type)
-
-
-func get_composition_variance_fraction(index: int, resource_type: int) -> float:
-	return compositions[index].get_variance_fraction(resource_type)
-
-
-func get_composition_deposit_fraction(index: int, resource_type: int, zero_if_no_boost := false
-		) -> float:
-	return compositions[index].get_deposit_fraction(resource_type, zero_if_no_boost)
+func get_stratum_resource_data(index: int, resource_type: int) -> Array[float]:
+	return strata[index].get_resource_data(resource_type)
 
 
 # *****************************************************************************
@@ -269,7 +256,7 @@ func set_network_init(data: Array) -> void:
 	var biome_data: Array = data[10]
 	var cyberspace_data: Array = data[11]
 	var marketplace_data: Array = data[12]
-	var compositions_data: Array = data[13]
+	var strata_data: Array = data[13]
 	
 	if operations_data:
 		operations = OperationsNet.new(true)
@@ -286,20 +273,20 @@ func set_network_init(data: Array) -> void:
 	if marketplace_data:
 		marketplace = MarketplaceNet.new(true)
 		marketplace.set_network_init(marketplace_data)
-	if compositions_data:
-		var n_compositions := compositions_data.size()
-		compositions.resize(n_compositions)
+	if strata_data:
+		var n_strata := strata_data.size()
+		strata.resize(n_strata)
 		var i := 0
-		while i < n_compositions:
-			var composition_data: Array = compositions_data[i]
-			var composition := CompositionNet.new(true)
-			composition.set_network_init(composition_data)
-			compositions[i] = composition
+		while i < n_strata:
+			var stratum_data: Array = strata_data[i]
+			var stratum := StratumNet.new(true)
+			stratum.set_network_init(stratum_data)
+			strata[i] = stratum
 			i += 1
 	
 
 func sync_server_dirty(data: Array) -> void:
-	
+	const SIGN_BIT := 1 << 63
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
@@ -336,17 +323,48 @@ func sync_server_dirty(data: Array) -> void:
 			marketplace = MarketplaceNet.new(true)
 		marketplace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
-	if dirty & DIRTY_COMPOSITIONS:
-		var dirty_compositions := offsets[k]
-		k += 1
-		var i := 0
-		while dirty_compositions:
-			if dirty_compositions & 1:
-				var composition: CompositionNet = compositions[i]
-				composition.add_dirty(data, offsets[k], offsets[k + 1])
-				k += 2
-			i += 1
-			dirty_compositions >>= 1
+	if dirty & DIRTY_STRATA:
+		var flag_index := 0
+		var more_dirty := 1
+		while more_dirty:
+			var dirty_strata := offsets[k]
+			k += 1
+			more_dirty = dirty_strata & SIGN_BIT
+			dirty_strata &= ~SIGN_BIT
+			var i := flag_index * 63
+			while dirty_strata:
+				if dirty_strata & 1:
+					var stratum := strata[i]
+					stratum.add_dirty(data, offsets[k], offsets[k + 1])
+					k += 2
+				i += 1
+				dirty_strata >>= 1
+			flag_index += 1
+		
+		
+		
+		
+		
+		#var dirty_strata_1 := offsets[k]
+		#k += 1
+		#var i := 0
+		#while dirty_strata_1:
+			#if dirty_strata_1 & 1:
+				#var stratum := strata[i]
+				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
+				#k += 2
+			#i += 1
+			#dirty_strata_1 >>= 1
+		#var dirty_strata_2 := offsets[k]
+		#k += 1
+		#i = 63
+		#while dirty_strata_2:
+			#if dirty_strata_2 & 1:
+				#var stratum := strata[i]
+				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
+				#k += 2
+			#i += 1
+			#dirty_strata_2 >>= 1
 	
 	
 	assert(int_data[0] >= run_qtr)

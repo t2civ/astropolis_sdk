@@ -15,7 +15,7 @@ extends RefCounted
 # Arrays indexed by operation_type, except where noted.
 #
 # 'est_' financials are Facility & Player only.
-# '_op_logics' and '_op_commands' are Facility only.
+# '_op_flags' and '_op_commands' are Facility only.
 # All vars are Interface read-only except for '_op_commands', which has the only
 # data that flows Interface -> Server. Use API to set!
 #
@@ -25,19 +25,22 @@ extends RefCounted
 # change into mineral mines overnight, but may shift slowly by attrition and
 # replacement).
 
-enum OpLogics { # current state and why
-	IS_IDLE_UNPROFITABLE,
-	IS_IDLE_COMMAND,
-	MINIMIZE_UNPROFITABLE,
-	MINIMIZE_COMMAND,
-	MAINTAIN_COMMAND,
-	RUN_50_PERCENT_COMMAND,
-	MAXIMIZE_NEW_MARKET,
-	MAXIMIZE_PROFITABLE,
-	MAXIMIZE_SHORTAGES,
-	MAXIMIZE_COMMITMENTS,
-	MAXIMIZE_COMMAND,
-	N_OP_LOGICS,
+enum OpFlags {
+	# Op availability
+	CAN_HAVE = 1,
+	
+	# Run logics
+	IS_IDLE_UNPROFITABLE = 1 << 5,
+	IS_IDLE_COMMAND = 1 << 6,
+	MINIMIZE_UNPROFITABLE = 1 << 7,
+	MINIMIZE_COMMAND = 1 << 8,
+	MAINTAIN_COMMAND = 1 << 9,
+	RUN_50_PERCENT_COMMAND = 1 << 10,
+	MAXIMIZE_NEW_MARKET = 1 << 11,
+	MAXIMIZE_PROFITABLE = 1 << 12,
+	MAXIMIZE_SHORTAGES = 1 << 13,
+	MAXIMIZE_COMMITMENTS = 1 << 14,
+	MAXIMIZE_COMMAND = 1 << 15,
 }
 
 enum OpCommands {
@@ -54,7 +57,6 @@ enum {
 	DIRTY_GROSS_OUTPUT_LFQ = 1,
 	DIRTY_CONSTRUCTIONS = 1 << 1,
 	DIRTY_NOMINAL_INFORMATION = 1 << 2,
-	DIRTY_OPERATIONS_LIST = 1 << 3,
 }
 
 
@@ -76,7 +78,7 @@ var _cogs_rates: Array[float] # cost of goods sold; at current rate & prices
 
 # Facility only
 var _gross_margins: Array[float] # at current prices (even if rate = 0)
-var _op_logics: Array[int] # enum; Facility only
+var _op_flags: Array[int] # enum; Facility only
 
 # Facility only. '_op_commands' are AI or player settable from FacilityInterface.
 # Use API! (Direct change will break!) Data flows Interface -> Server.
@@ -86,12 +88,11 @@ var _target_utilizations: Array[float]
 # Operations data here
 var _has_financials := false
 var _is_facility := false
-var _operations_list: Array[int] # facility only; all types we have or want for margin test
+
+
 
 # interface dirty data (dirty indexes as bit flags)
-var _dirty_op_commands_1 := 0
-var _dirty_op_commands_2 := 0
-var _dirty_op_commands_3 := 0 # max 192
+var _dirty_op_commands: Array[int] = []
 
 var _sync := SyncHelper.new()
 
@@ -132,9 +133,12 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	if !_is_facility:
 		return
 	_gross_margins = arrays.init_array(_n_operations, NAN, TYPE_FLOAT)
-	_op_logics = arrays.init_array(_n_operations, OpLogics.IS_IDLE_UNPROFITABLE, TYPE_INT)
+	_op_flags = arrays.init_array(_n_operations, OpFlags.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
 	_target_utilizations = arrays.init_array(_n_operations, 1.0, TYPE_FLOAT)
+	@warning_ignore("integer_division")
+	var n_op_flags := (_n_operations - 1) / 63 + 1
+	_op_commands.resize(n_op_flags)
 
 
 # ********************************** READ *************************************
@@ -203,25 +207,20 @@ func is_facility() -> bool:
 	return _is_facility
 
 
-func get_facility_operations_of_interest() -> Array[int]:
-	# Facility only. Facilities may have interest in operations they don't
-	# have yet.
-	return _operations_list
-
-
-func get_operations_of_interest() -> Array[int]:
-	# Facilities may have interest in operations they don't have yet. All
-	# others return a list of operations for which they have capacity > 0.0.
-	if _is_facility:
-		return _operations_list
-	var result: Array[int] = []
-	for type in _n_operations:
-		if _capacities[type]:
-			result.append(type)
-	return result
-
 
 # operation-specific
+
+func is_can_have(type: int) -> bool:
+	if _is_facility:
+		return bool(_op_flags[type] & OpFlags.CAN_HAVE)
+	return false
+
+
+func is_of_interest(type: int) -> bool:
+	if _is_facility:
+		return bool(_op_flags[type] & OpFlags.CAN_HAVE)
+	return _capacities[type] > 0.0
+
 
 func get_run_rate(type: int) -> float:
 	return _run_rates[type]
@@ -280,7 +279,8 @@ func get_electricity_rate(type: int, positive_only := false) -> float:
 
 
 func get_extraction_rate(type: int) -> float:
-	return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
+	#return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
+	return get_effective_rate(type)
 
 
 func get_mass_conversion_rate(type: int) -> float:
@@ -326,6 +326,22 @@ func is_singular(type: int) -> bool:
 
 
 # op_group-specific
+
+func is_can_have_group(op_group: int) -> bool:
+	var op_group_ops: Array[int] = _op_group_operations[op_group]
+	for type in op_group_ops:
+		if is_can_have(type):
+			return true
+	return false
+
+
+func is_of_interest_group(op_group: int) -> bool:
+	var op_group_ops: Array[int] = _op_group_operations[op_group]
+	for type in op_group_ops:
+		if is_of_interest(type):
+			return true
+	return false
+
 
 func get_n_operations_in_group(op_group: int) -> int:
 	var op_group_ops: Array[int] = _op_group_operations[op_group]
@@ -422,12 +438,7 @@ func set_op_command(type: int, command: int) -> void:
 	if _op_commands[type] == command:
 		return
 	_op_commands[type] = command
-	if type < 64:
-		_dirty_op_commands_1 |= 1 << type
-	elif type < 128:
-		_dirty_op_commands_2 |= 1 << (type - 64)
-	else:
-		_dirty_op_commands_3 |= 1 << (type - 128)
+	_sync.set_dirty(_dirty_op_commands, type)
 
 # ********************************** SYNC *************************************
 
@@ -443,7 +454,7 @@ func set_network_init(data: Array) -> void:
 	_revenue_rates = data[8]
 	_cogs_rates = data[9]
 	_gross_margins = data[10]
-	_op_logics = data[11]
+	_op_flags = data[11]
 	_op_commands = data[12]
 	_target_utilizations = data[13]
 	_has_financials = data[14]
@@ -474,41 +485,23 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_crews)
 	_sync.add_floats_delta(_capacities)
-	_sync.add_floats_delta(_capacities, 64)
-	_sync.add_floats_delta(_capacities, 128)
 	_sync.add_floats_delta(_run_rates)
-	_sync.add_floats_delta(_run_rates, 64)
-	_sync.add_floats_delta(_run_rates, 128)
 	_sync.add_floats_delta(_effective_rates)
-	_sync.add_floats_delta(_effective_rates, 64)
-	_sync.add_floats_delta(_effective_rates, 128)
 	
 	if !_has_financials:
 		return
 	
 	_sync.add_floats_delta(_revenue_rates)
-	_sync.add_floats_delta(_revenue_rates, 64)
-	_sync.add_floats_delta(_revenue_rates, 128)
 	_sync.add_floats_delta(_cogs_rates)
-	_sync.add_floats_delta(_cogs_rates, 64)
-	_sync.add_floats_delta(_cogs_rates, 128)
 
 	if !_is_facility:
 		return
 	
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
-	_sync.set_floats_dirty(_gross_margins, 64) # not accumulator!
-	_sync.set_floats_dirty(_gross_margins, 128) # not accumulator!
-	_sync.set_ints_dirty(_op_logics) # not accumulator!
-	_sync.set_ints_dirty(_op_logics, 64) # not accumulator!
-	_sync.set_ints_dirty(_op_logics, 128) # not accumulator!
+	_sync.set_ints_dirty(_op_flags) # not accumulator!
 
 
 func get_interface_dirty() -> Array:
 	# TODO: parallel server pattern
 	var data := []
-	#_append_dirty(data, _op_commands, _dirty_op_commands_1)
-	#_append_dirty(data, _op_commands, _dirty_op_commands_2, 64)
-	#_dirty_op_commands_1 = 0
-	#_dirty_op_commands_2 = 0
 	return data

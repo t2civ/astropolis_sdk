@@ -9,8 +9,27 @@ class_name Utils
 extends Object
 
 
+# Indexes 0 to 62 indexed by 2^index. Index 63 isn't available because the sign
+# bit (1 << 63) can't be shifted.
+const BIT_INDEXES: Dictionary[int, int] = { # indexed by power-of-2s from 2^0 to 2^62
+	1 << 0 : 0, 1 << 1 : 1, 1 << 2 : 2, 1 << 3 : 3, 1 << 4 : 4,
+	1 << 5 : 5, 1 << 6 : 6, 1 << 7 : 7, 1 << 8 : 8, 1 << 9 : 9,
+	1 << 10 : 10, 1 << 11 : 11, 1 << 12 : 12, 1 << 13 : 13, 1 << 14 : 14,
+	1 << 15 : 15, 1 << 16 : 16, 1 << 17 : 17, 1 << 18 : 18, 1 << 19 : 19,
+	1 << 20 : 20, 1 << 21 : 21, 1 << 22 : 22, 1 << 23 : 23, 1 << 24 : 24,
+	1 << 25 : 25, 1 << 26 : 26, 1 << 27 : 27, 1 << 28 : 28, 1 << 29 : 29, 
+	1 << 30 : 30, 1 << 31 : 31, 1 << 32 : 32, 1 << 33 : 33, 1 << 34 : 34,
+	1 << 35 : 35, 1 << 36 : 36, 1 << 37 : 37, 1 << 38 : 38, 1 << 39 : 39,
+	1 << 40 : 40, 1 << 41 : 41, 1 << 42 : 42, 1 << 43 : 43, 1 << 44 : 44,
+	1 << 45 : 45, 1 << 46 : 46, 1 << 47 : 47, 1 << 48 : 48, 1 << 49 : 49,
+	1 << 50 : 50, 1 << 51 : 51, 1 << 52 : 52, 1 << 53 : 53, 1 << 54 : 54,
+	1 << 55 : 55, 1 << 56 : 56, 1 << 57 : 57, 1 << 58 : 58, 1 << 59 : 59,
+	1 << 60 : 60, 1 << 61 : 61, 1 << 62 : 62
+}
 
-const LOG2_64 := { # indexed by power-of-2s from 2^0 to 2^63
+
+# FIXME: Remove unusable sign bit.
+const LOG2_64: Dictionary[int, int] = { # indexed by power-of-2s from 2^0 to 2^63
 	1 << 0 : 0, 1 << 1 : 1, 1 << 2 : 2, 1 << 3 : 3, 1 << 4 : 4,
 	1 << 5 : 5, 1 << 6 : 6, 1 << 7 : 7, 1 << 8 : 8, 1 << 9 : 9,
 	1 << 10 : 10, 1 << 11 : 11, 1 << 12 : 12, 1 << 13 : 13, 1 << 14 : 14,
@@ -159,7 +178,10 @@ static func deduct_weighted_float_arrays(base: Array[Array], base_weights: Array
 				base[i][j] = (base[i][j] * base_weights[i] - deduct[i][j] * deduct_weights[i]) / divisor
 
 
-static func normalize_float_array(array: Array[float], normalized_sum: float) -> void:
+## If [param error_inf] is set, zero-sum condition is indicated by INF at index
+## 0 (only). Default behavior is to return a zero-sum array unchanged.
+static func normalize_float_array(array: Array[float], normalized_sum := 1.0,
+		error_inf := false) -> void:
 	# if array sums to 0.0, returns an array of INF values
 	var sum := 0.0
 	var size := array.size()
@@ -168,7 +190,8 @@ static func normalize_float_array(array: Array[float], normalized_sum: float) ->
 		sum += array[i]
 		i += 1
 	if sum == 0.0:
-		array.fill(INF) # test array[0] == INF for failure
+		if error_inf:
+			array[0] = INF # test array[0] == INF for zero sum condition
 		return
 	var multiplier := normalized_sum / sum
 	i = 0
