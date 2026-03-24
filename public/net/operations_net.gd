@@ -70,7 +70,7 @@ var _crews: Array[float] # indexed by population_type (can have crew w/out Popul
 
 var _capacities: Array[float] # set by facility modules
 var _run_rates: Array[float] # <= capacities; defines operation utilization
-var _effective_rates: Array[float] # almost always <= run_rates
+var _effective_rates: Array[float] # may differ from run rates, usually less
 
 # Facility, Player only (_has_financials = true)
 var _revenue_rates: Array[float] # at current rate & prices
@@ -279,8 +279,7 @@ func get_electricity_rate(type: int, positive_only := false) -> float:
 
 
 func get_extraction_rate(type: int) -> float:
-	#return get_effective_rate(type) * _table_operations[&"extraction_multiplier"][type]
-	return get_effective_rate(type)
+	return get_effective_rate(type) * _table_operations[&"target_rate"][type]
 
 
 func get_mass_conversion_rate(type: int) -> float:
