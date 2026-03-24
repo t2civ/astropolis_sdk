@@ -40,3 +40,5 @@ CRUST_MARIA		x
 # Mars-specific		
 NORTH_POLAR_CAP		x
 SOUTH_POLAR_CAP		x
+# Titan-specific		
+LIQ_HYDROCARBON_BODIES		
