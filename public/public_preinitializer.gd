@@ -118,8 +118,8 @@ func _on_program_objects_instantiated() -> void:
 	
 	# table additions (subtables, re-indexings, or other useful table items)
 	var db_tables := IVTableData.db_tables
-	var table_n_rows: Dictionary = IVTableData.table_n_rows
-	var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+	var table_n_rows := IVTableData.table_n_rows
+	var tables_aux := ThreadsafeGlobal.tables_aux
 	
 	# unique items
 	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type",
@@ -128,6 +128,10 @@ func _on_program_objects_instantiated() -> void:
 	# table row subsets (arrays of row_types)
 	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
 	tables_aux[&"extraction_resources"] = extraction_resources
+	var volatile_resources := IVTableData.get_db_true_rows(&"resources", &"is_volatile")
+	var volatile_extraction_resources := IVArrays.get_intersection(volatile_resources,
+			extraction_resources)
+	tables_aux[&"volatile_extraction_resources"] = volatile_extraction_resources
 	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"process_group",
 			Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION)
 	tables_aux[&"extraction_operations"] = extraction_operations

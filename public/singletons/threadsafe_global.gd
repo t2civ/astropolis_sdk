@@ -13,7 +13,7 @@ extends Node
 # localized to base classes (Interface, NetRef, etc.) for quicker access.
 
 
-static var tables_aux := {} # derived tables & indexing; see public_preinitializer.gd
+static var tables_aux: Dictionary[StringName, Variant] = {} # see public_preinitializer.gd
 
 # settings
 var total_biodiversity_pool := 1.3e6 * IVUnits.SPP
