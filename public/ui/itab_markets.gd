@@ -54,7 +54,7 @@ var current_tab: int = TAB_ENERGY
 var _on_ready_tab: int = TAB_ENERGY
 
 
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 var _suppress_tab_listener := true
 
 var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)

@@ -21,7 +21,7 @@ signal ai_thread_called(callable: Callable)
 
 const utils := preload("res://public/static/utils.gd")
 
-var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, etc.
+var interfaces_by_name: Dictionary[StringName, Variant] = {} # PLANET_EARTH, PLAYER_NASA, etc.
 var body_selection_redirect := {} # redirect to single facility or local player facility
 
 

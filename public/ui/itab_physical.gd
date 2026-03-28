@@ -13,7 +13,7 @@ const SCENE := "res://public/ui/itab_physical.tscn"
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = []
 
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 
 var _body_name: StringName
 var _selection_name: StringName

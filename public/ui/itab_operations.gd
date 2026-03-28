@@ -61,7 +61,7 @@ var headers_texts: Array[Array] = [
 
 
 var _unit_multipliers := IVUnits.unit_multipliers
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 var _suppress_tab_listener := true
 
 #var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
