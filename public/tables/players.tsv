@@ -1,4 +1,4 @@
-	player_class	is_start	gui_hide	is_playable	part_of	polity	homeworld
+name\Field	player_class	is_start	gui_hide	is_playable	part_of	polity	homeworld
 Type	Enums.PlayerClasses	BOOL	BOOL	BOOL	TABLE_ROW	STRING_NAME	STRING_NAME
 Default		TRUE					PLANET_EARTH
 Unit							
