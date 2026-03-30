@@ -98,9 +98,11 @@ var _sync := SyncHelper.new()
 
 # localized indexing & table data
 static var _db_tables := IVTableData.db_tables
-static var _table_n_rows: Dictionary = IVTableData.table_n_rows
-static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-static var _table_operations: Dictionary
+static var _table_n_rows := IVTableData.table_n_rows
+static var _tables_aux := ThreadsafeGlobal.tables_aux
+static var _table_modules: Dictionary[StringName, Array]
+static var _module_operations: Array[Array]
+static var _table_operations: Dictionary[StringName, Array]
 static var _n_operations: int
 static var _operation_electricities: Array[float]
 static var _operation_process_groups: Array[int]
@@ -112,6 +114,8 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
+		_table_modules = _db_tables[&"modules"]
+		_module_operations = _table_modules[&"operations"]
 		_table_operations = _db_tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
 		_operation_electricities = _table_operations[&"electricity"]
@@ -146,11 +150,6 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 
 # dev totals
 
-func get_crew(population_type := -1) -> float:
-	const utils := preload("uid://bxjs8bk7ksxr2")
-	if population_type == -1:
-		return utils.get_float_array_sum(_crews)
-	return _crews[population_type]
 	
 
 func get_gross_output_lfq() -> float:
@@ -206,6 +205,23 @@ func has_financials() -> bool:
 func is_facility() -> bool:
 	return _is_facility
 
+
+# modules & crew
+
+func get_module_number(module_type: int) -> float:
+	var op_types: Array[int] = _module_operations[module_type]
+	var module_number := 0.0
+	for op_type in op_types:
+		module_number += _capacities[op_type]
+	return module_number
+
+
+# FIXME: We have capacity and actual.
+func get_crew(population_type := -1) -> float:
+	const utils := preload("uid://bxjs8bk7ksxr2")
+	if population_type == -1:
+		return utils.get_float_array_sum(_crews)
+	return _crews[population_type]
 
 
 # operation-specific

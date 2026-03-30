@@ -75,8 +75,9 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	
 	tables.carrying_capacity_groups = path_format % "carrying_capacity_groups"
 	tables.facilities = path_format % "facilities"
-	#tables.module_classes = path_format % "module_classes"
-	#tables.modules = path_format % "modules"
+	tables.facilities_modules = path_format % "facilities_modules"
+	tables.facilities_operations = path_format % "facilities_operations"
+	tables.modules = path_format % "modules"
 	tables.op_classes = path_format % "op_classes"
 	tables.op_groups = path_format % "op_groups"
 	tables.operations = path_format % "operations"
@@ -95,9 +96,8 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.moons_mod = path_format % "moons_mod"
 	# entity x entity tables
 	tables.facilities_inventories = path_format % "facilities_inventories"
-	tables.facilities_operations_capacities = path_format % "facilities_operations_capacities"
-	tables.facilities_operations_capacity_factors = path_format % "facilities_operations_capacity_factors"
-	tables.facilities_operations_extractions = path_format % "facilities_operations_extractions"
+	tables.facilities_modules = path_format % "facilities_modules"
+	tables.facilities_operations = path_format % "facilities_operations"
 	tables.facilities_populations = path_format % "facilities_populations"
 	tables.strata_resources = path_format % "strata_resources"
 
