@@ -19,8 +19,8 @@ extends RefCounted
 # All vars are Interface read-only except for '_op_commands', which has the only
 # data that flows Interface -> Server. Use API to set!
 #
-# Each op_group has 1 or more operations and is (for all purposes) the sum of
-# its operations. Some op_groups can shift more easily among their ops (e.g.,
+# Each module has 1 or more operations and is (for all purposes) the sum of
+# its operations. Some modules can shift more easily among their ops (e.g.,
 # refining). Others shift only over very long periods (e.g., iron mines don't
 # change into mineral mines overnight, but may shift slowly by attrition and
 # replacement).
@@ -99,14 +99,13 @@ var _sync := SyncHelper.new()
 # localized indexing & table data
 static var _db_tables := IVTableData.db_tables
 static var _table_n_rows := IVTableData.table_n_rows
-static var _tables_aux := ThreadsafeGlobal.tables_aux
+#static var _tables_aux := ThreadsafeGlobal.tables_aux
 static var _table_modules: Dictionary[StringName, Array]
 static var _module_operations: Array[Array]
 static var _table_operations: Dictionary[StringName, Array]
 static var _n_operations: int
 static var _operation_electricities: Array[float]
 static var _operation_process_groups: Array[int]
-static var _op_group_operations: Array[Array]
 static var _is_class_instanced := false
 
 
@@ -120,7 +119,6 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 		_n_operations = _table_n_rows[&"operations"]
 		_operation_electricities = _table_operations[&"electricity"]
 		_operation_process_groups = _table_operations[&"process_group"]
-		_op_group_operations = _tables_aux[&"op_groups_operations"]
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_
@@ -326,123 +324,6 @@ func get_computation(type: int, positive_only := false) -> float:
 	if positive_only:
 		return 0.0
 	return get_run_rate(type) * base_computation # user or NAN
-
-
-func get_n_operations_in_same_group(type: int) -> int:
-	var op_group: int = _table_operations[&"op_group"][type]
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	return op_group_ops.size()
-
-
-func is_singular(type: int) -> bool:
-	var op_group: int = _table_operations[&"op_group"][type]
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	return op_group_ops.size() == 1
-
-
-# op_group-specific
-
-func is_can_have_group(op_group: int) -> bool:
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	for type in op_group_ops:
-		if is_can_have(type):
-			return true
-	return false
-
-
-func is_of_interest_group(op_group: int) -> bool:
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	for type in op_group_ops:
-		if is_of_interest(type):
-			return true
-	return false
-
-
-func get_n_operations_in_group(op_group: int) -> int:
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	return op_group_ops.size()
-
-
-func get_group_utilization(op_group: int) -> float:
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	var sum_capacities := 0.0
-	for type in op_group_ops:
-		sum_capacities += get_capacity(type)
-	if sum_capacities == 0.0:
-		return 0.0
-	var sum_rates := 0.0
-	for type in op_group_ops:
-		sum_rates += get_run_rate(type)
-	return sum_rates / sum_capacities
-
-
-func get_group_electricity(op_group: int) -> float:
-	var sum := 0.0
-	for type: int in _op_group_operations[op_group]:
-		sum += get_electricity_rate(type)
-	return sum
-
-
-func get_group_revenue(op_group: int) -> float:
-	if !_has_financials:
-		return NAN
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	var sum := 0.0
-	for type in op_group_ops:
-		sum += _revenue_rates[type]
-	return sum
-
-
-func get_group_cogs_rate(op_group: int) -> float:
-	if !_has_financials:
-		return NAN
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	var sum := 0.0
-	for type in op_group_ops:
-		sum += get_cogs_rate(type)
-	return sum
-
-
-func get_group_gross_margin(op_group: int) -> float:
-	if !_has_financials:
-		return NAN
-	var op_group_ops: Array[int] = _op_group_operations[op_group]
-	var sum_cogs := 0.0
-	var sum_revenue := 0.0
-	for type in op_group_ops:
-		sum_cogs += get_cogs_rate(type)
-		sum_revenue += get_revenue_rate(type)
-	if sum_revenue == 0.0:
-		return NAN
-	return (sum_revenue - sum_cogs) / sum_revenue
-
-
-func get_group_extraction_rate(op_group: int) -> float:
-	var sum := 0.0
-	for type: int in _op_group_operations[op_group]:
-		sum += get_extraction_rate(type)
-	return sum
-
-
-func get_group_mass_conversion_rate(op_group: int) -> float:
-	var sum := 0.0
-	for type: int in _op_group_operations[op_group]:
-		sum += get_mass_conversion_rate(type)
-	return sum
-
-
-func get_group_fuel_rate(op_group: int) -> float:
-	var sum := 0.0
-	for type: int in _op_group_operations[op_group]:
-		sum += get_fuel_rate(type)
-	return sum
-
-
-func get_group_computation(op_group: int) -> float:
-	var sum := 0.0
-	for type: int in _op_group_operations[op_group]:
-		sum += get_computation(type)
-	return sum
 
 
 # module-specific

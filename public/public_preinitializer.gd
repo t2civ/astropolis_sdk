@@ -79,7 +79,6 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.facilities_operations = path_format % "facilities_operations"
 	tables.modules = path_format % "modules"
 	tables.op_classes = path_format % "op_classes"
-	tables.op_groups = path_format % "op_groups"
 	tables.operations = path_format % "operations"
 	tables.players = path_format % "players"
 	tables.populations = path_format % "populations"
@@ -137,42 +136,17 @@ func _on_program_objects_instantiated() -> void:
 	tables_aux[&"extraction_operations"] = extraction_operations
 	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
 	var n_resources: int = table_n_rows[&"resources"]
-	tables_aux[&"resource_extractions"] = Utils.invert_subset_indexing(extraction_resources, n_resources)
+	tables_aux[&"resource_extractions"] = Utils.invert_subset_indexing(extraction_resources,
+			n_resources)
 	var n_operations: int = table_n_rows[&"operations"]
-	tables_aux[&"operation_extractions"] = Utils.invert_subset_indexing(extraction_operations, n_operations)
+	tables_aux[&"operation_extractions"] = Utils.invert_subset_indexing(extraction_operations,
+			n_operations)
 	# one-to-many indexing (arrays of arrays)
-	var op_group_op_classes: Array[int] = db_tables[&"op_groups"][&"op_class"]
+	var module_op_classes: Array[int] = db_tables[&"modules"][&"op_class"]
 	var n_op_classes: int = table_n_rows[&"op_classes"]
-	tables_aux[&"op_classes_op_groups"] = Utils.invert_many_to_one_indexing(op_group_op_classes,
-			n_op_classes) # an array of op_groups for each op_class
-	var operation_op_groups: Array[int] = db_tables[&"operations"][&"op_group"]
-	var n_op_groups: int = table_n_rows[&"op_groups"]
-	tables_aux[&"op_groups_operations"] = Utils.invert_many_to_one_indexing(operation_op_groups,
-			n_op_groups) # an array of operations for each op_group
-	# module -> op_class derived from first operation's op_group
-	var module_operations: Array[Array] = db_tables[&"modules"][&"operations"]
-	var n_modules: int = table_n_rows[&"modules"]
-	var op_classes_modules: Array[Array] = []
-	op_classes_modules.resize(n_op_classes)
-	for i in n_op_classes:
-		op_classes_modules[i] = [] as Array[int]
-	for module_type in n_modules:
-		var ops: Array = module_operations[module_type]
-		if ops.is_empty():
-			continue
-		var first_op: int = ops[0]
-		var og: int = operation_op_groups[first_op]
-		op_classes_modules[op_group_op_classes[og]].append(module_type)
-	tables_aux[&"op_classes_modules"] = op_classes_modules
+	tables_aux[&"op_classes_modules"] = Utils.invert_many_to_one_indexing(
+			module_op_classes, n_op_classes) # modules for each op_class
 	var resource_resource_classes: Array[int] = db_tables[&"resources"][&"resource_class"]
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
-			resource_resource_classes, n_resource_classes) # an array of resources for each resource_class
-	
-	# error testing
-	for operation_type in IVTableData.get_n_rows(&"operations"):
-		# Test redundant 'process_group' in operations.tsv and op_groups.tsv.
-		var op_group := IVTableData.get_db_int(&"operations", &"op_group", operation_type)
-		var process_group := IVTableData.get_db_int(&"operations", &"process_group", operation_type)
-		assert(process_group == IVTableData.get_db_int(&"op_groups", &"process_group", op_group),
-				"Inconsistant 'process_group' in 'operations.tsv' and 'op_groups.tsv'")
+			resource_resource_classes, n_resource_classes) # resources for each resource_class
