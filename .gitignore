@@ -19,5 +19,6 @@
 # ignore in whitelist
 addons/ivoyager_assets/
 *.translation
+__pycache__/
 ~*
 
