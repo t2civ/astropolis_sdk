@@ -149,6 +149,21 @@ func _on_program_objects_instantiated() -> void:
 	var n_op_groups: int = table_n_rows[&"op_groups"]
 	tables_aux[&"op_groups_operations"] = Utils.invert_many_to_one_indexing(operation_op_groups,
 			n_op_groups) # an array of operations for each op_group
+	# module -> op_class derived from first operation's op_group
+	var module_operations: Array[Array] = db_tables[&"modules"][&"operations"]
+	var n_modules: int = table_n_rows[&"modules"]
+	var op_classes_modules: Array[Array] = []
+	op_classes_modules.resize(n_op_classes)
+	for i in n_op_classes:
+		op_classes_modules[i] = [] as Array[int]
+	for module_type in n_modules:
+		var ops: Array = module_operations[module_type]
+		if ops.is_empty():
+			continue
+		var first_op: int = ops[0]
+		var og: int = operation_op_groups[first_op]
+		op_classes_modules[op_group_op_classes[og]].append(module_type)
+	tables_aux[&"op_classes_modules"] = op_classes_modules
 	var resource_resource_classes: Array[int] = db_tables[&"resources"][&"resource_class"]
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(

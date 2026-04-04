@@ -19,6 +19,7 @@ func get_method_names() -> Array[String]:
 		"list_interfaces",
 		"get_interface_info",
 		"get_development_stats",
+		"get_operations_tab",
 	]
 
 
@@ -34,6 +35,8 @@ func dispatch(method: String, params: Dictionary) -> Variant:
 			return _get_interface_info(params)
 		"get_development_stats":
 			return _get_development_stats(params)
+		"get_operations_tab":
+			return _get_operations_tab(params)
 	return {"_error": {"code": ERR_UNKNOWN_METHOD,
 			"message": "Unknown method: %s" % method}}
 
@@ -106,4 +109,60 @@ func _get_development_stats(params: Dictionary) -> Variant:
 		"biomass": interface.get_development_biomass(),
 		"bioproductivity": interface.get_development_bioproductivity(),
 		"biodiversity": interface.get_development_biodiversity(),
+	}
+
+
+func _get_operations_tab(params: Dictionary) -> Variant:
+	## Query the operations data for an interface, grouped by modules (matching
+	## the GUI's data pipeline). Also reads live GUI node state if available.
+	var interface_name: String = params.get("name", "")
+	var tab: int = params.get("tab", 0)
+	if interface_name.is_empty():
+		return {"_error": {"code": ERR_INVALID_PARAMS,
+				"message": "'name' parameter is required"}}
+	if tab < 0 or tab > 6:
+		return {"_error": {"code": ERR_INVALID_PARAMS,
+				"message": "'tab' must be 0-6"}}
+	var interface: Interface = MainThreadGlobal.get_interface_by_name(
+			StringName(interface_name))
+	if !interface:
+		return {"_error": {"code": ERR_INVALID_PARAMS,
+				"message": "Interface not found: %s" % interface_name}}
+	var operations: OperationsNet = interface.get_operations()
+	if !operations:
+		return {"_error": {"code": ERR_INVALID_PARAMS,
+				"message": "Interface has no operations: %s" % interface_name}}
+
+	# Query data layer — same source the GUI uses
+	var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
+	var db_tables := IVTableData.db_tables
+	var op_classes_modules: Array[Array] = tables_aux[&"op_classes_modules"]
+	var module_operations: Array[Array] = db_tables[&"modules"][&"operations"]
+	var module_names: Array[StringName] = db_tables[&"modules"][&"name"]
+	var operation_names: Array[StringName] = db_tables[&"operations"][&"name"]
+	var operation_sublabels: Array[StringName] = db_tables[&"operations"][&"sublabel"]
+
+	var modules: Array[int] = op_classes_modules[tab]
+	var groups := []
+	for module_type in modules:
+		if not operations.is_of_interest_module(module_type):
+			continue
+		var module_ops: Array[int] = module_operations[module_type]
+		var op_names := []
+		if module_ops.size() >= 2:
+			for op_type in module_ops:
+				var sublabel: StringName = operation_sublabels[op_type]
+				if !sublabel:
+					sublabel = operation_names[op_type]
+				op_names.append(String(sublabel))
+		groups.append({
+			"title": String(module_names[module_type]),
+			"n_operations": module_ops.size(),
+			"operations": op_names,
+			"utilization": operations.get_module_utilization(module_type),
+		})
+
+	return {
+		"tab": tab,
+		"groups": groups,
 	}

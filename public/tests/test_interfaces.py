@@ -30,6 +30,24 @@ class AstropolisTestRunner:
         self.client = client
         self.g = generic_runner  # reuse its assertion helpers and counters
 
+    # Old op_group names that should NOT appear as group titles.
+    OP_GROUP_NAMES = {
+        "OP_GROUP_SOLAR_POWER", "OP_GROUP_GEOTHERMAL_POWER",
+        "OP_GROUP_KINETIC_POWER", "OP_GROUP_COMBUSTION_POWER",
+        "OP_GROUP_FUEL_CELLS", "OP_GROUP_NUCLEAR_POWER",
+    }
+
+    # Module names expected in the Energy tab (with MODULE_ prefix from table).
+    ENERGY_MODULE_NAMES = {
+        "MODULE_SOLAR_ARRAYS", "MODULE_GEOTHERMAL_PLANTS",
+        "MODULE_HYDROELECTRIC_DAMS", "MODULE_WIND_FARMS",
+        "MODULE_TIDAL_POWER_STATIONS", "MODULE_COMBUSTION_POWER_PLANTS",
+        "MODULE_FUEL_CELLS", "MODULE_LEU_NUCLEAR_PLANTS",
+        "MODULE_HEU_NUCLEAR_REACTORS", "MODULE_THORIUM_NUCLEAR_PLANTS",
+        "MODULE_D_T_FUSION_PLANTS", "MODULE_D_3HE_FUSION_PLANTS",
+        "MODULE_3HE_3HE_FUSION_PLANTS", "MODULE_RADIOISOTOPE_GENERATORS",
+    }
+
     def run_all(self, economy=False):
         print("\n=== Astropolis Interface Tests ===\n")
 
@@ -38,6 +56,7 @@ class AstropolisTestRunner:
         self.test_interface_info()
         self.test_instant_development_stats()
         self.test_short_time_stats()
+        self.test_operations_tab_modules()
         if economy:
             self.test_economy_stats()
         else:
@@ -137,6 +156,77 @@ class AstropolisTestRunner:
                          "PLANET_EARTH.power (after ~10 days)")
         self.g.assert_gt(result.get("manufacturing", 0), 0,
                          "PLANET_EARTH.manufacturing (after ~10 days)")
+
+    def test_operations_tab_modules(self):
+        """Verify the Operations data groups by modules, not op_groups."""
+        print("[test_operations_tab_modules]")
+
+        # Energy tab = 0, query data layer for PLANET_EARTH
+        resp = self.client.call("get_operations_tab",
+                                {"name": "PLANET_EARTH", "tab": 0})
+        result = resp.get("result", {})
+        self.g.assert_true("error" not in resp,
+                           "get_operations_tab returned successfully")
+
+        groups = result.get("groups", [])
+        group_names = [g["title"] for g in groups]
+
+        self.g.assert_true(len(groups) > 0,
+                           "Energy tab has module groups (%d found)"
+                           % len(groups))
+
+        # Verify groups are module names, not op_group names
+        for name in group_names:
+            is_module = name in self.ENERGY_MODULE_NAMES
+            not_old_opgroup = name not in self.OP_GROUP_NAMES or name == "FUEL_CELLS"
+            self.g.assert_true(is_module or not_old_opgroup,
+                               "Group '%s' is a module name (not an op_group)"
+                               % name)
+
+        # Expect at least these modules for Earth
+        self.g.assert_true("MODULE_SOLAR_ARRAYS" in group_names,
+                           "MODULE_SOLAR_ARRAYS in Energy tab")
+        self.g.assert_true("MODULE_COMBUSTION_POWER_PLANTS" in group_names,
+                           "MODULE_COMBUSTION_POWER_PLANTS in Energy tab")
+
+        # COMBUSTION_POWER_PLANTS should have child operations (7 fuel types)
+        for g in groups:
+            if g["title"] == "MODULE_COMBUSTION_POWER_PLANTS":
+                n_ops = len(g.get("operations", []))
+                self.g.assert_true(n_ops >= 2,
+                                   "COMBUSTION_POWER_PLANTS has child ops (%d)"
+                                   % n_ops)
+                break
+
+        # Single-op modules should have no child operations listed
+        for g in groups:
+            if g["title"] == "MODULE_SOLAR_ARRAYS":
+                n_ops = len(g.get("operations", []))
+                self.g.assert_true(n_ops == 0,
+                                   "SOLAR_ARRAYS (single-op) has no child rows"
+                                   " (%d found)" % n_ops)
+                break
+
+        # Use generic GUI inspection to verify ITabOperations node exists
+        if self.g.has_cap("gui_inspection"):
+            resp2 = self.client.call("find_nodes",
+                                     {"script_class": "ITabOperations"})
+            result2 = resp2.get("result", {})
+            nodes = result2.get("nodes", [])
+            self.g.assert_true(len(nodes) > 0,
+                               "ITabOperations found via generic find_nodes"
+                               " (%d)" % len(nodes))
+            if nodes:
+                path = nodes[0]["path"]
+                resp3 = self.client.call("read_node_text",
+                                         {"path": path, "max_labels": 50})
+                result3 = resp3.get("result", {})
+                entries = result3.get("entries", [])
+                print("  Generic GUI inspection: %d entries at %s"
+                      % (len(entries), path))
+        else:
+            print("  GUI inspection: not available (gui_inspection cap"
+                  " missing)")
 
     def test_economy_stats(self):
         """Economy needs ~1 game year of LFQ data. Use --economy flag."""
