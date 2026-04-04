@@ -445,6 +445,110 @@ func get_group_computation(op_group: int) -> float:
 	return sum
 
 
+# module-specific
+
+func is_can_have_module(module_type: int) -> bool:
+	var module_ops: Array[int] = _module_operations[module_type]
+	for type in module_ops:
+		if is_can_have(type):
+			return true
+	return false
+
+
+func is_of_interest_module(module_type: int) -> bool:
+	var module_ops: Array[int] = _module_operations[module_type]
+	for type in module_ops:
+		if is_of_interest(type):
+			return true
+	return false
+
+
+func get_n_operations_in_module(module_type: int) -> int:
+	var module_ops: Array[int] = _module_operations[module_type]
+	return module_ops.size()
+
+
+func get_module_utilization(module_type: int) -> float:
+	var module_ops: Array[int] = _module_operations[module_type]
+	var sum_capacities := 0.0
+	for type in module_ops:
+		sum_capacities += get_capacity(type)
+	if sum_capacities == 0.0:
+		return 0.0
+	var sum_rates := 0.0
+	for type in module_ops:
+		sum_rates += get_run_rate(type)
+	return sum_rates / sum_capacities
+
+
+func get_module_electricity(module_type: int) -> float:
+	var sum := 0.0
+	for type: int in _module_operations[module_type]:
+		sum += get_electricity_rate(type)
+	return sum
+
+
+func get_module_revenue(module_type: int) -> float:
+	if !_has_financials:
+		return NAN
+	var module_ops: Array[int] = _module_operations[module_type]
+	var sum := 0.0
+	for type in module_ops:
+		sum += _revenue_rates[type]
+	return sum
+
+
+func get_module_cogs_rate(module_type: int) -> float:
+	if !_has_financials:
+		return NAN
+	var module_ops: Array[int] = _module_operations[module_type]
+	var sum := 0.0
+	for type in module_ops:
+		sum += get_cogs_rate(type)
+	return sum
+
+
+func get_module_gross_margin(module_type: int) -> float:
+	if !_has_financials:
+		return NAN
+	var module_ops: Array[int] = _module_operations[module_type]
+	var sum_cogs := 0.0
+	var sum_revenue := 0.0
+	for type in module_ops:
+		sum_cogs += get_cogs_rate(type)
+		sum_revenue += get_revenue_rate(type)
+	if sum_revenue == 0.0:
+		return NAN
+	return (sum_revenue - sum_cogs) / sum_revenue
+
+
+func get_module_extraction_rate(module_type: int) -> float:
+	var sum := 0.0
+	for type: int in _module_operations[module_type]:
+		sum += get_extraction_rate(type)
+	return sum
+
+
+func get_module_mass_conversion_rate(module_type: int) -> float:
+	var sum := 0.0
+	for type: int in _module_operations[module_type]:
+		sum += get_mass_conversion_rate(type)
+	return sum
+
+
+func get_module_fuel_rate(module_type: int) -> float:
+	var sum := 0.0
+	for type: int in _module_operations[module_type]:
+		sum += get_fuel_rate(type)
+	return sum
+
+
+func get_module_computation(module_type: int) -> float:
+	var sum := 0.0
+	for type: int in _module_operations[module_type]:
+		sum += get_computation(type)
+	return sum
+
 
 # **************************** INTERFACE MODIFY *******************************
 
