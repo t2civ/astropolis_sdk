@@ -98,7 +98,7 @@ const INTERVAL := 7.0 * IVUnits.DAY
 
 
 static var interfaces: Array[Interface] = [] # indexed by interface_id
-static var interfaces_by_name := {} # PLANET_EARTH, PLAYER_NASA, JOIN_OFFWORLD, etc.
+static var interfaces_by_name: Dictionary[StringName, Interface] = {} # PLAYER_NASA, JOIN_OFFWORLD, etc.
 
 static var ai_bus := AIBus.new()
 
