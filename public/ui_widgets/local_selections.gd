@@ -15,7 +15,7 @@ extends MarginContainer
 #    Offworld Facilities (-> in orbit or satellite bodies w/ facility)
 #    System Facilities (star selection only; -> in orbit or satellite bodies w/ facility)
 
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 var _selection_lookup: Dictionary[String, StringName] = {} # item text -> selection name
 
 var _polities: Array[String] = []

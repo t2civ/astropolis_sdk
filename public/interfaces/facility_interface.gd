@@ -41,6 +41,8 @@ var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
 var cyberspace: CyberspaceNet # when/if needed
 
+# exposed for IVSelectionManager
+var texture_2d: Texture2D # for now, just the IVBody.texture_2d
 
 
 func _init() -> void:
@@ -222,6 +224,10 @@ func set_network_init(data: Array) -> void:
 	if cyberspace_data:
 		cyberspace = CyberspaceNet.new(true)
 		cyberspace.set_network_init(cyberspace_data)
+	
+	# IVSelectionManager
+	var ivbody := IVBody.bodies[body.name]
+	texture_2d = ivbody.texture_2d
 
 
 func sync_server_dirty(data: Array) -> void:

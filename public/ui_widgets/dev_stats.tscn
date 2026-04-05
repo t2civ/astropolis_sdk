@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://c420hurdjt53n"]
+[gd_scene format=3 uid="uid://c420hurdjt53n"]
 
 [ext_resource type="Script" uid="uid://c480t3cso0yga" path="res://public/ui_widgets/dev_stats.gd" id="1_n73i3"]
 
-[node name="DevStats" type="MarginContainer"]
+[node name="DevStats" type="MarginContainer" unique_id=82357196]
 offset_left = 7.0
 offset_top = 7.0
 offset_right = 17.0
@@ -15,12 +15,12 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 script = ExtResource("1_n73i3")
 
-[node name="Grid" type="GridContainer" parent="."]
+[node name="Grid" type="GridContainer" parent="." unique_id=1700839772]
 layout_mode = 2
 theme_override_constants/h_separation = 10
 columns = 2
 
-[node name="BlankCell" type="Control" parent="Grid"]
+[node name="BlankCell" type="Control" parent="Grid" unique_id=832366357]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2

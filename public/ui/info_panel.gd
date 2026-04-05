@@ -32,7 +32,7 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 	&"is_pinned",
 ]
 
-var selection_manager: SelectionManager
+var selection_manager: AstroSelectionManager
 var is_pinned := false
 
 var _build_subpanels := false

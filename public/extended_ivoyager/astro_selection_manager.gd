@@ -1,20 +1,20 @@
-# selection_manager.gd
+# astro_selection_manager.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name SelectionManager
+class_name AstroSelectionManager
 extends IVSelectionManager
 
-# Everything here works on the main thread! NOT THREADSAFE!
-#
-# TODO: Support FacilityInterface, then any Interface and only Interfaces.
+
+# TODO?: Make body selections BodyInterface rather than IVBody?
 
 
 static func _static_init() -> void:
-	replacement_subclass = SelectionManager
+	replacement_subclass = AstroSelectionManager
+	add_selection_dictionary(MainThreadGlobal.interfaces_by_name)
 
 
 

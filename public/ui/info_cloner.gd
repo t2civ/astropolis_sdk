@@ -28,8 +28,8 @@ func _pin_info_panel(info_panel: InfoPanel) -> void:
 	print("Pin InfoPanel")
 
 	# clone selection_manager (clone doesn't get shortcut input)
-	var selection_manager: SelectionManager = info_panel.selection_manager
-	var sm_clone: SelectionManager = SelectionManager.new()
+	var selection_manager: AstroSelectionManager = info_panel.selection_manager
+	var sm_clone: AstroSelectionManager = AstroSelectionManager.new()
 	sm_clone.set_selection_and_history(selection_manager.get_selection_and_history())
 
 	# clone subpanel tree w/ persist properties

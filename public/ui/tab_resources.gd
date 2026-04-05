@@ -8,6 +8,9 @@
 class_name TabResources
 extends MarginContainer
 
+# FIXME: Initial open/close state is annoying. May be better to have everything
+# closed except "Commons" on bodies with no territories.
+
 
 const SUPER_OPEN_PREFIX := "\u2304 "
 const SUPER_CLOSED_PREFIX := "> "
@@ -22,9 +25,6 @@ var _db_tables := IVTableData.db_tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _is_extraction_resources: Array[int] = _tables_aux[&"extraction_resources"]
 var _n_is_extraction_resources := _is_extraction_resources.size()
-#var _resource_sort_overrides: Array[int] = _db_tables[&"resources"][&"sort_override"]
-var _init_opens: Array[bool] = _db_tables[&"strata"][&"gui_open"]
-#var _hide_dispersions: Array[bool] = _db_tables[&"resources"][&"hide_dispersions"]
 var _stratum_names: Array[StringName] = _db_tables[&"stratum_groups"][&"name"]
 var _survey_names: Array[StringName] = _db_tables[&"surveys"][&"name"]
 var _survey_substring: Array[StringName] = _db_tables[&"surveys"][&"substring"]
@@ -92,7 +92,6 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			init_open = polity_name == stratum_polity # "" == "" at body for commons
 			open_at_init.append(init_open)
 		var masses := body_interface.get_stratum_masses(i)
-		#var dispersions := body_interface.get_stratum_dispersions(i)
 		var total_mass := body_interface.get_stratum_total_mass(i)
 		var survey_type := body_interface.get_stratum_survey_type(i)
 		
@@ -114,11 +113,6 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			survey_name = _survey_names[survey_type]
 		
 		init_open = true
-		var stratum_name := body_interface.get_stratum_name(i)
-		var stratum_type: int = _stratum_types.get(stratum_name, -1)
-		if stratum_type != -1:
-			init_open = _init_opens[stratum_type]
-		
 		resources_data.append(total_mass)
 		resources_data.append(body_interface.get_stratum_density(i))
 		resources_data.append(body_interface.get_compostion_thickness(i))

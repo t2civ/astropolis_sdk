@@ -1,95 +1,176 @@
-	gui_open	generic_body_class	body	body_radius	polity	stratum_group	depth	thickness	spherical_fraction	area	volume	density	mass	survey_level	#survey_note
-Type	BOOL	TABLE_ROW	STRING_NAME	FLOAT	STRING_NAME	TABLE_ROW	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING
-Unit				km			km	km		km^2	km^3	g/cm^3	kg		
-Default															
-Prefix/STRATUM_		BODY_CLASS_			POLITY_	STRATUM_GROUP_									
-PLANET_EARTH_ATMOSPHERE			PLANET_EARTH	6371		ATMOSPHERE	0	65	1	5.21e8	3.35e10	1.54e-4	5.15e18	10	Near-perfect knowledge; routine global atmospheric monitoring
-PLANET_EARTH_ANTARCTICA_CONT_ICE_BODIES			PLANET_EARTH	6371		ANTARCTIC_CONT_ICE_BODIES	0	2.14	0.0241	1.23e7	2.63e7	0.90	2.37e19	5.5	Extensive ice-core drilling and radar profiling; simple bulk composition
-PLANET_EARTH_OTHER_CONT_ICE_BODIES			PLANET_EARTH	6371	OTHER	CONT_ICE_BODIES	0	1.15	4.39e-3	2.24e6	2.58e6	0.90	2.32e18	6.0	Dominated by Greenland ice sheet; multiple deep ice cores (GRIP GISP2 NEEM)
-PLANET_EARTH_USA_CONT_SURFACE	x		PLANET_EARTH	6371	USA	CONT_SURFACE	0.1	0.1	0.0200	1.02e7	1.02e6	2.0	2.04e18	5.5	Extensive USGS surveys; includes Great Lakes and Alaska glaciers
-PLANET_EARTH_CHINA_CONT_SURFACE	x		PLANET_EARTH	6371	CHINA	CONT_SURFACE	0.1	0.1	0.0190	9.71e6	9.71e5	2.0	1.94e18	5.0	Broad exploration; includes Tibetan Plateau glaciers and major lakes
-PLANET_EARTH_EU_CONT_SURFACE	x		PLANET_EARTH	6371	EU	CONT_SURFACE	0.1	0.1	0.0101	5.15e6	5.15e5	2.0	1.03e18	6.0	Longest mining history; includes Alpine glaciers and extensive lake systems
-PLANET_EARTH_RUSSIA_CONT_SURFACE	x		PLANET_EARTH	6371	RUSSIA	CONT_SURFACE	0.1	0.1	0.0340	1.74e7	1.74e6	2.0	3.48e18	4.5	Soviet-era surveys extensive; includes Lake Baikal and Arctic island glaciers
-PLANET_EARTH_INDIA_CONT_SURFACE	x		PLANET_EARTH	6371	INDIA	CONT_SURFACE	0.1	0.1	0.00653	3.33e6	3.33e5	2.0	6.66e17	4.5	Major mining districts well explored; includes Himalayan glaciers and reservoirs
-PLANET_EARTH_JAPAN_CONT_SURFACE	x		PLANET_EARTH	6371	JAPAN	CONT_SURFACE	0.1	0.1	7.51e-4	3.83e5	3.83e4	2.0	7.66e16	5.5	Small territory; well-surveyed; includes Lake Biwa and other water bodies
-PLANET_EARTH_ANTARCTICA_CONT_SURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_SURFACE	0.1	0.1	0.0275	1.40e7	1.40e6	2.0	2.80e18	1.5	Ice-covered; minimal surface geological exploration
-PLANET_EARTH_OTHER_CONT_SURFACE			PLANET_EARTH	6371	OTHER	CONT_SURFACE	0.1	0.1	0.179	9.13e7	9.13e6	2.0	1.83e19	3.5	Highly variable by country; includes Canadian lakes and major mining nations
-PLANET_EARTH_USA_CONT_SHELF			PLANET_EARTH	6371	USA	CONT_SHELF	0.1	0.1	0.00484	2.47e6	2.47e5	2.0	4.94e17	4.5	Extensive OCS surveys; Gulf of Mexico and Atlantic sand/gravel well explored
-PLANET_EARTH_CHINA_CONT_SHELF			PLANET_EARTH	6371	CHINA	CONT_SHELF	0.1	0.1	0.00176	9.00e5	9.00e4	2.0	1.80e17	3.5	Active offshore exploration; South and East China Sea sediment characterized
-PLANET_EARTH_EU_CONT_SHELF			PLANET_EARTH	6371	EU	CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	5.0	North Sea thoroughly explored; extensive marine aggregate and geological mapping
-PLANET_EARTH_RUSSIA_CONT_SHELF			PLANET_EARTH	6371	RUSSIA	CONT_SHELF	0.1	0.1	0.0108	5.50e6	5.50e5	2.0	1.10e18	3.0	Vast Arctic shelf; significant potential but much remains unexplored
-PLANET_EARTH_INDIA_CONT_SHELF			PLANET_EARTH	6371	INDIA	CONT_SHELF	0.1	0.1	7.84e-4	4.00e5	4.00e4	2.0	8.00e16	3.5	Bombay High and western shelf surveyed; east coast heavy mineral sands characterized
-PLANET_EARTH_JAPAN_CONT_SHELF			PLANET_EARTH	6371	JAPAN	CONT_SHELF	0.1	0.1	7.84e-4	4.00e5	4.00e4	2.0	8.00e16	4.0	Limited shelf but well-surveyed; methane hydrate exploration active
-PLANET_EARTH_ANTARCTICA_CONT_SHELF			PLANET_EARTH	6371		ANTARCTIC_CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	1.0	Ice-covered shelf; very sparse geological data from limited coring
-PLANET_EARTH_OTHER_CONT_SHELF			PLANET_EARTH	6371	OTHER	CONT_SHELF	0.1	0.1	0.0220	1.12e7	1.12e6	2.0	2.24e18	3.0	Highly variable; includes major offshore mining provinces (Australia SE Asia W Africa)
-PLANET_EARTH_USA_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	USA	CONT_NEAR_SURFACE	0.5	0.4	0.0242	1.23e7	4.92e6	2.45	1.21e19	5.0	Well-explored mining zone; extensive open-pit and shallow underground operations
-PLANET_EARTH_CHINA_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	CHINA	CONT_NEAR_SURFACE	0.5	0.4	0.0206	1.05e7	4.20e6	2.45	1.03e19	4.5	Active mining exploration; many major open-pit operations
-PLANET_EARTH_EU_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	EU	CONT_NEAR_SURFACE	0.5	0.4	0.0137	7.00e6	2.80e6	2.45	6.86e18	5.5	Long mining tradition; thorough geological mapping to this depth
-PLANET_EARTH_RUSSIA_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	RUSSIA	CONT_NEAR_SURFACE	0.5	0.4	0.0443	2.26e7	9.04e6	2.45	2.21e19	4.0	Soviet-era mining surveys; vast remote areas less explored
-PLANET_EARTH_INDIA_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	INDIA	CONT_NEAR_SURFACE	0.5	0.4	0.00723	3.69e6	1.48e6	2.45	3.63e18	4.0	Major mining districts explored at depth; many areas with limited data
-PLANET_EARTH_JAPAN_CONT_NEAR_SURFACE	x		PLANET_EARTH	6371	JAPAN	CONT_NEAR_SURFACE	0.5	0.4	0.00153	7.78e5	3.11e5	2.45	7.62e17	4.5	Small territory well-characterized; limited mineral resources at depth
-PLANET_EARTH_ANTARCTICA_CONT_NEAR_SURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_NEAR_SURFACE	0.5	0.4	0.0314	1.60e7	6.40e6	2.45	1.57e19	0.8	Ice-covered; virtually no direct geological data at this depth
-PLANET_EARTH_OTHER_CONT_NEAR_SURFACE			PLANET_EARTH	6371	OTHER	CONT_NEAR_SURFACE	0.5	0.4	0.198	1.01e8	4.04e7	2.45	9.90e19	3.0	Highly variable; includes major mining regions and unexplored areas
-PLANET_EARTH_USA_CONT_SUBSURFACE			PLANET_EARTH	6371	USA	CONT_SUBSURFACE	2	1.5	0.0242	1.23e7	1.85e7	2.55	4.72e19	4.5	Extensive oil/gas/mining drilling data
-PLANET_EARTH_CHINA_CONT_SUBSURFACE			PLANET_EARTH	6371	CHINA	CONT_SUBSURFACE	2	1.5	0.0206	1.05e7	1.58e7	2.55	4.03e19	4.0	Significant mining and drilling; expanding exploration
-PLANET_EARTH_EU_CONT_SUBSURFACE			PLANET_EARTH	6371	EU	CONT_SUBSURFACE	2	1.5	0.0137	7.00e6	1.05e7	2.55	2.68e19	5.0	Deep mining tradition; North Sea drilling
-PLANET_EARTH_RUSSIA_CONT_SUBSURFACE			PLANET_EARTH	6371	RUSSIA	CONT_SUBSURFACE	2	1.5	0.0443	2.26e7	3.39e7	2.55	8.64e19	4.0	Extensive Soviet-era subsurface surveys
-PLANET_EARTH_INDIA_CONT_SUBSURFACE			PLANET_EARTH	6371	INDIA	CONT_SUBSURFACE	2	1.5	0.00723	3.69e6	5.54e6	2.55	1.41e19	3.5	Moderate drilling and mining depth
-PLANET_EARTH_JAPAN_CONT_SUBSURFACE			PLANET_EARTH	6371	JAPAN	CONT_SUBSURFACE	2	1.5	0.00153	7.78e5	1.17e6	2.55	2.98e18	4.0	Limited subsurface resources but well-characterized
-PLANET_EARTH_ANTARCTICA_CONT_SUBSURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_SUBSURFACE	2	1.5	0.0314	1.60e7	2.40e7	2.55	6.12e19	0.5	Virtually no subsurface data beneath ice sheet
-PLANET_EARTH_OTHER_CONT_SUBSURFACE			PLANET_EARTH	6371	OTHER	CONT_SUBSURFACE	2	1.5	0.198	1.01e8	1.52e8	2.55	3.88e20	2.5	Variable; many remote/under-explored regions
-PLANET_EARTH_USA_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	USA	CONT_DEEP_SUBSURFACE	5	3.0	0.0242	1.23e7	3.69e7	2.65	9.78e19	3.5	Extensive deep drilling for oil/gas; deep mine data in select districts
-PLANET_EARTH_CHINA_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	CHINA	CONT_DEEP_SUBSURFACE	5	3.0	0.0206	1.05e7	3.15e7	2.65	8.35e19	3.0	Growing deep drilling program; Tarim and Sichuan basin characterization
-PLANET_EARTH_EU_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	EU	CONT_DEEP_SUBSURFACE	5	3.0	0.0137	7.00e6	2.10e7	2.65	5.57e19	4.0	Deep mining tradition; North Sea deep wells; KTB borehole data
-PLANET_EARTH_RUSSIA_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	RUSSIA	CONT_DEEP_SUBSURFACE	5	3.0	0.0443	2.26e7	6.78e7	2.65	1.80e20	3.0	Extensive West Siberia deep drilling; some unique deep mine data
-PLANET_EARTH_INDIA_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	INDIA	CONT_DEEP_SUBSURFACE	5	3.0	0.00723	3.69e6	1.11e7	2.65	2.94e19	2.5	Some deep oil/gas wells; limited deep mining experience
-PLANET_EARTH_JAPAN_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	JAPAN	CONT_DEEP_SUBSURFACE	5	3.0	0.00153	7.78e5	2.33e6	2.65	6.17e18	3.0	Limited deep drilling; geothermal exploration provides some data
-PLANET_EARTH_ANTARCTICA_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_DEEP_SUBSURFACE	5	3.0	0.0314	1.60e7	4.80e7	2.65	1.27e20	0.3	No deep drilling; inferred from seismic and gravity models only
-PLANET_EARTH_OTHER_CONT_DEEP_SUBSURFACE			PLANET_EARTH	6371	OTHER	CONT_DEEP_SUBSURFACE	5	3.0	0.198	1.01e8	3.03e8	2.65	8.03e20	2.0	Variable; deep drilling in major oil provinces; mostly unexplored at depth
-PLANET_EARTH_USA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	USA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0242	1.23e7	8.61e7	2.75	2.37e20	1.5	Sparse ultra-deep drilling; seismic and gravity model constraints
-PLANET_EARTH_CHINA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	CHINA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0206	1.05e7	7.35e7	2.75	2.02e20	1.0	Limited ultra-deep drilling; seismic inference primarily
-PLANET_EARTH_EU_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	EU	CONT_EXTREME_SUBSURFACE	11	7.0	0.0137	7.00e6	4.90e7	2.75	1.35e20	1.5	KTB borehole (9.1 km) provides direct sampling; sparse elsewhere
-PLANET_EARTH_RUSSIA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	RUSSIA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0443	2.26e7	1.58e8	2.75	4.35e20	1.5	Kola Superdeep Borehole (12.3 km); unique direct data at this depth
-PLANET_EARTH_INDIA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	INDIA	CONT_EXTREME_SUBSURFACE	11	7.0	0.00723	3.69e6	2.58e7	2.75	7.10e19	0.8	Very limited deep data; seismic constraints only
-PLANET_EARTH_JAPAN_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	JAPAN	CONT_EXTREME_SUBSURFACE	11	7.0	0.00153	7.78e5	5.45e6	2.75	1.50e19	1.0	Deep geothermal wells provide some data; seismic characterization
-PLANET_EARTH_ANTARCTICA_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_EXTREME_SUBSURFACE	11	7.0	0.0314	1.60e7	1.12e8	2.75	3.08e20	0.3	No direct data; seismic and gravity models only
-PLANET_EARTH_OTHER_CONT_EXTREME_SUBSURFACE			PLANET_EARTH	6371	OTHER	CONT_EXTREME_SUBSURFACE	11	7.0	0.198	1.01e8	7.07e8	2.75	1.94e21	0.8	Very sparse ultra-deep drilling globally; mostly seismic inference
-PLANET_EARTH_USA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	USA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0242	1.23e7	9.84e7	2.85	2.80e20	0.5	No direct sampling; seismic velocity and gravity models only
-PLANET_EARTH_CHINA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	CHINA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0206	1.05e7	8.40e7	2.85	2.39e20	0.5	No direct sampling; seismic and gravity models only
-PLANET_EARTH_EU_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	EU	CONT_ULTRA_SUBSURFACE	20	8.0	0.0137	7.00e6	5.60e7	2.85	1.60e20	0.5	No direct sampling; seismic models and deep crustal xenolith constraints
-PLANET_EARTH_RUSSIA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	RUSSIA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0443	2.26e7	1.81e8	2.85	5.16e20	0.5	No direct sampling; Kola data extrapolated; seismic models
-PLANET_EARTH_INDIA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	INDIA	CONT_ULTRA_SUBSURFACE	20	8.0	0.00723	3.69e6	2.95e7	2.85	8.41e19	0.5	No direct sampling; seismic models only
-PLANET_EARTH_JAPAN_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	JAPAN	CONT_ULTRA_SUBSURFACE	20	8.0	0.00153	7.78e5	6.22e6	2.85	1.77e19	0.5	No direct sampling; seismic models only
-PLANET_EARTH_ANTARCTICA_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371		ANTARCTIC_CONT_ULTRA_SUBSURFACE	20	8.0	0.0314	1.60e7	1.28e8	2.85	3.65e20	0.3	No direct data; poorly constrained seismic and gravity models
-PLANET_EARTH_OTHER_CONT_ULTRA_SUBSURFACE			PLANET_EARTH	6371	OTHER	CONT_ULTRA_SUBSURFACE	20	8.0	0.198	1.01e8	8.08e8	2.85	2.30e21	0.5	No direct sampling; seismic models only
-PLANET_EARTH_USA_CONT_LOWER_CRUST			PLANET_EARTH	6371	USA	CONT_LOWER_CRUST	35	15.0	0.0242	1.23e7	1.85e8	2.95	5.46e20	0.5	Seismic velocity and xenolith constraints; no direct sampling
-PLANET_EARTH_CHINA_CONT_LOWER_CRUST			PLANET_EARTH	6371	CHINA	CONT_LOWER_CRUST	35	15.0	0.0206	1.05e7	1.58e8	2.95	4.66e20	0.5	Seismic models; North China Craton xenolith data
-PLANET_EARTH_EU_CONT_LOWER_CRUST			PLANET_EARTH	6371	EU	CONT_LOWER_CRUST	35	15.0	0.0137	7.00e6	1.05e8	2.95	3.10e20	0.5	Seismic models; Variscan and Caledonian xenolith constraints
-PLANET_EARTH_RUSSIA_CONT_LOWER_CRUST			PLANET_EARTH	6371	RUSSIA	CONT_LOWER_CRUST	35	15.0	0.0443	2.26e7	3.39e8	2.95	1.00e21	0.5	Seismic models; Siberian craton xenolith data
-PLANET_EARTH_INDIA_CONT_LOWER_CRUST			PLANET_EARTH	6371	INDIA	CONT_LOWER_CRUST	35	15.0	0.00723	3.69e6	5.54e7	2.95	1.63e20	0.5	Seismic models; Dharwar craton xenolith constraints
-PLANET_EARTH_JAPAN_CONT_LOWER_CRUST			PLANET_EARTH	6371	JAPAN	CONT_LOWER_CRUST	35	15.0	0.00153	7.78e5	1.17e7	2.95	3.45e19	0.5	Seismic models; active volcanic arc complicates structure
-PLANET_EARTH_ANTARCTICA_CONT_LOWER_CRUST			PLANET_EARTH	6371		ANTARCTIC_CONT_LOWER_CRUST	35	15.0	0.0314	1.60e7	2.40e8	2.95	7.08e20	0.3	Poorly constrained seismic and gravity models only
-PLANET_EARTH_OTHER_CONT_LOWER_CRUST			PLANET_EARTH	6371	OTHER	CONT_LOWER_CRUST	35	15.0	0.198	1.01e8	1.52e9	2.95	4.48e21	0.5	Seismic models; xenolith data from select cratons globally
-PLANET_EARTH_OCEAN			PLANET_EARTH	6371		OCEAN	3.69	3.69	0.708	3.61e8	1.33e9	1.025	1.36e21	8.0	Well-characterized bulk chemistry; extensive oceanographic data
-PLANET_EARTH_OCEAN_FLOOR			PLANET_EARTH	6371		OCEAN_FLOOR	3.79	0.1	0.659	3.36e8	3.36e7	1.8	6.05e19	2.0	DSDP/ODP/IODP sampling; vast areas unsampled
-PLANET_EARTH_OCEAN_CRUST			PLANET_EARTH	6371		OCEAN_CRUST	11	6.9	0.659	3.36e8	2.32e9	2.9	6.73e21	1.0	Inferred from ophiolites and sparse deep drilling; seismic constraints
-PLANET_EARTH_MANTLE			PLANET_EARTH	6371		MANTLE	2890	2871	1	5.07e8	8.97e11	4.47	4.01e24	0.5	Seismic tomography and gravity models; xenolith constraints only
-PLANET_EARTH_CORE			PLANET_EARTH	6371		CORE	6371	3481	1	1.52e8	1.77e11	11.0	1.95e24	0.3	Seismic + geochemical/cosmochemical models; no direct sampling
-MOON_MOON_POLAR_SHADED_REGOLITH	x		MOON_MOON	1737		POLAR_SHADED_REGOLITH	0.01	0.01	9e-4	3.41e4	3.41e2	1.5	5.12e14	1.0	LCROSS + radar; sparse characterization of PSRs
-MOON_MOON_REGOLITH	x		MOON_MOON	1737		REGOLITH	0.01	0.01	0.9991	3.79e7	3.79e5	1.5	5.69e17	2.5	Apollo/Luna samples + orbital remote sensing
-MOON_MOON_NEAR_SURFACE	x		MOON_MOON	1737		NEAR_SURFACE	1	0.99	1	3.79e7	3.75e7	2.2	8.25e19	1.5	Apollo seismic; very limited direct sampling at depth
-MOON_MOON_CRUST_TERRAE	x		MOON_MOON	1737		CRUST_TERRAE	60	59	0.83	3.15e7	1.79e9	2.80	5.01e21	2.0	Apollo highland samples; orbital spectroscopy
-MOON_MOON_CRUST_MARIA	x		MOON_MOON	1737		CRUST_MARIA	25	24	0.17	6.44e6	1.52e8	2.85	4.33e20	1.8	Apollo/Luna mare basalt samples; anorthositic substrate inferred from orbital + seismic data
-MOON_MOON_MANTLE			MOON_MOON	1737		MANTLE	1400	1340	1	3.54e7	1.96e10	3.40	6.66e22	0.5	Seismic and gravity models only
-MOON_MOON_CORE			MOON_MOON	1737		CORE	1737	337	1	1.43e6	1.60e8	7.0	1.12e21	0.3	Poorly constrained size and composition
-PLANET_MARS_ATMOSPHERE			PLANET_MARS	3390		ATMOSPHERE	0	100	1	1.53e8	1.51e10	1.7e-6	2.5e16	7.0	Well-characterized by Viking Curiosity Perseverance MAVEN; trace species less certain
-PLANET_MARS_NORTH_POLAR_CAP			PLANET_MARS	3390		NORTH_POLAR_CAP	1.4	1.4	5.5e-3	8.0e5	1.12e6	1.0	1.12e18	3.0	MARSIS/SHARAD radar profiling; Phoenix nearby; dust-layer stratigraphy resolved
-PLANET_MARS_SOUTH_POLAR_CAP			PLANET_MARS	3390		SOUTH_POLAR_CAP	1.3	1.3	8.3e-3	1.20e6	1.56e6	1.1	1.72e18	2.5	MARSIS radar; buried CO2 discovered but volume uncertain; less accessible than north
-PLANET_MARS_REGOLITH	x		PLANET_MARS	3390		REGOLITH	0.005	0.005	0.986	1.43e8	7.15e5	1.5	1.07e18	2.0	Six landing sites with APXS/CheMin analysis; orbital spectroscopy; vast unsampled areas
-PLANET_MARS_NEAR_SURFACE	x		PLANET_MARS	3390		NEAR_SURFACE	0.5	0.50	0.986	1.43e8	7.15e7	2.2	1.57e20	1.2	InSight seismic; neutron/radar ice mapping; no direct subsurface sampling
-PLANET_MARS_SUBSURFACE			PLANET_MARS	3390		SUBSURFACE	5	4.5	1	1.45e8	6.53e8	2.7	1.76e21	0.8	Radar hints of structure; theoretical models; no drilling data
-PLANET_MARS_DEEP_CRUST			PLANET_MARS	3390		DEEP_CRUST	50	45	1	1.44e8	6.41e9	2.9	1.86e22	0.5	InSight seismic layering; gravity models; SNC meteorite constraints
-PLANET_MARS_MANTLE			PLANET_MARS	3390		MANTLE	1700	1650	1	1.40e8	1.36e11	3.6	4.89e23	0.5	InSight seismic; SNC meteorite chemistry; mineral physics models
-PLANET_MARS_CORE			PLANET_MARS	3390		CORE	3390	1690	1	3.59e7	2.02e10	6.6	1.33e23	0.3	InSight seismic core shadow; moment of inertia; sulfur content highly uncertain
-MOON_PHOBOS_BULK			MOON_PHOBOS	11.1		BULK	11.1	11.1	1	1.55e3	5.73e3	1.87	1.07e16	1.5	Mars Express flybys; spectral and density data; no surface measurements
-MOON_DEIMOS_BULK			MOON_DEIMOS	6.2		BULK	6.2	6.2	1	4.83e2	1.00e3	1.47	1.47e15	1.0	Limited flyby imaging; density measurement; spectral class inferred
+name\Field	generic_body_class	body	body_radius	polity	stratum_group	depth	thickness	spherical_fraction	area	volume	density	mass	survey_level	#survey_note
+Type	TABLE_ROW	STRING_NAME	FLOAT	STRING_NAME	TABLE_ROW	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING
+Unit			km			km	km		km^2	km^3	g/cm^3	kg		
+Default														
+Prefix/STRATUM_	BODY_CLASS_			POLITY_	STRATUM_GROUP_									
+PLANET_MERCURY_POLAR_SHADED_REGOLITH		PLANET_MERCURY	2440		POLAR_SHADED_REGOLITH	0.01	0.01	5e-4	3.74e4	3.74e2	1.5	5.61e14	0.8	MESSENGER radar and thermal mapping of PSRs; no direct sampling
+PLANET_MERCURY_REGOLITH		PLANET_MERCURY	2440		REGOLITH	0.01	0.01	0.9995	7.48e7	7.48e5	1.5	1.12e18	1.5	MESSENGER orbital spectroscopy XRS GRS; no surface sampling
+PLANET_MERCURY_NEAR_SURFACE		PLANET_MERCURY	2440		NEAR_SURFACE	1	0.99	1	7.48e7	7.41e7	2.2	1.63e20	0.8	No seismic data; lunar megaregolith analog assumed; MESSENGER gravity constraints
+PLANET_MERCURY_CRUST		PLANET_MERCURY	2440		CRUST	35	34	1	7.47e7	2.51e9	2.9	7.28e21	1.0	MESSENGER XRS GRS spectral and gravity data; no subsurface sampling
+PLANET_MERCURY_MANTLE		PLANET_MERCURY	2440		MANTLE	420	385	1	7.27e7	2.37e10	3.3	7.82e22	0.3	MESSENGER gravity and libration; moment of inertia constraints only
+PLANET_MERCURY_CORE		PLANET_MERCURY	2440		CORE	2440	2020	1	5.13e7	3.45e10	7.0	2.42e23	0.3	MESSENGER libration confirms partially liquid outer core; composition uncertain
+PLANET_VENUS_ATMOSPHERE		PLANET_VENUS	6052		ATMOSPHERE	0	250	1	4.99e8	1.19e11	4.0e-3	4.76e20	5.0	Venera and Pioneer Venus probes; well-characterized bulk composition; cloud chemistry less certain
+PLANET_VENUS_SURFACE		PLANET_VENUS	6052		SURFACE	0.1	0.1	1	4.60e8	4.60e7	2.8	1.29e20	1.5	Venera 13/14 XRF at few sites; Magellan radar; very limited direct sampling
+PLANET_VENUS_NEAR_SURFACE		PLANET_VENUS	6052		NEAR_SURFACE	1	0.9	1	4.60e8	4.14e8	2.8	1.16e21	0.5	No subsurface data; basaltic assumed from Venera surface XRF
+PLANET_VENUS_SUBSURFACE		PLANET_VENUS	6052		SUBSURFACE	5	4	1	4.60e8	1.84e9	2.85	5.24e21	0.3	No direct data; Magellan gravity provides minimal constraint
+PLANET_VENUS_DEEP_CRUST		PLANET_VENUS	6052		DEEP_CRUST	30	25	1	4.60e8	1.15e10	2.9	3.34e22	0.3	Magellan gravity and topography; crustal thickness estimated 10-50 km; no seismic data
+PLANET_VENUS_MANTLE		PLANET_VENUS	6052		MANTLE	2852	2822	1	4.56e8	7.75e11	4.2	3.26e24	0.3	No seismic data; gravity models; volcanism implies vigorous convection
+PLANET_VENUS_CORE		PLANET_VENUS	6052		CORE	6052	3200	1	1.29e8	1.37e11	11.0	1.51e24	0.3	No seismic or magnetic data; moment of inertia poorly constrained
+PLANET_EARTH_ATMOSPHERE		PLANET_EARTH	6371		ATMOSPHERE	0	65	1	5.21e8	3.35e10	1.54e-4	5.15e18	10	Near-perfect knowledge; routine global atmospheric monitoring
+PLANET_EARTH_ANTARCTICA_CONT_ICE_BODIES		PLANET_EARTH	6371		ANTARCTIC_CONT_ICE_BODIES	0	2.14	0.0241	1.23e7	2.63e7	0.90	2.37e19	5.5	Extensive ice-core drilling and radar profiling; simple bulk composition
+PLANET_EARTH_OTHER_CONT_ICE_BODIES		PLANET_EARTH	6371	OTHER	CONT_ICE_BODIES	0	1.15	4.39e-3	2.24e6	2.58e6	0.90	2.32e18	6.0	Dominated by Greenland ice sheet; multiple deep ice cores (GRIP GISP2 NEEM)
+PLANET_EARTH_USA_CONT_SURFACE		PLANET_EARTH	6371	USA	CONT_SURFACE	0.1	0.1	0.0200	1.02e7	1.02e6	2.0	2.04e18	5.5	Extensive USGS surveys; includes Great Lakes and Alaska glaciers
+PLANET_EARTH_CHINA_CONT_SURFACE		PLANET_EARTH	6371	CHINA	CONT_SURFACE	0.1	0.1	0.0190	9.71e6	9.71e5	2.0	1.94e18	5.0	Broad exploration; includes Tibetan Plateau glaciers and major lakes
+PLANET_EARTH_EU_CONT_SURFACE		PLANET_EARTH	6371	EU	CONT_SURFACE	0.1	0.1	0.0101	5.15e6	5.15e5	2.0	1.03e18	6.0	Longest mining history; includes Alpine glaciers and extensive lake systems
+PLANET_EARTH_RUSSIA_CONT_SURFACE		PLANET_EARTH	6371	RUSSIA	CONT_SURFACE	0.1	0.1	0.0340	1.74e7	1.74e6	2.0	3.48e18	4.5	Soviet-era surveys extensive; includes Lake Baikal and Arctic island glaciers
+PLANET_EARTH_INDIA_CONT_SURFACE		PLANET_EARTH	6371	INDIA	CONT_SURFACE	0.1	0.1	0.00653	3.33e6	3.33e5	2.0	6.66e17	4.5	Major mining districts well explored; includes Himalayan glaciers and reservoirs
+PLANET_EARTH_JAPAN_CONT_SURFACE		PLANET_EARTH	6371	JAPAN	CONT_SURFACE	0.1	0.1	7.51e-4	3.83e5	3.83e4	2.0	7.66e16	5.5	Small territory; well-surveyed; includes Lake Biwa and other water bodies
+PLANET_EARTH_ANTARCTICA_CONT_SURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_SURFACE	0.1	0.1	0.0275	1.40e7	1.40e6	2.0	2.80e18	1.5	Ice-covered; minimal surface geological exploration
+PLANET_EARTH_OTHER_CONT_SURFACE		PLANET_EARTH	6371	OTHER	CONT_SURFACE	0.1	0.1	0.179	9.13e7	9.13e6	2.0	1.83e19	3.5	Highly variable by country; includes Canadian lakes and major mining nations
+PLANET_EARTH_USA_CONT_SHELF		PLANET_EARTH	6371	USA	CONT_SHELF	0.1	0.1	0.00484	2.47e6	2.47e5	2.0	4.94e17	4.5	Extensive OCS surveys; Gulf of Mexico and Atlantic sand/gravel well explored
+PLANET_EARTH_CHINA_CONT_SHELF		PLANET_EARTH	6371	CHINA	CONT_SHELF	0.1	0.1	0.00176	9.00e5	9.00e4	2.0	1.80e17	3.5	Active offshore exploration; South and East China Sea sediment characterized
+PLANET_EARTH_EU_CONT_SHELF		PLANET_EARTH	6371	EU	CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	5.0	North Sea thoroughly explored; extensive marine aggregate and geological mapping
+PLANET_EARTH_RUSSIA_CONT_SHELF		PLANET_EARTH	6371	RUSSIA	CONT_SHELF	0.1	0.1	0.0108	5.50e6	5.50e5	2.0	1.10e18	3.0	Vast Arctic shelf; significant potential but much remains unexplored
+PLANET_EARTH_INDIA_CONT_SHELF		PLANET_EARTH	6371	INDIA	CONT_SHELF	0.1	0.1	7.84e-4	4.00e5	4.00e4	2.0	8.00e16	3.5	Bombay High and western shelf surveyed; east coast heavy mineral sands characterized
+PLANET_EARTH_JAPAN_CONT_SHELF		PLANET_EARTH	6371	JAPAN	CONT_SHELF	0.1	0.1	7.84e-4	4.00e5	4.00e4	2.0	8.00e16	4.0	Limited shelf but well-surveyed; methane hydrate exploration active
+PLANET_EARTH_ANTARCTICA_CONT_SHELF		PLANET_EARTH	6371		ANTARCTIC_CONT_SHELF	0.1	0.1	0.00392	2.00e6	2.00e5	2.0	4.00e17	1.0	Ice-covered shelf; very sparse geological data from limited coring
+PLANET_EARTH_OTHER_CONT_SHELF		PLANET_EARTH	6371	OTHER	CONT_SHELF	0.1	0.1	0.0220	1.12e7	1.12e6	2.0	2.24e18	3.0	Highly variable; includes major offshore mining provinces (Australia SE Asia W Africa)
+PLANET_EARTH_USA_CONT_NEAR_SURFACE		PLANET_EARTH	6371	USA	CONT_NEAR_SURFACE	0.5	0.4	0.0242	1.23e7	4.92e6	2.45	1.21e19	5.0	Well-explored mining zone; extensive open-pit and shallow underground operations
+PLANET_EARTH_CHINA_CONT_NEAR_SURFACE		PLANET_EARTH	6371	CHINA	CONT_NEAR_SURFACE	0.5	0.4	0.0206	1.05e7	4.20e6	2.45	1.03e19	4.5	Active mining exploration; many major open-pit operations
+PLANET_EARTH_EU_CONT_NEAR_SURFACE		PLANET_EARTH	6371	EU	CONT_NEAR_SURFACE	0.5	0.4	0.0137	7.00e6	2.80e6	2.45	6.86e18	5.5	Long mining tradition; thorough geological mapping to this depth
+PLANET_EARTH_RUSSIA_CONT_NEAR_SURFACE		PLANET_EARTH	6371	RUSSIA	CONT_NEAR_SURFACE	0.5	0.4	0.0443	2.26e7	9.04e6	2.45	2.21e19	4.0	Soviet-era mining surveys; vast remote areas less explored
+PLANET_EARTH_INDIA_CONT_NEAR_SURFACE		PLANET_EARTH	6371	INDIA	CONT_NEAR_SURFACE	0.5	0.4	0.00723	3.69e6	1.48e6	2.45	3.63e18	4.0	Major mining districts explored at depth; many areas with limited data
+PLANET_EARTH_JAPAN_CONT_NEAR_SURFACE		PLANET_EARTH	6371	JAPAN	CONT_NEAR_SURFACE	0.5	0.4	0.00153	7.78e5	3.11e5	2.45	7.62e17	4.5	Small territory well-characterized; limited mineral resources at depth
+PLANET_EARTH_ANTARCTICA_CONT_NEAR_SURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_NEAR_SURFACE	0.5	0.4	0.0314	1.60e7	6.40e6	2.45	1.57e19	0.8	Ice-covered; virtually no direct geological data at this depth
+PLANET_EARTH_OTHER_CONT_NEAR_SURFACE		PLANET_EARTH	6371	OTHER	CONT_NEAR_SURFACE	0.5	0.4	0.198	1.01e8	4.04e7	2.45	9.90e19	3.0	Highly variable; includes major mining regions and unexplored areas
+PLANET_EARTH_USA_CONT_SUBSURFACE		PLANET_EARTH	6371	USA	CONT_SUBSURFACE	2	1.5	0.0242	1.23e7	1.85e7	2.55	4.72e19	4.5	Extensive oil/gas/mining drilling data
+PLANET_EARTH_CHINA_CONT_SUBSURFACE		PLANET_EARTH	6371	CHINA	CONT_SUBSURFACE	2	1.5	0.0206	1.05e7	1.58e7	2.55	4.03e19	4.0	Significant mining and drilling; expanding exploration
+PLANET_EARTH_EU_CONT_SUBSURFACE		PLANET_EARTH	6371	EU	CONT_SUBSURFACE	2	1.5	0.0137	7.00e6	1.05e7	2.55	2.68e19	5.0	Deep mining tradition; North Sea drilling
+PLANET_EARTH_RUSSIA_CONT_SUBSURFACE		PLANET_EARTH	6371	RUSSIA	CONT_SUBSURFACE	2	1.5	0.0443	2.26e7	3.39e7	2.55	8.64e19	4.0	Extensive Soviet-era subsurface surveys
+PLANET_EARTH_INDIA_CONT_SUBSURFACE		PLANET_EARTH	6371	INDIA	CONT_SUBSURFACE	2	1.5	0.00723	3.69e6	5.54e6	2.55	1.41e19	3.5	Moderate drilling and mining depth
+PLANET_EARTH_JAPAN_CONT_SUBSURFACE		PLANET_EARTH	6371	JAPAN	CONT_SUBSURFACE	2	1.5	0.00153	7.78e5	1.17e6	2.55	2.98e18	4.0	Limited subsurface resources but well-characterized
+PLANET_EARTH_ANTARCTICA_CONT_SUBSURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_SUBSURFACE	2	1.5	0.0314	1.60e7	2.40e7	2.55	6.12e19	0.5	Virtually no subsurface data beneath ice sheet
+PLANET_EARTH_OTHER_CONT_SUBSURFACE		PLANET_EARTH	6371	OTHER	CONT_SUBSURFACE	2	1.5	0.198	1.01e8	1.52e8	2.55	3.88e20	2.5	Variable; many remote/under-explored regions
+PLANET_EARTH_USA_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	USA	CONT_DEEP_SUBSURFACE	5	3.0	0.0242	1.23e7	3.69e7	2.65	9.78e19	3.5	Extensive deep drilling for oil/gas; deep mine data in select districts
+PLANET_EARTH_CHINA_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	CHINA	CONT_DEEP_SUBSURFACE	5	3.0	0.0206	1.05e7	3.15e7	2.65	8.35e19	3.0	Growing deep drilling program; Tarim and Sichuan basin characterization
+PLANET_EARTH_EU_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	EU	CONT_DEEP_SUBSURFACE	5	3.0	0.0137	7.00e6	2.10e7	2.65	5.57e19	4.0	Deep mining tradition; North Sea deep wells; KTB borehole data
+PLANET_EARTH_RUSSIA_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	RUSSIA	CONT_DEEP_SUBSURFACE	5	3.0	0.0443	2.26e7	6.78e7	2.65	1.80e20	3.0	Extensive West Siberia deep drilling; some unique deep mine data
+PLANET_EARTH_INDIA_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	INDIA	CONT_DEEP_SUBSURFACE	5	3.0	0.00723	3.69e6	1.11e7	2.65	2.94e19	2.5	Some deep oil/gas wells; limited deep mining experience
+PLANET_EARTH_JAPAN_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	JAPAN	CONT_DEEP_SUBSURFACE	5	3.0	0.00153	7.78e5	2.33e6	2.65	6.17e18	3.0	Limited deep drilling; geothermal exploration provides some data
+PLANET_EARTH_ANTARCTICA_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_DEEP_SUBSURFACE	5	3.0	0.0314	1.60e7	4.80e7	2.65	1.27e20	0.3	No deep drilling; inferred from seismic and gravity models only
+PLANET_EARTH_OTHER_CONT_DEEP_SUBSURFACE		PLANET_EARTH	6371	OTHER	CONT_DEEP_SUBSURFACE	5	3.0	0.198	1.01e8	3.03e8	2.65	8.03e20	2.0	Variable; deep drilling in major oil provinces; mostly unexplored at depth
+PLANET_EARTH_USA_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	USA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0242	1.23e7	8.61e7	2.75	2.37e20	1.5	Sparse ultra-deep drilling; seismic and gravity model constraints
+PLANET_EARTH_CHINA_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	CHINA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0206	1.05e7	7.35e7	2.75	2.02e20	1.0	Limited ultra-deep drilling; seismic inference primarily
+PLANET_EARTH_EU_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	EU	CONT_EXTREME_SUBSURFACE	11	7.0	0.0137	7.00e6	4.90e7	2.75	1.35e20	1.5	KTB borehole (9.1 km) provides direct sampling; sparse elsewhere
+PLANET_EARTH_RUSSIA_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	RUSSIA	CONT_EXTREME_SUBSURFACE	11	7.0	0.0443	2.26e7	1.58e8	2.75	4.35e20	1.5	Kola Superdeep Borehole (12.3 km); unique direct data at this depth
+PLANET_EARTH_INDIA_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	INDIA	CONT_EXTREME_SUBSURFACE	11	7.0	0.00723	3.69e6	2.58e7	2.75	7.10e19	0.8	Very limited deep data; seismic constraints only
+PLANET_EARTH_JAPAN_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	JAPAN	CONT_EXTREME_SUBSURFACE	11	7.0	0.00153	7.78e5	5.45e6	2.75	1.50e19	1.0	Deep geothermal wells provide some data; seismic characterization
+PLANET_EARTH_ANTARCTICA_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_EXTREME_SUBSURFACE	11	7.0	0.0314	1.60e7	1.12e8	2.75	3.08e20	0.3	No direct data; seismic and gravity models only
+PLANET_EARTH_OTHER_CONT_EXTREME_SUBSURFACE		PLANET_EARTH	6371	OTHER	CONT_EXTREME_SUBSURFACE	11	7.0	0.198	1.01e8	7.07e8	2.75	1.94e21	0.8	Very sparse ultra-deep drilling globally; mostly seismic inference
+PLANET_EARTH_USA_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	USA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0242	1.23e7	9.84e7	2.85	2.80e20	0.5	No direct sampling; seismic velocity and gravity models only
+PLANET_EARTH_CHINA_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	CHINA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0206	1.05e7	8.40e7	2.85	2.39e20	0.5	No direct sampling; seismic and gravity models only
+PLANET_EARTH_EU_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	EU	CONT_ULTRA_SUBSURFACE	20	8.0	0.0137	7.00e6	5.60e7	2.85	1.60e20	0.5	No direct sampling; seismic models and deep crustal xenolith constraints
+PLANET_EARTH_RUSSIA_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	RUSSIA	CONT_ULTRA_SUBSURFACE	20	8.0	0.0443	2.26e7	1.81e8	2.85	5.16e20	0.5	No direct sampling; Kola data extrapolated; seismic models
+PLANET_EARTH_INDIA_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	INDIA	CONT_ULTRA_SUBSURFACE	20	8.0	0.00723	3.69e6	2.95e7	2.85	8.41e19	0.5	No direct sampling; seismic models only
+PLANET_EARTH_JAPAN_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	JAPAN	CONT_ULTRA_SUBSURFACE	20	8.0	0.00153	7.78e5	6.22e6	2.85	1.77e19	0.5	No direct sampling; seismic models only
+PLANET_EARTH_ANTARCTICA_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371		ANTARCTIC_CONT_ULTRA_SUBSURFACE	20	8.0	0.0314	1.60e7	1.28e8	2.85	3.65e20	0.3	No direct data; poorly constrained seismic and gravity models
+PLANET_EARTH_OTHER_CONT_ULTRA_SUBSURFACE		PLANET_EARTH	6371	OTHER	CONT_ULTRA_SUBSURFACE	20	8.0	0.198	1.01e8	8.08e8	2.85	2.30e21	0.5	No direct sampling; seismic models only
+PLANET_EARTH_USA_CONT_LOWER_CRUST		PLANET_EARTH	6371	USA	CONT_LOWER_CRUST	35	15.0	0.0242	1.23e7	1.85e8	2.95	5.46e20	0.5	Seismic velocity and xenolith constraints; no direct sampling
+PLANET_EARTH_CHINA_CONT_LOWER_CRUST		PLANET_EARTH	6371	CHINA	CONT_LOWER_CRUST	35	15.0	0.0206	1.05e7	1.58e8	2.95	4.66e20	0.5	Seismic models; North China Craton xenolith data
+PLANET_EARTH_EU_CONT_LOWER_CRUST		PLANET_EARTH	6371	EU	CONT_LOWER_CRUST	35	15.0	0.0137	7.00e6	1.05e8	2.95	3.10e20	0.5	Seismic models; Variscan and Caledonian xenolith constraints
+PLANET_EARTH_RUSSIA_CONT_LOWER_CRUST		PLANET_EARTH	6371	RUSSIA	CONT_LOWER_CRUST	35	15.0	0.0443	2.26e7	3.39e8	2.95	1.00e21	0.5	Seismic models; Siberian craton xenolith data
+PLANET_EARTH_INDIA_CONT_LOWER_CRUST		PLANET_EARTH	6371	INDIA	CONT_LOWER_CRUST	35	15.0	0.00723	3.69e6	5.54e7	2.95	1.63e20	0.5	Seismic models; Dharwar craton xenolith constraints
+PLANET_EARTH_JAPAN_CONT_LOWER_CRUST		PLANET_EARTH	6371	JAPAN	CONT_LOWER_CRUST	35	15.0	0.00153	7.78e5	1.17e7	2.95	3.45e19	0.5	Seismic models; active volcanic arc complicates structure
+PLANET_EARTH_ANTARCTICA_CONT_LOWER_CRUST		PLANET_EARTH	6371		ANTARCTIC_CONT_LOWER_CRUST	35	15.0	0.0314	1.60e7	2.40e8	2.95	7.08e20	0.3	Poorly constrained seismic and gravity models only
+PLANET_EARTH_OTHER_CONT_LOWER_CRUST		PLANET_EARTH	6371	OTHER	CONT_LOWER_CRUST	35	15.0	0.198	1.01e8	1.52e9	2.95	4.48e21	0.5	Seismic models; xenolith data from select cratons globally
+PLANET_EARTH_OCEAN		PLANET_EARTH	6371		OCEAN	3.69	3.69	0.708	3.61e8	1.33e9	1.025	1.36e21	8.0	Well-characterized bulk chemistry; extensive oceanographic data
+PLANET_EARTH_OCEAN_FLOOR		PLANET_EARTH	6371		OCEAN_FLOOR	3.79	0.1	0.659	3.36e8	3.36e7	1.8	6.05e19	2.0	DSDP/ODP/IODP sampling; vast areas unsampled
+PLANET_EARTH_OCEAN_CRUST		PLANET_EARTH	6371		OCEAN_CRUST	11	6.9	0.659	3.36e8	2.32e9	2.9	6.73e21	1.0	Inferred from ophiolites and sparse deep drilling; seismic constraints
+PLANET_EARTH_MANTLE		PLANET_EARTH	6371		MANTLE	2890	2871	1	5.07e8	8.97e11	4.47	4.01e24	0.5	Seismic tomography and gravity models; xenolith constraints only
+PLANET_EARTH_CORE		PLANET_EARTH	6371		CORE	6371	3481	1	1.52e8	1.77e11	11.0	1.95e24	0.3	Seismic + geochemical/cosmochemical models; no direct sampling
+MOON_MOON_POLAR_SHADED_REGOLITH		MOON_MOON	1737		POLAR_SHADED_REGOLITH	0.01	0.01	9e-4	3.41e4	3.41e2	1.5	5.12e14	1.0	LCROSS + radar; sparse characterization of PSRs
+MOON_MOON_REGOLITH		MOON_MOON	1737		REGOLITH	0.01	0.01	0.9991	3.79e7	3.79e5	1.5	5.69e17	2.5	Apollo/Luna samples + orbital remote sensing
+MOON_MOON_NEAR_SURFACE		MOON_MOON	1737		NEAR_SURFACE	1	0.99	1	3.79e7	3.75e7	2.2	8.25e19	1.5	Apollo seismic; very limited direct sampling at depth
+MOON_MOON_CRUST_TERRAE		MOON_MOON	1737		CRUST_TERRAE	60	59	0.83	3.15e7	1.79e9	2.80	5.01e21	2.0	Apollo highland samples; orbital spectroscopy
+MOON_MOON_CRUST_MARIA		MOON_MOON	1737		CRUST_MARIA	25	24	0.17	6.44e6	1.52e8	2.85	4.33e20	1.8	Apollo/Luna mare basalt samples; anorthositic substrate inferred from orbital + seismic data
+MOON_MOON_MANTLE		MOON_MOON	1737		MANTLE	1400	1340	1	3.54e7	1.96e10	3.40	6.66e22	0.5	Seismic and gravity models only
+MOON_MOON_CORE		MOON_MOON	1737		CORE	1737	337	1	1.43e6	1.60e8	7.0	1.12e21	0.3	Poorly constrained size and composition
+PLANET_MARS_ATMOSPHERE		PLANET_MARS	3390		ATMOSPHERE	0	100	1	1.53e8	1.51e10	1.7e-6	2.5e16	7.0	Well-characterized by Viking Curiosity Perseverance MAVEN; trace species less certain
+PLANET_MARS_NORTH_POLAR_CAP		PLANET_MARS	3390		NORTH_POLAR_CAP	1.4	1.4	5.5e-3	8.0e5	1.12e6	1.0	1.12e18	3.0	MARSIS/SHARAD radar profiling; Phoenix nearby; dust-layer stratigraphy resolved
+PLANET_MARS_SOUTH_POLAR_CAP		PLANET_MARS	3390		SOUTH_POLAR_CAP	1.3	1.3	8.3e-3	1.20e6	1.56e6	1.1	1.72e18	2.5	MARSIS radar; buried CO2 discovered but volume uncertain; less accessible than north
+PLANET_MARS_REGOLITH		PLANET_MARS	3390		REGOLITH	0.005	0.005	0.986	1.43e8	7.15e5	1.5	1.07e18	2.0	Six landing sites with APXS/CheMin analysis; orbital spectroscopy; vast unsampled areas
+PLANET_MARS_NEAR_SURFACE		PLANET_MARS	3390		NEAR_SURFACE	0.5	0.50	0.986	1.43e8	7.15e7	2.2	1.57e20	1.2	InSight seismic; neutron/radar ice mapping; no direct subsurface sampling
+PLANET_MARS_SUBSURFACE		PLANET_MARS	3390		SUBSURFACE	5	4.5	1	1.45e8	6.53e8	2.7	1.76e21	0.8	Radar hints of structure; theoretical models; no drilling data
+PLANET_MARS_DEEP_CRUST		PLANET_MARS	3390		DEEP_CRUST	50	45	1	1.44e8	6.41e9	2.9	1.86e22	0.5	InSight seismic layering; gravity models; SNC meteorite constraints
+PLANET_MARS_MANTLE		PLANET_MARS	3390		MANTLE	1700	1650	1	1.40e8	1.36e11	3.6	4.89e23	0.5	InSight seismic; SNC meteorite chemistry; mineral physics models
+PLANET_MARS_CORE		PLANET_MARS	3390		CORE	3390	1690	1	3.59e7	2.02e10	6.6	1.33e23	0.3	InSight seismic core shadow; moment of inertia; sulfur content highly uncertain
+MOON_PHOBOS_BULK		MOON_PHOBOS	11.1		BULK	11.1	11.1	1	1.55e3	5.73e3	1.87	1.07e16	1.5	Mars Express flybys; spectral and density data; no surface measurements
+MOON_DEIMOS_BULK		MOON_DEIMOS	6.2		BULK	6.2	6.2	1	4.83e2	1.00e3	1.47	1.47e15	1.0	Limited flyby imaging; density measurement; spectral class inferred
+ASTEROID_CERES_REGOLITH		ASTEROID_CERES	473		REGOLITH	0.005	0.005	1	2.81e6	1.41e4	1.4	1.97e16	2.0	Dawn orbital spectroscopy and GRaND neutron/gamma data; no surface sampling
+ASTEROID_CERES_CRUST		ASTEROID_CERES	473		CRUST	40	40	1	2.81e6	1.03e8	1.8	1.85e20	1.0	Dawn gravity and shape model; ice content inferred from density; no subsurface data
+ASTEROID_CERES_INTERIOR		ASTEROID_CERES	473		INTERIOR	473	433	1	2.36e6	3.40e8	2.2	7.48e20	0.5	Dawn gravity; partially differentiated inferred from density; no seismic data
+ASTEROID_VESTA_REGOLITH		ASTEROID_VESTA	263		REGOLITH	0.005	0.005	1	8.69e5	4.35e3	1.5	6.53e15	2.0	Dawn VIR and GRaND mapping; HED meteorite ground truth; no direct sampling
+ASTEROID_VESTA_CRUST		ASTEROID_VESTA	263		CRUST	20	20	1	8.69e5	1.61e7	2.9	4.67e19	1.5	Dawn spectral and gravity mapping; HED meteorite constraints; Rheasilvia exposure
+ASTEROID_VESTA_MANTLE		ASTEROID_VESTA	263		MANTLE	150	130	1	7.42e5	5.41e7	3.15	1.70e20	0.5	Dawn gravity; olivine possibly exposed in Rheasilvia; HED meteorite constraints
+ASTEROID_VESTA_CORE		ASTEROID_VESTA	263		CORE	263	113	1	1.60e5	6.04e6	7.0	4.23e19	0.3	Dawn gravity and moment of inertia; HED meteorite siderophile constraints
+ASTEROID_PALLAS_REGOLITH		ASTEROID_PALLAS	256		REGOLITH	0.005	0.005	1	8.24e5	4.12e3	1.4	5.77e15	0.5	No spacecraft visit; B-type spectral class and meteorite analogs only
+ASTEROID_PALLAS_CRUST_MANTLE		ASTEROID_PALLAS	256		CRUST_MANTLE	200	200	1	8.24e5	6.95e7	2.78	1.93e20	0.3	No spacecraft visit; density constraint only; internal layering unknown
+ASTEROID_PALLAS_INTERIOR		ASTEROID_PALLAS	256		INTERIOR	256	56	1	3.94e4	7.35e5	3.5	2.57e18	0.3	No spacecraft visit; possibly rocky core or undifferentiated; highly uncertain
+PLANET_JUPITER_ATMOSPHERE		PLANET_JUPITER	69911		ATMOSPHERE	1000	1000	1	6.14e10	6.07e13	0.01	6.07e23	5	Juno and Galileo atmospheric probe; well-characterized H2/He; trace species less certain at depth
+PLANET_JUPITER_MOL_H_ENVELOPE		PLANET_JUPITER	69911		MOL_H_ENVELOPE	15000	14000	1	5.97e10	6.77e14	0.5	3.39e26	0.5	Juno gravity and magnetic field models; equation of state constraints; no direct sampling
+PLANET_JUPITER_MET_H_ENVELOPE		PLANET_JUPITER	69911		MET_H_ENVELOPE	59911	44911	1	3.79e10	6.89e14	2.2	1.52e27	0.3	Juno magnetic field data; equation of state extrapolation; no laboratory analogue
+PLANET_JUPITER_CORE		PLANET_JUPITER	69911		CORE	69911	10000	1	1.26e9	4.19e12	9.3	3.9e25	0.3	Juno gravity suggests dilute core; mass and composition poorly constrained
+MOON_IO_SURFACE		MOON_IO	1822		SURFACE	5e-3	5e-3	1	4.17e7	209000	2	4.18e17	2	Galileo imaging and NIMS spectroscopy; active volcanism mapped; no surface sampling
+MOON_IO_CRUST		MOON_IO	1822		CRUST	30	30	1	4.17e7	1.23e9	2.7	3.32e21	1	Galileo gravity and imaging; volcanic conduit distribution inferred; no subsurface data
+MOON_IO_MANTLE		MOON_IO	1822		MANTLE	1200	1170	1	4.04e7	2.31e10	3.4	7.85e22	0.3	Galileo gravity and tidal models; extensive partial melt inferred; no seismic data
+MOON_IO_CORE		MOON_IO	1822		CORE	1822	622	1	4.86e6	1.01e9	7	7.07e21	0.3	Galileo gravity; iron or iron-sulfide; core size poorly constrained
+MOON_EUROPA_ICE_SURFACE		MOON_EUROPA	1561		ICE_SURFACE	5e-3	5e-3	1	3.06e7	153000	1	1.53e17	2	Galileo imaging and NIMS; radiation-processed ice and salt signatures; no surface sampling
+MOON_EUROPA_ICE_SHELL		MOON_EUROPA	1561		ICE_SHELL	20	20	1	3.06e7	6.07e8	0.95	5.77e20	1	Galileo gravity and magnetometer; Europa Clipper forthcoming; ice thickness uncertain
+MOON_EUROPA_SUBSURFACE_OCEAN		MOON_EUROPA	1561		SUBSURFACE_OCEAN	100	80	1	2.98e7	2.27e9	1.05	2.38e21	0.5	Galileo magnetometer indicates saline ocean; Europa Clipper will improve constraints
+MOON_EUROPA_MANTLE		MOON_EUROPA	1561		MANTLE	1000	900	1	2.68e7	1.23e10	3.3	4.06e22	0.3	Galileo gravity; rocky interior inferred from bulk density; no seismic data
+MOON_EUROPA_CORE		MOON_EUROPA	1561		CORE	1561	561	1	3.96e6	7.4e8	5.9	4.37e21	0.3	Galileo gravity; iron-sulfide; core size poorly constrained
+MOON_GANYMEDE_ICE_SURFACE		MOON_GANYMEDE	2634		ICE_SURFACE	5e-3	5e-3	1	8.72e7	436000	0.95	4.14e17	1.5	Galileo imaging and spectroscopy; JUICE approaching; no surface sampling
+MOON_GANYMEDE_OUTER_ICE_SHELL		MOON_GANYMEDE	2634		OUTER_ICE_SHELL	150	150	1	8.72e7	1.24e10	0.95	1.17e22	0.8	Galileo gravity and imaging; JUICE will probe ice structure; no subsurface data
+MOON_GANYMEDE_SUBSURFACE_OCEAN		MOON_GANYMEDE	2634		SUBSURFACE_OCEAN	250	100	1	7.76e7	7.46e9	1.05	7.83e21	0.5	Galileo magnetometer; HST aurora; JUICE will refine ocean depth
+MOON_GANYMEDE_INNER_ICE		MOON_GANYMEDE	2634		INNER_ICE	800	550	1	7.14e7	3.09e10	1.3	4.02e22	0.3	Inferred from Galileo gravity; ice phase transitions theoretical; JUICE will improve models
+MOON_GANYMEDE_MANTLE		MOON_GANYMEDE	2634		MANTLE	1930	1130	1	4.23e7	2.44e10	3.3	8.05e22	0.3	Galileo gravity; rocky composition inferred; JUICE may refine interior model
+MOON_GANYMEDE_CORE		MOON_GANYMEDE	2634		CORE	2634	704	1	6.23e6	1.46e9	5.5	8.04e21	0.3	Galileo magnetic field and gravity; generates intrinsic field; iron-sulfide
+MOON_CALLISTO_SURFACE		MOON_CALLISTO	2410		SURFACE	5e-3	5e-3	1	7.3e7	365000	1.2	4.38e17	1.5	Galileo imaging and NIMS; ancient cratered ice-rock surface; no surface sampling
+MOON_CALLISTO_OUTER_SHELL		MOON_CALLISTO	2410		OUTER_SHELL	100	100	1	7.3e7	7e9	1.2	8.4e21	0.5	Galileo gravity; ice-rock composition inferred from density; no subsurface data
+MOON_CALLISTO_SUBSURFACE_OCEAN		MOON_CALLISTO	2410		SUBSURFACE_OCEAN	200	100	1	6.71e7	6.45e9	1.05	6.77e21	0.3	Galileo magnetometer hints; thin ocean with antifreeze solutes; uncertain existence
+MOON_CALLISTO_INTERIOR		MOON_CALLISTO	2410		INTERIOR	2410	2210	1	6.14e7	4.52e10	2.04	9.24e22	0.3	Galileo gravity; undifferentiated ice-rock; no distinct metallic core
+MOON_AMALTHEA_BULK		MOON_AMALTHEA	84		BULK	84	84	1	88700	2.48e6	0.86	2.13e18	1	Galileo close flyby; anomalously low density; possible rubble-pile structure
+PLANET_SATURN_ATMOSPHERE		PLANET_SATURN	58232		ATMOSPHERE	1000	1000	1	4.26e10	4.23e13	0.005	2.12e23	5	Cassini and Voyager; well-characterized H2/He; lower He than Jupiter from helium rain
+PLANET_SATURN_MOL_H_ENVELOPE		PLANET_SATURN	58232		MOL_H_ENVELOPE	30000	29000	1	4.12e10	6.91e14	0.48	3.32e26	0.5	Cassini gravity; equation of state models; transition deeper than Jupiter
+PLANET_SATURN_MET_H_ENVELOPE		PLANET_SATURN	58232		MET_H_ENVELOPE	43232	13232	1	1e10	8.01e13	1.8	1.44e26	0.3	Cassini magnetic field; metallic transition at lower pressure than Jupiter
+PLANET_SATURN_CORE		PLANET_SATURN	58232		CORE	58232	15000	1	2.83e9	1.41e13	6.4	9.02e25	0.3	Cassini gravity and ring seismology; possibly dilute; mass poorly constrained
+MOON_TITAN_ATMOSPHERE		MOON_TITAN	2575		ATMOSPHERE	0	600	1	1.27e8	6.26e10	1.44e-4	9.01e18	7	Cassini CIRS VIMS and Huygens descent probe; N2/CH4 well characterized; complex haze layers
+MOON_TITAN_HYDROCARBON_BODIES		MOON_TITAN	2575		HYDROCARBON_BODIES	0.15	0.15	0.01	833000	125000	0.55	6.88e16	4	Cassini radar mapped Kraken Ligeia Punga Mares; bathymetry limited; CH4/C2H6 liquid
+MOON_TITAN_SURFACE		MOON_TITAN	2575		SURFACE	0.01	0.01	0.99	8.25e7	825000	1.2	9.9e17	3	Cassini radar and VIMS; Huygens landing site; dune fields and ice bedrock; varied terrain
+MOON_TITAN_ICE_SHELL		MOON_TITAN	2575		ICE_SHELL	100	100	1	8.33e7	8e9	1	8e21	0.5	Cassini gravity and radar sounding; clathrate layers theoretical; no subsurface data
+MOON_TITAN_SUBSURFACE_OCEAN		MOON_TITAN	2575		SUBSURFACE_OCEAN	200	100	1	7.7e7	7.37e9	1	7.37e21	0.5	Cassini gravity and Schumann resonance; water-ammonia ocean inferred; no direct sampling
+MOON_TITAN_INNER_ICE		MOON_TITAN	2575		INNER_ICE	500	300	1	7.09e7	1.87e10	1.3	2.43e22	0.3	Cassini gravity; HP ice phases theoretical; no direct data
+MOON_TITAN_CORE		MOON_TITAN	2575		CORE	2575	2075	1	5.41e7	3.74e10	2.53	9.46e22	0.3	Cassini gravity; hydrated silicate rock; no distinct metallic core confirmed
+MOON_MIMAS_ICE_SURFACE		MOON_MIMAS	198		ICE_SURFACE	0.005	0.005	1	493000	2470	0.93	2.3e15	1.5	Cassini imaging; Herschel crater dominates; no surface sampling
+MOON_MIMAS_ICE_SHELL		MOON_MIMAS	198		ICE_SHELL	25	25	1	493000	1.08e7	0.93	1e19	0.5	Cassini gravity and libration; ice shell thickness constrained; no subsurface data
+MOON_MIMAS_SUBSURFACE_OCEAN		MOON_MIMAS	198		SUBSURFACE_OCEAN	70	45	1	376000	1.29e7	1	1.29e19	0.3	Cassini libration analysis; global ocean inferred from unexpectedly large physical libration
+MOON_MIMAS_CORE		MOON_MIMAS	198		CORE	198	128	1	206000	8.78e6	1.65	1.45e19	0.3	Cassini gravity; silicate rock; poorly characterized; low density implies ice or porosity
+MOON_ENCELADUS_ICE_SURFACE		MOON_ENCELADUS	252		ICE_SURFACE	0.005	0.005	1	798000	3990	0.92	3.67e15	2.5	Cassini close flybys and plume sampling; exceptionally clean ice; highest albedo in solar system
+MOON_ENCELADUS_ICE_SHELL		MOON_ENCELADUS	252		ICE_SHELL	20	20	1	798000	1.47e7	0.93	1.37e19	1	Cassini gravity; shell thickness varies 5-25 km; tiger stripe fractures at south pole
+MOON_ENCELADUS_SUBSURFACE_OCEAN		MOON_ENCELADUS	252		SUBSURFACE_OCEAN	60	40	1	677000	2.27e7	1.02	2.32e19	1	Cassini plume sampling and gravity; salinity pH constrained; hydrothermal venting confirmed
+MOON_ENCELADUS_CORE		MOON_ENCELADUS	252		CORE	252	192	1	463000	2.96e7	2.4	7.1e19	0.5	Cassini gravity; porous hydrated rock; hydrothermal circulation inferred from plume data
+MOON_TETHYS_SURFACE		MOON_TETHYS	531		SURFACE	0.005	0.005	1	3.54e6	17700	0.93	1.65e16	1.5	Cassini imaging; Odysseus basin and Ithaca Chasma mapped; no surface sampling
+MOON_TETHYS_CRUST		MOON_TETHYS	531		CRUST	100	100	1	3.54e6	2.92e8	0.93	2.72e20	0.5	Cassini gravity; assumed water ice crust; no subsurface data
+MOON_TETHYS_INTERIOR		MOON_TETHYS	531		INTERIOR	531	431	1	2.33e6	3.35e8	1.03	3.45e20	0.3	Cassini gravity; very low density; water ice with minor rock; no differentiation evidence
+MOON_DIONE_SURFACE		MOON_DIONE	561		SURFACE	0.005	0.005	1	3.96e6	19800	0.93	1.84e16	1.5	Cassini imaging and spectroscopy; wispy terrain mapped; no surface sampling
+MOON_DIONE_ICE_SHELL		MOON_DIONE	561		ICE_SHELL	100	100	1	3.96e6	3.29e8	0.95	3.13e20	0.5	Cassini gravity; ice shell composition inferred; no subsurface data
+MOON_DIONE_SUBSURFACE_OCEAN		MOON_DIONE	561		SUBSURFACE_OCEAN	120	20	1	2.67e6	5.11e7	1.02	5.21e19	0.3	Cassini gravity and shape; thin ocean lower confidence than Enceladus or Mimas
+MOON_DIONE_INTERIOR		MOON_DIONE	561		INTERIOR	561	441	1	2.44e6	3.59e8	2.04	7.32e20	0.3	Cassini gravity; rock-enriched ice-rock; partially hydrated silicate; no distinct core
+MOON_RHEA_SURFACE		MOON_RHEA	764		SURFACE	0.005	0.005	1	7.33e6	36700	0.93	3.41e16	1	Cassini imaging; heavily cratered ice surface; tenuous O2/CO2 exosphere; no surface sampling
+MOON_RHEA_OUTER_SHELL		MOON_RHEA	764		OUTER_SHELL	100	100	1	7.33e6	6.44e8	1	6.44e20	0.5	Cassini gravity; ice-dominated outer layer; minimal differentiation evidence
+MOON_RHEA_INTERIOR		MOON_RHEA	764		INTERIOR	764	664	1	5.54e6	1.23e9	1.36	1.67e21	0.3	Cassini gravity; near-homogeneous ice-rock; rock fraction poorly constrained
+MOON_IAPETUS_SURFACE		MOON_IAPETUS	735		SURFACE	0.005	0.005	1	6.79e6	34000	1	3.4e16	1.5	Cassini imaging; extreme albedo dichotomy well mapped; equatorial ridge; no surface sampling
+MOON_IAPETUS_CRUST		MOON_IAPETUS	735		CRUST	100	100	1	6.79e6	5.91e8	0.95	5.61e20	0.3	Cassini gravity; water ice with minor rock; equatorial ridge origin debated
+MOON_IAPETUS_INTERIOR		MOON_IAPETUS	735		INTERIOR	735	635	1	5.07e6	1.07e9	1.16	1.24e21	0.3	Cassini gravity; likely undifferentiated; possible small rocky concentration near center
+MOON_HYPERION_BULK		MOON_HYPERION	135		BULK	135	135	1	229000	1.03e7	0.54	5.56e18	1	Cassini close flyby; sponge-like surface; chaotic tumbling; ~40% porosity
+MOON_PHOEBE_BULK		MOON_PHOEBE	107		BULK	107	107	1	144000	5.13e6	1.64	8.41e18	1.5	Cassini close flyby; captured KBO; surface well characterized; CO2 and H2O ice detected

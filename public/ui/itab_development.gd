@@ -18,7 +18,7 @@ const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = []
 
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 
 @onready var _dev_stats: DevStats = $DevStats
 @onready var _no_dev_label: Label = $NoDevLabel

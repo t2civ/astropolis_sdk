@@ -61,7 +61,7 @@ var headers_texts: Array[Array] = [
 
 
 var _unit_multipliers := IVUnits.unit_multipliers
-var _selection_manager: SelectionManager
+var _selection_manager: AstroSelectionManager
 var _suppress_tab_listener := true
 
 #var _name_column_width := 250.0 # TODO: resize on GUI resize (also in RowItem)
@@ -72,11 +72,9 @@ var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _operation_names: Array[StringName] = _db_tables[&"operations"][&"name"]
 var _operation_sublabels: Array[StringName] = _db_tables[&"operations"][&"sublabel"]
 var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_group"]
-var _op_group_names: Array[StringName] = _db_tables[&"op_groups"][&"name"]
-var _op_group_process_groups: Array[int] = _db_tables[&"op_groups"][&"process_group"]
-var _op_group_show_singular: Array[bool] = _db_tables[&"op_groups"][&"show_singular"]
-var _op_classes_op_groups: Array[Array] = _tables_aux[&"op_classes_op_groups"]
-var _op_groups_operations: Array[Array] = _tables_aux[&"op_groups_operations"]
+var _module_names: Array[StringName] = _db_tables[&"modules"][&"name"]
+var _module_operations: Array[Array] = _db_tables[&"modules"][&"operations"]
+var _op_classes_modules: Array[Array] = _tables_aux[&"op_classes_modules"]
 
 var _revenue_hdrs: Array[Label] = []
 var _margin_hdrs: Array[Label] = []
@@ -218,51 +216,54 @@ func _get_ai_data(target_name: StringName) -> void:
 	if !interface:
 		_update_no_operations.call_deferred()
 		return
-	
+
 	var tab := current_tab
 	var operations := interface.get_operations()
 	var has_financials := operations.has_financials()
-	
-	var op_groups: Array[int] = _op_classes_op_groups[tab]
-	var n_op_groups := 0 # that we can have
-	
-	for op_group in op_groups:
-		
-		if not operations.is_of_interest_group(op_group):
+
+	var modules: Array[int] = _op_classes_modules[tab]
+	var n_modules := 0
+
+	for module_type in modules:
+
+		if not operations.is_of_interest_module(module_type):
 			continue
-		
-		n_op_groups += 1
-		
-		var utilization := operations.get_group_utilization(op_group)
-		var electricity := operations.get_group_electricity(op_group)
+
+		n_modules += 1
+
+		var utilization := operations.get_module_utilization(module_type)
+		var electricity := operations.get_module_electricity(module_type)
 		electricity /= _unit_multipliers[&"MW"]
 		var flow := NAN
-		var revenue := operations.get_group_revenue(op_group)
+		var revenue := operations.get_module_revenue(module_type)
 		revenue /= _unit_multipliers[&"$M/y"]
-		var margin := operations.get_group_gross_margin(op_group)
-		
+		var margin := operations.get_module_gross_margin(module_type)
+
+		var module_ops: Array[int] = _module_operations[module_type]
+		var process_group: int = _operation_process_groups[module_ops[0]]
+
 		match tab:
 			TAB_ENERGY:
-				if _op_group_process_groups[op_group] == PROCESS_GROUP_CONVERSION:
-					flow = operations.get_group_fuel_rate(op_group)
+				if process_group == PROCESS_GROUP_CONVERSION:
+					flow = operations.get_module_fuel_rate(module_type)
 					flow /= _unit_multipliers[&"t/h"]
 			TAB_EXTRACTION:
 				electricity = -electricity
-				flow = operations.get_group_extraction_rate(op_group)
+				flow = operations.get_module_extraction_rate(module_type)
 				flow /= _unit_multipliers[&"t/h"]
 			TAB_REFINING, TAB_CONVERSION, TAB_MANUFACTURING:
 				electricity = -electricity
-				flow = operations.get_group_mass_conversion_rate(op_group)
+				flow = operations.get_module_mass_conversion_rate(module_type)
 				flow /= _unit_multipliers[&"t/h"]
 			TAB_BIOMES:
 				electricity = -electricity
 			TAB_SERVICES:
 				electricity = -electricity
-				flow = operations.get_group_computation(op_group)
+				flow = operations.get_module_computation(module_type)
 				flow /= _unit_multipliers[&"Pflop/s"]
-		
+
 		var group_data := [
-			_op_group_names[op_group],
+			_module_names[module_type],
 			utilization,
 			electricity,
 			flow,
@@ -270,17 +271,16 @@ func _get_ai_data(target_name: StringName) -> void:
 			margin,
 		]
 		data.append(group_data)
-		
+
 		var operations_data := []
 		data.append(operations_data)
-		
-		var operation_types: Array[int] = _op_groups_operations[op_group]
-		var n_ops := operation_types.size()
-		if n_ops < 2 and !_op_group_show_singular[op_group]:
+
+		var n_ops := module_ops.size()
+		if n_ops < 2:
 			continue
-		
-		for operation_type in operation_types:
-			
+
+		for operation_type in module_ops:
+
 			utilization = operations.get_utilization(operation_type)
 			electricity = operations.get_electricity_rate(operation_type)
 			electricity /= _unit_multipliers[&"MW"]
@@ -288,7 +288,7 @@ func _get_ai_data(target_name: StringName) -> void:
 			revenue = operations.get_revenue_rate(operation_type)
 			revenue /= _unit_multipliers[&"$M/y"]
 			margin = operations.get_gross_margin(operation_type)
-			
+
 			match tab:
 				TAB_ENERGY:
 					if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
@@ -308,11 +308,11 @@ func _get_ai_data(target_name: StringName) -> void:
 					electricity = -electricity
 					flow = operations.get_computation(operation_type)
 					flow /= _unit_multipliers[&"Pflop/s"]
-			
+
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:
 				sublabel = _operation_names[operation_type]
-			
+
 			var operation_data := [
 				sublabel,
 				utilization,
@@ -321,49 +321,47 @@ func _get_ai_data(target_name: StringName) -> void:
 				revenue,
 				margin,
 			]
-			
+
 			operations_data.append(operation_data)
-	
-	_update_tab_display.call_deferred(target_name, tab, n_op_groups, has_financials, data)
+
+	_update_tab_display.call_deferred(target_name, tab, n_modules, has_financials, data)
 
 
 # *****************************************************************************
 # Main thread !!!!
 
 
-func _update_tab_display(target_name: StringName, tab: int, n_op_groups: int, has_financials: bool,
+func _update_tab_display(target_name: StringName, tab: int, n_modules: int, has_financials: bool,
 		data: Array) -> void:
-	# TODO: if no op_groups, show something like, "(No Energy Operations)"
-	
 	# header changes
 	var revenue_hdr: Label = _revenue_hdrs[tab]
 	var margin_hdr: Label = _margin_hdrs[tab]
 	revenue_hdr.text = "Revenue\n($M/y)" if has_financials else ""
 	margin_hdr.text = "Margin\n(% gr)" if has_financials else ""
-	
+
 	# make GroupFoldables as needed
 	var vbox: VBoxContainer = _vboxes[tab]
 	var n_children := vbox.get_child_count()
-	while n_children < n_op_groups:
+	while n_children < n_modules:
 		vbox.add_child(GroupFoldable.new(_memory, base_column_width, _fold_icon_substitute))
 		n_children += 1
-	
+
 	# set and show GroupFoldables
 	var i := 0
-	while i < n_op_groups:
+	while i < n_modules:
 		var group_data: Array = data[i * 2]
 		var operations_data: Array = data[i * 2 + 1]
 		var group_box: GroupFoldable = vbox.get_child(i)
 		group_box.set_group_item(target_name, group_data, operations_data)
 		group_box.show()
 		i += 1
-	
+
 	# hide unused
 	while i < n_children:
 		var group_box: GroupFoldable = vbox.get_child(i)
 		group_box.hide()
 		i += 1
-	
+
 	_no_ops_label.hide()
 	_tab_container.show()
 

@@ -66,7 +66,7 @@ func get_ints_dirty_63(array: Array[int], flags: int) -> void:
 	_int_data.append(flags)
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		_int_data.append(array[index])
 		flags &= ~lsb
 
@@ -95,7 +95,7 @@ func get_floats_dirty_63(array: Array[float], flags: int) -> void:
 	_int_data.append(flags)
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		_float_data.append(array[index])
 		flags &= ~lsb
 
@@ -126,7 +126,7 @@ func take_floats_delta_63(base: Array[float], delta: Array[float], flags: int) -
 	_int_data.append(flags)
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		base[index] += delta[index]
 		_float_data.append(delta[index])
 		delta[index] = 0.0
@@ -158,7 +158,7 @@ func set_floats_dirty_63(array: Array[float]) -> void:
 	_int_offset += 1
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		array[index] = _float_data[_float_offset]
 		_float_offset += 1
 		flags &= ~lsb
@@ -189,7 +189,7 @@ func set_ints_dirty_63(array: Array[int]) -> void:
 	_int_offset += 1
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		array[index] = _int_data[_int_offset]
 		_int_offset += 1
 		flags &= ~lsb
@@ -216,11 +216,11 @@ func add_floats_delta(delta_array: Array[float]) -> void:
 
 func add_floats_delta_63(delta_array: Array[float]) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
-	var flags: int = _int_data[_int_offset]
+	var flags := _int_data[_int_offset]
 	_int_offset += 1
 	while flags:
 		var lsb := flags & -flags
-		var index: int = BIT_INDEXES[lsb]
+		var index := BIT_INDEXES[lsb]
 		delta_array[index] += _float_data[_float_offset]
 		_float_offset += 1
 		flags &= ~lsb
