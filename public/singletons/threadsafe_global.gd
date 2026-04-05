@@ -16,8 +16,8 @@ extends Node
 static var tables_aux: Dictionary[StringName, Variant] = {} # see public_preinitializer.gd
 
 # settings
-var total_biodiversity_pool := 1.3e6 * IVUnits.SPP
-var total_information_pool := 1.3e21 * IVUnits.BIT
+var total_biodiversity_pool := 25336.0 * IVUnits.SPP
+var total_information_pool := 6.4e22 * IVUnits.BIT
 var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
 
 
