@@ -8,15 +8,7 @@
 class_name TabResources
 extends MarginContainer
 
-# FIXME: Initial open/close state is annoying. May be better to have everything
-# closed except "Commons" on bodies with no territories.
-
-
-const SUPER_OPEN_PREFIX := "\u2304 "
-const SUPER_CLOSED_PREFIX := "> "
-const STRATUM_OPEN_PREFIX := "  \u2304 "
-const STRATUM_CLOSED_PREFIX := "  > "
-const RESOURCE_INDENT := "        "
+const CONTENT_MARGIN_LEFT := 16
 const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 const MIN_DISCOVERED_BOOST := 1.1 # Don't show unless this much better than mean
 
@@ -32,7 +24,7 @@ var _stratum_types: Dictionary # table name enumeration
 
 var _body_name: StringName
 var _selection_name: StringName
-var _memory := {} # keep open/closed states
+var _fold_memory: Dictionary[StringName, bool] = {} # keep folded states
 
 @onready var _strata_vbox: VBoxContainer = %StrataVBox
 @onready var _missing_label: Label = $MissingLabel
@@ -51,9 +43,9 @@ func refresh() -> void:
 
 func update_selection(body_name: StringName, selection_name: StringName) -> void:
 	assert(body_name and selection_name)
-	if _body_name != body_name or _selection_name != _selection_name:
+	if _body_name != body_name or _selection_name != selection_name:
 		_body_name = body_name
-		_selection_name = _selection_name
+		_selection_name = selection_name
 		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(body_name, selection_name))
 
 
@@ -78,7 +70,6 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		return
 	
 	var stratum_polities := []
-	var open_at_init: Array[bool] = []
 	
 	var n_strata := body_interface.get_n_strata()
 
@@ -86,11 +77,8 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		var stratum_polity := body_interface.get_stratum_polity(i)
 		if polity_name and stratum_polity and polity_name != stratum_polity:
 			continue
-		var init_open: bool
 		if !stratum_polities.has(stratum_polity):
 			stratum_polities.append(stratum_polity)
-			init_open = polity_name == stratum_polity # "" == "" at body for commons
-			open_at_init.append(init_open)
 		var masses := body_interface.get_stratum_masses(i)
 		var total_mass := body_interface.get_stratum_total_mass(i)
 		var survey_type := body_interface.get_stratum_survey_type(i)
@@ -112,19 +100,17 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 		if !survey_name:
 			survey_name = _survey_names[survey_type]
 		
-		init_open = true
 		resources_data.append(total_mass)
 		resources_data.append(body_interface.get_stratum_density(i))
 		resources_data.append(body_interface.get_compostion_thickness(i))
 		resources_data.append(body_interface.get_compostion_body_radius(i))
 		resources_data.append(survey_name)
 		resources_data.append(body_interface.get_stratum_stratum_type(i))
-		resources_data.append(init_open)
 		resources_data.append(stratum_polity)
 		
 		data.append(resources_data)
 	
-	_update_display.call_deferred(selection_name, stratum_polities, open_at_init, data)
+	_update_display.call_deferred(selection_name, stratum_polities, data)
 
 
 func _sort_resources(a: Array, b: Array) -> bool:
@@ -140,40 +126,38 @@ func _sort_resources(a: Array, b: Array) -> bool:
 # *****************************************************************************
 # Main thread !!!!
 
-func _update_display(selection_name: StringName, stratum_polities: Array,
-		open_at_init: Array[bool], data: Array) -> void:
+func _update_display(selection_name: StringName, stratum_polities: Array, data: Array) -> void:
 
 	# TODO: Sort stratum_polities in some sensible way
 	var n_polities := stratum_polities.size()
-	var n_polity_vboxes := _strata_vbox.get_child_count()
-	
-	# add OwnerVBoxes as needed
-	while n_polity_vboxes < n_polities:
-		var polity_vbox := PolityVBox.new(_memory)
-		_strata_vbox.add_child(polity_vbox)
-		n_polity_vboxes += 1
+	var is_single_polity := n_polities == 1
+	var n_polity_foldables := _strata_vbox.get_child_count()
 
-	# set OwnerVBoxes we'll use & hide extras
+	# add PolityFoldables as needed
+	while n_polity_foldables < n_polities:
+		var polity_foldable := PolityFoldable.new(_fold_memory)
+		_strata_vbox.add_child(polity_foldable)
+		n_polity_foldables += 1
+
+	# set PolityFoldables we'll use & hide extras
 	var i := 0
 	while i < n_polities:
-		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
+		var polity_foldable: PolityFoldable = _strata_vbox.get_child(i)
 		var polity_name: StringName = stratum_polities[i]
-		var init_open: bool = open_at_init[i]
-		polity_vbox.set_vbox(selection_name, polity_name, init_open)
-		polity_vbox.show()
+		polity_foldable.set_polity(selection_name, polity_name, is_single_polity)
+		polity_foldable.show()
 		i += 1
-	while i < n_polity_vboxes:
-		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
-		polity_vbox.hide()
+	while i < n_polity_foldables:
+		var polity_foldable: PolityFoldable = _strata_vbox.get_child(i)
+		polity_foldable.hide()
 		i += 1
-	
+
 	# add strata
 	var n_strata := data.size()
 	i = 0
 	while i < n_strata:
 		var resources_data: Array = data[i]
 		var stratum_polity: StringName = resources_data.pop_back()
-		var init_open: bool = resources_data.pop_back()
 		var stratum_group: int = resources_data.pop_back()
 		var survey_name: StringName = resources_data.pop_back()
 		var body_radius: float = resources_data.pop_back() # FIXME: outer radius
@@ -181,25 +165,25 @@ func _update_display(selection_name: StringName, stratum_polities: Array,
 		var density: float = resources_data.pop_back()
 		var total_mass: float = resources_data.pop_back()
 		# resources_data now in correct form for add_stratum()
-		
+
 		var stratum_str := tr(_stratum_names[stratum_group]) + " ("
 		if body_radius != thickness:
 			stratum_str += IVQFormat.dynamic_unit(thickness, &"length_m_km", 2) + "; "
 		stratum_str += IVQFormat.fixed_unit(density, &"g/cm^3", 2) + "; "
 		stratum_str += IVQFormat.fixed_unit(total_mass, &"t", 2) + "; "
 		stratum_str += tr(survey_name).to_lower() + ")"
-		
+
 		var polity_index := stratum_polities.find(stratum_polity)
-		var polity_vbox: PolityVBox = _strata_vbox.get_child(polity_index)
-		polity_vbox.add_stratum(stratum_str, init_open, resources_data)
+		var polity_foldable: PolityFoldable = _strata_vbox.get_child(polity_index)
+		polity_foldable.add_stratum(stratum_str, resources_data)
 		i += 1
-	
+
 	i = 0
 	while i < n_polities:
-		var polity_vbox: PolityVBox = _strata_vbox.get_child(i)
-		polity_vbox.finish_strata()
+		var polity_foldable: PolityFoldable = _strata_vbox.get_child(i)
+		polity_foldable.finish_strata()
 		i += 1
-	
+
 	_missing_label.hide()
 	_strata_vbox.show()
 
@@ -213,127 +197,104 @@ func _update_no_resources(is_unknown := true) -> void:
 
 
 
-class PolityVBox extends VBoxContainer:
+class PolityFoldable extends FoldableContainer:
 	# hide when not in use
-	
-	var _polity_header := Button.new()
-	var _polity_text: String
-	var _is_open := true
-	var _memory: Dictionary
-	var _memory_key: String
-	var _next_child_index := 1
-	
-	
-	func _init(memory: Dictionary) -> void:
-		_memory = memory
+
+	var _content_vbox := VBoxContainer.new()
+	var _fold_memory: Dictionary[StringName, bool]
+	var _memory_key: StringName
+	var _next_child_index := 0
+
+
+	func _init(fold_memory: Dictionary[StringName, bool]) -> void:
+		_fold_memory = fold_memory
 		size_flags_horizontal = SIZE_FILL
-		_polity_header.button_down.connect(_toggle_open_close)
-		_polity_header.flat = true
-		_polity_header.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		_polity_header.size_flags_horizontal = SIZE_FILL
-		add_child(_polity_header)
-	
-	
-	func set_vbox(selection_name: StringName, polity_name: StringName, init_open: bool) -> void:
-		_next_child_index = 1
-		_memory_key = selection_name + polity_name
-		if _memory.has(_memory_key):
-			_is_open = _memory[_memory_key]
-		else:
-			_is_open = init_open
+		var margin := MarginContainer.new()
+		margin.add_theme_constant_override(&"margin_left", CONTENT_MARGIN_LEFT)
+		margin.size_flags_horizontal = SIZE_FILL
+		_content_vbox.size_flags_horizontal = SIZE_FILL
+		margin.add_child(_content_vbox)
+		add_child(margin)
+		folding_changed.connect(_on_folding_changed)
+
+
+	func set_polity(selection_name: StringName, polity_name: StringName,
+			is_single_polity: bool) -> void:
+		_next_child_index = 0
+		_memory_key = StringName(selection_name + polity_name)
+
 		if !polity_name:
-			_polity_text = tr(&"LABEL_COMMONS")
+			title = tr(&"LABEL_COMMONS")
 		else:
-			_polity_text = tr(&"LABEL_TERRITORIAL") + " - " + tr(polity_name)
-		if _is_open:
-			_polity_header.text = SUPER_OPEN_PREFIX + _polity_text
+			title = tr(&"LABEL_TERRITORIAL") + " - " + tr(polity_name)
+
+		folded = _fold_memory.get(_memory_key, !is_single_polity)
+
+
+	func add_stratum(stratum_str: String, resources_data: Array) -> void:
+		var stratum_foldable: StratumFoldable
+		if _next_child_index < _content_vbox.get_child_count():
+			stratum_foldable = _content_vbox.get_child(_next_child_index)
 		else:
-			_polity_header.text = SUPER_CLOSED_PREFIX + _polity_text
-	
-	
-	func add_stratum(stratum_str: String, init_open: bool, resources_data: Array) -> void:
-		var stratum_vbox: StratumVBox
-		if _next_child_index < get_child_count():
-			stratum_vbox = get_child(_next_child_index)
-		else:
-			stratum_vbox = StratumVBox.new(_memory)
-			add_child(stratum_vbox)
+			stratum_foldable = StratumFoldable.new(_fold_memory)
+			_content_vbox.add_child(stratum_foldable)
 		_next_child_index += 1
-		stratum_vbox.set_stratum(stratum_str, resources_data, init_open, _memory_key)
-		stratum_vbox.visible = _is_open
-	
-	
+		stratum_foldable.set_stratum(stratum_str, resources_data, _memory_key)
+		stratum_foldable.show()
+
+
 	func finish_strata() -> void: # hide unused
-		var i := get_child_count()
+		var i := _content_vbox.get_child_count()
 		while i > _next_child_index:
 			i -= 1
-			var stratum_vbox: StratumVBox = get_child(i)
-			stratum_vbox.hide()
-	
-	
-	func _toggle_open_close() -> void:
-		_is_open = !_is_open
-		_memory[_memory_key] = _is_open
-		if _is_open:
-			_polity_header.text = SUPER_OPEN_PREFIX + _polity_text
-		else:
-			_polity_header.text = SUPER_CLOSED_PREFIX + _polity_text
-		var i := 1
-		while i < _next_child_index:
-			var stratum_vbox: StratumVBox = get_child(i)
-			stratum_vbox.visible = _is_open
-			i += 1
+			var stratum_foldable: StratumFoldable = _content_vbox.get_child(i)
+			stratum_foldable.hide()
+
+
+	func _on_folding_changed(is_folded_: bool) -> void:
+		_fold_memory[_memory_key] = is_folded_
 
 
 
-class StratumVBox extends VBoxContainer:
-	# add via PolityVBox API
-	
+class StratumFoldable extends FoldableContainer:
+	# add via PolityFoldable API
+
 	const N_COLUMNS := 4
-	
+
 	var _resource_names: Array[StringName] = IVTableData.db_tables[&"resources"][&"name"]
-	
-	var _stratum_header := Button.new()
+
 	var _resource_grid := GridContainer.new()
-	var _stratum_str: String
 	var _variance_label: Label
 	var _deposits_label: Label
-	var _memory: Dictionary
-	var _memory_key: String
-	
-	
-	func _init(memory: Dictionary) -> void:
-		_memory = memory
+	var _fold_memory: Dictionary[StringName, bool]
+	var _memory_key: StringName
+
+
+	func _init(fold_memory: Dictionary[StringName, bool]) -> void:
+		_fold_memory = fold_memory
 		size_flags_horizontal = SIZE_FILL
-		_stratum_header.button_down.connect(_toggle_open_close)
-		_stratum_header.flat = true
-		_stratum_header.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		_stratum_header.size_flags_horizontal = SIZE_EXPAND_FILL
-		add_child(_stratum_header)
+		var margin := MarginContainer.new()
+		margin.add_theme_constant_override(&"margin_left", CONTENT_MARGIN_LEFT)
+		margin.size_flags_horizontal = SIZE_FILL
 		_resource_grid.columns = N_COLUMNS
 		_resource_grid.size_flags_horizontal = SIZE_EXPAND_FILL
-		add_child(_resource_grid)
-	
-	
-	func set_stratum(stratum_str: String, resources_data: Array, init_open: bool,
-			base_memory_key: String) -> void:
-		_memory_key = base_memory_key + stratum_str
-		_stratum_str = stratum_str
-		var is_open := init_open
-		if _memory.has(_memory_key):
-			is_open = _memory[_memory_key]
-		if is_open:
-			_stratum_header.text = STRATUM_OPEN_PREFIX + stratum_str
-			_resource_grid.show()
-		else:
-			_stratum_header.text = STRATUM_CLOSED_PREFIX + stratum_str
-			_resource_grid.hide()
+		margin.add_child(_resource_grid)
+		add_child(margin)
+		folding_changed.connect(_on_folding_changed)
+
+
+	func set_stratum(stratum_str: String, resources_data: Array,
+			base_memory_key: StringName) -> void:
+		_memory_key = StringName(base_memory_key + stratum_str)
+		title = stratum_str
+		folded = _fold_memory.get(_memory_key, true)
+
 		var n_resources := resources_data.size()
 		var n_cells_needed := N_COLUMNS * (n_resources + 1)
 		var n_cells := _resource_grid.get_child_count()
 		var has_dispersion := false
 		var has_deposit := false
-		
+
 		# make cells as needed
 		while n_cells < n_cells_needed:
 			var label := Label.new()
@@ -350,7 +311,7 @@ class StratumVBox extends VBoxContainer:
 				_deposits_label = label
 			_resource_grid.add_child(label)
 			n_cells += 1
-		
+
 		# resource loop
 		var i := 0
 		while i < n_resources:
@@ -365,10 +326,10 @@ class StratumVBox extends VBoxContainer:
 			var discovered := distribution_data[5] * 100
 			if discovered < mean * MIN_DISCOVERED_BOOST:
 				discovered = 0.0
-			
+
 			# TODO: Error format (1.0 ± 0.2)e-6
-		
-			var resource_text := RESOURCE_INDENT + tr(resource_name)
+
+			var resource_text := tr(resource_name)
 			var mean_text := ""
 			if mean >= 90:
 				mean_text = String.num(mean, 1)
@@ -390,7 +351,7 @@ class StratumVBox extends VBoxContainer:
 			if discovered:
 				deposits_text = IVQFormat.number(discovered, 2)
 				has_deposit = true
-			
+
 			# set resource texts
 			var resource_index := N_COLUMNS * (i + 1)
 			var label: Label = _resource_grid.get_child(resource_index)
@@ -406,25 +367,18 @@ class StratumVBox extends VBoxContainer:
 			label.text = deposits_text
 			label.show()
 			i += 1
-		
+
 		# show/hide dispersion & deposits headers
 		_variance_label.text = &"LABEL_DISPERSION_LOG" if has_dispersion else &""
 		_deposits_label.text = &"LABEL_DISCOVERED_PERCENT" if has_deposit else &""
-		
+
 		# hide unused Labels
 		i = n_cells
 		while i > n_cells_needed:
 			i -= 1
 			var label: Label = _resource_grid.get_child(i)
 			label.hide()
-	
-	
-	func _toggle_open_close() -> void:
-		if _resource_grid.visible:
-			_stratum_header.text = STRATUM_CLOSED_PREFIX + _stratum_str
-			_resource_grid.hide()
-			_memory[_memory_key] = false
-		else:
-			_stratum_header.text = STRATUM_OPEN_PREFIX + _stratum_str
-			_resource_grid.show()
-			_memory[_memory_key] = true
+
+
+	func _on_folding_changed(is_folded_: bool) -> void:
+		_fold_memory[_memory_key] = is_folded_
