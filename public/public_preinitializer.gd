@@ -94,7 +94,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.planets_mod = path_format % "planets_mod"
 	tables.moons_mod = path_format % "moons_mod"
 	# entity x entity tables
-	tables.facilities_inventories = path_format % "facilities_inventories"
+	tables.facilities_resources = path_format % "facilities_resources"
 	tables.facilities_modules = path_format % "facilities_modules"
 	tables.facilities_operations = path_format % "facilities_operations"
 	tables.strata_resources = path_format % "strata_resources"
