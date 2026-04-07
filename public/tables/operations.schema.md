@@ -44,10 +44,6 @@ These fields are used only if `process_group` is `CONVERSION`. All lists are sem
 - mass_flow — Equals the sum of input_rates equals the sum of output_rates, within rounding precision. Note: the column header in `operations.tsv` is currently `mass_conversion`; the name discrepancy will be resolved in a future update.
 - fuel_rate — Energy group operations only. Total input rate excluding OXYGEN.
 
-- atmos_trace_inputs — DEPRECATE
-- atmos_outputs — DEPRECATE
-	
-
 
 ## Normalization
 
