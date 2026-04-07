@@ -457,7 +457,7 @@ Fields:
 * `process_group` is an internal enum used in the process code. (Leave blank to safely disable.)
 * `electricity` is in most cases all of the output or input energy (+ or -, respectively). See General Notes, simplifications.
 * `dev_xxxx` fields correspond to total values that contribute to the major dev metrics: Energy, Manufacturing, Computation and Bioproduction.
-* `input_resources`, `input_quantities`, `output_resources` and `output_quantities` refer to all of the resources (other than Electricity) that are used or generated. Quantities are specified in resource `trade_unit` (see [resources.tsv](#resourcestsv)) _per hour_.
+* `in_inventory`, `input_quantities`, `out_inventory` and `output_quantities` refer to all of the resources (other than Electricity) that are used or generated. Quantities are specified in resource `trade_unit` (see [resources.tsv](#resourcestsv)) _per hour_.
 
 Notes:
 * Extractable resources in differentiated solids (which have variance > 0.0) are assumed to have a log-normal abundance distribution. In most cases, it's only the upper tail of that distribution that is economically accessible for extraction. We use a formula that combines abundance, variance, and a 'survey factor' to obtain a 'deposits' fraction (expressed as 0 - 100% in GUI). The deposits fraction determines extraction efficiency, which is the total extracted resource divided by input energy. Ongoing extraction reduces both abundance and variance, reducing deposits much faster than reducing abundance alone. This can be countered, albeit with diminishing returns, by increasing 'survey factor'. In most cases, the economical usefulness of a resource will be exhausted long before the resource abundance reaches zero.
