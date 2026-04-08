@@ -19,23 +19,25 @@ extends RefCounted
 
 # Interface read-only! Data flows server -> interface.
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
+
 var _reserves: Array[float] # exists here; we may need it (>= 0.0)
 var _for_sales: Array[float] # exists here; Trader may commit (>= 0.0)
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
 var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
+var _rates: Array[float] # current facility production (+) or consumption (-)
 
 var _sync := SyncHelper.new()
 
 
 func _init(is_new := false) -> void:
-	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !is_new: # game load
 		return
 	var n_resources: int = IVTableData.table_n_rows.resources
-	_reserves = arrays.init_array(n_resources, 0.0, TYPE_FLOAT)
+	_reserves = IVArrays.init_array(n_resources, 0.0, TYPE_FLOAT)
 	_for_sales = _reserves.duplicate()
 	_in_transits = _reserves.duplicate()
 	_contracteds = _reserves.duplicate()
+	_rates = _reserves.duplicate()
 
 
 # ********************************** READ *************************************
@@ -57,6 +59,10 @@ func get_contracted(type: int) -> float:
 	return _contracteds[type]
 
 
+func get_rate(type: int) -> float:
+	return _rates[type]
+
+
 func get_in_stock(type: int) -> float:
 	return _reserves[type] + _for_sales[type]
 
@@ -68,6 +74,7 @@ func set_network_init(data: Array) -> void:
 	_for_sales = data[2]
 	_in_transits = data[3]
 	_contracteds = data[4]
+	_rates = data[5]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -80,7 +87,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	run_qtr = svr_qtr # TODO: histories
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
-	_sync.add_floats_delta(_reserves)
-	_sync.add_floats_delta(_for_sales)
-	_sync.add_floats_delta(_in_transits)
-	_sync.add_floats_delta(_contracteds)
+	_sync.set_floats_dirty(_reserves)
+	_sync.set_floats_dirty(_for_sales)
+	_sync.set_floats_dirty(_in_transits)
+	_sync.set_floats_dirty(_contracteds)
+	_sync.set_floats_dirty(_rates)
