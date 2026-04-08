@@ -8,7 +8,8 @@ Resources are described in `resources.descriptive.md`.
 - name (1st column) — Resource name per data table instructions.
 - resource_class — For GUI only; one of ENERGY, ORES, VOLATILES, MATERIALS, MANUFACTURED, BIOLOGICAL, or SERVICES, corresponding to groupings in `resources.descriptive.md`.
 - commodity — BOOL value (default TRUE); specifies whether the resource is traded as a commodity.
-- trade_class — One of ELECTRICITY, CRYOGENIC, LIQUID, ICE, BULK, PRECIOUS, or SERVICES. This effects how the resource is handled for trade and transport.
+- trade_class — DEPRICATE.
+- storage_class — One of storage classes defined in storage_classes.tsv. Describes the physical storage and transport infrastructure required for the resource. Empty for service resources.
 - trade_unit — Resource unit for trade and price display.
 - start_price — This column is duplicated from #2025.
 - #2015 (non-imported column) — Estimated price of the resource in 2015.

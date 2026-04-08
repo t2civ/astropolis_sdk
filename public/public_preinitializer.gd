@@ -85,7 +85,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.resource_classes = path_format % "resource_classes"
 	tables.resources = path_format % "resources"
 	tables.spacecrafts = path_format % "spacecrafts" # ivoyager replacement!
-	
+	tables.storage_classes = path_format % "storage_classes"
 	tables.strata = path_format % "strata"
 	tables.stratum_groups = path_format % "stratum_groups"
 	tables.surveys = path_format % "surveys"
