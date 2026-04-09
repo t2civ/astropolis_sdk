@@ -25,19 +25,35 @@ var _for_sales: Array[float] # exists here; Trader may commit (>= 0.0)
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
 var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
 var _rates: Array[float] # current facility production (+) or consumption (-)
+var _storages: Array[float] # indexed by storage_type; capacity per storage class
+
+# memoized
+var _storages_used: Array[float] # indexed by storage_type; sum of reserves + for_sales
+var _storages_used_valid := false
 
 var _sync := SyncHelper.new()
 
+static var _is_class_instanced := false
+static var _n_storage_classes: int
+static var _n_resources: int
+static var _resource_storage_classes: Array[int]
+
 
 func _init(is_new := false) -> void:
+	if !_is_class_instanced:
+		_is_class_instanced = true
+		_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
+		_n_resources = IVTableData.table_n_rows[&"resources"]
+		_resource_storage_classes = IVTableData.db_tables[&"resources"][&"storage_class"]
 	if !is_new: # game load
 		return
-	var n_resources: int = IVTableData.table_n_rows.resources
-	_reserves = IVArrays.init_array(n_resources, 0.0, TYPE_FLOAT)
+	_reserves = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)
 	_for_sales = _reserves.duplicate()
 	_in_transits = _reserves.duplicate()
 	_contracteds = _reserves.duplicate()
 	_rates = _reserves.duplicate()
+	_storages = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
+	_storages_used = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
 
 
 # ********************************** READ *************************************
@@ -66,6 +82,17 @@ func get_rate(type: int) -> float:
 func get_in_stock(type: int) -> float:
 	return _reserves[type] + _for_sales[type]
 
+
+func get_storage(storage_type: int) -> float:
+	return _storages[storage_type]
+
+
+func get_storage_used(storage_type: int) -> float:
+	if !_storages_used_valid:
+		_recompute_storages_used()
+	return _storages_used[storage_type]
+
+
 # ********************************** SYNC *************************************
 
 func set_network_init(data: Array) -> void:
@@ -75,6 +102,8 @@ func set_network_init(data: Array) -> void:
 	_in_transits = data[3]
 	_contracteds = data[4]
 	_rates = data[5]
+	_storages = data[6]
+	_storages_used_valid = false
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -92,3 +121,16 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_in_transits)
 	_sync.set_floats_dirty(_contracteds)
 	_sync.set_floats_dirty(_rates)
+	_sync.set_floats_dirty_63(_storages)
+	_storages_used_valid = false
+
+
+func _recompute_storages_used() -> void:
+	for sc in _n_storage_classes:
+		_storages_used[sc] = 0.0
+	for r in _n_resources:
+		var sc: int = _resource_storage_classes[r]
+		if sc == -1:
+			continue
+		_storages_used[sc] += _reserves[r] + _for_sales[r]
+	_storages_used_valid = true
