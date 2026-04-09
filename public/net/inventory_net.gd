@@ -27,23 +27,23 @@ var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
 var _rates: Array[float] # current facility production (+) or consumption (-)
 var _storages: Array[float] # indexed by storage_type; capacity per storage class
 
-# memoized
+# lazy calculations
 var _storages_used: Array[float] # indexed by storage_type; sum of reserves + for_sales
 var _storages_used_valid := false
 
 var _sync := SyncHelper.new()
 
 static var _is_class_instanced := false
-static var _n_storage_classes: int
 static var _n_resources: int
+static var _n_storage_classes: int
 static var _resource_storage_classes: Array[int]
 
 
 func _init(is_new := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
 		_n_resources = IVTableData.table_n_rows[&"resources"]
+		_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
 		_resource_storage_classes = IVTableData.db_tables[&"resources"][&"storage_class"]
 	if !is_new: # game load
 		return
@@ -126,11 +126,11 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 
 func _recompute_storages_used() -> void:
-	for sc in _n_storage_classes:
-		_storages_used[sc] = 0.0
-	for r in _n_resources:
-		var sc: int = _resource_storage_classes[r]
-		if sc == -1:
+	for storage_class in _n_storage_classes:
+		_storages_used[storage_class] = 0.0
+	for resource_type in _n_resources:
+		var storage_class := _resource_storage_classes[resource_type]
+		if storage_class == -1:
 			continue
-		_storages_used[sc] += _reserves[r] + _for_sales[r]
+		_storages_used[storage_class] += _reserves[resource_type] + _for_sales[resource_type]
 	_storages_used_valid = true
