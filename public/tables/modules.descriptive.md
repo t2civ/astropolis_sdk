@@ -29,21 +29,21 @@ Notes:
 
 ## Extraction
 
+- **Atmosphere Processors** — Cryogenic distillation, pressure-swing adsorption, membrane separation, or centrifugal processing plants for separating target gases from planetary atmospheres. On gas giants, represent atmospheric skimming or balloon-based harvesting systems.
+- **Reservoirs & Treatment Plants** — Surface water collection, sedimentation, coagulation-flocculation, sand filtration, and disinfection facilities producing potable and industrial-grade fresh water from rivers, lakes, and artificial reservoirs.
+- **Brine Processing Plants** — Selective ion exchange, fractional crystallization, solvent extraction, and evaporation facilities for recovering dissolved minerals and salts from subsurface brines and inland saline water bodies.
+- **Quarries** — Surface extraction operations for bulk stone and loose regolith, producing construction aggregate, dimension stone, and industrial or ISRU feedstock.
 - **Mines (surface)** — Open-pit, strip, and placer mining capacity for solid resource extraction from surface strata to approximately 100 m depth. Target ore proportions adjustable over time.
 - **Mines (near-surface)** — Underground and deep open-pit mining capacity for strata at approximately 0.1–0.5 km depth, including sub-seafloor operations on continental shelves.
 - **Mines (subsurface)** — Underground mining capacity for strata at approximately 0.5–2.0 km depth.
 - **Mines (deep subsurface)** — Underground mining capacity for deep strata at approximately 2.0–5.0 km depth.
-- **Wells (surface)** — Well drilling and completion equipment for gaseous and liquid hydrocarbon extraction from surface-accessible formations to approximately 100 m depth on land.
-- **Wells (near-surface)** — Well drilling and completion equipment for hydrocarbon extraction from formations at approximately 0.1–0.5 km depth, including offshore continental shelf.
-- **Wells (subsurface)** — Well drilling and completion equipment for hydrocarbon extraction from formations at approximately 0.5–2.0 km depth.
+- **Wells (near-surface)** — Well drilling and completion equipment for hydrocarbon and groundwater extraction from formations at approximately 0.1–0.5 km depth, including offshore continental shelf.
+- **Wells (subsurface)** — Well drilling and completion equipment for hydrocarbon and groundwater extraction from formations at approximately 0.5–2.0 km depth.
 - **Wells (deep subsurface)** — Well drilling and completion equipment for hydrocarbon extraction from formations at approximately 2.0–5.0 km depth.
 - **Wells (extreme subsurface)** — Well drilling and completion equipment for hydrocarbon extraction from formations at approximately 5.0–12.0 km depth.
-- **Quarries** — Surface extraction operations for bulk stone and loose regolith, producing construction aggregate, dimension stone, and industrial or ISRU feedstock.
-- **Atmosphere Processors** — Cryogenic distillation, pressure-swing adsorption, membrane separation, or centrifugal processing plants for separating target gases from planetary atmospheres. On gas giants, represent atmospheric skimming or balloon-based harvesting systems.
+- **Desalination Plants** — Reverse osmosis, multi-stage flash distillation, or electrodialysis facilities producing fresh water from seawater, brackish water, or brine, with integrated mineral recovery from concentrated reject brine. On ocean worlds, applicable to melt-probe or plume-sourced water.
 - **Volatiles Extraction Plants** — Thermal processing, sublimation trapping, and mechanical extraction facilities for recovering water, carbon dioxide, ammonia, and other volatile species from ice deposits, permafrost, regolith, and brine reservoirs.
 - **Hydrocarbon Processors** — Surface collection and primary separation infrastructure for liquid hydrocarbon bodies, principally Titan's methane–ethane seas.
-- **Desalination Plants** — Reverse osmosis, multi-stage flash distillation, or electrodialysis facilities producing fresh water from seawater, brackish water, or brine, with integrated mineral recovery from concentrated reject brine. On ocean worlds, applicable to melt-probe or plume-sourced water.
-- **Brine Processing Plants** — Selective ion exchange, fractional crystallization, solvent extraction, and evaporation facilities for recovering dissolved minerals and salts from subsurface brines and inland saline water bodies.
 
 
 ## Refining
