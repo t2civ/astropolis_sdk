@@ -207,7 +207,7 @@ func _get_ai_data(marketplace: MarketplaceNet, inventory: InventoryNet) -> void:
 			ask = marketplace.get_ask(resource_type)
 			volume = marketplace.get_volume(resource_type)
 		if is_inventory:
-			in_stock = inventory.get_in_stock(resource_type)
+			in_stock = inventory.get_stock(resource_type)
 			contracted = inventory.get_contracted(resource_type)
 		
 		data.append(resource_type)

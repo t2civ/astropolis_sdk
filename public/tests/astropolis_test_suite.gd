@@ -385,14 +385,14 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 		var entry_name: String = pair[1]
 		var entry := {}
 		var dominated_by_zero := true
-		if _has_field("reserve", field_filter):
-			var v := inv.get_reserve(i)
-			entry["reserve"] = _sanitize(v)
+		if _has_field("stock", field_filter):
+			var v := inv.get_stock(i)
+			entry["stock"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
-		if _has_field("for_sale", field_filter):
-			var v := inv.get_for_sale(i)
-			entry["for_sale"] = _sanitize(v)
+		if _has_field("surplus", field_filter):
+			var v := inv.get_surplus(i)
+			entry["surplus"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("in_transit", field_filter):
@@ -403,11 +403,6 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 		if _has_field("contracted", field_filter):
 			var v := inv.get_contracted(i)
 			entry["contracted"] = _sanitize(v)
-			if _is_interesting(v):
-				dominated_by_zero = false
-		if _has_field("in_stock", field_filter):
-			var v := inv.get_in_stock(i)
-			entry["in_stock"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if nonzero and dominated_by_zero:
