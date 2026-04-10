@@ -149,3 +149,93 @@ func _on_program_objects_instantiated() -> void:
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
 	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
 			resource_resource_classes, n_resource_classes) # resources for each resource_class
+	# per-operation net storage use per storage class, in open & closed cycle.
+	# Positive = op produces into that storage class; negative = op draws from it.
+	# Used by Facility to sample storage fullness once per interval and cap run_rate.
+	var n_storage_classes: int = table_n_rows[&"storage_classes"]
+	var resource_storage_classes: Array[int] = db_tables[&"resources"][&"storage_class"]
+	var resource_convert_extractions: Array[int] = db_tables[&"resources"][&"convert_extraction"]
+	var op_electricities: Array[float] = db_tables[&"operations"][&"electricity"]
+	var op_closed_cycle_factors: Array[float] = db_tables[&"operations"][&"closed_cycle_factor"]
+	var op_process_groups: Array[int] = db_tables[&"operations"][&"process_group"]
+	var op_target_rates: Array[float] = db_tables[&"operations"][&"target_rate"]
+	var op_in_inventory: Array[Array] = db_tables[&"operations"][&"in_inventory"]
+	var op_in_inventory_rates: Array[Array] = db_tables[&"operations"][&"in_inventory_rates"]
+	var op_in_atmos: Array[Array] = db_tables[&"operations"][&"in_atmos"]
+	var op_in_atmos_rates: Array[Array] = db_tables[&"operations"][&"in_atmos_rates"]
+	var op_out_inventory: Array[Array] = db_tables[&"operations"][&"out_inventory"]
+	var op_out_inventory_rates: Array[Array] = db_tables[&"operations"][&"out_inventory_rates"]
+	var op_out_atmos: Array[Array] = db_tables[&"operations"][&"out_atmos"]
+	var op_out_atmos_rates: Array[Array] = db_tables[&"operations"][&"out_atmos_rates"]
+	var op_out_surface: Array[Array] = db_tables[&"operations"][&"out_surface"]
+	var op_out_surface_rates: Array[Array] = db_tables[&"operations"][&"out_surface_rates"]
+	var op_target_deposits: Array[Array] = db_tables[&"operations"][&"target_deposits"]
+	var electricity_type: int = tables_aux[&"resource_type_electricity"]
+	var storage_class_electricity := resource_storage_classes[electricity_type]
+	var open_cycle_uses: Array[Array] = []
+	var closed_cycle_uses: Array[Array] = []
+	for operation_type in n_operations:
+		var open_uses: Array[float] = IVArrays.init_array(n_storage_classes, 0.0, TYPE_FLOAT)
+		var closed_uses: Array[float] = IVArrays.init_array(n_storage_classes, 0.0, TYPE_FLOAT)
+		# electricity (signed: + generator, - consumer)
+		var base_electricity := op_electricities[operation_type]
+		if storage_class_electricity != -1 and base_electricity != 0.0:
+			open_uses[storage_class_electricity] += base_electricity
+			closed_uses[storage_class_electricity] += (
+					base_electricity * op_closed_cycle_factors[operation_type])
+		# inventory inputs — both cycles draw from storage
+		var in_inv_resources: Array[int] = op_in_inventory[operation_type]
+		var in_inv_rates: Array[float] = op_in_inventory_rates[operation_type]
+		for i in in_inv_resources.size():
+			var storage_class := resource_storage_classes[in_inv_resources[i]]
+			if storage_class != -1:
+				open_uses[storage_class] -= in_inv_rates[i]
+				closed_uses[storage_class] -= in_inv_rates[i]
+		# inventory outputs — both cycles add to storage
+		var out_inv_resources: Array[int] = op_out_inventory[operation_type]
+		var out_inv_rates: Array[float] = op_out_inventory_rates[operation_type]
+		for i in out_inv_resources.size():
+			var storage_class := resource_storage_classes[out_inv_resources[i]]
+			if storage_class != -1:
+				open_uses[storage_class] += out_inv_rates[i]
+				closed_uses[storage_class] += out_inv_rates[i]
+		# atmospheric inputs — closed cycle only (open draws from atmosphere)
+		var in_atmos_resources: Array[int] = op_in_atmos[operation_type]
+		var in_atmos_rates: Array[float] = op_in_atmos_rates[operation_type]
+		for i in in_atmos_resources.size():
+			var storage_class := resource_storage_classes[in_atmos_resources[i]]
+			if storage_class != -1:
+				closed_uses[storage_class] -= in_atmos_rates[i]
+		# atmospheric outputs — closed cycle only (open vents to atmosphere)
+		var out_atmos_resources: Array[int] = op_out_atmos[operation_type]
+		var out_atmos_rates: Array[float] = op_out_atmos_rates[operation_type]
+		for i in out_atmos_resources.size():
+			var storage_class := resource_storage_classes[out_atmos_resources[i]]
+			if storage_class != -1:
+				closed_uses[storage_class] += out_atmos_rates[i]
+		# surface outputs — closed cycle only (open deposits to surface)
+		var out_surface_resources: Array[int] = op_out_surface[operation_type]
+		var out_surface_rates: Array[float] = op_out_surface_rates[operation_type]
+		for i in out_surface_resources.size():
+			var storage_class := resource_storage_classes[out_surface_resources[i]]
+			if storage_class != -1:
+				closed_uses[storage_class] += out_surface_rates[i]
+		# extraction targets — real outputs come from stratum at runtime; add
+		# target_rate contributions so near-full storage classes throttle extraction
+		if op_process_groups[operation_type] == Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION:
+			var target_deposits: Array[int] = op_target_deposits[operation_type]
+			var extraction_resources_out := (
+					target_deposits if target_deposits else volatile_extraction_resources)
+			var target_rate := op_target_rates[operation_type]
+			for resource_type in extraction_resources_out:
+				var convert_extraction := resource_convert_extractions[resource_type]
+				var produced_type := (resource_type if convert_extraction == -1
+						else convert_extraction)
+				var storage_class := resource_storage_classes[produced_type]
+				if storage_class != -1:
+					open_uses[storage_class] += target_rate
+					closed_uses[storage_class] += target_rate
+		open_cycle_uses.append(open_uses)
+		closed_cycle_uses.append(closed_uses)
+	tables_aux[&"operation_open_cycle_storage_uses"] = open_cycle_uses
+	tables_aux[&"operation_closed_cycle_storage_uses"] = closed_cycle_uses
