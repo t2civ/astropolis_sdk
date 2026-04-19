@@ -16,6 +16,12 @@ extends RefCounted
 #
 # All values in internal units!
 
+enum ResourceFlags {
+	# State
+	IS_SURPLUS = 1 << 1,
+	# Run logics
+	IS_MARKET = 1 << 5,
+}
 
 # Interface read-only! Data flows server -> interface.
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
@@ -26,6 +32,7 @@ var _trade_reserves: Array[float] # tracker: quantity reserved for trade
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
 var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
 var _rates: Array[float] # current facility production (+) or consumption (-)
+var _resource_flags: Array[int] # enum ResourceFlags
 var _storages: Array[float] # indexed by storage_type; capacity per storage class
 
 # lazy calculations
@@ -54,6 +61,7 @@ func _init(is_new := false) -> void:
 	_in_transits = _stocks.duplicate()
 	_contracteds = _stocks.duplicate()
 	_rates = _stocks.duplicate()
+	_resource_flags = IVArrays.init_array(_n_resources, 0, TYPE_INT)
 	_storages = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
 	_storages_used = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
 
@@ -85,6 +93,10 @@ func get_rate(type: int) -> float:
 	return _rates[type]
 
 
+func get_resource_flags(type: int) -> int:
+	return _resource_flags[type]
+
+
 func get_storage(storage_type: int) -> float:
 	return _storages[storage_type]
 
@@ -105,7 +117,8 @@ func set_network_init(data: Array) -> void:
 	_in_transits = data[4]
 	_contracteds = data[5]
 	_rates = data[6]
-	_storages = data[7]
+	_resource_flags = data[7]
+	_storages = data[8]
 	_storages_used_valid = false
 
 
@@ -125,6 +138,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_in_transits)
 	_sync.set_floats_dirty(_contracteds)
 	_sync.set_floats_dirty(_rates)
+	_sync.set_ints_dirty(_resource_flags)
 	_sync.set_floats_dirty_63(_storages)
 	_storages_used_valid = false
 
