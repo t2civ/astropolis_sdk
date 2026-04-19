@@ -390,9 +390,14 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 			entry["stock"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
-		if _has_field("surplus", field_filter):
-			var v := inv.get_surplus(i)
-			entry["surplus"] = _sanitize(v)
+		if _has_field("ops_reserve", field_filter):
+			var v := inv.get_ops_reserve(i)
+			entry["ops_reserve"] = _sanitize(v)
+			if _is_interesting(v):
+				dominated_by_zero = false
+		if _has_field("trade_reserve", field_filter):
+			var v := inv.get_trade_reserve(i)
+			entry["trade_reserve"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("in_transit", field_filter):

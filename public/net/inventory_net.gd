@@ -21,7 +21,8 @@ extends RefCounted
 var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
 
 var _stocks: Array[float] # total present resource quantity (>= 0.0)
-var _surplusses: Array[float] # tracker: quantity flagged for sale (not physical)
+var _ops_reserves: Array[float] # tracker: quantity reserved for operations
+var _trade_reserves: Array[float] # tracker: quantity reserved for trade
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
 var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
 var _rates: Array[float] # current facility production (+) or consumption (-)
@@ -48,7 +49,8 @@ func _init(is_new := false) -> void:
 	if !is_new: # game load
 		return
 	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)
-	_surplusses = _stocks.duplicate()
+	_ops_reserves = _stocks.duplicate()
+	_trade_reserves = _stocks.duplicate()
 	_in_transits = _stocks.duplicate()
 	_contracteds = _stocks.duplicate()
 	_rates = _stocks.duplicate()
@@ -63,8 +65,12 @@ func get_stock(type: int) -> float:
 	return _stocks[type]
 
 
-func get_surplus(type: int) -> float:
-	return _surplusses[type]
+func get_ops_reserve(type: int) -> float:
+	return _ops_reserves[type]
+
+
+func get_trade_reserve(type: int) -> float:
+	return _trade_reserves[type]
 
 
 func get_in_transit(type: int) -> float:
@@ -94,11 +100,12 @@ func get_storage_used(storage_type: int) -> float:
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_stocks = data[1]
-	_surplusses = data[2]
-	_in_transits = data[3]
-	_contracteds = data[4]
-	_rates = data[5]
-	_storages = data[6]
+	_ops_reserves = data[2]
+	_trade_reserves = data[3]
+	_in_transits = data[4]
+	_contracteds = data[5]
+	_rates = data[6]
+	_storages = data[7]
 	_storages_used_valid = false
 
 
@@ -113,7 +120,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(_stocks)
-	_sync.set_floats_dirty(_surplusses)
+	_sync.set_floats_dirty(_ops_reserves)
+	_sync.set_floats_dirty(_trade_reserves)
 	_sync.set_floats_dirty(_in_transits)
 	_sync.set_floats_dirty(_contracteds)
 	_sync.set_floats_dirty(_rates)
