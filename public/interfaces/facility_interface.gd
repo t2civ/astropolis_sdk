@@ -29,6 +29,7 @@ var public_sector: float # often 0.0 or 1.0, sometimes mixed
 var is_unitary: bool # is small focused activity for stats & tax treatment
 var closed_cycle_ops: bool # all resource streams from/to inventory
 var solar_occlusion: float # TODO: calculate from body atmosphere, body shading, etc.
+var time_horizon: float # for AI and automations (inventory reserves, resupply, etc.)
 var polity_name: StringName
 
 var body: BodyInterface
@@ -195,23 +196,24 @@ func set_network_init(data: Array) -> void:
 	is_unitary = data[7]
 	closed_cycle_ops = data[8]
 	solar_occlusion = data[9]
-	polity_name = data[10]
-	player = interfaces_by_name[data[11]]
+	time_horizon = data[10]
+	polity_name = data[11]
+	player = interfaces_by_name[data[12]]
 	player.add_facility(self)
-	body = interfaces_by_name[data[12]]
+	body = interfaces_by_name[data[13]]
 	body.add_facility(self)
-	var join_names: Array = data[13]
+	var join_names: Array = data[14]
 	for join_name: StringName in join_names:
 		var join: JoinInterface = get_interface_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
 
-	var operations_data: Array = data[14]
-	var inventory_data: Array = data[15]
-	var financials_data: Array = data[16]
-	var population_data: Array = data[17]
-	var biome_data: Array = data[18]
-	var cyberspace_data: Array = data[19]
+	var operations_data: Array = data[15]
+	var inventory_data: Array = data[16]
+	var financials_data: Array = data[17]
+	var population_data: Array = data[18]
+	var biome_data: Array = data[19]
+	var cyberspace_data: Array = data[20]
 	
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -247,6 +249,7 @@ func sync_server_dirty(data: Array) -> void:
 		closed_cycle_ops = bool(int_data[3])
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
+		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
 	

@@ -22,6 +22,7 @@ Facilities are described in `facilities.descriptive.md`. Content of this table i
 - information_fraction — See Information & Biodiversity below.
 - nominal_information — For small facilities with relatively little computer capacity, assign a nominal Shannon information content in Terrabits (Tbit). Use this field instead of `information_fraction` if unique information content is too small to significantly affect the global information model.
 - solar_occlusion — Average solar occlusion in a player's territory. This is 1.0 minus solar insolation as a fraction of total possible at a distance from the sun without any blockage. Agencies on a planet should have the same value as their owning polity. Leave empty for spacecraft.
+- time_horizon — Planning horizon used by AI and automations (inventory reserves, resupply, etc.). Shorter for facilities with frequent resupply (e.g., Earth), longer for facilities with infrequent resupply (e.g., LEO).
 
 
 ## Information & Biodiversity 
