@@ -72,6 +72,7 @@ var cyberspace: CyberspaceNet # always
 
 # read-only!
 var join_id := -1
+var join_depth := 0 # Depth in the aggregation DAG: 0 at sink-only (e.g. JOIN_ALL).
 
 
 
@@ -176,11 +177,12 @@ func set_network_init(data: Array) -> void:
 	join_id = data[2]
 	name = data[3]
 	gui_name = data[4]
-	var operations_data: Array = data[5]
-	var financials_data: Array = data[6]
-	var population_data: Array = data[7]
-	var biome_data: Array = data[8]
-	var cyberspace_data: Array = data[9]
+	join_depth = data[5]
+	var operations_data: Array = data[6]
+	var financials_data: Array = data[7]
+	var population_data: Array = data[8]
+	var biome_data: Array = data[9]
+	var cyberspace_data: Array = data[10]
 	operations = OperationsNet.new(true, !financials_data.is_empty())
 	operations.set_network_init(operations_data)
 	if financials_data:
@@ -195,12 +197,15 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	
+
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	
+
+	if dirty & DIRTY_BASE:
+		join_depth = int_data[1]
+
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
