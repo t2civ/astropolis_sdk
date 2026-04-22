@@ -507,6 +507,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_capacity_factors) # not accumulator!
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
 	_sync.set_ints_dirty(_op_flags) # not accumulator!
+	_sync.set_floats_dirty(_target_utilizations) # not accumulator!
 
 
 func get_interface_dirty() -> Array:

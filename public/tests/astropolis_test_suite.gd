@@ -346,6 +346,17 @@ func _read_operations(ops: OperationsNet, nonzero: bool,
 			entry["electricity_rate"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
+		if ops.is_facility():
+			if _has_field("capacity_factor", field_filter):
+				var v := ops.get_capacity_factor(i)
+				entry["capacity_factor"] = _sanitize(v)
+				if _is_interesting(v):
+					dominated_by_zero = false
+			if _has_field("target_utilization", field_filter):
+				var v := ops.get_target_utilization(i)
+				entry["target_utilization"] = _sanitize(v)
+				if _is_interesting(v):
+					dominated_by_zero = false
 		if has_fin:
 			if _has_field("revenue_rate", field_filter):
 				var v := ops.get_revenue_rate(i)
@@ -408,6 +419,16 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 		if _has_field("contracted", field_filter):
 			var v := inv.get_contracted(i)
 			entry["contracted"] = _sanitize(v)
+			if _is_interesting(v):
+				dominated_by_zero = false
+		if _has_field("rate", field_filter):
+			var v := inv.get_rate(i)
+			entry["rate"] = _sanitize(v)
+			if _is_interesting(v):
+				dominated_by_zero = false
+		if _has_field("expected_rate", field_filter):
+			var v := inv.get_expected_rate(i)
+			entry["expected_rate"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if nonzero and dominated_by_zero:
