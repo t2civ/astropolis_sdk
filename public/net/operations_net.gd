@@ -77,6 +77,7 @@ var _revenue_rates: Array[float] # at current rate & prices
 var _cogs_rates: Array[float] # cost of goods sold; at current rate & prices
 
 # Facility only
+var _capacity_factors: Array[float] # environmental limit (renewable power) or historical (others)
 var _gross_margins: Array[float] # at current prices (even if rate = 0)
 var _op_flags: Array[int] # enum; Facility only
 
@@ -134,6 +135,7 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_cogs_rates = _capacities.duplicate()
 	if !_is_facility:
 		return
+	_capacity_factors = arrays.init_array(_n_operations, 0.0, TYPE_FLOAT)
 	_gross_margins = arrays.init_array(_n_operations, NAN, TYPE_FLOAT)
 	_op_flags = arrays.init_array(_n_operations, OpFlags.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
@@ -258,6 +260,10 @@ func get_cogs_rate(type: int) -> float:
 	if !_has_financials:
 		return NAN
 	return _cogs_rates[type]
+
+
+func get_capacity_factor(type: int) -> float:
+	return _capacity_factors[type]
 
 
 func get_gross_margin(type: int) -> float:
@@ -453,12 +459,13 @@ func set_network_init(data: Array) -> void:
 	_effective_rates = data[7]
 	_revenue_rates = data[8]
 	_cogs_rates = data[9]
-	_gross_margins = data[10]
-	_op_flags = data[11]
-	_op_commands = data[12]
-	_target_utilizations = data[13]
-	_has_financials = data[14]
-	_is_facility = data[15]
+	_capacity_factors = data[10]
+	_gross_margins = data[11]
+	_op_flags = data[12]
+	_op_commands = data[13]
+	_target_utilizations = data[14]
+	_has_financials = data[15]
+	_is_facility = data[16]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -496,7 +503,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	if !_is_facility:
 		return
-	
+
+	_sync.set_floats_dirty(_capacity_factors) # not accumulator!
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
 	_sync.set_ints_dirty(_op_flags) # not accumulator!
 
