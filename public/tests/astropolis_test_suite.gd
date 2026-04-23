@@ -19,6 +19,7 @@ const MAX_INDEXED_ENTRIES := 500
 
 func get_method_names() -> Array[String]:
 	return [
+		"get_astropolis_state",
 		"list_interfaces",
 		"get_interface_info",
 		"get_development_stats",
@@ -34,6 +35,8 @@ func get_capabilities() -> Array[String]:
 
 func dispatch(method: String, params: Dictionary) -> Variant:
 	match method:
+		"get_astropolis_state":
+			return _get_astropolis_state(params)
 		"list_interfaces":
 			return _list_interfaces(params)
 		"get_interface_info":
@@ -48,6 +51,18 @@ func dispatch(method: String, params: Dictionary) -> Variant:
 			return _query_component(params)
 	return {"_error": {"code": ERR_UNKNOWN_METHOD,
 			"message": "Unknown method: %s" % method}}
+
+
+# =============================================================================
+
+func _get_astropolis_state(_params: Dictionary) -> Variant:
+	# Lightweight state probe. Clients should poll this after
+	# `simulator_started`/`started=true` and wait for `interfaces_ready=true`
+	# before querying the Interface system. See `MainThreadGlobal`.
+	return {
+		"interfaces_ready": MainThreadGlobal.interfaces_ready_emitted,
+		"n_interfaces": MainThreadGlobal.interfaces_by_name.size(),
+	}
 
 
 # =============================================================================

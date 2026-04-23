@@ -19,21 +19,44 @@ signal interface_added(interface: Interface)
 signal interface_removed(interface: Interface)
 signal ai_thread_called(callable: Callable)
 
+## Emitted once after [signal IVStateManager.simulator_started] when no new
+## Interface has been added for a brief settle period. This is the correct
+## barrier for "Interface system is ready" — waiting on
+## [signal IVStateManager.simulator_started] alone is insufficient because
+## interfaces arrive on the main thread via deferred calls from the AI server
+## thread and can continue arriving for a short time after simulator_started.
+signal interfaces_ready
+
 const utils := preload("res://public/static/utils.gd")
+
+## Seconds of quiescence (no new [method add_interface] calls) after which
+## [signal interfaces_ready] is emitted. Chosen empirically: load at simulator
+## start delivers ~250 interfaces over ~500 ms on main-thread drain.
+const _INTERFACES_READY_SETTLE_SEC := 0.2
 
 var interfaces_by_name: Dictionary[StringName, Variant] = {} # PLANET_EARTH, PLAYER_NASA, etc.
 var body_selection_redirect := {} # redirect to single facility or local player facility
+var interfaces_ready_emitted := false # reset on about_to_free_procedural_nodes
+
+var _settle_epoch := 0 # incremented on every arm/clear; invalidates stale pending checks
 
 
 # *****************************************************************************
 
 func _ready() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.simulator_started.connect(_on_simulator_started)
 
 
 func _clear() -> void:
 	interfaces_by_name.clear()
 	body_selection_redirect.clear()
+	interfaces_ready_emitted = false
+	_settle_epoch += 1
+
+
+func _on_simulator_started() -> void:
+	_arm_interfaces_ready_check()
 
 
 # *****************************************************************************
@@ -130,9 +153,31 @@ func has_markets(interface_name: StringName) -> bool:
 func add_interface(interface: Interface) -> void:
 	assert(!interfaces_by_name.has(interface.name))
 	interfaces_by_name[interface.name] = interface
+	if !interfaces_ready_emitted and IVStateManager.started:
+		_arm_interfaces_ready_check()
 	interface_added.emit(interface)
 
 
 func remove_interface(interface: Interface) -> void:
 	interfaces_by_name.erase(interface.name)
 	interface_removed.emit(interface)
+
+
+func _arm_interfaces_ready_check() -> void:
+	# (Re)start the settle window. Each call supersedes any prior pending check
+	# via the epoch counter.
+	_settle_epoch += 1
+	var epoch := _settle_epoch
+	get_tree().create_timer(_INTERFACES_READY_SETTLE_SEC).timeout.connect(
+			_maybe_emit_interfaces_ready.bind(epoch), CONNECT_ONE_SHOT)
+
+
+func _maybe_emit_interfaces_ready(epoch: int) -> void:
+	if interfaces_ready_emitted:
+		return
+	if epoch != _settle_epoch:
+		return # superseded by a later add_interface
+	if !IVStateManager.started:
+		return # sim no longer running (stopping/unloading)
+	interfaces_ready_emitted = true
+	interfaces_ready.emit()
