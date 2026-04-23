@@ -9,6 +9,7 @@ Facilities are described in `facilities.descriptive.md`. Content of this table i
 - is_start — Always TRUE (by default).
 - body — Simulation body.
 - player — Owning or controlling player.
+- trade_bodies — Bodies (other than the Facility body) where this Facility expects to buy or sell resources. At game start, should only have value PLANET_EARTH for off-Earth facilities.
 - is_unitary — True ("x") if the facility can be treated as one activity for economic accounting. If false, each operation is treated as a separate activity for internal mechanics like taxation and gross product calculation.
 - closed_cycle_ops — True ("x") if the facility runs operations in a "closed cycle"; i.e., resource streams are entirely from and to inventory.
 - public_sector — Fraction of economic activity that is public sector. For unitary facilities, this is usually 1 (agencies) or 0 (companies).
