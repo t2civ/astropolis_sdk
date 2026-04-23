@@ -1,10 +1,9 @@
 # selection_image2.gd
-# This file is part of Astropolis
-# https://t2civ.com
-# This file was modified from I, Voyager
-# https://ivoyager.dev
+# This file is part of Astropolis (https://t2civ.com)
 # *****************************************************************************
-# Copyright 2017-2025 Charlie Whitfield
+# This file was modified from I, Voyager (https://ivoyager.dev)
+# 
+# Copyright 2019-2026 Charlie Whitfield
 # I, Voyager is a registered trademark of Charlie Whitfield in the US
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
