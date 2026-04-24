@@ -173,12 +173,11 @@ func _list_components(params: Dictionary) -> Variant:
 	components["cyberspace"] = {"present": interface.get_cyberspace() != null,
 			"type": "scalar"}
 
-	var player_id: int = params.get("player_id", 0)
-	var has_marketplace := interface.get_marketplace(player_id) != null
-	components["marketplace"] = {
-		"present": has_marketplace,
-		"index_table": "resources" if has_marketplace else "",
-		"n_indices": int(table_n_rows[&"resources"]) if has_marketplace else 0,
+	var has_exchange := interface.get_exchange() != null
+	components["exchange"] = {
+		"present": has_exchange,
+		"index_table": "resources" if has_exchange else "",
+		"n_indices": int(table_n_rows[&"resources"]) if has_exchange else 0,
 	}
 
 	return {
@@ -247,12 +246,11 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 			if !pop:
 				return _no_component_error(interface, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
-		"marketplace":
-			var mkt_player_id: int = params.get("player_id", 0)
-			var mkt := interface.get_marketplace(mkt_player_id)
-			if !mkt:
+		"exchange":
+			var exchange := interface.get_exchange()
+			if !exchange:
 				return _no_component_error(interface, component)
-			return _read_marketplace(mkt, nonzero, entry_filter, field_filter)
+			return _read_exchange(exchange, nonzero, entry_filter, field_filter)
 		"financials":
 			var fin := interface.get_financials()
 			if !fin:
@@ -271,7 +269,7 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 
 	return {"_error": {"code": ERR_INVALID_PARAMS,
 			"message": ("Unknown component: %s (valid: operations, inventory,"
-			+ " population, marketplace, financials, biome, cyberspace)")
+			+ " population, exchange, financials, biome, cyberspace)")
 			% component}}
 
 
@@ -488,7 +486,7 @@ func _read_population(pop: PopulationNet, nonzero: bool,
 	}
 
 
-func _read_marketplace(mkt: MarketplaceNet, nonzero: bool,
+func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 		entry_filter: Array, field_filter: Array) -> Dictionary:
 	var indices := _get_entry_indices(&"resources", entry_filter)
 	var entries := {}
@@ -498,22 +496,22 @@ func _read_marketplace(mkt: MarketplaceNet, nonzero: bool,
 		var entry := {}
 		var dominated_by_zero := true
 		if _has_field("price", field_filter):
-			var v := mkt.get_price(i)
+			var v := exchange.get_price(i)
 			entry["price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
-		if _has_field("bid", field_filter):
-			var v := mkt.get_bid(i)
-			entry["bid"] = _sanitize(v)
+		if _has_field("bid_price", field_filter):
+			var v := exchange.get_bid_price(i)
+			entry["bid_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
-		if _has_field("ask", field_filter):
-			var v := mkt.get_ask(i)
-			entry["ask"] = _sanitize(v)
+		if _has_field("ask_price", field_filter):
+			var v := exchange.get_ask_price(i)
+			entry["ask_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("volume", field_filter):
-			var v := mkt.get_volume(i)
+			var v := exchange.get_volume(i)
 			entry["volume"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
@@ -523,8 +521,8 @@ func _read_marketplace(mkt: MarketplaceNet, nonzero: bool,
 		if entries.size() >= MAX_INDEXED_ENTRIES:
 			break
 	return {
-		"component": "marketplace",
-		"run_qtr": mkt.run_qtr,
+		"component": "exchange",
+		"run_qtr": exchange.run_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),

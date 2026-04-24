@@ -1,7 +1,7 @@
 name\Field	resource_class	commodity	trade_class	storage_class	trade_unit	start_price	#2015	#2025	#2035	gui_ea	currency_unit	unique_type	is_extraction	convert_extraction	is_volatile	sort_override	mass_err_mult
 Type	TABLE_ROW	BOOL	Enums.TradeClasses	TABLE_ROW	STRING_NAME	FLOAT	FLOAT	FLOAT	FLOAT	BOOL	BOOL	Enums.Types	BOOL	TABLE_ROW	BOOL	INT	FLOAT
 Unit						$/t	$/t	$/t	$/t								
-Default		TRUE			t											0	1
+Default		TRUE			t	0										0	1
 Prefix/RESOURCE_	RESOURCE_CLASS_		TRADE_CLASS_	STORAGE_CLASS_										RESOURCE_			
 ELECTRICITY	ENERGY		ELECTRICITY	ELECTRICITY	MWh	47 $/MWh	133 $/MWh	47 $/MWh	72 $/MWh			ELECTRICITY					
 HYDROGEN	ENERGY		CRYOGENIC	CRYOGENIC		3 $/kg	1.5 $/kg	3 $/kg	2.5 $/kg				x		x		

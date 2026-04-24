@@ -1,8 +1,8 @@
-name\Field	is_start	body	player	trade_bodies	is_unitary	closed_cycle_ops	public_sector	population	#2025	#2035	constructions	biomass	bioproductivity	biodiversity_fraction	information_fraction	nominal_information	solar_occlusion	time_horizon
+name\Field	is_start	body	player	exchanges	is_unitary	closed_cycle_ops	public_sector	population	#2025	#2035	constructions	biomass	bioproductivity	biodiversity_fraction	information_fraction	nominal_information	solar_occlusion	time_horizon
 Type	BOOL	STRING_NAME	TABLE_ROW	ARRAY[STRING_NAME]	BOOL	BOOL	FLOAT	ARRAY[FLOAT]	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT
 Unit											t	t	t/h			Tbit		d
 Default	TRUE						0	0			0	0	0	0	0	0		
-Prefix/FACILITY_			PLAYER_															
+Prefix/FACILITY_			PLAYER_	EXCHANGE_														
 PLANET_EARTH_USA		PLANET_EARTH	USA	PLANET_EARTH			0.133	3.40e8	3.40e8	3.55e8	2.0e11	8.30e10	1.97e06	0.07	0.45		0.76	30
 PLANET_EARTH_RUSSIA		PLANET_EARTH	RUSSIA	PLANET_EARTH			0.406	1.44e8	1.44e8	1.41e8	4.2e10	1.08e11	2.36e06	0.05	0.2		0.92	30
 PLANET_EARTH_CHINA		PLANET_EARTH	CHINA	PLANET_EARTH			0.3	1.42e9	1.42e9	1.36e9	3.5e11	6.80e10	2.30e06	0.07	0.45		0.8	30

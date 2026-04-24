@@ -8,7 +8,7 @@
 class_name TraderInterface
 extends Interface
 
-# A Trader buys and sells resources at a Body for a specific Facility.
+# A Trader buys and sells resources at an Exchange for a specific Facility.
 #
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
@@ -24,10 +24,9 @@ static var trader_interfaces: Array[TraderInterface] = [] # indexed by trader_id
 # immutable post-init
 var trader_id := -1
 var facility_id := -1
-var body_id := -1
 var local := false
 var facility: FacilityInterface
-var body: BodyInterface
+var exchange: ExchangeInterface
 
 # sync from server (DIRTY_BASE)
 var temp_placeholder := 0.0
@@ -45,13 +44,13 @@ func set_network_init(data: Array) -> void:
 	trader_id = data[2]
 	name = data[3]
 	facility_id = data[4]
-	body_id = data[5]
+	var exchange_name: StringName = data[5]
 	local = data[6]
 	temp_placeholder = data[7]
 	facility = FacilityInterface.facility_interfaces[facility_id]
 	assert(facility)
-	body = BodyInterface.body_interfaces[body_id]
-	assert(body)
+	exchange = interfaces_by_name[exchange_name]
+	assert(exchange)
 
 
 func sync_server_dirty(data: Array) -> void:

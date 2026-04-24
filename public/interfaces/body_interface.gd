@@ -37,7 +37,7 @@ var operations: OperationsNet # when/if needed
 var population: PopulationNet # when/if needed
 var biome: BiomeNet # when/if needed
 var cyberspace: CyberspaceNet # when/if needed
-var marketplace: MarketplaceNet # when/if needed
+var exchange: ExchangeInterface # null unless Body has >1 Facility
 var strata: Array[StratumNet] = [] # resizable container - not threadsafe!
 
 
@@ -168,15 +168,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_marketplace(_player_id: int) -> MarketplaceNet:
-	# TODO: alt_market for blockaded player
-	return marketplace # possible null
-
-
-# Marketplace
-
-func get_marketplace_price(type: int) -> float:
-	return marketplace.get_price(type)
+func get_exchange() -> ExchangeInterface:
+	return exchange # possible null
 
 
 # Strata
@@ -255,9 +248,8 @@ func set_network_init(data: Array) -> void:
 	var population_data: Array = data[9]
 	var biome_data: Array = data[10]
 	var cyberspace_data: Array = data[11]
-	var marketplace_data: Array = data[12]
-	var strata_data: Array = data[13]
-	
+	var strata_data: Array = data[12]
+
 	if operations_data:
 		operations = OperationsNet.new(true)
 		operations.set_network_init(operations_data)
@@ -270,9 +262,6 @@ func set_network_init(data: Array) -> void:
 	if cyberspace_data:
 		cyberspace = CyberspaceNet.new(true)
 		cyberspace.set_network_init(cyberspace_data)
-	if marketplace_data:
-		marketplace = MarketplaceNet.new(true)
-		marketplace.set_network_init(marketplace_data)
 	if strata_data:
 		var n_strata := strata_data.size()
 		strata.resize(n_strata)
@@ -318,11 +307,6 @@ func sync_server_dirty(data: Array) -> void:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 3
-	if dirty & DIRTY_MARKETPLACE:
-		if !marketplace:
-			marketplace = MarketplaceNet.new(true)
-		marketplace.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
 	if dirty & DIRTY_STRATA:
 		var flag_index := 0
 		var more_dirty := 1

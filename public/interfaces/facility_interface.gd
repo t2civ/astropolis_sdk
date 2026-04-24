@@ -31,7 +31,7 @@ var closed_cycle_ops: bool # all resource streams from/to inventory
 var solar_occlusion: float # TODO: calculate from body atmosphere, body shading, etc.
 var time_horizon: float # for AI and automations (inventory reserves, resupply, etc.)
 var polity_name: StringName
-var trade_bodies: Array[StringName]
+var exchanges: Array[StringName]
 
 var body: BodyInterface
 var player: PlayerInterface
@@ -193,8 +193,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_marketplace(player_id: int) -> MarketplaceNet:
-	return body.get_marketplace(player_id) # possible null
+func get_exchange() -> ExchangeInterface:
+	return body.exchange # possible null
 
 
 # *****************************************************************************
@@ -211,7 +211,7 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	trade_bodies = data[12]
+	exchanges = data[12]
 	player = interfaces_by_name[data[13]]
 	player.add_facility(self)
 	body = interfaces_by_name[data[14]]
@@ -261,15 +261,15 @@ func sync_server_dirty(data: Array) -> void:
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
 		closed_cycle_ops = bool(int_data[3])
-		var n_trade_bodies := int_data[4]
+		var n_exchanges := int_data[4]
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
-		trade_bodies.clear()
-		for i in n_trade_bodies:
-			trade_bodies.append(StringName(string_data[2 + i]))
+		exchanges.clear()
+		for i in n_exchanges:
+			exchanges.append(StringName(string_data[2 + i]))
 	
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])

@@ -33,7 +33,7 @@ enum DirtyFlags {
 	DIRTY_POPULATION = 1 << 5,
 	DIRTY_BIOME = 1 << 6,
 	DIRTY_CYBERSPACE = 1 << 7,
-	DIRTY_MARKETPLACE = 1 << 8,
+	DIRTY_EXCHANGE = 1 << 8,
 	DIRTY_STRATA = 1 << 9,
 }
 
@@ -45,7 +45,7 @@ const DIRTY_FINANCIALS := DirtyFlags.DIRTY_FINANCIALS
 const DIRTY_POPULATION := DirtyFlags.DIRTY_POPULATION
 const DIRTY_BIOME := DirtyFlags.DIRTY_BIOME
 const DIRTY_CYBERSPACE := DirtyFlags.DIRTY_CYBERSPACE
-const DIRTY_MARKETPLACE := DirtyFlags.DIRTY_MARKETPLACE
+const DIRTY_EXCHANGE := DirtyFlags.DIRTY_EXCHANGE
 const DIRTY_STRATA := DirtyFlags.DIRTY_STRATA
 
 enum EntityType {
@@ -54,7 +54,6 @@ enum EntityType {
 	ENTITY_BODY,
 	ENTITY_JOIN,
 	ENTITY_EXCHANGE,
-	ENTITY_MARKET,
 	ENTITY_TRADER,
 	ENTITY_SERVER,
 	ENTITY_INTERFACE,
@@ -66,7 +65,6 @@ const ENTITY_PLAYER := EntityType.ENTITY_PLAYER
 const ENTITY_BODY := EntityType.ENTITY_BODY
 const ENTITY_JOIN := EntityType.ENTITY_JOIN
 const ENTITY_EXCHANGE := EntityType.ENTITY_EXCHANGE
-const ENTITY_MARKET := EntityType.ENTITY_MARKET
 const ENTITY_TRADER := EntityType.ENTITY_TRADER
 const N_ENTITY_TYPES := EntityType.N_ENTITY_TYPES
 const ENTITY_SERVER := EntityType.ENTITY_SERVER
@@ -259,7 +257,7 @@ func get_cyberspace() -> CyberspaceNet:
 	return null
 
 
-func get_marketplace(_player_id: int) -> MarketplaceNet:
+func get_exchange() -> ExchangeInterface:
 	return null
 
 
