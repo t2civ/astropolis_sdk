@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name ITabOperations
@@ -23,9 +23,9 @@ enum {
 }
 
 enum {
-	GROUP_OPEN,
-	GROUP_CLOSED,
-	GROUP_SINGULAR,
+	MODULE_OPEN,
+	MODULE_CLOSED,
+	MODULE_SINGULAR,
 }
 
 const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
@@ -34,7 +34,7 @@ const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
 
 const N_COLUMNS := 7
 
-const SUBGROUP_INDENT := 17
+const SUBGROUP_INDENT := 25
 
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
 const PERSIST_PROPERTIES: Array[StringName] = [
@@ -74,6 +74,7 @@ var _operation_sublabels: Array[StringName] = _db_tables[&"operations"][&"sublab
 var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_group"]
 var _module_names: Array[StringName] = _db_tables[&"modules"][&"name"]
 var _module_operations: Array[Array] = _db_tables[&"modules"][&"operations"]
+var _module_foldables: Array[bool] = _db_tables[&"modules"][&"foldable"]
 var _op_classes_modules: Array[Array] = _tables_aux[&"op_classes_modules"]
 
 var _revenue_hdrs: Array[Label] = []
@@ -262,7 +263,7 @@ func _get_ai_data(target_name: StringName) -> void:
 				flow = operations.get_module_computation(module_type)
 				flow /= _unit_multipliers[&"Pflop/s"]
 
-		var group_data := [
+		var module_data := [
 			_module_names[module_type],
 			utilization,
 			electricity,
@@ -270,13 +271,12 @@ func _get_ai_data(target_name: StringName) -> void:
 			revenue,
 			margin,
 		]
-		data.append(group_data)
+		data.append(module_data)
 
 		var operations_data := []
 		data.append(operations_data)
 
-		var n_ops := module_ops.size()
-		if n_ops < 2:
+		if not _module_foldables[module_type]:
 			continue
 
 		for operation_type in module_ops:
@@ -339,27 +339,27 @@ func _update_tab_display(target_name: StringName, tab: int, n_modules: int, has_
 	revenue_hdr.text = "Revenue\n($M/y)" if has_financials else ""
 	margin_hdr.text = "Margin\n(% gr)" if has_financials else ""
 
-	# make GroupFoldables as needed
+	# make ModuleFoldables as needed
 	var vbox: VBoxContainer = _vboxes[tab]
 	var n_children := vbox.get_child_count()
 	while n_children < n_modules:
-		vbox.add_child(GroupFoldable.new(_memory, base_column_width, _fold_icon_substitute))
+		vbox.add_child(ModuleFoldable.new(_memory, base_column_width, _fold_icon_substitute))
 		n_children += 1
 
-	# set and show GroupFoldables
+	# set and show ModuleFoldables
 	var i := 0
 	while i < n_modules:
-		var group_data: Array = data[i * 2]
+		var module_data: Array = data[i * 2]
 		var operations_data: Array = data[i * 2 + 1]
-		var group_box: GroupFoldable = vbox.get_child(i)
-		group_box.set_group_item(target_name, group_data, operations_data)
-		group_box.show()
+		var module_box: ModuleFoldable = vbox.get_child(i)
+		module_box.set_module_item(target_name, module_data, operations_data)
+		module_box.show()
 		i += 1
 
 	# hide unused
 	while i < n_children:
-		var group_box: GroupFoldable = vbox.get_child(i)
-		group_box.hide()
+		var module_box: ModuleFoldable = vbox.get_child(i)
+		module_box.hide()
 		i += 1
 
 	_no_ops_label.hide()
@@ -367,47 +367,47 @@ func _update_tab_display(target_name: StringName, tab: int, n_modules: int, has_
 
 
 
-class GroupFoldable extends FoldableContainer:
+class ModuleFoldable extends FoldableContainer:
 	# Reused container for RowItems
-	
+
 	var _foldable_vbox := VBoxContainer.new()
-	var _group_hdr: RowItem
+	var _module_hdr: RowItem
 	var _is_singular: bool
 	var _memory: Dictionary
 	var _base_column_width: float
 	var _memory_key: String
 	var _fold_icon_substitute: MeshTexture
-	
-	
+
+
 	func _init(memory: Dictionary, base_column_width: float, fold_icon_substitute: MeshTexture
 			) -> void:
 		_memory = memory
 		_base_column_width = base_column_width
 		_fold_icon_substitute = fold_icon_substitute
-		_group_hdr = RowItem.new(true, base_column_width)
+		_module_hdr = RowItem.new(true, base_column_width)
 		size_flags_horizontal = SIZE_FILL
 		add_child(_foldable_vbox)
-		add_title_bar_control(_group_hdr)
+		add_title_bar_control(_module_hdr)
 		folding_changed.connect(_on_folding_changed)
-	
-	
-	func set_group_item(_target_name: StringName, group_data: Array, operations_data: Array
+
+
+	func set_module_item(_target_name: StringName, module_data: Array, operations_data: Array
 			) -> void:
-		_memory_key = group_data[0]
+		_memory_key = module_data[0]
 		folded = _memory.get(_memory_key, true)
-		
-		var group_state: int
+
+		var module_state: int
 		if operations_data:
-			group_state = GROUP_OPEN if !folded else GROUP_CLOSED
+			module_state = MODULE_OPEN if !folded else MODULE_CLOSED
 			remove_theme_icon_override(&"folded_arrow")
 			_is_singular = false
 		else:
-			group_state = GROUP_SINGULAR
+			module_state = MODULE_SINGULAR
 			add_theme_icon_override(&"folded_arrow", _fold_icon_substitute)
 			_is_singular = true
-		var row_name: StringName = group_data[0]
+		var row_name: StringName = module_data[0]
 		title = row_name
-		_group_hdr.set_row(group_data, group_state)
+		_module_hdr.set_row(module_data, module_state)
 		
 		var n_ops := operations_data.size()
 		var n_children := _foldable_vbox.get_child_count()
@@ -442,7 +442,7 @@ class GroupFoldable extends FoldableContainer:
 
 class RowItem extends HBoxContainer:
 	
-	var ops_label: Label # if _is_group == false
+	var ops_label: Label # if _is_module == false
 	var utilization_label := Label.new()
 	var power_label := Label.new()
 	var flow_label := Label.new()
@@ -450,15 +450,15 @@ class RowItem extends HBoxContainer:
 	var margin_label := Label.new()
 	var controler := Control.new() # TODO
 	
-	var _is_group: bool
+	var _is_module: bool
 	var _base_column_width: float
-	
-	func _init(is_group: bool, base_column_width: float) -> void:
-		_is_group = is_group
+
+	func _init(is_module: bool, base_column_width: float) -> void:
+		_is_module = is_module
 		_base_column_width = base_column_width
 		size_flags_horizontal = SIZE_FILL
-		
-		if !is_group:
+
+		if !is_module:
 			var spacer := Control.new()
 			spacer.size_flags_horizontal = SIZE_SHRINK_BEGIN
 			spacer.custom_minimum_size.x = SUBGROUP_INDENT
@@ -482,11 +482,11 @@ class RowItem extends HBoxContainer:
 		IVSettingsManager.changed.connect(_settings_listener)
 	
 	
-	func set_row(data: Array, _group_state := -1) -> void:
+	func set_row(data: Array, _module_state := -1) -> void:
 		# NAN, blank
 		# INF, "?"
-		
-		if !_is_group:
+
+		if !_is_module:
 			var row_name: StringName = data[0]
 			ops_label.text = row_name
 		var utilization: float = data[1]

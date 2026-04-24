@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 extends RefCounted
@@ -85,7 +85,7 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.resource_classes = path_format % "resource_classes"
 	tables.resources = path_format % "resources"
 	tables.spacecrafts = path_format % "spacecrafts" # ivoyager replacement!
-	
+	tables.storage_classes = path_format % "storage_classes"
 	tables.strata = path_format % "strata"
 	tables.stratum_groups = path_format % "stratum_groups"
 	tables.surveys = path_format % "surveys"
@@ -94,10 +94,9 @@ func _on_table_initializer_instantiated(_table_initializer: IVTableInitializer) 
 	tables.planets_mod = path_format % "planets_mod"
 	tables.moons_mod = path_format % "moons_mod"
 	# entity x entity tables
-	tables.facilities_inventories = path_format % "facilities_inventories"
+	tables.facilities_resources = path_format % "facilities_resources"
 	tables.facilities_modules = path_format % "facilities_modules"
 	tables.facilities_operations = path_format % "facilities_operations"
-	tables.facilities_populations = path_format % "facilities_populations"
 	tables.strata_resources = path_format % "strata_resources"
 
 

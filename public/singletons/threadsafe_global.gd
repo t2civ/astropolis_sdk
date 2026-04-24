@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 extends Node
@@ -16,8 +16,8 @@ extends Node
 static var tables_aux: Dictionary[StringName, Variant] = {} # see public_preinitializer.gd
 
 # settings
-var total_biodiversity_pool := 1.3e6 * IVUnits.SPP
-var total_information_pool := 1.3e21 * IVUnits.BIT
+var total_biodiversity_pool := 25336.0 * IVUnits.SPP
+var total_information_pool := 6.4e22 * IVUnits.BIT
 var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
 
 

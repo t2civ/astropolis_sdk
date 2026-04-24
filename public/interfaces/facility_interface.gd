@@ -2,12 +2,16 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name FacilityInterface
 extends Interface
 
+# Facilities are where most of the important activity happens in Astropolis. 
+# Server-side Facility pushes changes to FacilityInterface and its components.
+# A few "player control" properties have reverse interface -> server data flow.
+#
 # SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 # will have access to API (just like any Godot class) but the GDScript class
 # will be removed.
@@ -16,10 +20,6 @@ extends Interface
 #
 # Warning! This object lives and dies on the AI thread! Containers and many
 # methods are not threadsafe. Accessing non-container properties is safe.
-#
-# Facilities are where most of the important activity happens in Astropolis. 
-# A server-side Facility object pushes changes to FacilityInterface and its
-# components.
 
 static var facility_interfaces: Array[FacilityInterface] = [] # indexed by facility_id
 
@@ -27,8 +27,11 @@ var facility_id := -1
 var facility_class := -1
 var public_sector: float # often 0.0 or 1.0, sometimes mixed
 var is_unitary: bool # is small focused activity for stats & tax treatment
+var closed_cycle_ops: bool # all resource streams from/to inventory
 var solar_occlusion: float # TODO: calculate from body atmosphere, body shading, etc.
+var time_horizon: float # for AI and automations (inventory reserves, resupply, etc.)
 var polity_name: StringName
+var exchanges: Array[StringName]
 
 var body: BodyInterface
 var player: PlayerInterface
@@ -152,6 +155,18 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
+# Operations (interface-authoritative; reverse data flow interface -> server)
+
+func set_operations_op_command(type: int, command: int) -> void:
+	if operations.set_op_command(type, command):
+		_dirty |= DIRTY_OPERATIONS
+
+
+func set_operations_target_utilization(type: int, value: float) -> void:
+	if operations.set_target_utilization(type, value):
+		_dirty |= DIRTY_OPERATIONS
+
+
 # Components
 
 func get_operations() -> OperationsNet:
@@ -178,8 +193,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_marketplace(player_id: int) -> MarketplaceNet:
-	return body.get_marketplace(player_id) # possible null
+func get_exchange() -> ExchangeInterface:
+	return body.exchange # possible null
 
 
 # *****************************************************************************
@@ -192,24 +207,27 @@ func set_network_init(data: Array) -> void:
 	facility_class = data[5]
 	public_sector = data[6]
 	is_unitary = data[7]
-	solar_occlusion = data[8]
-	polity_name = data[9]
-	player = interfaces_by_name[data[10]]
+	closed_cycle_ops = data[8]
+	solar_occlusion = data[9]
+	time_horizon = data[10]
+	polity_name = data[11]
+	exchanges = data[12]
+	player = interfaces_by_name[data[13]]
 	player.add_facility(self)
-	body = interfaces_by_name[data[11]]
+	body = interfaces_by_name[data[14]]
 	body.add_facility(self)
-	var join_names: Array = data[12]
+	var join_names: Array = data[15]
 	for join_name: StringName in join_names:
 		var join: JoinInterface = get_interface_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
-	
-	var operations_data: Array = data[13]
-	var inventory_data: Array = data[14]
-	var financials_data: Array = data[15]
-	var population_data: Array = data[16]
-	var biome_data: Array = data[17]
-	var cyberspace_data: Array = data[18]
+
+	var operations_data: Array = data[16]
+	var inventory_data: Array = data[17]
+	var financials_data: Array = data[18]
+	var population_data: Array = data[19]
+	var biome_data: Array = data[20]
+	var cyberspace_data: Array = data[21]
 	
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -242,10 +260,16 @@ func sync_server_dirty(data: Array) -> void:
 		var string_data: Array[String] = data[3]
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
+		closed_cycle_ops = bool(int_data[3])
+		var n_exchanges := int_data[4]
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
+		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
+		exchanges.clear()
+		for i in n_exchanges:
+			exchanges.append(StringName(string_data[2 + i]))
 	
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
@@ -280,9 +304,7 @@ func sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
-
 func _sync_ai_changes() -> void:
-	# FIXME: update data pattern
 	var data := [_dirty]
 	if _dirty & DIRTY_BASE:
 		data.append(gui_name)

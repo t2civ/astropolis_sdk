@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name OperationsNet
@@ -16,8 +16,10 @@ extends RefCounted
 #
 # 'est_' financials are Facility & Player only.
 # '_op_flags' and '_op_commands' are Facility only.
-# All vars are Interface read-only except for '_op_commands', which has the only
-# data that flows Interface -> Server. Use API to set!
+# All vars are Interface read-only except for '_op_commands' and
+# '_target_utilizations', which are Interface-authoritative during runtime:
+# data flows Interface -> Server. Use API to set! Server is the source only at
+# game start and after load, via get_network_init / set_network_init.
 #
 # Each module has 1 or more operations and is (for all purposes) the sum of
 # its operations. Some modules can shift more easily among their ops (e.g.,
@@ -77,11 +79,11 @@ var _revenue_rates: Array[float] # at current rate & prices
 var _cogs_rates: Array[float] # cost of goods sold; at current rate & prices
 
 # Facility only
+var _capacity_factors: Array[float] # environmental limit (renewable power) or historical (others)
 var _gross_margins: Array[float] # at current prices (even if rate = 0)
 var _op_flags: Array[int] # enum; Facility only
 
-# Facility only. '_op_commands' are AI or player settable from FacilityInterface.
-# Use API! (Direct change will break!) Data flows Interface -> Server.
+# Facility only; set via FacilityInterface. Reverse data flow: interface -> server!
 var _op_commands: Array[int] # enum; Facility only
 var _target_utilizations: Array[float]
 
@@ -93,6 +95,7 @@ var _is_facility := false
 
 # interface dirty data (dirty indexes as bit flags)
 var _dirty_op_commands: Array[int] = []
+var _dirty_target_utilizations: Array[int] = []
 
 var _sync := SyncHelper.new()
 
@@ -134,13 +137,15 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_cogs_rates = _capacities.duplicate()
 	if !_is_facility:
 		return
+	_capacity_factors = arrays.init_array(_n_operations, 0.0, TYPE_FLOAT)
 	_gross_margins = arrays.init_array(_n_operations, NAN, TYPE_FLOAT)
 	_op_flags = arrays.init_array(_n_operations, OpFlags.IS_IDLE_UNPROFITABLE, TYPE_INT)
 	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
 	_target_utilizations = arrays.init_array(_n_operations, 1.0, TYPE_FLOAT)
 	@warning_ignore("integer_division")
 	var n_op_flags := (_n_operations - 1) / 63 + 1
-	_op_commands.resize(n_op_flags)
+	_dirty_op_commands.resize(n_op_flags)
+	_dirty_target_utilizations.resize(n_op_flags)
 
 
 # ********************************** READ *************************************
@@ -258,6 +263,10 @@ func get_cogs_rate(type: int) -> float:
 	if !_has_financials:
 		return NAN
 	return _cogs_rates[type]
+
+
+func get_capacity_factor(type: int) -> float:
+	return _capacity_factors[type]
 
 
 func get_gross_margin(type: int) -> float:
@@ -433,12 +442,25 @@ func get_module_computation(module_type: int) -> float:
 
 # **************************** INTERFACE MODIFY *******************************
 
-func set_op_command(type: int, command: int) -> void:
+func set_op_command(type: int, command: int) -> bool:
+	# Returns true if value changed (caller marks DIRTY_OPERATIONS).
 	assert(command < OpCommands.N_OP_COMMANDS)
 	if _op_commands[type] == command:
-		return
+		return false
 	_op_commands[type] = command
 	_sync.set_dirty(_dirty_op_commands, type)
+	return true
+
+
+func set_target_utilization(type: int, value: float) -> bool:
+	# Returns true if value changed (caller marks DIRTY_OPERATIONS).
+	assert(!is_nan(value))
+	assert(value >= 0.0)
+	if _target_utilizations[type] == value:
+		return false
+	_target_utilizations[type] = value
+	_sync.set_dirty(_dirty_target_utilizations, type)
+	return true
 
 # ********************************** SYNC *************************************
 
@@ -453,12 +475,13 @@ func set_network_init(data: Array) -> void:
 	_effective_rates = data[7]
 	_revenue_rates = data[8]
 	_cogs_rates = data[9]
-	_gross_margins = data[10]
-	_op_flags = data[11]
-	_op_commands = data[12]
-	_target_utilizations = data[13]
-	_has_financials = data[14]
-	_is_facility = data[15]
+	_capacity_factors = data[10]
+	_gross_margins = data[11]
+	_op_flags = data[12]
+	_op_commands = data[13]
+	_target_utilizations = data[14]
+	_has_financials = data[15]
+	_is_facility = data[16]
 
 
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
@@ -496,12 +519,18 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	if !_is_facility:
 		return
-	
+
+	_sync.set_floats_dirty(_capacity_factors) # not accumulator!
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
 	_sync.set_ints_dirty(_op_flags) # not accumulator!
 
 
 func get_interface_dirty() -> Array:
-	# TODO: parallel server pattern
-	var data := []
-	return data
+	# Reverse-flow payload for interface-authoritative fields. Mirrors the
+	# forward pattern: bit-packed dirty flags + dense values via SyncHelper.
+	var int_data: Array[int] = []
+	var float_data: Array[float] = []
+	_sync.init_for_take(int_data, float_data)
+	_sync.get_ints_dirty(_op_commands, _dirty_op_commands)
+	_sync.get_floats_dirty(_target_utilizations, _dirty_target_utilizations)
+	return [int_data, float_data]

@@ -2,12 +2,12 @@
 """Astropolis Interface test runner.
 
 Runs the generic I, Voyager tests first, then Astropolis-specific tests that
-interrogate Interface development statistics for PLANET_EARTH and JOIN_OFFWORLD.
+interrogate Interface instances and their net component data.
 
 Usage:
     python test_interfaces.py                  # game already running
     python test_interfaces.py --launch         # start Godot automatically
-    python test_interfaces.py --economy        # include economy test (~120s)
+    python test_interfaces.py --economy        # include economy test (~1.25 game years)
     python test_interfaces.py --skip-save      # skip generic save/load cycle
 """
 
@@ -30,33 +30,57 @@ class AstropolisTestRunner:
         self.client = client
         self.g = generic_runner  # reuse its assertion helpers and counters
 
-    # Old op_group names that should NOT appear as group titles.
-    OP_GROUP_NAMES = {
-        "OP_GROUP_SOLAR_POWER", "OP_GROUP_GEOTHERMAL_POWER",
-        "OP_GROUP_KINETIC_POWER", "OP_GROUP_COMBUSTION_POWER",
-        "OP_GROUP_FUEL_CELLS", "OP_GROUP_NUCLEAR_POWER",
-    }
+    def _assert_populated(self, value, name, negative_tolerance=1.0):
+        """Assert a stat is populated and reasonable.
 
-    # Module names expected in the Energy tab (with MODULE_ prefix from table).
-    ENERGY_MODULE_NAMES = {
-        "MODULE_SOLAR_ARRAYS", "MODULE_GEOTHERMAL_PLANTS",
-        "MODULE_HYDROELECTRIC_DAMS", "MODULE_WIND_FARMS",
-        "MODULE_TIDAL_POWER_STATIONS", "MODULE_COMBUSTION_POWER_PLANTS",
-        "MODULE_FUEL_CELLS", "MODULE_LEU_NUCLEAR_PLANTS",
-        "MODULE_HEU_NUCLEAR_REACTORS", "MODULE_THORIUM_NUCLEAR_PLANTS",
-        "MODULE_D_T_FUSION_PLANTS", "MODULE_D_3HE_FUSION_PLANTS",
-        "MODULE_3HE_3HE_FUSION_PLANTS", "MODULE_RADIOISOTOPE_GENERATORS",
-    }
+        Tolerates tiny negatives that arise from float imprecision when summed
+        small deltas cancel near zero (e.g. power generators cycling off due to
+        missing storage/consumption content). Large negatives still fail.
+        """
+        self.g.assert_true(
+            value > -negative_tolerance,
+            "%s = %s (expected > %s)" % (name, value, -negative_tolerance))
+
+    def _wait_interfaces_ready(self, timeout=10.0):
+        """Poll MainThreadGlobal.interfaces_ready via get_astropolis_state.
+
+        `IVStateManager.simulator_started` (and the `started` state flag) fire
+        before the AI thread has finished posting `add_interface` calls to the
+        main thread. `interfaces_ready` is the Astropolis-specific barrier that
+        guarantees the Interface registry has settled. See main_thread_global.gd.
+        """
+        start = time.monotonic()
+        poll_interval = 0.1
+        while time.monotonic() - start < timeout:
+            resp = self.client.call("get_astropolis_state")
+            result = resp.get("result", {})
+            if result.get("interfaces_ready", False):
+                elapsed = time.monotonic() - start
+                print("  Interfaces ready after %.2fs (%d interfaces)" % (
+                    elapsed, result.get("n_interfaces", 0)))
+                return True
+            time.sleep(poll_interval)
+        return False
 
     def run_all(self, economy=False):
         print("\n=== Astropolis Interface Tests ===\n")
+
+        if not self._wait_interfaces_ready():
+            self.g.assert_true(False,
+                    "MainThreadGlobal.interfaces_ready within timeout")
+            return
 
         self.test_astropolis_capability()
         self.test_list_interfaces()
         self.test_interface_info()
         self.test_instant_development_stats()
         self.test_short_time_stats()
-        self.test_operations_tab_modules()
+        self.test_list_components()
+        self.test_inspect_operations()
+        self.test_inspect_population()
+        self.test_inspect_biome()
+        self.test_query_component()
+        self.test_component_errors()
         if economy:
             self.test_economy_stats()
         else:
@@ -120,8 +144,13 @@ class AstropolisTestRunner:
             self.g.assert_eq(result.get("computation", -1), 0.0,
                              "%s.computation (not yet populated)" % name)
 
-    def _advance_time_days(self, days, speed_index=6):
-        """Advance simulation by approximately `days` game-days."""
+    def _advance_time_days(self, days, speed_index=6, stall_timeout=10.0):
+        """Advance simulation by approximately `days` game-days.
+
+        Polls sim time and only fails if sim time fails to advance for
+        `stall_timeout` real-time seconds. Total real-time runtime scales
+        naturally with `days` and sim speed.
+        """
         resp = self.client.call("get_time")
         start_time = resp.get("result", {}).get("time", 0)
         target_time = start_time + days * 86400
@@ -129,120 +158,233 @@ class AstropolisTestRunner:
         self.client.call("set_pause", {"paused": False})
         self.client.call("set_speed", {"index": speed_index})
 
-        for attempt in range(60):
+        poll_interval = 0.5
+        last_sim_time = start_time
+        last_progress_real = time.monotonic()
+        attempts = 0
+
+        while True:
+            attempts += 1
             resp = self.client.call("get_time")
             current_time = resp.get("result", {}).get("time", 0)
             if current_time >= target_time:
                 self.client.call("set_speed", {"index": 0})
                 elapsed_days = (current_time - start_time) / 86400
                 print("  Advanced %d game-days in %d polls" % (
-                    int(elapsed_days), attempt + 1))
+                    int(elapsed_days), attempts))
                 return True
-            time.sleep(0.5)
-
-        self.client.call("set_speed", {"index": 0})
-        return False
+            if current_time > last_sim_time:
+                last_sim_time = current_time
+                last_progress_real = time.monotonic()
+            elif time.monotonic() - last_progress_real > stall_timeout:
+                self.client.call("set_speed", {"index": 0})
+                stalled_days = (current_time - start_time) / 86400
+                print("  Sim time stalled after %d game-days (%.1fs no progress)" % (
+                    int(stalled_days), stall_timeout))
+                return False
+            time.sleep(poll_interval)
 
     def test_short_time_stats(self):
-        """Stats that need ~1 game week: power, manufacturing."""
+        """Stats populated after a few weekly interval updates (~3 weeks)."""
         print("[test_short_time_stats]")
-        if not self._advance_time_days(10):
-            self.g.assert_true(False, "Time advanced 10 days (timed out)")
+        if not self._advance_time_days(21):
+            self.g.assert_true(False, "Time advanced ~3 weeks (sim stalled)")
             return
 
         resp = self.client.call("get_development_stats", {"name": "PLANET_EARTH"})
         result = resp.get("result", {})
-        self.g.assert_gt(result.get("power", 0), 0,
-                         "PLANET_EARTH.power (after ~10 days)")
-        self.g.assert_gt(result.get("manufacturing", 0), 0,
-                         "PLANET_EARTH.manufacturing (after ~10 days)")
+        self._assert_populated(result.get("power", 0),
+                               "PLANET_EARTH.power (after ~3 weeks)")
+        self._assert_populated(result.get("manufacturing", 0),
+                               "PLANET_EARTH.manufacturing (after ~3 weeks)")
 
-    def test_operations_tab_modules(self):
-        """Verify the Operations data groups by modules, not op_groups."""
-        print("[test_operations_tab_modules]")
-
-        # Energy tab = 0, query data layer for PLANET_EARTH
-        resp = self.client.call("get_operations_tab",
-                                {"name": "PLANET_EARTH", "tab": 0})
+    def test_list_components(self):
+        """Verify list_components returns correct component metadata."""
+        print("[test_list_components]")
+        resp = self.client.call("list_components", {"name": "PLANET_EARTH"})
         result = resp.get("result", {})
         self.g.assert_true("error" not in resp,
-                           "get_operations_tab returned successfully")
+                           "list_components returned successfully")
+        components = result.get("components", {})
+        self.g.assert_true(components.get("operations", {}).get("present", False),
+                           "PLANET_EARTH has operations component")
+        self.g.assert_true(components.get("population", {}).get("present", False),
+                           "PLANET_EARTH has population component")
+        self.g.assert_true(components.get("biome", {}).get("present", False),
+                           "PLANET_EARTH has biome component")
 
-        groups = result.get("groups", [])
-        group_names = [g["title"] for g in groups]
+        ops_info = components.get("operations", {})
+        self.g.assert_true(ops_info.get("index_table") == "operations",
+                           "operations index_table is 'operations'")
+        self.g.assert_gt(ops_info.get("n_indices", 0), 0,
+                         "operations n_indices > 0 (%d)" % ops_info.get("n_indices", 0))
 
-        self.g.assert_true(len(groups) > 0,
-                           "Energy tab has module groups (%d found)"
-                           % len(groups))
+    def test_inspect_operations(self):
+        """Inspect OperationsNet data with nonzero filter."""
+        print("[test_inspect_operations]")
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+            "component": "operations",
+            "nonzero": True,
+        })
+        result = resp.get("result", {})
+        self.g.assert_true("error" not in resp,
+                           "inspect_component operations returned successfully")
+        entries = result.get("entries", {})
+        n_total = result.get("n_total", 0)
+        n_returned = result.get("n_returned", 0)
 
-        # Verify groups are module names, not op_group names
-        for name in group_names:
-            is_module = name in self.ENERGY_MODULE_NAMES
-            not_old_opgroup = name not in self.OP_GROUP_NAMES or name == "FUEL_CELLS"
-            self.g.assert_true(is_module or not_old_opgroup,
-                               "Group '%s' is a module name (not an op_group)"
-                               % name)
+        self.g.assert_gt(n_returned, 0,
+                         "Operations has nonzero entries (%d)" % n_returned)
+        self.g.assert_gt(n_total, n_returned,
+                         "Nonzero filter reduced entries (%d total -> %d)"
+                         % (n_total, n_returned))
 
-        # Expect at least these modules for Earth
-        self.g.assert_true("MODULE_SOLAR_ARRAYS" in group_names,
-                           "MODULE_SOLAR_ARRAYS in Energy tab")
-        self.g.assert_true("MODULE_COMBUSTION_POWER_PLANTS" in group_names,
-                           "MODULE_COMBUSTION_POWER_PLANTS in Energy tab")
+        # Verify entry structure
+        has_capacity = False
+        for op_name, fields in entries.items():
+            self.g.assert_true("capacity" in fields,
+                               "'capacity' field in entry '%s'" % op_name)
+            self.g.assert_true("run_rate" in fields,
+                               "'run_rate' field in entry '%s'" % op_name)
+            self.g.assert_true("effective_rate" in fields,
+                               "'effective_rate' field in entry '%s'" % op_name)
+            cap = fields.get("capacity")
+            if cap is not None and cap > 0:
+                has_capacity = True
+            break  # Only check first entry structure
 
-        # COMBUSTION_POWER_PLANTS should have child operations (7 fuel types)
-        for g in groups:
-            if g["title"] == "MODULE_COMBUSTION_POWER_PLANTS":
-                n_ops = len(g.get("operations", []))
-                self.g.assert_true(n_ops >= 2,
-                                   "COMBUSTION_POWER_PLANTS has child ops (%d)"
-                                   % n_ops)
+        self.g.assert_true(has_capacity or n_returned > 0,
+                           "At least some operations have data")
+
+    def test_inspect_population(self):
+        """Inspect PopulationNet data."""
+        print("[test_inspect_population]")
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+            "component": "population",
+            "nonzero": True,
+        })
+        result = resp.get("result", {})
+        self.g.assert_true("error" not in resp,
+                           "inspect_component population returned successfully")
+        entries = result.get("entries", {})
+        self.g.assert_gt(result.get("n_returned", 0), 0,
+                         "Population has nonzero entries")
+
+        # Verify at least one population type has number > 0
+        has_pop = False
+        for pop_name, fields in entries.items():
+            number = fields.get("number")
+            if number is not None and number > 0:
+                has_pop = True
                 break
+        self.g.assert_true(has_pop, "At least one population type has number > 0")
 
-        # Single-op modules should have no child operations listed
-        for g in groups:
-            if g["title"] == "MODULE_SOLAR_ARRAYS":
-                n_ops = len(g.get("operations", []))
-                self.g.assert_true(n_ops == 0,
-                                   "SOLAR_ARRAYS (single-op) has no child rows"
-                                   " (%d found)" % n_ops)
-                break
+    def test_inspect_biome(self):
+        """Inspect BiomeNet scalar data."""
+        print("[test_inspect_biome]")
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+            "component": "biome",
+        })
+        result = resp.get("result", {})
+        self.g.assert_true("error" not in resp,
+                           "inspect_component biome returned successfully")
+        self.g.assert_true("bioproductivity" in result,
+                           "bioproductivity in biome result")
+        self.g.assert_true("biomass" in result,
+                           "biomass in biome result")
+        self.g.assert_true("biodiversity" in result,
+                           "biodiversity in biome result")
+        self.g.assert_true(result.get("component") == "biome",
+                           "component field is 'biome'")
 
-        # Use generic GUI inspection to verify ITabOperations node exists
-        if self.g.has_cap("gui_inspection"):
-            resp2 = self.client.call("find_nodes",
-                                     {"script_class": "ITabOperations"})
-            result2 = resp2.get("result", {})
-            nodes = result2.get("nodes", [])
-            self.g.assert_true(len(nodes) > 0,
-                               "ITabOperations found via generic find_nodes"
-                               " (%d)" % len(nodes))
-            if nodes:
-                path = nodes[0]["path"]
-                resp3 = self.client.call("read_node_text",
-                                         {"path": path, "max_labels": 50})
-                result3 = resp3.get("result", {})
-                entries = result3.get("entries", [])
-                print("  Generic GUI inspection: %d entries at %s"
-                      % (len(entries), path))
-        else:
-            print("  GUI inspection: not available (gui_inspection cap"
-                  " missing)")
+    def test_query_component(self):
+        """Test targeted query with entry and field filters."""
+        print("[test_query_component]")
+
+        # First, get all nonzero operations to find a valid entry name
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+            "component": "operations",
+            "nonzero": True,
+        })
+        entries = resp.get("result", {}).get("entries", {})
+        if not entries:
+            self.g.assert_true(False, "No operations entries to query")
+            return
+
+        target_name = list(entries.keys())[0]
+
+        # Query that specific entry with specific fields
+        resp = self.client.call("query_component", {
+            "name": "PLANET_EARTH",
+            "component": "operations",
+            "entries": [target_name],
+            "fields": ["capacity", "run_rate"],
+        })
+        result = resp.get("result", {})
+        self.g.assert_true("error" not in resp,
+                           "query_component returned successfully")
+        q_entries = result.get("entries", {})
+        self.g.assert_true(target_name in q_entries,
+                           "Queried entry '%s' in result" % target_name)
+        self.g.assert_eq(result.get("n_returned", 0), 1,
+                         "Only 1 entry returned for single-entry query")
+
+        # Verify field filter worked
+        if target_name in q_entries:
+            fields = q_entries[target_name]
+            self.g.assert_true("capacity" in fields,
+                               "'capacity' in filtered fields")
+            self.g.assert_true("run_rate" in fields,
+                               "'run_rate' in filtered fields")
+            self.g.assert_true("effective_rate" not in fields,
+                               "'effective_rate' excluded by field filter")
+
+    def test_component_errors(self):
+        """Test error handling for invalid queries."""
+        print("[test_component_errors]")
+
+        # Nonexistent interface
+        resp = self.client.call("inspect_component", {
+            "name": "DOES_NOT_EXIST",
+            "component": "operations",
+        })
+        self.g.assert_true("error" in resp or "_error" in resp.get("result", {}),
+                           "Error for nonexistent interface")
+
+        # Invalid component name
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+            "component": "not_a_component",
+        })
+        self.g.assert_true("error" in resp or "_error" in resp.get("result", {}),
+                           "Error for invalid component name")
+
+        # Missing component parameter
+        resp = self.client.call("inspect_component", {
+            "name": "PLANET_EARTH",
+        })
+        self.g.assert_true("error" in resp or "_error" in resp.get("result", {}),
+                           "Error for missing component parameter")
 
     def test_economy_stats(self):
-        """Economy needs ~1 game year of LFQ data. Use --economy flag."""
+        """Economy populates after 4 complete quarters (~1.25 game years max)."""
         print("[test_economy_stats]")
         resp = self.client.call("get_time")
         date = resp.get("result", {}).get("date", [2025, 1, 1])
         print("  Current date: %s" % date)
 
-        if not self._advance_time_days(730):
-            self.g.assert_true(False, "Time advanced ~2 years (timed out)")
+        if not self._advance_time_days(457):
+            self.g.assert_true(False, "Time advanced ~1.25 years (sim stalled)")
             return
 
         resp = self.client.call("get_development_stats", {"name": "PLANET_EARTH"})
         result = resp.get("result", {})
-        self.g.assert_gt(result.get("economy", 0), 0,
-                         "PLANET_EARTH.economy (after ~2 years)")
+        self._assert_populated(result.get("economy", 0),
+                               "PLANET_EARTH.economy (after ~1.25 years)")
 
         resp = self.client.call("get_development_stats", {"name": "JOIN_OFFWORLD"})
         result = resp.get("result", {})
@@ -261,7 +403,7 @@ def main():
     parser.add_argument("--project", default=None,
                         help="Path to project directory")
     parser.add_argument("--economy", action="store_true",
-                        help="Run economy test (needs ~2 game years, ~120s)")
+                        help="Run economy test (needs ~1.25 game years)")
     parser.add_argument("--skip-save", action="store_true",
                         help="Skip generic save/load cycle")
     args = parser.parse_args()

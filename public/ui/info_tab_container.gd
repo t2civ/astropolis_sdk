@@ -2,7 +2,7 @@
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
-# Copyright 2019-2025 Charlie Whitfield; ALL RIGHTS RESERVED
+# Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name InfoTabContainer
@@ -61,7 +61,7 @@ func _ready() -> void:
 	add_child(_timer)
 	_timer.start() # 1 s interval unless we change
 	if !_is_new: # loaded game
-		IVSave.load_finished.connect(_on_game_load_finished, CONNECT_ONE_SHOT)
+		IVStateManager.game_loaded.connect(_on_game_loaded, CONNECT_ONE_SHOT)
 		return
 	add_child(itab_development)
 	add_child(itab_operations)
@@ -73,7 +73,7 @@ func _ready() -> void:
 	_init_tabs()
 
 
-func _on_game_load_finished() -> void:
+func _on_game_loaded() -> void:
 	for child in get_children():
 		if child is ITabDevelopment:
 			itab_development = child
