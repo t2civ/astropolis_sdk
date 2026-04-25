@@ -104,11 +104,11 @@ static var _db_tables := IVTableData.db_tables
 static var _table_n_rows := IVTableData.table_n_rows
 #static var _tables_aux := ThreadsafeGlobal.tables_aux
 static var _table_modules: Dictionary[StringName, Array]
-static var _module_operations: Array[Array]
+static var _module_operations: Array[PackedInt32Array]
 static var _table_operations: Dictionary[StringName, Array]
 static var _n_operations: int
-static var _operation_electricities: Array[float]
-static var _operation_process_groups: Array[int]
+static var _operation_electricities: PackedFloat32Array
+static var _operation_process_groups: PackedInt32Array
 static var _is_class_instanced := false
 
 
@@ -117,11 +117,11 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_table_modules = _db_tables[&"modules"]
-		_module_operations = _table_modules[&"operations"]
+		_module_operations = Utils.to_array_of_packed_int32(_table_modules[&"operations"])
 		_table_operations = _db_tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
-		_operation_electricities = _table_operations[&"electricity"]
-		_operation_process_groups = _table_operations[&"process_group"]
+		_operation_electricities = Utils.to_packed_float32_array(_table_operations[&"electricity"])
+		_operation_process_groups = Utils.to_packed_int32_array(_table_operations[&"process_group"])
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_
@@ -212,7 +212,7 @@ func is_facility() -> bool:
 # modules & crew
 
 func get_module_number(module_type: int) -> float:
-	var op_types: Array[int] = _module_operations[module_type]
+	var op_types: PackedInt32Array = _module_operations[module_type]
 	var module_number := 0.0
 	for op_type in op_types:
 		module_number += _capacities[op_type]
@@ -338,7 +338,7 @@ func get_computation(type: int, positive_only := false) -> float:
 # module-specific
 
 func is_can_have_module(module_type: int) -> bool:
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	for type in module_ops:
 		if is_can_have(type):
 			return true
@@ -346,7 +346,7 @@ func is_can_have_module(module_type: int) -> bool:
 
 
 func is_of_interest_module(module_type: int) -> bool:
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	for type in module_ops:
 		if is_of_interest(type):
 			return true
@@ -354,12 +354,12 @@ func is_of_interest_module(module_type: int) -> bool:
 
 
 func get_n_operations_in_module(module_type: int) -> int:
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	return module_ops.size()
 
 
 func get_module_utilization(module_type: int) -> float:
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	var sum_capacities := 0.0
 	for type in module_ops:
 		sum_capacities += get_capacity(type)
@@ -381,7 +381,7 @@ func get_module_electricity(module_type: int) -> float:
 func get_module_revenue(module_type: int) -> float:
 	if !_has_financials:
 		return NAN
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	var sum := 0.0
 	for type in module_ops:
 		sum += _revenue_rates[type]
@@ -391,7 +391,7 @@ func get_module_revenue(module_type: int) -> float:
 func get_module_cogs_rate(module_type: int) -> float:
 	if !_has_financials:
 		return NAN
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	var sum := 0.0
 	for type in module_ops:
 		sum += get_cogs_rate(type)
@@ -401,7 +401,7 @@ func get_module_cogs_rate(module_type: int) -> float:
 func get_module_gross_margin(module_type: int) -> float:
 	if !_has_financials:
 		return NAN
-	var module_ops: Array[int] = _module_operations[module_type]
+	var module_ops: PackedInt32Array = _module_operations[module_type]
 	var sum_cogs := 0.0
 	var sum_revenue := 0.0
 	for type in module_ops:

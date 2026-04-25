@@ -27,33 +27,14 @@ const BIT_INDEXES: Dictionary[int, int] = { # indexed by power-of-2s from 2^0 to
 	1 << 60 : 60, 1 << 61 : 61, 1 << 62 : 62
 }
 
-
-# FIXME: Remove unusable sign bit.
-const LOG2_64: Dictionary[int, int] = { # indexed by power-of-2s from 2^0 to 2^63
-	1 << 0 : 0, 1 << 1 : 1, 1 << 2 : 2, 1 << 3 : 3, 1 << 4 : 4,
-	1 << 5 : 5, 1 << 6 : 6, 1 << 7 : 7, 1 << 8 : 8, 1 << 9 : 9,
-	1 << 10 : 10, 1 << 11 : 11, 1 << 12 : 12, 1 << 13 : 13, 1 << 14 : 14,
-	1 << 15 : 15, 1 << 16 : 16, 1 << 17 : 17, 1 << 18 : 18, 1 << 19 : 19,
-	1 << 20 : 20, 1 << 21 : 21, 1 << 22 : 22, 1 << 23 : 23, 1 << 24 : 24,
-	1 << 25 : 25, 1 << 26 : 26, 1 << 27 : 27, 1 << 28 : 28, 1 << 29 : 29, 
-	1 << 30 : 30, 1 << 31 : 31, 1 << 32 : 32, 1 << 33 : 33, 1 << 34 : 34,
-	1 << 35 : 35, 1 << 36 : 36, 1 << 37 : 37, 1 << 38 : 38, 1 << 39 : 39,
-	1 << 40 : 40, 1 << 41 : 41, 1 << 42 : 42, 1 << 43 : 43, 1 << 44 : 44,
-	1 << 45 : 45, 1 << 46 : 46, 1 << 47 : 47, 1 << 48 : 48, 1 << 49 : 49,
-	1 << 50 : 50, 1 << 51 : 51, 1 << 52 : 52, 1 << 53 : 53, 1 << 54 : 54,
-	1 << 55 : 55, 1 << 56 : 56, 1 << 57 : 57, 1 << 58 : 58, 1 << 59 : 59,
-	1 << 60 : 60, 1 << 61 : 61, 1 << 62 : 62, 1 << 63 : 63,
-}
-
 # binary
 
 static func get_lsb_index(flags: int) -> int:
-	# returns index position of least significant bit
-	# will error if flags == 0
-	# for optimized C++ code see:
+	# Returns index position of least significant bit will error if flags == 0
+	# or only the sign bit is set. For optimized C++ code see:
 	# https://stackoverflow.com/questions/11376288/fast-computing-of-log2-for-64-bit-integers
 	flags &= -flags # gets least significant bit (weird but true)
-	return LOG2_64[flags]
+	return BIT_INDEXES[flags]
 
 
 static func get_n_bits(n: int) -> int:
@@ -96,6 +77,79 @@ static func invert_subset_indexing(base: Array[int], size: int) -> Array[int]:
 		var base_index: int = base[i]
 		result[base_index] = i
 		i += 1
+	return result
+
+
+## As [method invert_subset_indexing], but returns [PackedInt32Array].
+static func invert_subset_indexing_packed(base: Array[int], size: int) -> PackedInt32Array:
+	var result := PackedInt32Array()
+	result.resize(size)
+	result.fill(-1)
+	var base_size := base.size()
+	var i := 0
+	while i < base_size:
+		result[base[i]] = i
+		i += 1
+	return result
+
+
+## As [method invert_many_to_one_indexing], but returns [code]Array[PackedInt32Array][/code].
+## (Packed arrays cannot nest inside another Packed array.)
+static func invert_many_to_one_indexing_packed(base: Array[int], size: int) -> Array[PackedInt32Array]:
+	var result: Array[PackedInt32Array] = []
+	for result_index in size:
+		var indexes := PackedInt32Array()
+		for index in base.size():
+			if base[index] == result_index:
+				indexes.append(index)
+		result.append(indexes)
+	return result
+
+
+## Convert [code]Array[float][/code] (or untyped float Array) to [PackedFloat32Array].
+static func to_packed_float32_array(array: Array) -> PackedFloat32Array:
+	return PackedFloat32Array(array)
+
+
+## Convert [code]Array[int][/code] (or untyped int Array) to [PackedInt32Array].
+static func to_packed_int32_array(array: Array) -> PackedInt32Array:
+	return PackedInt32Array(array)
+
+
+## Convert [code]Array[bool][/code] (or untyped bool Array) to [PackedByteArray]
+## (true -> 1, false -> 0).
+static func to_packed_byte_array(array: Array) -> PackedByteArray:
+	var size := array.size()
+	var result := PackedByteArray()
+	result.resize(size)
+	var i := 0
+	while i < size:
+		result[i] = 1 if array[i] else 0
+		i += 1
+	return result
+
+
+## Convert [code]Array[Array][/code] of float arrays to [code]Array[PackedFloat32Array][/code].
+static func to_array_of_packed_float32(array: Array[Array]) -> Array[PackedFloat32Array]:
+	var size := array.size()
+	var result: Array[PackedFloat32Array] = []
+	result.resize(size)
+	var i := size
+	while i > 0:
+		i -= 1
+		result[i] = PackedFloat32Array(array[i])
+	return result
+
+
+## Convert [code]Array[Array][/code] of int arrays to [code]Array[PackedInt32Array][/code].
+static func to_array_of_packed_int32(array: Array[Array]) -> Array[PackedInt32Array]:
+	var size := array.size()
+	var result: Array[PackedInt32Array] = []
+	result.resize(size)
+	var i := size
+	while i > 0:
+		i -= 1
+		result[i] = PackedInt32Array(array[i])
 	return result
 
 

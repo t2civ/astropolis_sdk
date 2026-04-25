@@ -58,12 +58,12 @@ var discoveries: Array[float] # derived from mass/total, dispersion, and survey_
 # indexing
 static var _db_tables := IVTableData.db_tables
 static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-static var _extraction_resources: Array[int] # maps index to resource_type
-static var _resource_extractions: Array[int] # maps resource_type to index
-static var _survey_density_errors: Array[float] # coeff of variation
-static var _survey_mass_errors: Array[float]
-static var _survey_deposits_sigma: Array[float]
-static var _res_mass_err_mult: Array[float]
+static var _extraction_resources: PackedInt32Array # maps index to resource_type
+static var _resource_extractions: PackedInt32Array # maps resource_type to index
+static var _survey_density_errors: PackedFloat32Array # coeff of variation
+static var _survey_mass_errors: PackedFloat32Array
+static var _survey_deposits_sigma: PackedFloat32Array
+static var _res_mass_err_mult: PackedFloat32Array
 static var _n_extraction_resources: int
 static var _is_class_instanced := false
 
@@ -80,10 +80,12 @@ func _init(is_new := false) -> void:
 		_is_class_instanced = true
 		_extraction_resources = _tables_aux[&"extraction_resources"]
 		_resource_extractions = _tables_aux[&"resource_extractions"]
-		_survey_density_errors = _db_tables[&"surveys"][&"density_error"]
-		_survey_mass_errors = _db_tables[&"surveys"][&"mass_error"]
-		_survey_deposits_sigma = _db_tables[&"surveys"][&"deposits_sigma"]
-		_res_mass_err_mult = _db_tables[&"resources"][&"mass_err_mult"]
+		var surveys_table: Dictionary[StringName, Array] = _db_tables[&"surveys"]
+		_survey_density_errors = Utils.to_packed_float32_array(surveys_table[&"density_error"])
+		_survey_mass_errors = Utils.to_packed_float32_array(surveys_table[&"mass_error"])
+		_survey_deposits_sigma = Utils.to_packed_float32_array(surveys_table[&"deposits_sigma"])
+		var resources_table: Dictionary[StringName, Array] = _db_tables[&"resources"]
+		_res_mass_err_mult = Utils.to_packed_float32_array(resources_table[&"mass_err_mult"])
 		_n_extraction_resources = _extraction_resources.size()
 		
 	if !is_new: # loaded game
@@ -153,7 +155,7 @@ func get_discovered(resource_type: int) -> float:
 	return discoveries[index]
 
 
-func get_max_discovered(resource_types: Array[int]) -> float:
+func get_max_discovered(resource_types: PackedInt32Array) -> float:
 	# Roughly related to "scrape ratio" (inversely) for best target resource.
 	var max_discovered := 0.0
 	for resource_type in resource_types:

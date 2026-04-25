@@ -15,7 +15,7 @@ const MIN_DISCOVERED_BOOST := 1.1 # Don't show unless this much better than mean
 
 var _db_tables := IVTableData.db_tables
 var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _is_extraction_resources: Array[int] = _tables_aux[&"extraction_resources"]
+var _is_extraction_resources: PackedInt32Array = _tables_aux[&"extraction_resources"]
 var _n_is_extraction_resources := _is_extraction_resources.size()
 var _stratum_names: Array[StringName] = _db_tables[&"stratum_groups"][&"name"]
 var _survey_names: Array[StringName] = _db_tables[&"surveys"][&"name"]

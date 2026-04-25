@@ -75,7 +75,7 @@ var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_
 var _module_names: Array[StringName] = _db_tables[&"modules"][&"name"]
 var _module_operations: Array[Array] = _db_tables[&"modules"][&"operations"]
 var _module_foldables: Array[bool] = _db_tables[&"modules"][&"foldable"]
-var _op_classes_modules: Array[Array] = _tables_aux[&"op_classes_modules"]
+var _op_classes_modules: Array[PackedInt32Array] = _tables_aux[&"op_classes_modules"]
 
 var _revenue_hdrs: Array[Label] = []
 var _margin_hdrs: Array[Label] = []
@@ -222,7 +222,7 @@ func _get_ai_data(target_name: StringName) -> void:
 	var operations := interface.get_operations()
 	var has_financials := operations.has_financials()
 
-	var modules: Array[int] = _op_classes_modules[tab]
+	var modules: PackedInt32Array = _op_classes_modules[tab]
 	var n_modules := 0
 
 	for module_type in modules:

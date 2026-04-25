@@ -45,7 +45,7 @@ var _sync := SyncHelper.new()
 static var _is_class_instanced := false
 static var _n_resources: int
 static var _n_storage_classes: int
-static var _resource_storage_classes: Array[int]
+static var _resource_storage_classes: PackedInt32Array
 
 
 func _init(is_new := false) -> void:
@@ -53,7 +53,8 @@ func _init(is_new := false) -> void:
 		_is_class_instanced = true
 		_n_resources = IVTableData.table_n_rows[&"resources"]
 		_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
-		_resource_storage_classes = IVTableData.db_tables[&"resources"][&"storage_class"]
+		var resource_table: Dictionary[StringName, Array] = IVTableData.db_tables[&"resources"]
+		_resource_storage_classes = Utils.to_packed_int32_array(resource_table[&"storage_class"])
 	if !is_new: # game load
 		return
 	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)

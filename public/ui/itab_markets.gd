@@ -67,7 +67,7 @@ var _trade_classes: Array[int] = _db_tables[&"resources"][&"trade_class"]
 var _trade_units: Array[StringName] = _db_tables[&"resources"][&"trade_unit"]
 var _gui_ea: Array[bool] = _db_tables[&"resources"][&"gui_ea"]
 var _currency_unit: Array[bool] = _db_tables[&"resources"][&"currency_unit"]
-var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_resources"]
+var _resource_classes_resources: Array[PackedInt32Array] = _tables_aux[&"resource_classes_resources"]
 
 
 @onready var _no_markets_label: Label = $NoMarkets
@@ -187,7 +187,7 @@ func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
 	var is_inventory := true if inventory else false
 
 	var tab := current_tab
-	var resource_class_resources: Array = _resource_classes_resources[tab]
+	var resource_class_resources: PackedInt32Array = _resource_classes_resources[tab]
 	var data := []
 	var n_resources := resource_class_resources.size()
 	var i := 0
