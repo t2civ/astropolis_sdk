@@ -120,8 +120,8 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 		_module_operations = Utils.to_array_of_packed_int32(_table_modules[&"operations"])
 		_table_operations = _db_tables[&"operations"]
 		_n_operations = _table_n_rows[&"operations"]
-		_operation_electricities = Utils.to_packed_float32_array(_table_operations[&"electricity"])
-		_operation_process_groups = Utils.to_packed_int32_array(_table_operations[&"process_group"])
+		_operation_electricities = PackedFloat32Array(_table_operations[&"electricity"])
+		_operation_process_groups = PackedInt32Array(_table_operations[&"process_group"])
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_

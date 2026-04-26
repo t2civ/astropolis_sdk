@@ -54,7 +54,7 @@ func _init(is_new := false) -> void:
 		_n_resources = IVTableData.table_n_rows[&"resources"]
 		_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
 		var resource_table: Dictionary[StringName, Array] = IVTableData.db_tables[&"resources"]
-		_resource_storage_classes = Utils.to_packed_int32_array(resource_table[&"storage_class"])
+		_resource_storage_classes = PackedInt32Array(resource_table[&"storage_class"])
 	if !is_new: # game load
 		return
 	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)

@@ -50,38 +50,34 @@ static func get_n_bits(n: int) -> int:
 # array & dict utils
 
 
-static func invert_many_to_one_indexing(base: Array[int], size: int) -> Array[Array]:
-	# e.g., ([0, 1, 1, 1, 3, 3], 5)
-	# -> [[0], [1, 2, 3], [], [4, 5], []]
-	var result: Array[Array] = []
-	for result_index in size:
-		var indexes: Array[int] = []
-		for index in base.size():
-			if base[index] == result_index:
-				indexes.append(index)
-		result.append(indexes)
+static func get_packed_index_intersection(a: PackedInt32Array, b: PackedInt32Array
+		) -> PackedInt32Array:
+	var result := PackedInt32Array()
+	for i in a.size():
+		var index := a[i]
+		if b.has(index):
+			result.append(index)
 	return result
 
 
-static func invert_subset_indexing(base: Array[int], size: int) -> Array[int]:
-	# inverts subset indexes of a larger set
-	# e.g., ([3, 4, 5, 7, 8, 9], 11)
-	# -> [-1, -1, -1, 0, 1, 2, -1, 3, 4, 5, -1]
-	# same result as find each index in the subset, but faster
-	var result: Array[int] = []
+static func invert_packed_subset_indexing(base: PackedInt32Array, size: int) -> PackedInt32Array:
+	# Inverts subset indexes of a larger set:
+	# e.g., ([3, 4, 5, 7, 8, 9], 11) -> [-1, -1, -1, 0, 1, 2, -1, 3, 4, 5, -1].
+	# Same result as find each index in the subset, but faster.
+	var result := PackedInt32Array()
 	result.resize(size)
 	result.fill(-1)
 	var base_size := base.size()
 	var i := 0
 	while i < base_size:
-		var base_index: int = base[i]
-		result[base_index] = i
+		result[base[i]] = i
 		i += 1
 	return result
 
-
-## As [method invert_subset_indexing], but returns [PackedInt32Array].
 static func invert_subset_indexing_packed(base: Array[int], size: int) -> PackedInt32Array:
+	# Inverts subset indexes of a larger set:
+	# e.g., ([3, 4, 5, 7, 8, 9], 11) -> [-1, -1, -1, 0, 1, 2, -1, 3, 4, 5, -1].
+	# Same result as find each index in the subset, but faster.
 	var result := PackedInt32Array()
 	result.resize(size)
 	result.fill(-1)
@@ -93,9 +89,9 @@ static func invert_subset_indexing_packed(base: Array[int], size: int) -> Packed
 	return result
 
 
-## As [method invert_many_to_one_indexing], but returns [code]Array[PackedInt32Array][/code].
-## (Packed arrays cannot nest inside another Packed array.)
-static func invert_many_to_one_indexing_packed(base: Array[int], size: int) -> Array[PackedInt32Array]:
+static func invert_packed_many_to_one_indexing(base: PackedInt32Array, size: int
+		) -> Array[PackedInt32Array]:
+	# E.g., ([0, 1, 1, 1, 3, 3], 5) -> [[0], [1, 2, 3], [], [4, 5], []].
 	var result: Array[PackedInt32Array] = []
 	for result_index in size:
 		var indexes := PackedInt32Array()
@@ -106,19 +102,22 @@ static func invert_many_to_one_indexing_packed(base: Array[int], size: int) -> A
 	return result
 
 
-## Convert [code]Array[float][/code] (or untyped float Array) to [PackedFloat32Array].
-static func to_packed_float32_array(array: Array) -> PackedFloat32Array:
-	return PackedFloat32Array(array)
+static func invert_many_to_one_indexing_to_packed(base: Array[int], size: int
+		) -> Array[PackedInt32Array]:
+	# E.g., ([0, 1, 1, 1, 3, 3], 5) -> [[0], [1, 2, 3], [], [4, 5], []].
+	var result: Array[PackedInt32Array] = []
+	for result_index in size:
+		var indexes := PackedInt32Array()
+		for index in base.size():
+			if base[index] == result_index:
+				indexes.append(index)
+		result.append(indexes)
+	return result
 
 
-## Convert [code]Array[int][/code] (or untyped int Array) to [PackedInt32Array].
-static func to_packed_int32_array(array: Array) -> PackedInt32Array:
-	return PackedInt32Array(array)
-
-
-## Convert [code]Array[bool][/code] (or untyped bool Array) to [PackedByteArray]
-## (true -> 1, false -> 0).
-static func to_packed_byte_array(array: Array) -> PackedByteArray:
+## Convert Array of items evaluated as true or false to PackedByteArray of
+## 1's and 0's.
+static func bool_array_to_packed_bytes(array: Array) -> PackedByteArray:
 	var size := array.size()
 	var result := PackedByteArray()
 	result.resize(size)

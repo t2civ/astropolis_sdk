@@ -81,11 +81,11 @@ func _init(is_new := false) -> void:
 		_extraction_resources = _tables_aux[&"extraction_resources"]
 		_resource_extractions = _tables_aux[&"resource_extractions"]
 		var surveys_table: Dictionary[StringName, Array] = _db_tables[&"surveys"]
-		_survey_density_errors = Utils.to_packed_float32_array(surveys_table[&"density_error"])
-		_survey_mass_errors = Utils.to_packed_float32_array(surveys_table[&"mass_error"])
-		_survey_deposits_sigma = Utils.to_packed_float32_array(surveys_table[&"deposits_sigma"])
+		_survey_density_errors = PackedFloat32Array(surveys_table[&"density_error"])
+		_survey_mass_errors = PackedFloat32Array(surveys_table[&"mass_error"])
+		_survey_deposits_sigma = PackedFloat32Array(surveys_table[&"deposits_sigma"])
 		var resources_table: Dictionary[StringName, Array] = _db_tables[&"resources"]
-		_res_mass_err_mult = Utils.to_packed_float32_array(resources_table[&"mass_err_mult"])
+		_res_mass_err_mult = PackedFloat32Array(resources_table[&"mass_err_mult"])
 		_n_extraction_resources = _extraction_resources.size()
 		
 	if !is_new: # loaded game

@@ -8,18 +8,25 @@
 class_name FacilityInterface
 extends Interface
 
-# Facilities are where most of the important activity happens in Astropolis. 
-# Server-side Facility pushes changes to FacilityInterface and its components.
-# A few "player control" properties have reverse interface -> server data flow.
-#
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# To modify AI, see comments in '_base_ai.gd' files.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
+## [FacilityInterface] represents a Player's development at a Body (see
+## [PlayerInterface] and [BodyInterface]).
+##
+## A Facility runs operations enabled by modules (see corresponding data
+## tables). A [FacilityInterface] has required components [OperationsNet],
+## [InventoryNet] and [FinancialsNet], and optional components [PopulationNet],
+## [BiomeNet], and [CyberspaceNet].
+##
+## Server-side Facility pushes changes to [FacilityInterface] and its components.
+## A few "player control" properties have reverse interface -> server data flow.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## To modify AI, see comments in '_base_ai.gd' files.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
 static var facility_interfaces: Array[FacilityInterface] = [] # indexed by facility_id
 
@@ -305,6 +312,7 @@ func sync_server_dirty(data: Array) -> void:
 
 
 func _sync_ai_changes() -> void:
+	# Only here if _dirty != 0.
 	var data := [_dirty]
 	if _dirty & DIRTY_BASE:
 		data.append(gui_name)

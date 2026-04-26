@@ -123,32 +123,31 @@ func _on_program_objects_instantiated() -> void:
 	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type",
 			Enums.Types.ELECTRICITY)
 	assert(tables_aux[&"resource_type_electricity"] != -1)
-	# table row subsets (kept as Array[int] for use by IVArrays.get_intersection
-	# and Utils.invert_subset_indexing_packed; converted to PackedInt32Array below)
-	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
-	var volatile_resources := IVTableData.get_db_true_rows(&"resources", &"is_volatile")
-	var volatile_extraction_resources := IVArrays.get_intersection(volatile_resources,
+	# table row subsets as PackedInt32Array
+	var extraction_resources := PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
+			&"is_extraction"))
+	var volatile_resources := PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
+			&"is_volatile"))
+	var volatile_extraction_resources := Utils.get_packed_index_intersection(volatile_resources,
 			extraction_resources)
-	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"process_group",
-			Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION)
+	var extraction_operations := PackedInt32Array(IVTableData.get_db_matching_rows(&"operations",
+			&"process_group", Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION))
+	tables_aux[&"extraction_resources"] = extraction_resources
+	tables_aux[&"volatile_extraction_resources"] = volatile_extraction_resources
+	tables_aux[&"extraction_operations"] = extraction_operations
 	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
 	var n_resources: int = table_n_rows[&"resources"]
-	tables_aux[&"resource_extractions"] = Utils.invert_subset_indexing_packed(extraction_resources,
+	tables_aux[&"resource_extractions"] = Utils.invert_packed_subset_indexing(extraction_resources,
 			n_resources)
 	var n_operations: int = table_n_rows[&"operations"]
-	tables_aux[&"operation_extractions"] = Utils.invert_subset_indexing_packed(extraction_operations,
+	tables_aux[&"operation_extractions"] = Utils.invert_packed_subset_indexing(extraction_operations,
 			n_operations)
-	# subsets stored packed (after consumed by helpers above)
-	tables_aux[&"extraction_resources"] = Utils.to_packed_int32_array(extraction_resources)
-	tables_aux[&"volatile_extraction_resources"] = Utils.to_packed_int32_array(
-			volatile_extraction_resources)
-	tables_aux[&"extraction_operations"] = Utils.to_packed_int32_array(extraction_operations)
 	# one-to-many indexing (arrays of arrays)
-	var module_op_classes: Array[int] = db_tables[&"modules"][&"op_class"]
+	var module_op_classes : Array[int] = db_tables[&"modules"][&"op_class"]
 	var n_op_classes: int = table_n_rows[&"op_classes"]
-	tables_aux[&"op_classes_modules"] = Utils.invert_many_to_one_indexing_packed(
+	tables_aux[&"op_classes_modules"] = Utils.invert_many_to_one_indexing_to_packed(
 			module_op_classes, n_op_classes) # modules for each op_class
 	var resource_resource_classes: Array[int] = db_tables[&"resources"][&"resource_class"]
 	var n_resource_classes: int = table_n_rows[&"resource_classes"]
-	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing_packed(
+	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing_to_packed(
 			resource_resource_classes, n_resource_classes) # resources for each resource_class

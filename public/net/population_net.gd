@@ -43,9 +43,9 @@ func _init(is_new := false, is_facility_ := false) -> void:
 		_is_class_instanced = true
 		_n_populations = _table_n_rows[&"populations"]
 		_table_populations = _db_tables[&"populations"]
-		_carrying_capacity_groups = Utils.to_packed_int32_array(
+		_carrying_capacity_groups = PackedInt32Array(
 				_table_populations[&"carrying_capacity_group"])
-		_carrying_capacity_group2s = Utils.to_packed_int32_array(
+		_carrying_capacity_group2s = PackedInt32Array(
 				_table_populations[&"carrying_capacity_group2"])
 	if !is_new: # game load
 		return
