@@ -51,7 +51,20 @@ func _init() -> void:
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
+	# Block save/load until Interfaces have settled on the main thread. The AI
+	# thread posts add_interface() calls via call_deferred for several frames
+	# after simulator_started, so MainThreadGlobal.interfaces_ready_emitted is
+	# the correct barrier. See main_thread_global.gd.
+	IVSave.save_permit = func() -> bool:
+		return IVStateManager.started and MainThreadGlobal.interfaces_ready_emitted
+	IVSave.load_permit = func() -> bool:
+		return IVStateManager.started and MainThreadGlobal.interfaces_ready_emitted
 	IVSave.configure_save_plugin()
+
+	# Astropolis readiness predicate for the Assistant TCP server. The +10 frame
+	# tail comes from min_ready_delay_frames in ivoyager_assistant.cfg.
+	IVAssistantServer.ready_predicate = func() -> bool:
+		return MainThreadGlobal.interfaces_ready_emitted
 	
 	# Core plugin static files
 	IVSettingsManager.set_default(&"save_base_name", "Astropolis")
