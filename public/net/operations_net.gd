@@ -102,7 +102,6 @@ var _sync := SyncHelper.new()
 # localized indexing & table data
 static var _db_tables := IVTableData.db_tables
 static var _table_n_rows := IVTableData.table_n_rows
-#static var _tables_aux := ThreadsafeGlobal.tables_aux
 static var _table_modules: Dictionary[StringName, Array]
 static var _module_operations: Array[PackedInt32Array]
 static var _table_operations: Dictionary[StringName, Array]
@@ -112,16 +111,20 @@ static var _operation_process_groups: PackedInt32Array
 static var _is_class_instanced := false
 
 
+static func _on_instanced() -> void:
+	_table_modules = _db_tables[&"modules"]
+	_module_operations = Utils.to_array_of_packed_int32(_table_modules[&"operations"])
+	_table_operations = _db_tables[&"operations"]
+	_n_operations = _table_n_rows[&"operations"]
+	_operation_electricities = PackedFloat32Array(_table_operations[&"electricity"])
+	_operation_process_groups = PackedInt32Array(_table_operations[&"process_group"])
+
+
 func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> void:
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_table_modules = _db_tables[&"modules"]
-		_module_operations = Utils.to_array_of_packed_int32(_table_modules[&"operations"])
-		_table_operations = _db_tables[&"operations"]
-		_n_operations = _table_n_rows[&"operations"]
-		_operation_electricities = PackedFloat32Array(_table_operations[&"electricity"])
-		_operation_process_groups = PackedInt32Array(_table_operations[&"process_group"])
+		_on_instanced()
 	if !is_new: # game load
 		return
 	_has_financials = has_financials_

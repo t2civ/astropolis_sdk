@@ -108,46 +108,6 @@ func _on_data_tables_postprocessed() -> void:
 
 func _on_program_objects_instantiated() -> void:
 	# program object changes
-	
+
 	var speed_manager: IVSpeedManager = IVGlobal.program.SpeedManager
 	speed_manager.start_speed = 0
-	
-
-	
-	# table additions (subtables, re-indexings, or other useful table items)
-	var db_tables := IVTableData.db_tables
-	var table_n_rows := IVTableData.table_n_rows
-	var tables_aux := ThreadsafeGlobal.tables_aux
-	
-	# unique items
-	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type",
-			Enums.Types.ELECTRICITY)
-	assert(tables_aux[&"resource_type_electricity"] != -1)
-	# table row subsets as PackedInt32Array
-	var extraction_resources := PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
-			&"is_extraction"))
-	var volatile_resources := PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
-			&"is_volatile"))
-	var volatile_extraction_resources := Utils.get_packed_index_intersection(volatile_resources,
-			extraction_resources)
-	var extraction_operations := PackedInt32Array(IVTableData.get_db_matching_rows(&"operations",
-			&"process_group", Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION))
-	tables_aux[&"extraction_resources"] = extraction_resources
-	tables_aux[&"volatile_extraction_resources"] = volatile_extraction_resources
-	tables_aux[&"extraction_operations"] = extraction_operations
-	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
-	var n_resources: int = table_n_rows[&"resources"]
-	tables_aux[&"resource_extractions"] = Utils.invert_packed_subset_indexing(extraction_resources,
-			n_resources)
-	var n_operations: int = table_n_rows[&"operations"]
-	tables_aux[&"operation_extractions"] = Utils.invert_packed_subset_indexing(extraction_operations,
-			n_operations)
-	# one-to-many indexing (arrays of arrays)
-	var module_op_classes : Array[int] = db_tables[&"modules"][&"op_class"]
-	var n_op_classes: int = table_n_rows[&"op_classes"]
-	tables_aux[&"op_classes_modules"] = Utils.invert_many_to_one_indexing_to_packed(
-			module_op_classes, n_op_classes) # modules for each op_class
-	var resource_resource_classes: Array[int] = db_tables[&"resources"][&"resource_class"]
-	var n_resource_classes: int = table_n_rows[&"resource_classes"]
-	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing_to_packed(
-			resource_resource_classes, n_resource_classes) # resources for each resource_class

@@ -68,14 +68,15 @@ var _suppress_tab_listener := true
 
 # table indexing
 var _db_tables := IVTableData.db_tables
-var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _operation_names: Array[StringName] = _db_tables[&"operations"][&"name"]
 var _operation_sublabels: Array[StringName] = _db_tables[&"operations"][&"sublabel"]
 var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_group"]
 var _module_names: Array[StringName] = _db_tables[&"modules"][&"name"]
 var _module_operations: Array[Array] = _db_tables[&"modules"][&"operations"]
 var _module_foldables: Array[bool] = _db_tables[&"modules"][&"foldable"]
-var _op_classes_modules: Array[PackedInt32Array] = _tables_aux[&"op_classes_modules"]
+var _module_op_classes: Array[int] = _db_tables[&"modules"][&"op_class"]
+var _op_classes_modules: Array[PackedInt32Array] = Utils.invert_many_to_one_indexing_to_packed(
+		_module_op_classes, IVTableData.table_n_rows[&"op_classes"])
 
 var _revenue_hdrs: Array[Label] = []
 var _margin_hdrs: Array[Label] = []

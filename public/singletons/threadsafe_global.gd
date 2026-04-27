@@ -15,8 +15,6 @@ extends Node
 # whether it is safe to bypass thread machinery (server channels, mutex locks,
 # etc.), e.g., during game start.
 
-static var tables_aux: Dictionary[StringName, Variant] = {} # see public_preinitializer.gd
-
 # settings
 var total_biodiversity_pool := 25336.0 * IVUnits.SPP
 var total_information_pool := 6.4e22 * IVUnits.BIT

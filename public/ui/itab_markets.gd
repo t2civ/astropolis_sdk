@@ -61,13 +61,14 @@ var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _db_tables := IVTableData.db_tables
-var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _resource_names: Array[StringName] = _db_tables[&"resources"][&"name"]
 var _trade_classes: Array[int] = _db_tables[&"resources"][&"trade_class"]
 var _trade_units: Array[StringName] = _db_tables[&"resources"][&"trade_unit"]
 var _gui_ea: Array[bool] = _db_tables[&"resources"][&"gui_ea"]
 var _currency_unit: Array[bool] = _db_tables[&"resources"][&"currency_unit"]
-var _resource_classes_resources: Array[PackedInt32Array] = _tables_aux[&"resource_classes_resources"]
+var _resource_resource_classes: Array[int] = _db_tables[&"resources"][&"resource_class"]
+var _resource_classes_resources: Array[PackedInt32Array] = Utils.invert_many_to_one_indexing_to_packed(
+		_resource_resource_classes, IVTableData.table_n_rows[&"resource_classes"])
 
 
 @onready var _no_markets_label: Label = $NoMarkets

@@ -57,7 +57,6 @@ var discoveries: Array[float] # derived from mass/total, dispersion, and survey_
 
 # indexing
 static var _db_tables := IVTableData.db_tables
-static var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 static var _extraction_resources: PackedInt32Array # maps index to resource_type
 static var _resource_extractions: PackedInt32Array # maps resource_type to index
 static var _survey_density_errors: PackedFloat32Array # coeff of variation
@@ -74,20 +73,26 @@ static var _is_class_instanced := false
 
 
 
+static func _on_instanced() -> void:
+	_extraction_resources = PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
+			&"is_extraction"))
+	_resource_extractions = Utils.invert_packed_subset_indexing(_extraction_resources,
+			IVTableData.table_n_rows[&"resources"])
+	var surveys_table: Dictionary[StringName, Array] = _db_tables[&"surveys"]
+	_survey_density_errors = PackedFloat32Array(surveys_table[&"density_error"])
+	_survey_mass_errors = PackedFloat32Array(surveys_table[&"mass_error"])
+	_survey_deposits_sigma = PackedFloat32Array(surveys_table[&"deposits_sigma"])
+	var resources_table: Dictionary[StringName, Array] = _db_tables[&"resources"]
+	_res_mass_err_mult = PackedFloat32Array(resources_table[&"mass_err_mult"])
+	_n_extraction_resources = _extraction_resources.size()
+
+
 func _init(is_new := false) -> void:
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_extraction_resources = _tables_aux[&"extraction_resources"]
-		_resource_extractions = _tables_aux[&"resource_extractions"]
-		var surveys_table: Dictionary[StringName, Array] = _db_tables[&"surveys"]
-		_survey_density_errors = PackedFloat32Array(surveys_table[&"density_error"])
-		_survey_mass_errors = PackedFloat32Array(surveys_table[&"mass_error"])
-		_survey_deposits_sigma = PackedFloat32Array(surveys_table[&"deposits_sigma"])
-		var resources_table: Dictionary[StringName, Array] = _db_tables[&"resources"]
-		_res_mass_err_mult = PackedFloat32Array(resources_table[&"mass_err_mult"])
-		_n_extraction_resources = _extraction_resources.size()
-		
+		_on_instanced()
+
 	if !is_new: # loaded game
 		return
 	masses = arrays.init_array(_n_extraction_resources, 0.0, TYPE_FLOAT)

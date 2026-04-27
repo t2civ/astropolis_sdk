@@ -118,9 +118,6 @@ var persist := [
 
 var use_this_ai := false # read-only
 
-# localized globals
-static var tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-
 @warning_ignore("unused_private_class_variable")
 static var _times: Array = IVGlobal.times
 @warning_ignore("unused_private_class_variable")
