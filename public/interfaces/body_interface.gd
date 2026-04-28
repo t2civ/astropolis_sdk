@@ -8,37 +8,57 @@
 class_name BodyInterface
 extends Interface
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# To modify AI, see comments in '_base_ai.gd' files.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
-#
-# To get the SceenTree "body" node (class IVBody) use IVBody.bodies[body_name].
-# Be aware that SceenTree works on the Main thread!
+## [BodyInterface] represents a celestial body in the simulation, hosting
+## facilities and aggregating their stats.
+##
+## A [BodyInterface] aggregates component data ([OperationsNet],
+## [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated from its
+## facilities, and exposes its [StratumNet] composition (atmosphere,
+## surface, subsurface). It owns an [ExchangeInterface] when there are 2+
+## facilities at this body.
+##
+## Server-side Body pushes changes to [BodyInterface] and its components.
+##
+## To get the corresponding scene-tree [code]IVBody[/code] node use
+## [code]IVBody.bodies[body_name][/code]. Be aware that the SceneTree runs
+## on the main thread!
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## To modify AI, see comments in '_base_ai.gd' files.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
-static var body_interfaces: Array[BodyInterface] = [] # indexed by body_id
 
-var body_id := -1
-var body_flags := 0
-var solar_occlusion: float # TODO: replace w/ atmospheric condition
-var is_satellites := false
-var is_facilities := false
+## All [BodyInterface] instances, indexed by [member body_id].
+static var body_interfaces: Array[BodyInterface] = []
 
-var parent: BodyInterface # null for top body
+var body_id := -1  ## Index into [member body_interfaces].
+var body_flags := 0  ## Body flags from [code]IVBody.BodyFlags[/code].
+var solar_occlusion: float  ## Average solar irradiance occlusion at this body.
+var is_satellites := false  ## True while this body has at least one satellite.
+var is_facilities := false  ## True while this body hosts at least one facility.
 
-var satellites: Dictionary[StringName, BodyInterface] # resizable container - not threadsafe!
-var facilities: Array[Interface] = [] # resizable container - not threadsafe!
+var parent: BodyInterface  ## Parent body, or null for the top body.
 
-var operations: OperationsNet # when/if needed
-var population: PopulationNet # when/if needed
-var biome: BiomeNet # when/if needed
-var cyberspace: CyberspaceNet # when/if needed
-var exchange: ExchangeInterface # null unless Body has >1 Facility
-var strata: Array[StratumNet] = [] # resizable container - not threadsafe!
+## Direct satellites of this body, keyed by name. Resizable container — not
+## threadsafe!
+var satellites: Dictionary[StringName, BodyInterface]
+## Facilities at this body. Resizable container — not threadsafe!
+var facilities: Array[Interface] = []
+
+var operations: OperationsNet  ## Aggregate [OperationsNet] (null when absent).
+var population: PopulationNet  ## Aggregate [PopulationNet] (null when absent).
+var biome: BiomeNet  ## Aggregate [BiomeNet] (null when absent).
+var cyberspace: CyberspaceNet  ## Aggregate [CyberspaceNet] (null when absent).
+## [ExchangeInterface] for this body. Null unless this body has 2+ facilities.
+var exchange: ExchangeInterface
+## [StratumNet] composition layers (atmosphere, surface, subsurface).
+## Resizable container — not threadsafe!
+var strata: Array[StratumNet] = []
 
 
 
@@ -73,8 +93,8 @@ func get_body_flags() -> int:
 	return body_flags
 
 
+## Returns this body's [member facilities]. AI thread only!
 func get_facilities() -> Array[Interface]:
-	# AI thread only!
 	return facilities
 
 
@@ -174,59 +194,75 @@ func get_exchange() -> ExchangeInterface:
 
 # Strata
 
+## Returns true if this body has any [StratumNet] composition layers.
 func has_strata() -> bool:
 	return !strata.is_empty()
 
 
+## Returns the number of [StratumNet] composition layers on this body.
 func get_n_strata() -> int:
 	return strata.size()
 
 
+## Returns the name of the [StratumNet] at [param index].
 func get_stratum_name(index: int) -> StringName:
 	return strata[index].name
 
 
+## Returns the polity name of the [StratumNet] at [param index]
+## ([code]&""[/code] for commons strata).
 func get_stratum_polity(index: int) -> StringName:
 	return strata[index].polity_name
 
 
+## Returns the density of the [StratumNet] at [param index].
 func get_stratum_density(index: int) -> float:
 	return strata[index].density
 
 
+## Returns the stratum-group index of the [StratumNet] at [param index].
 func get_stratum_stratum_type(index: int) -> int:
 	return strata[index].stratum_group
 
 
+## Returns the thickness of the [StratumNet] at [param index].
 func get_compostion_thickness(index: int) -> float:
 	return strata[index].thickness
 
 
+## Returns the volume of the [StratumNet] at [param index].
 func get_stratum_volume(index: int) -> float:
 	return strata[index].get_volume()
 
 
+## Returns the total mass of the [StratumNet] at [param index].
 func get_stratum_total_mass(index: int) -> float:
 	return strata[index].get_total_mass()
 
 
+## Returns the body radius cached on the [StratumNet] at [param index].
 func get_compostion_body_radius(index: int) -> float:
-	# TODO: depreciate this after we have access to IVBody properties
 	return strata[index].body_radius
 
 
+## Returns the per-resource mass array for the [StratumNet] at [param index].
 func get_stratum_masses(index: int) -> Array[float]:
 	return strata[index].masses
 
 
+## Returns the per-resource dispersion array for the [StratumNet] at
+## [param index].
 func get_stratum_dispersions(index: int) -> Array[float]:
 	return strata[index].dispersions
 
 
+## Returns the survey-type index for the [StratumNet] at [param index].
 func get_stratum_survey_type(index: int) -> int:
 	return strata[index].survey_type
 
 
+## Returns survey/discovery data for [param resource_type] in the
+## [StratumNet] at [param index].
 func get_stratum_resource_data(index: int, resource_type: int) -> Array[float]:
 	return strata[index].get_resource_data(resource_type)
 
@@ -360,23 +396,27 @@ func sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
+## Registers [param satellite] under this body. Updates [member is_satellites].
 func add_satellite(satellite: BodyInterface) -> void:
 	assert(!satellites.has(satellite.name))
 	satellites[satellite.name] = satellite
 	is_satellites = true
 
 
+## Removes [param satellite] from this body. Updates [member is_satellites].
 func remove_satellite(satellite: BodyInterface) -> void:
 	satellites.erase(satellite.name)
 	is_satellites = !satellites.is_empty()
 
 
+## Registers [param facility] at this body. Updates [member is_facilities].
 func add_facility(facility: Interface) -> void:
 	assert(!facilities.has(facility))
 	facilities.append(facility)
 	is_facilities = true
 
 
+## Removes [param facility] from this body. Updates [member is_facilities].
 func remove_facility(facility: Interface) -> void:
 	facilities.erase(facility)
 	is_facilities = !facilities.is_empty()

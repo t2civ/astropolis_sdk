@@ -7,12 +7,14 @@
 # *****************************************************************************
 class_name ITabMarkets
 extends MarginContainer
-const SCENE := "res://public/ui/itab_markets.tscn"
 
-# Tabs follow row enumerations in resource_classes.tsv.
-#
-# FIXME: Volume, Bid/Ask get and format.
-# TODO: Header localizations.
+## "Markets" tab subpanel for [InfoPanel]. Shows resource prices, bid/ask,
+## and volume for the current selection's [ExchangeInterface], grouped by
+## resource class.
+##
+## Tab indices follow row enumerations in [code]resource_classes.tsv[/code].
+
+const SCENE := "res://public/ui/itab_markets.tscn"  ## Scene file for instancing.
 
 enum {
 	TAB_ENERGY,
@@ -140,6 +142,8 @@ func _clear() -> void:
 	_tab_container.tab_changed.disconnect(_select_tab)
 
 
+## Refreshes the active markets tab. Wired to [InfoTabContainer]'s shared 1 s
+## timer.
 func timer_update() -> void:
 	_update_tab()
 

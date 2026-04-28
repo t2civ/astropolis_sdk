@@ -8,14 +8,26 @@
 class_name InventoryNet
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# Arrays indexed by resource_type. Only Facilities have an Inventory.
-#
-# All values in internal units!
+## Net-synced inventory component held by [FacilityInterface].
+##
+## Holds resource stocks, reserves (ops, trade), in-transits, contracts,
+## rates, and storage capacity/usage. Arrays are indexed by resource_type;
+## storage arrays by storage_class. All values are in internal units.
+##
+## Server-side Inventory pushes changes to [InventoryNet] via sync. Only
+## [FacilityInterface] has an inventory — [PlayerInterface], [BodyInterface],
+## and [JoinInterface] do not aggregate inventory.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## Warning! Like [Interface], this object is touched on the AI thread.
+## Containers and many methods are not threadsafe; accessing non-container
+## properties is safe.
 
+
+## Bit flags describing per-resource state and run logic.
 enum ResourceFlags {
 	# State
 	IS_SURPLUS = 1 << 1,
@@ -24,7 +36,8 @@ enum ResourceFlags {
 }
 
 # Interface read-only! Data flows server -> interface.
-var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
+## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
+var run_qtr := -1
 
 var _stocks: Array[float] # total present resource quantity (>= 0.0)
 var _ops_reserves: Array[float] # tracker: quantity reserved for operations
@@ -76,42 +89,57 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # all threadsafe
 
+## Returns total stock for [param type] (>= 0.0).
 func get_stock(type: int) -> float:
 	return _stocks[type]
 
 
+## Returns the ops-reserve buffer for [param type] (quantity reserved for
+## ongoing operations).
 func get_ops_reserve(type: int) -> float:
 	return _ops_reserves[type]
 
 
+## Returns the trade-reserve buffer for [param type] (quantity reserved for
+## active trades).
 func get_trade_reserve(type: int) -> float:
 	return _trade_reserves[type]
 
 
+## Returns in-transit quantity for [param type] (>= 0.0; possibly under
+## contract).
 func get_in_transit(type: int) -> float:
 	return _in_transits[type]
 
 
+## Returns net contracted quantity for [param type] (sum of all contracts).
 func get_contracted(type: int) -> float:
 	return _contracteds[type]
 
 
+## Returns the most recent measured rate for [param type] (positive =
+## production, negative = consumption).
 func get_rate(type: int) -> float:
 	return _rates[type]
 
 
+## Returns the smoothed expected rate for [param type]
+## (gross_production - gross_consumption).
 func get_expected_rate(type: int) -> float:
 	return _expected_rates[type]
 
 
+## Returns resource flags for [param type] (see [enum ResourceFlags]).
 func get_resource_flags(type: int) -> int:
 	return _resource_flags[type]
 
 
+## Returns total storage capacity for [param storage_type].
 func get_storage(storage_type: int) -> float:
 	return _storages[storage_type]
 
 
+## Returns total stock currently using [param storage_type] (lazy-recomputed).
 func get_storage_used(storage_type: int) -> float:
 	if !_storages_used_valid:
 		_recompute_storages_used()
@@ -120,6 +148,7 @@ func get_storage_used(storage_type: int) -> float:
 
 # ********************************** SYNC *************************************
 
+## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_stocks = data[1]
@@ -134,9 +163,9 @@ func set_network_init(data: Array) -> void:
 	_storages_used_valid = false
 
 
+## Applies a server-supplied dirty payload, updating fields whose dirty flags
+## are set. Called by the parent [Interface] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# Changes and sets from the server entity.
-
 	var int_data: Array[int] = data[1]
 	var float_data: Array[float] = data[2]
 

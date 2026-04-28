@@ -8,8 +8,10 @@
 class_name TraderBaseAI
 extends TraderInterface
 
-# DO NOT MODIFY THIS CLASS! You can extend this base AI class or replace it (by
-# extending the base Interface class). The base Interface class is shared by
-# all non-owner network peers. Only the owning player has the extended AI
-# class. To override the base AI locally, create a new class file that extends
-# this class or the Interface class and add line: "const OVERRIDE_AI := true".
+## Default AI for traders the local player owns. Subclass to write custom
+## trader AI; the base [TraderInterface] is used for all non-owner peers.
+##
+## Do not modify this class directly. To override the base AI locally, create
+## a new class that extends this class (or [TraderInterface]) and add
+## [code]const OVERRIDE_AI := true[/code]. Only the owning player runs the
+## extended AI; non-owner peers use the base [TraderInterface].

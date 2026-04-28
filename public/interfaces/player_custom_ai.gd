@@ -8,7 +8,11 @@
 class_name PlayerCustomAI
 extends PlayerInterface
 
-# Example custom AI. This could extend either PlayerBaseAI or PlayerInterface.
-# Setting OVERRIDE_AI = true makes this the selected AI for players.
+## Example custom player AI. Could extend either [PlayerBaseAI] or
+## [PlayerInterface]; setting [constant OVERRIDE_AI] to [code]true[/code]
+## makes this the selected AI for players locally.
 
+
+## Marker constant: setting to [code]true[/code] elevates this class to the
+## active player AI in place of [PlayerBaseAI].
 const OVERRIDE_AI := true

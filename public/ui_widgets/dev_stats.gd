@@ -8,24 +8,38 @@
 class_name DevStats
 extends MarginContainer
 
-# IDEA: Click on value to cycle representation. E.g., for population:
-#     1.23 Quadrillion
-#     1.23 x 10^15
-#     1,234,567,890,123,456
+## Multi-target development-stats grid. Shows population, economy, power,
+## manufacturing, etc. as rows × interface targets as columns.
+##
+## Used by [ITabDevelopment] and the standalone development panel. Calls
+## interface methods on the AI thread, then builds the grid on the main
+## thread.
 
+
+## Emitted whenever the grid is rebuilt with [param has_stats] true if any
+## target has data.
 signal has_stats_changed(has_stats: bool)
 
-const SHORT_MIXED_CASE := IVQFormat.TextFormat.SHORT_MIXED_CASE
+const SHORT_MIXED_CASE := IVQFormat.TextFormat.SHORT_MIXED_CASE  ## See [enum IVQFormat.TextFormat].
 
 # GUI values - parent should set only once at init
-#var update_interval := 1.0 # seconds
-var zero_value := "-" # set "" to print zeros w/ units
+## Display string for zero values. Set to [code]""[/code] to print zeros
+## with units instead of a placeholder.
+var zero_value := "-"
+## If true, missing interfaces still get a column (with no data).
 var show_missing_interface := true
-var force_rows := true # if false, skip rows missing in all interfaces
-var min_columns := 3 # inclues row labels
+## If false, rows that have no data across all targets are skipped.
+var force_rows := true
+## Minimum number of columns including the row-label column. Pads with empty
+## columns if there are fewer targets than this.
+var min_columns := 3
+## Component name (string property on [Interface]) that must exist for a
+## target to count as having data.
 var required_component := &"operations"
 
 
+## Per-row spec: [code][label, getter_method, format_callable][/code].
+## Override to add or remove development metrics.
 var content: Array[Array] = [
 	# label_txt, target_path
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number.bind(3,
@@ -44,9 +58,14 @@ var content: Array[Array] = [
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]
 
+## Interface names to query, one per column.
 var targets: Array[StringName] = [&"PLANET_EARTH", &"JOIN_OFFWORLD"]
-var column_names: Array[StringName] = [&"PLANET_EARTH", &"TXT_OFF_EARTH"] # use instead of Interface name
-var fallback_names: Array[StringName] = [&"", &""] # if "" will uses targets string
+## Header text per column (translated keys); if non-empty, used instead of
+## the interface's own name.
+var column_names: Array[StringName] = [&"PLANET_EARTH", &"TXT_OFF_EARTH"]
+## Fallback header per column when [member column_names] is empty and the
+## target interface is missing. Empty entries fall back to the target string.
+var fallback_names: Array[StringName] = [&"", &""]
 
 var _thread_targets: Array[StringName]
 var _thread_fallback_names: Array[StringName]
@@ -55,6 +74,8 @@ var _thread_column_names: Array[StringName]
 @onready var _grid: GridContainer = $Grid
 
 
+## Replaces [member targets], [member column_names], and
+## [member fallback_names], then triggers an update.
 func update_targets(targets_: Array[StringName], column_names_: Array[StringName] = [],
 		fallback_names_: Array[StringName] = []) -> void:
 	targets = targets_
@@ -63,6 +84,7 @@ func update_targets(targets_: Array[StringName], column_names_: Array[StringName
 	update()
 
 
+## Refreshes the grid by dispatching to the AI thread.
 func update() -> void:
 	MainThreadGlobal.call_ai_thread(_set_data)
 

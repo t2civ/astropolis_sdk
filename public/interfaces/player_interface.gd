@@ -8,34 +8,49 @@
 class_name PlayerInterface
 extends Interface
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# To modify AI, see comments in '_base_ai.gd' files.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
-#
-# Players are never removed, but they are effectively dead if is_facilities == false.
+## [PlayerInterface] represents a polity, faction, or sub-entity that owns
+## [FacilityInterface]s.
+##
+## A [PlayerInterface] aggregates component data ([OperationsNet],
+## [FinancialsNet], [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated
+## from its facilities. It has no [InventoryNet] of its own.
+##
+## Server-side Player pushes changes to [PlayerInterface] and its components.
+## Players are never removed during a game; an "alive" player is one with
+## [member is_facilities] true.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## To modify AI, see comments in '_base_ai.gd' files.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
-static var player_interfaces: Array[PlayerInterface] = [] # indexed by player_id
+
+## All [PlayerInterface] instances, indexed by [member player_id].
+static var player_interfaces: Array[PlayerInterface] = []
 
 # public read-only
-var player_id := -1
-var player_class := -1 # PlayerClasses enum
-var part_of: PlayerInterface # non-polity players only!
-var polity_name: StringName
-var homeworld := ""
-var is_facilities := true # 'alive' player test
+var player_id := -1  ## Index into [member player_interfaces].
+var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
+## Owning polity for this player when [code]polity_name[/code] differs from
+## [member name] (sub-players only).
+var part_of: PlayerInterface
+var polity_name: StringName  ## Name of the polity for this player.
+var homeworld := ""  ## Name of this player's homeworld body.
+## True while this player owns at least one facility ("alive" test).
+var is_facilities := true
 
-var facilities: Array[Interface] = [] # resizable container - not threadsafe!
+## Facilities owned by this player. Resizable container — not threadsafe!
+var facilities: Array[Interface] = []
 
-var operations := OperationsNet.new(true, true)
-var financials := FinancialsNet.new(true)
-var population := PopulationNet.new(true)
-var biome := BiomeNet.new(true)
-var cyberspace := CyberspaceNet.new(true)
+var operations := OperationsNet.new(true, true)  ## Aggregate [OperationsNet] component.
+var financials := FinancialsNet.new(true)  ## Aggregate [FinancialsNet] component.
+var population := PopulationNet.new(true)  ## Aggregate [PopulationNet] component.
+var biome := BiomeNet.new(true)  ## Aggregate [BiomeNet] component.
+var cyberspace := CyberspaceNet.new(true)  ## Aggregate [CyberspaceNet] component.
 
 
 
@@ -73,8 +88,8 @@ func get_polity_name() -> StringName:
 	return polity_name
 
 
+## Returns this player's [member facilities]. AI thread only!
 func get_facilities() -> Array[Interface]:
-	# AI thread only!
 	return facilities
 
 
@@ -214,12 +229,15 @@ func sync_server_dirty(data: Array) -> void:
 
 
 
+## Registers [param facility] under this player. Marks the player "alive".
 func add_facility(facility: Interface) -> void:
 	assert(!facilities.has(facility))
 	facilities.append(facility)
 	is_facilities = true
 
 
+## Removes [param facility] from this player. Updates [member is_facilities]
+## to reflect whether the player still owns any facilities.
 func remove_facility(facility: Interface) -> void:
 	facilities.erase(facility)
 	is_facilities = !facilities.is_empty()

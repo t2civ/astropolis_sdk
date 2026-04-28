@@ -8,8 +8,14 @@
 class_name AstroSelectionManager
 extends IVSelectionManager
 
-
-# TODO?: Make body selections BodyInterface rather than IVBody?
+## Astropolis subclass of [IVSelectionManager] that adds [Interface]
+## selections (alongside ivoyager's [code]IVBody[/code] / [code]IVSmallBodiesGroup[/code]
+## selections).
+##
+## Registers itself as the [code]IVSelectionManager[/code] replacement at
+## static init and registers [member MainThreadGlobal.interfaces_by_name] as
+## an additional selection-name source so any [Interface] can be selected by
+## name.
 
 
 static func _static_init() -> void:
@@ -17,7 +23,8 @@ static func _static_init() -> void:
 	add_selection_dictionary(MainThreadGlobal.interfaces_by_name)
 
 
-
+## Returns the translated GUI name for the currently-selected body, or
+## [code]""[/code] if no body is selected.
 func get_body_gui_name() -> String:
 	var body_name := get_body_name()
 	if !body_name:

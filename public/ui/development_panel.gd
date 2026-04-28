@@ -7,8 +7,11 @@
 # *****************************************************************************
 extends PanelContainer
 
+## Standalone development-stats panel showing aggregate dev stats for the
+## entire system. Hosts a [DevStats] widget refreshed on a 1 s timer.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY
+
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY  ## Save/load mode (anchors only).
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",

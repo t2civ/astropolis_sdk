@@ -8,27 +8,35 @@
 class_name TraderInterface
 extends Interface
 
-# A Trader buys and sells resources at an Exchange for a specific Facility.
-#
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# To modify AI, see comments in '_base_ai.gd' files.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
+## [TraderInterface] is a proxy for a Trader that buys and sells resources at
+## an [ExchangeInterface] for a specific [FacilityInterface].
+##
+## A trader is owned by a facility and trades on its behalf at the hosting
+## exchange. Server-side Trader pushes changes to [TraderInterface].
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## To modify AI, see comments in '_base_ai.gd' files.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
-static var trader_interfaces: Array[TraderInterface] = [] # indexed by trader_id
+
+## All [TraderInterface] instances, indexed by [member trader_id].
+static var trader_interfaces: Array[TraderInterface] = []
 
 # immutable post-init
-var trader_id := -1
-var facility_id := -1
+var trader_id := -1  ## Index into [member trader_interfaces].
+var facility_id := -1  ## [member FacilityInterface.facility_id] this trader belongs to.
+## True if this trader's facility is at the same body as the exchange.
 var local := false
-var facility: FacilityInterface
-var exchange: ExchangeInterface
+var facility: FacilityInterface  ## Owning [FacilityInterface].
+var exchange: ExchangeInterface  ## Hosting [ExchangeInterface].
 
 # sync from server (DIRTY_BASE)
+## Placeholder for upcoming trader stats. Synced via [constant DIRTY_BASE].
 var temp_placeholder := 0.0
 
 

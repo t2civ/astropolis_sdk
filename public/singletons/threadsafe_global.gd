@@ -7,22 +7,24 @@
 # *****************************************************************************
 extends Node
 
-# Singleton "ThreadsafeGlobal".
-#
-# This global provides access to threadsafe data and API.
-# 
-# Use [method is_main_thread_access] in asserts or code that needs to know
-# whether it is safe to bypass thread machinery (server channels, mutex locks,
-# etc.), e.g., during game start.
+## Threadsafe autoload (registered as [code]ThreadsafeGlobal[/code]) for
+## settings, game-start data, and [method is_main_thread_access].
+##
+## Use [method is_main_thread_access] in asserts or code that needs to know
+## whether it is safe to bypass thread machinery (server channels, mutex
+## locks, etc.) — e.g., during game start.
+
 
 # settings
-var total_biodiversity_pool := 25336.0 * IVUnits.SPP
-var total_information_pool := 6.4e22 * IVUnits.BIT
-var start_prices_body := &"PLANET_EARTH" # TODO: bodies_resources_prices.tsv
+var total_biodiversity_pool := 25336.0 * IVUnits.SPP  ## Global biodiversity pool (species count units).
+var total_information_pool := 6.4e22 * IVUnits.BIT  ## Global information pool (bit units).
+## Body whose prices seed startup pricing. TODO: replace with
+## [code]bodies_resources_prices.tsv[/code].
+var start_prices_body := &"PLANET_EARTH"
 
 # game
-var local_player_name := &"PLAYER_NASA"
-var home_facility_name := &"FACILITY_PLANET_EARTH_PLAYER_NASA"
+var local_player_name := &"PLAYER_NASA"  ## Name of the local player at game start.
+var home_facility_name := &"FACILITY_PLANET_EARTH_PLAYER_NASA"  ## Name of the local player's home facility.
 
 # private
 var _main_thread_access := true
@@ -35,9 +37,9 @@ func _ready() -> void:
 	IVStateManager.procedural_nodes_freed.connect(_on_procedural_nodes_freed)
 
 
+## Returns true when worker threads are idle and shared state is freely
+## mutable from the main thread (during game start and after simulator stop).
 func is_main_thread_access() -> bool:
-	# True when worker threads are idle and shared state is freely mutable from
-	# the main thread.
 	return _main_thread_access
 
 

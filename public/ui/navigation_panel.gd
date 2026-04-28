@@ -7,8 +7,11 @@
 # *****************************************************************************
 extends PanelContainer
 
+## Astropolis navigation panel — system-tree navigation buttons (sun, planets,
+## moons, etc.) docked to the GUI.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY
+
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY  ## Save/load mode (anchors only).
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",

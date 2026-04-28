@@ -8,15 +8,29 @@
 class_name PopulationNet
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# Arrays indexed by population_type unless noted otherwise.
+## Net-synced population component held by [FacilityInterface],
+## [PlayerInterface], [BodyInterface], or [JoinInterface].
+##
+## Holds population numbers, intrinsic growth rates, carrying capacities, and
+## migration pressures. Arrays are indexed by population_type unless otherwise
+## noted; carrying capacities are indexed by carrying_capacity_group.
+## Intrinsic growth, carrying capacities, and migration pressures are
+## [FacilityInterface] only; aggregate hosts only carry [member _numbers].
+##
+## Server-side Population pushes changes to [PopulationNet] via sync.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## Warning! Like [Interface], this object is touched on the AI thread.
+## Containers and many methods are not threadsafe; accessing non-container
+## properties is safe.
 
 
 # All data flows server -> interface.
-var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
+## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
+var run_qtr := -1
 var _numbers: Array[float]
 var _intrinsic_growths: Array[float] # Facility only
 var _carrying_capacities: Array[float] # Facility only; indexed by carrying_capacity_group
@@ -67,6 +81,8 @@ func _init(is_new := false, is_facility_ := false) -> void:
 # ********************************* READ **************************************
 
 
+## Returns population count for [param type], or the total across all types
+## if [param type] is -1.
 func get_number(type := -1) -> float:
 	const utils := preload("uid://bxjs8bk7ksxr2")
 	if type == -1:
@@ -74,18 +90,22 @@ func get_number(type := -1) -> float:
 	return _numbers[type]
 
 
+## Returns intrinsic growth rate for [param type] (Facility only).
 func get_intrinsic_growth(type: int) -> float:
 	assert(_is_facility)
 	return _intrinsic_growths[type]
 
 
+## Returns carrying capacity for [param carrying_capacity_group]
+## (Facility only).
 func get_carrying_capacity(carrying_capacity_group: int) -> float:
 	assert(_is_facility)
 	return _carrying_capacities[carrying_capacity_group]
 
 
+## Returns the sum of carrying capacities across the groups that population
+## [param type] can occupy (Facility only).
 func get_carrying_capacity_for_population(type: int) -> float:
-	# sums the _carrying_capacities that this population can occupy
 	assert(_is_facility)
 	var group: int = _carrying_capacity_groups[type]
 	var group2: int = _carrying_capacity_group2s[type]
@@ -95,8 +115,9 @@ func get_carrying_capacity_for_population(type: int) -> float:
 	return carrying_capacity
 
 
+## Returns the total count of populations that share
+## [param carrying_capacity_group] (Facility only).
 func get_number_for_carrying_capacity_group(carrying_capacity_group: int) -> float:
-	# sums all populations that share this carrying_capacity_group
 	assert(_is_facility)
 	var number := 0.0
 	var i := 0
@@ -110,6 +131,7 @@ func get_number_for_carrying_capacity_group(carrying_capacity_group: int) -> flo
 
 # ********************************* SYNC **************************************
 
+## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_numbers = data[1]
@@ -120,9 +142,9 @@ func set_network_init(data: Array) -> void:
 	_is_facility = data[6]
 
 
+## Applies a server-supplied dirty payload, updating fields whose dirty flags
+## are set and rolling quarter history if the server quarter advanced.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# Changes and sets from the server entity.
-	
 	var int_data: Array[int] = data[1]
 	var float_data: Array[float] = data[2]
 	

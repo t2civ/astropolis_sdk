@@ -7,10 +7,16 @@
 # *****************************************************************************
 class_name ITabOperations
 extends MarginContainer
-const SCENE := "res://public/ui/itab_operations.tscn"
 
-# Tabs follow row enumerations in op_classes.tsv.
-# TODO: complete localizations
+## "Operations" tab subpanel for [InfoPanel]. Shows the current selection's
+## operations grouped by class (energy, extraction, refining, conversion,
+## manufacturing, biomes, services) with per-op rates, capacities, revenue,
+## and command/utilization controls.
+##
+## Tab indices follow row enumerations in [code]op_classes.tsv[/code].
+
+const SCENE := "res://public/ui/itab_operations.tscn"  ## Scene file for instancing.
+
 
 enum {
 	TAB_ENERGY,
@@ -164,6 +170,8 @@ func _clear() -> void:
 	_tab_container.tab_changed.disconnect(_select_tab)
 
 
+## Refreshes the active operations tab. Wired to [InfoTabContainer]'s shared
+## 1 s timer.
 func timer_update() -> void:
 	_update_tab()
 

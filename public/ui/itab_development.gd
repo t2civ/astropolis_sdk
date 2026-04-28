@@ -8,15 +8,19 @@
 class_name ITabDevelopment
 extends MarginContainer
 
+## "Development" tab subpanel for [InfoPanel]. Shows aggregate development
+## stats for the current selection plus contextual sub-aggregations
+## (planetary, lunar, system space, etc.) using a [DevStats] widget.
 
-const SCENE := "res://public/ui/itab_development.tscn"
 
-const BodyFlags := IVBody.BodyFlags
-const BodyFlags2 := Enums.BodyFlags2
-const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
+const SCENE := "res://public/ui/itab_development.tscn"  ## Scene file for instancing.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
-const PERSIST_PROPERTIES: Array[StringName] = []
+const BodyFlags := IVBody.BodyFlags  ## Convenience alias for [enum IVBody.BodyFlags].
+const BodyFlags2 := Enums.BodyFlags2  ## Convenience alias for [enum Enums.BodyFlags2].
+const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY  ## See [enum Enums.PlayerClasses].
+
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
+const PERSIST_PROPERTIES: Array[StringName] = []  ## Member names persisted by save/load.
 
 var _selection_manager: AstroSelectionManager
 
@@ -37,6 +41,7 @@ func _ready() -> void:
 	_update_selection()
 
 
+## Refreshes development stats. Wired to [InfoTabContainer]'s shared 1 s timer.
 func timer_update() -> void:
 	_dev_stats.update()
 

@@ -7,11 +7,21 @@
 # *****************************************************************************
 extends RefCounted
 
+## Public Astropolis preinitializer. Runs once at startup before
+## [code]IVCoreInitializer[/code] builds the program tree, and wires
+## ivoyager plugins (core, save, units, assistant) up to Astropolis-specific
+## defaults.
+##
+## Configures: AI thread verbosity, start time and sim time mode, program
+## class registration ([InfoCloner], [code]AstropolisGUI[/code]),
+## translations, units formatting, save/load gates, and the
+## [code]IVAssistantServer[/code] ready predicate.
 
-const AI_VERBOSE := false
-const AI_VERBOSE2 := false
-const IVOYAGER_VERBOSE := false
-const USE_THREADS := true
+
+const AI_VERBOSE := false  ## Enable AI verbose logging.
+const AI_VERBOSE2 := false  ## Enable extra-verbose AI logging.
+const IVOYAGER_VERBOSE := false  ## Enable ivoyager core verbose logging.
+const USE_THREADS := true  ## Run the simulation on worker threads (recommended).
 
 
 func _init() -> void:

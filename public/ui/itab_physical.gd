@@ -7,11 +7,16 @@
 # *****************************************************************************
 class_name ITabPhysical
 extends MarginContainer
-const SCENE := "res://public/ui/itab_physical.tscn"
+
+## "Physical" tab subpanel for [InfoPanel]. Shows physical properties of the
+## selected body (mass, radius, density, atmosphere, surface composition,
+## stratum resources).
+
+const SCENE := "res://public/ui/itab_physical.tscn"  ## Scene file for instancing.
 
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
-const PERSIST_PROPERTIES: Array[StringName] = []
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
+const PERSIST_PROPERTIES: Array[StringName] = []  ## Member names persisted by save/load.
 
 var _selection_manager: AstroSelectionManager
 
@@ -29,6 +34,8 @@ func _ready() -> void:
 	_update_selection()
 
 
+## Refreshes physical properties. Wired to [InfoTabContainer]'s shared 1 s
+## timer.
 func timer_update() -> void:
 	_refresh()
 

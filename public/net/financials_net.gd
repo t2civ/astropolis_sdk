@@ -8,18 +8,28 @@
 class_name FinancialsNet
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# Changes propagate from Facility to Player or Facility/Player Joins only.
-#
-# Income and cash flow items are always cummulative for current quarter.
-# Balance items are running.
-# 'lfq' = last four quarters, or last total qtrs if < 1 yr history
+## Net-synced financials component held by [FacilityInterface],
+## [PlayerInterface], or player-specific [JoinInterface]s.
+##
+## Holds revenue, gross output, cost of goods sold, additional accountings,
+## and per-item history (last N quarters). Income and cash-flow items are
+## cumulative within the current quarter; balance items are running. "lfq"
+## means last four quarters (or fewer if < 1 yr history). Changes propagate
+## from facility to player or to facility/player joins only.
+##
+## Server-side Financials pushes changes to [FinancialsNet] via sync.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## Warning! Like [Interface], this object is touched on the AI thread.
+## Containers and many methods are not threadsafe; accessing non-container
+## properties is safe.
 
 
-enum { # _dirty
+## Bit flags marking which scalar fields of this component are dirty for sync.
+enum {
 	DIRTY_REVENUE = 1,
 	DIRTY_GROSS_OUTPUT = 1 << 1,
 	DIRTY_COST_OF_GOODS_SOLD = 1 << 2,
@@ -27,7 +37,8 @@ enum { # _dirty
 
 
 # interface sync
-var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
+## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
+var run_qtr := -1
 var _revenue := 0.0 # positive
 var _gross_output := 0.0 # = all producer revenue (exludes resellers, tax revenue, etc.)
 var _cost_of_goods_sold := 0.0 # positive
@@ -57,6 +68,8 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # NOT ALL THREADSAFE !!!!
 
+## Returns revenue summed over the last four quarters (or all available if
+## history is shorter).
 func get_revenue_lfq() -> float:
 	var sum := 0.0
 	var n_qtrs := mini(_revenue_history.size(), 4)
@@ -65,6 +78,8 @@ func get_revenue_lfq() -> float:
 	return sum
 
 
+## Returns gross output summed over the last four quarters (or all available
+## if history is shorter).
 func get_gross_output_lfq() -> float:
 	var sum := 0.0
 	var n_qtrs := mini(_gross_output_history.size(), 4)
@@ -77,6 +92,7 @@ func get_gross_output_lfq() -> float:
 
 # ********************************** SYNC *************************************
 
+## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_revenue = data[1]
@@ -89,9 +105,9 @@ func set_network_init(data: Array) -> void:
 	_accountings_history = data[8]
 
 
+## Applies a server-supplied dirty payload, updating fields whose dirty flags
+## are set and rolling quarter history if the server quarter advanced.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# Changes and sets from the server entity.
-	
 	var int_data: Array[int] = data[1]
 	var float_data: Array[float] = data[2]
 

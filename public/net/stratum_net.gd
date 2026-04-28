@@ -8,51 +8,62 @@
 class_name StratumNet
 extends RefCounted
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# A Body can have any number of Strata, each representing a geological
-# layer and/or polity territory. A spacecraft Body will have 0 Strata.
-# The vast majority of asteroids will have one (undifferentiated) Stratum.
-#
-# AI and GUI have access to estimated values only; server has actual.
-# This component is different than others because it syncs offset values to
-# represent estimation biases. Actual server values will be randomly offset
-# from data table values (which are assumed to be public estimations).
-#
-# All resource indexing here is for the 'is_extraction == true' subset.
-# Arrays are threadsafe (they are never resized after init).
-# All Stratum data flows server -> interface.
+## Net-synced stratum component held by [BodyInterface]. Represents a
+## geological layer or polity territory of a body.
+##
+## A body can have any number of strata. A spacecraft body has 0 strata; the
+## vast majority of asteroids have a single (undifferentiated) stratum.
+## Holds estimated values only; the server has actual values, which are
+## randomly offset from data-table values (the public estimations) to
+## represent measurement bias. All resource indexing here uses the
+## [code]is_extraction == true[/code] subset; arrays are threadsafe (never
+## resized after init).
+##
+## Server-side Stratum pushes changes to [StratumNet] via sync.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## Warning! Like [Interface], this object is touched on the AI thread.
+## Containers and many methods are not threadsafe; accessing non-container
+## properties is safe.
 
-enum { # _dirty bit flags
+
+## Bit flags marking which sections of this component are dirty for sync.
+enum {
 	DIRTY_HEADERS = 1,
 	DIRTY_STRATUM = 1 << 1,
 	DIRTY_SURVEY = 1 << 2,
 }
 
-var run_qtr := -1 # last sync, = year * 4 + (quarter - 1)
-var stratum_index := -1
-var name: StringName
-var stratum_group := -1 # stratum_groups.tsv
-var polity_name: StringName # "" for commons
+## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
+var run_qtr := -1
+var stratum_index := -1  ## Index into [member BodyInterface.strata].
+var name: StringName  ## Stratum row name from [code]strata.tsv[/code].
+var stratum_group := -1  ## Index into [code]stratum_groups.tsv[/code].
+var polity_name: StringName  ## Polity owning this stratum, or [code]&""[/code] for commons.
 
-var body_radius := 0.0 # same as Body.m_radius
-var inner_radius := 0.0 # 0.0 for undifferentiated body
-var thickness := 0.0 # =body_radius for undifferentiated body
-var spherical_fraction := 0.0 # of theoretical whole sphere strata
-var volume := 0.0
-var density := 0.0
-var total_mass := 0.0
-var is_atmosphere: bool # from strata.tsv
-var survey_level := 0.0
-var survey_type := -1 # surveys.tsv
+var body_radius := 0.0  ## Hosting body's mean radius (matches [code]IVBody.m_radius[/code]).
+var inner_radius := 0.0  ## Inner radius of this layer; 0.0 for undifferentiated body.
+var thickness := 0.0  ## Layer thickness; equals [member body_radius] for undifferentiated body.
+var spherical_fraction := 0.0  ## Fraction of a theoretical whole-sphere stratum.
+var volume := 0.0  ## Total volume.
+var density := 0.0  ## Estimated density.
+var total_mass := 0.0  ## Total mass (estimated).
+var is_atmosphere: bool  ## True if this stratum is the body's atmosphere.
+var survey_level := 0.0  ## Current survey level; controls [member discoveries].
+var survey_type := -1  ## Index into [code]surveys.tsv[/code].
 
-var masses: Array[float]
-var masses_cv: Array[float]
-var dispersions: Array[float] # spatial heterogeneity; good for mining!
-var dispersions_cv: Array[float]
-var discoveries: Array[float] # derived from mass/total, dispersion, and survey_level
+var masses: Array[float]  ## Per-resource estimated mass (extraction subset).
+var masses_cv: Array[float]  ## Coefficient of variation for [member masses].
+## Per-resource spatial heterogeneity (log10 units). Higher means more
+## concentrated deposits, better for mining.
+var dispersions: Array[float]
+var dispersions_cv: Array[float]  ## Coefficient of variation for [member dispersions].
+## Per-resource discovery fraction, derived from mass/total, dispersion,
+## and [member survey_level].
+var discoveries: Array[float]
 
 
 # indexing
@@ -104,35 +115,43 @@ func _init(is_new := false) -> void:
 # ********************************** READ *************************************
 # all threadsafe
 
+## Returns the stratum volume.
 func get_volume() -> float:
 	return volume
 
 
+## Returns the total mass of the stratum.
 func get_total_mass() -> float:
 	return total_mass
 
 
+## Returns the estimated mass of [param resource_type] in this stratum.
+## The resource must have [code]is_extraction == true[/code].
 func get_mass(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	return masses[index]
 
 
+## Returns the estimated mass fraction of [param resource_type]
+## ([member masses] / [member total_mass]).
 func get_mass_fraction(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	return masses[index] / total_mass
 
 
+## Returns the spatial dispersion (log10 units) of [param resource_type].
 func get_dispersion(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	return dispersions[index]
 
 
-## Return is [abundance, abundance_sd, dispersion, dispersion_sd, base_deposit,
-## discovered], where abundance, base_deposit and discovered are fractions and
-## dispersion is in log10 units.
+## Returns [code][abundance, abundance_sd, dispersion, dispersion_sd,
+## base_deposit, discovered][/code]. [code]abundance[/code],
+## [code]base_deposit[/code], and [code]discovered[/code] are fractions;
+## [code]dispersion[/code] is in log10 units.
 func get_resource_data(resource_type: int) -> Array[float]:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
@@ -145,6 +164,8 @@ func get_resource_data(resource_type: int) -> Array[float]:
 	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposit, discovered]
 
 
+## Returns the base deposit fraction for [param resource_type] before survey
+## adjustment ([code]min(1.0, abundance * 10 ** dispersion)[/code]).
 func get_base_deposit(resource_type: int) -> float:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
@@ -153,15 +174,17 @@ func get_base_deposit(resource_type: int) -> float:
 	return minf(1.0, abundance * 10 ** dispersion)
 
 
+## Returns the discovery fraction for [param resource_type]. Roughly relates
+## inversely to "scrape ratio".
 func get_discovered(resource_type: int) -> float:
-	# Roughly related to "scrape ratio" (inversely).
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	return discoveries[index]
 
 
+## Returns the maximum discovery fraction across [param resource_types]
+## (best target). Roughly relates inversely to scrape ratio.
 func get_max_discovered(resource_types: PackedInt32Array) -> float:
-	# Roughly related to "scrape ratio" (inversely) for best target resource.
 	var max_discovered := 0.0
 	for resource_type in resource_types:
 		var index: int = _resource_extractions[resource_type]
@@ -173,8 +196,9 @@ func get_max_discovered(resource_types: PackedInt32Array) -> float:
 # sync
 
 
+## Initializes this component from the server-supplied init payload.
+## NOT reference-safe — receiver shares array references with the payload.
 func set_network_init(data: Array) -> void:
-	# NOT reference-safe!
 	stratum_index = data[0]
 	name = data[1]
 	stratum_group = data[2]
@@ -196,8 +220,9 @@ func set_network_init(data: Array) -> void:
 	discoveries = data[18]
 
 
+## Applies a server-supplied dirty payload, updating fields whose dirty flags
+## are set.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	# Changes and sets from the server entity.
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	
 	var int_data: Array[int] = data[1]
