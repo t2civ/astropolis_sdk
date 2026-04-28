@@ -7,11 +7,21 @@
 # *****************************************************************************
 extends RefCounted
 
+## Public Astropolis preinitializer. Runs once at startup before
+## [code]IVCoreInitializer[/code] builds the program tree, and wires
+## ivoyager plugins (core, save, units, assistant) up to Astropolis-specific
+## defaults.
+##
+## Configures: AI thread verbosity, start time and sim time mode, program
+## class registration ([InfoCloner], [code]AstropolisGUI[/code]),
+## translations, units formatting, save/load gates, and the
+## [code]IVAssistantServer[/code] ready predicate.
 
-const AI_VERBOSE := false
-const AI_VERBOSE2 := false
-const IVOYAGER_VERBOSE := false
-const USE_THREADS := true
+
+const AI_VERBOSE := false  ## Enable AI verbose logging.
+const AI_VERBOSE2 := false  ## Enable extra-verbose AI logging.
+const IVOYAGER_VERBOSE := false  ## Enable ivoyager core verbose logging.
+const USE_THREADS := true  ## Run the simulation on worker threads (recommended).
 
 
 func _init() -> void:
@@ -51,7 +61,20 @@ func _init() -> void:
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
+	# Block save/load until Interfaces have settled on the main thread. The AI
+	# thread posts add_interface() calls via call_deferred for several frames
+	# after simulator_started, so MainThreadGlobal.interfaces_ready_emitted is
+	# the correct barrier. See main_thread_global.gd.
+	IVSave.save_permit = func() -> bool:
+		return IVStateManager.started and MainThreadGlobal.interfaces_ready_emitted
+	IVSave.load_permit = func() -> bool:
+		return IVStateManager.started and MainThreadGlobal.interfaces_ready_emitted
 	IVSave.configure_save_plugin()
+
+	# Astropolis readiness predicate for the Assistant TCP server. The +10 frame
+	# tail comes from min_ready_delay_frames in ivoyager_assistant.cfg.
+	IVAssistantServer.ready_predicate = func() -> bool:
+		return MainThreadGlobal.interfaces_ready_emitted
 	
 	# Core plugin static files
 	IVSettingsManager.set_default(&"save_base_name", "Astropolis")
@@ -108,44 +131,6 @@ func _on_data_tables_postprocessed() -> void:
 
 func _on_program_objects_instantiated() -> void:
 	# program object changes
-	
+
 	var speed_manager: IVSpeedManager = IVGlobal.program.SpeedManager
 	speed_manager.start_speed = 0
-	
-
-	
-	# table additions (subtables, re-indexings, or other useful table items)
-	var db_tables := IVTableData.db_tables
-	var table_n_rows := IVTableData.table_n_rows
-	var tables_aux := ThreadsafeGlobal.tables_aux
-	
-	# unique items
-	tables_aux[&"resource_type_electricity"] = IVTableData.db_find(&"resources", &"unique_type",
-			Enums.Types.ELECTRICITY)
-	assert(tables_aux[&"resource_type_electricity"] != -1)
-	# table row subsets (arrays of row_types)
-	var extraction_resources := IVTableData.get_db_true_rows(&"resources", &"is_extraction")
-	tables_aux[&"extraction_resources"] = extraction_resources
-	var volatile_resources := IVTableData.get_db_true_rows(&"resources", &"is_volatile")
-	var volatile_extraction_resources := IVArrays.get_intersection(volatile_resources,
-			extraction_resources)
-	tables_aux[&"volatile_extraction_resources"] = volatile_extraction_resources
-	var extraction_operations := IVTableData.get_db_matching_rows(&"operations", &"process_group",
-			Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION)
-	tables_aux[&"extraction_operations"] = extraction_operations
-	# inverted table row subsets (array of indexes in the subset, where non-subset = -1)
-	var n_resources: int = table_n_rows[&"resources"]
-	tables_aux[&"resource_extractions"] = Utils.invert_subset_indexing(extraction_resources,
-			n_resources)
-	var n_operations: int = table_n_rows[&"operations"]
-	tables_aux[&"operation_extractions"] = Utils.invert_subset_indexing(extraction_operations,
-			n_operations)
-	# one-to-many indexing (arrays of arrays)
-	var module_op_classes: Array[int] = db_tables[&"modules"][&"op_class"]
-	var n_op_classes: int = table_n_rows[&"op_classes"]
-	tables_aux[&"op_classes_modules"] = Utils.invert_many_to_one_indexing(
-			module_op_classes, n_op_classes) # modules for each op_class
-	var resource_resource_classes: Array[int] = db_tables[&"resources"][&"resource_class"]
-	var n_resource_classes: int = table_n_rows[&"resource_classes"]
-	tables_aux[&"resource_classes_resources"] = Utils.invert_many_to_one_indexing(
-			resource_resource_classes, n_resource_classes) # resources for each resource_class

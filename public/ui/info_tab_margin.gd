@@ -8,10 +8,14 @@
 class_name InfoTabMargin
 extends MarginContainer
 
-# Added by code to allow persistence of info subpanels.
+## Thin wrapper around [InfoTabContainer] that adds the top margin needed by
+## [InfoPanel]'s header. Added programmatically so it persists with the
+## panel.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
 
+## The hosted [InfoTabContainer]. Created in [code]_init()[/code] when
+## [param is_new] is true; otherwise restored from save state.
 var info_tab_container: InfoTabContainer
 
 var _is_new := false

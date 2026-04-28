@@ -7,10 +7,16 @@
 # *****************************************************************************
 class_name ITabOperations
 extends MarginContainer
-const SCENE := "res://public/ui/itab_operations.tscn"
 
-# Tabs follow row enumerations in op_classes.tsv.
-# TODO: complete localizations
+## "Operations" tab subpanel for [InfoPanel]. Shows the current selection's
+## operations grouped by class (energy, extraction, refining, conversion,
+## manufacturing, biomes, services) with per-op rates, capacities, revenue,
+## and command/utilization controls.
+##
+## Tab indices follow row enumerations in [code]op_classes.tsv[/code].
+
+const SCENE := "res://public/ui/itab_operations.tscn"  ## Scene file for instancing.
+
 
 enum {
 	TAB_ENERGY,
@@ -68,14 +74,15 @@ var _suppress_tab_listener := true
 
 # table indexing
 var _db_tables := IVTableData.db_tables
-var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _operation_names: Array[StringName] = _db_tables[&"operations"][&"name"]
 var _operation_sublabels: Array[StringName] = _db_tables[&"operations"][&"sublabel"]
 var _operation_process_groups: Array[int] = _db_tables[&"operations"][&"process_group"]
 var _module_names: Array[StringName] = _db_tables[&"modules"][&"name"]
 var _module_operations: Array[Array] = _db_tables[&"modules"][&"operations"]
 var _module_foldables: Array[bool] = _db_tables[&"modules"][&"foldable"]
-var _op_classes_modules: Array[Array] = _tables_aux[&"op_classes_modules"]
+var _module_op_classes: Array[int] = _db_tables[&"modules"][&"op_class"]
+var _op_classes_modules: Array[PackedInt32Array] = Utils.invert_many_to_one_indexing_to_packed(
+		_module_op_classes, IVTableData.table_n_rows[&"op_classes"])
 
 var _revenue_hdrs: Array[Label] = []
 var _margin_hdrs: Array[Label] = []
@@ -163,6 +170,8 @@ func _clear() -> void:
 	_tab_container.tab_changed.disconnect(_select_tab)
 
 
+## Refreshes the active operations tab. Wired to [InfoTabContainer]'s shared
+## 1 s timer.
 func timer_update() -> void:
 	_update_tab()
 
@@ -222,7 +231,7 @@ func _get_ai_data(target_name: StringName) -> void:
 	var operations := interface.get_operations()
 	var has_financials := operations.has_financials()
 
-	var modules: Array[int] = _op_classes_modules[tab]
+	var modules: PackedInt32Array = _op_classes_modules[tab]
 	var n_modules := 0
 
 	for module_type in modules:

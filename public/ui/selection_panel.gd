@@ -7,8 +7,11 @@
 # *****************************************************************************
 extends PanelContainer
 
+## Astropolis selection panel. Hosts the selection image, name label, and
+## navigation widgets bound to the GUI's selection manager.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY
+
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY  ## Save/load mode (anchors only).
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",

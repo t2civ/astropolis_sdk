@@ -8,44 +8,59 @@
 class_name FacilityInterface
 extends Interface
 
-# Facilities are where most of the important activity happens in Astropolis. 
-# Server-side Facility pushes changes to FacilityInterface and its components.
-# A few "player control" properties have reverse interface -> server data flow.
-#
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# To modify AI, see comments in '_base_ai.gd' files.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
+## [FacilityInterface] represents a Player's development at a Body (see
+## [PlayerInterface] and [BodyInterface]).
+##
+## A Facility runs operations enabled by modules (see corresponding data
+## tables). A [FacilityInterface] has required components [OperationsNet],
+## [InventoryNet] and [FinancialsNet], and optional components [PopulationNet],
+## [BiomeNet], and [CyberspaceNet].
+##
+## Server-side Facility pushes changes to [FacilityInterface] and its components.
+## A few "player control" properties have reverse interface -> server data flow.
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## To modify AI, see comments in '_base_ai.gd' files.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
-static var facility_interfaces: Array[FacilityInterface] = [] # indexed by facility_id
+## All [FacilityInterface] instances, indexed by [member facility_id].
+static var facility_interfaces: Array[FacilityInterface] = []
 
-var facility_id := -1
-var facility_class := -1
-var public_sector: float # often 0.0 or 1.0, sometimes mixed
-var is_unitary: bool # is small focused activity for stats & tax treatment
-var closed_cycle_ops: bool # all resource streams from/to inventory
-var solar_occlusion: float # TODO: calculate from body atmosphere, body shading, etc.
-var time_horizon: float # for AI and automations (inventory reserves, resupply, etc.)
-var polity_name: StringName
-var exchanges: Array[StringName]
+var facility_id := -1  ## Index into [member facility_interfaces].
+var facility_class := -1  ## Facility class index. Not implemented yet.
+## Public-sector share of this facility, often 0.0 or 1.0, sometimes mixed.
+var public_sector: float
+## True if this is a small focused activity (affects stats and tax treatment).
+var is_unitary: bool
+## True if all resource streams flow from/to inventory (no atmosphere/surface
+## exchange).
+var closed_cycle_ops: bool
+## Fraction of solar irradiance occluded at this site (0.0–1.0).
+var solar_occlusion: float
+## Time horizon used by AI and automations (inventory reserves, resupply, etc.).
+var time_horizon: float
+var polity_name: StringName  ## Name of the polity this facility belongs to.
+var exchanges: Array[StringName]  ## Names of exchanges this facility participates in.
 
-var body: BodyInterface
-var player: PlayerInterface
-var joins: Array[JoinInterface] = []
+var body: BodyInterface  ## Hosting [BodyInterface].
+var player: PlayerInterface  ## Owning [PlayerInterface].
+var joins: Array[JoinInterface] = []  ## [JoinInterface] aggregates this facility belongs to.
 
-var operations := OperationsNet.new(true, true, true)
-var inventory := InventoryNet.new(true)
-var financials := FinancialsNet.new(true)
-var population: PopulationNet # when/if needed
-var biome: BiomeNet # when/if needed
-var cyberspace: CyberspaceNet # when/if needed
+var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
+var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
+var financials := FinancialsNet.new(true)  ## [FinancialsNet] component.
+var population: PopulationNet  ## Optional [PopulationNet] component (null when absent).
+var biome: BiomeNet  ## Optional [BiomeNet] component (null when absent).
+var cyberspace: CyberspaceNet  ## Optional [CyberspaceNet] component (null when absent).
 
-# exposed for IVSelectionManager
-var texture_2d: Texture2D # for now, just the IVBody.texture_2d
+## Body texture cached for [code]IVSelectionManager[/code] (currently the
+## hosting body's [code]IVBody.texture_2d[/code]).
+var texture_2d: Texture2D
 
 
 func _init() -> void:
@@ -61,11 +76,15 @@ func _init() -> void:
 # *****************************************************************************
 # interface API
 
+## Detaches this facility from its body and player. Call before letting the
+## reference go.
 func remove() -> void:
 	body.remove_facility(self)
 	player.remove_facility(self)
 
 
+## Sets [member gui_name] and marks the interface dirty. Reverse-flow:
+## interface -> server.
 func set_gui_name(new_gui_name: String) -> void:
 	_dirty |= DIRTY_BASE
 	gui_name = new_gui_name
@@ -150,18 +169,22 @@ func get_development_biodiversity() -> float:
 	if biome:
 		var biodiversity := biome.get_biodiversity()
 		if biodiversity == 1.0 and get_development_population() == 0.0:
-			return 0.0 
+			return 0.0
 		return biodiversity
 	return 0.0
 
 
 # Operations (interface-authoritative; reverse data flow interface -> server)
 
+## Sets the op command for [param type]. Interface-authoritative: this change
+## flows interface -> server.
 func set_operations_op_command(type: int, command: int) -> void:
 	if operations.set_op_command(type, command):
 		_dirty |= DIRTY_OPERATIONS
 
 
+## Sets the target utilization for [param type]. Interface-authoritative:
+## this change flows interface -> server.
 func set_operations_target_utilization(type: int, value: float) -> void:
 	if operations.set_target_utilization(type, value):
 		_dirty |= DIRTY_OPERATIONS
@@ -182,19 +205,21 @@ func get_financials() -> FinancialsNet:
 
 
 func get_population() -> PopulationNet:
-	return population # possible null
+	return population
 
 
 func get_biome() -> BiomeNet:
-	return biome # possible null
+	return biome
 
 
 func get_cyberspace() -> CyberspaceNet:
-	return cyberspace # possible null
+	return cyberspace
 
 
+## Returns the [ExchangeInterface] hosting this facility, or null if the
+## body has no exchange.
 func get_exchange() -> ExchangeInterface:
-	return body.exchange # possible null
+	return body.exchange
 
 
 # *****************************************************************************
@@ -305,6 +330,7 @@ func sync_server_dirty(data: Array) -> void:
 
 
 func _sync_ai_changes() -> void:
+	# Only here if _dirty != 0.
 	var data := [_dirty]
 	if _dirty & DIRTY_BASE:
 		data.append(gui_name)

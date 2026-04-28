@@ -8,29 +8,35 @@
 class_name InfoTabContainer
 extends TabContainer
 
-# Added by code to allow persistence of info subpanels.
-# TODO: Generalize so we don't have to maintain subpanel classes here.
+## Tab container hosting the [InfoPanel]'s subpanels (development,
+## operations, markets, physical, orbit, build, budget).
+##
+## Added programmatically (rather than via .tscn) so its subpanels persist
+## across save/load. TODO: Generalize so subpanel classes don't have to be
+## maintained here.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
+## Member names persisted by save/load.
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"memory",
 	&"_on_ready_tab",
 ]
 
 # persisted
-var memory := {} # generic memory that tabs can share, eg, for open states
+## Generic shared memory that tabs may use (e.g., open states).
+var memory := {}
 var _on_ready_tab := 0
 
 
 # exposed at init so we can set persist values when pinning
-var itab_development: ITabDevelopment
-var itab_operations: ITabOperations
-var itab_markets: ITabMarkets
-var itab_physical: ITabPhysical
-var itab_orbit: ITabOrbit
-var itab_build: ITabBuild
-var itab_budget: ITabBudget
-var subpanels: Array[Container]
+var itab_development: ITabDevelopment  ## Development tab subpanel.
+var itab_operations: ITabOperations  ## Operations tab subpanel.
+var itab_markets: ITabMarkets  ## Markets tab subpanel.
+var itab_physical: ITabPhysical  ## Physical tab subpanel.
+var itab_orbit: ITabOrbit  ## Orbit tab subpanel.
+var itab_build: ITabBuild  ## Build tab subpanel.
+var itab_budget: ITabBudget  ## Budget tab subpanel.
+var subpanels: Array[Container]  ## All tab subpanels in display order.
 
 
 # not persisted

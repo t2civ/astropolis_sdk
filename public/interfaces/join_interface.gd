@@ -62,17 +62,20 @@ extends Interface
 ##    will have access to API (just like any Godot class) but the GDScript class
 ##    will be removed.
 
-static var join_interfaces: Array[JoinInterface] = [] # indexed by join_id
+## All [JoinInterface] instances, indexed by [member join_id].
+static var join_interfaces: Array[JoinInterface] = []
 
-var operations: OperationsNet # always
-var financials: FinancialsNet # only player-specific Joins
-var population: PopulationNet # always
-var biome: BiomeNet # always
-var cyberspace: CyberspaceNet # always
+var operations: OperationsNet  ## Aggregate [OperationsNet] (always present).
+## Aggregate [FinancialsNet]. Only set on player-specific joins.
+var financials: FinancialsNet
+var population: PopulationNet  ## Aggregate [PopulationNet] (always present).
+var biome: BiomeNet  ## Aggregate [BiomeNet] (always present).
+var cyberspace: CyberspaceNet  ## Aggregate [CyberspaceNet] (always present).
 
 # read-only!
-var join_id := -1
-var join_depth := 0 # Depth in the aggregation DAG: 0 at sink-only (e.g. JOIN_ALL).
+var join_id := -1  ## Index into [member join_interfaces].
+## Depth in the aggregation DAG: 0 for a sink (e.g. [code]JOIN_ALL[/code]).
+var join_depth := 0
 
 
 

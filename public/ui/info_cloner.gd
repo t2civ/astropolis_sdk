@@ -8,9 +8,11 @@
 class_name InfoCloner
 extends RefCounted
 
-# Clones InfoPanel on 'clone_and_pin_requested' signal.
-#
-# TODO: Move code to InfoPanel, now that self reference is ok.
+## Clones an [InfoPanel] (and its selection state and subpanel tree) when the
+## panel emits [signal InfoPanel.clone_and_pin_requested].
+##
+## Pinned clones get an independent [AstroSelectionManager] and become a
+## standalone panel anchored to the GUI top-right.
 
 func _init() -> void:
 	IVStateManager.system_tree_ready.connect(_on_system_tree_ready)

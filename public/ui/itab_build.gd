@@ -7,12 +7,18 @@
 # *****************************************************************************
 class_name ITabBuild
 extends MarginContainer
-const SCENE := "res://public/ui/itab_build.tscn"
+
+## "Build" tab subpanel for [InfoPanel]. Shows construction queue and
+## available modules for the selected facility. Currently a stub.
+
+const SCENE := "res://public/ui/itab_build.tscn"  ## Scene file for instancing.
 
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
-const PERSIST_PROPERTIES: Array[StringName] = []
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
+const PERSIST_PROPERTIES: Array[StringName] = []  ## Member names persisted by save/load.
 
 
+## Refreshes the build tab. Wired to [InfoTabContainer]'s shared 1 s timer.
+## Currently a stub.
 func timer_update() -> void:
 	pass

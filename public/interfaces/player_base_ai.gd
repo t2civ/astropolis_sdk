@@ -8,8 +8,11 @@
 class_name PlayerBaseAI
 extends PlayerInterface
 
-# DO NOT MODIFY THIS CLASS! You can extend this base AI class or replace it (by
-# extending the base Interface class). The base Interface class is shared by
-# all non-owner network peers. Only the owning player has the extended AI
-# class. To override the base AI locally, create a new class file that extends
-# this class or the Interface class and add line: "const OVERRIDE_AI := true".
+## Default AI for the local player. Subclass to write custom player AI; the
+## base [PlayerInterface] is used for all non-owner peers.
+##
+## Do not modify this class directly. To override the base AI locally, create
+## a new class that extends this class (or [PlayerInterface]) and add
+## [code]const OVERRIDE_AI := true[/code]. Only the owning player runs the
+## extended AI; non-owner peers use the base [PlayerInterface]. See
+## [PlayerCustomAI] for an example.

@@ -8,9 +8,14 @@
 class_name AstropolisGUI
 extends Control
 
-## Replaces [IVShowHideUI] in the [IVUniverseTemplate] schematic.
+## Top-level Astropolis in-game GUI container.
+##
+## Replaces [code]IVShowHideUI[/code] in the [code]IVUniverseTemplate[/code]
+## schematic. Hosts panels (selection, navigation, info, etc.), shows/hides
+## the entire GUI on a hotkey, and lazily creates the [InfoPanel] on a new
+## game.
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY # child GUIs are persisted
+const PERSIST_MODE := IVGlobal.PERSIST_PROPERTIES_ONLY  ## Save/load mode; child GUIs persist.
 
 
 func _ready() -> void:
@@ -38,6 +43,9 @@ func _on_system_tree_built(is_new_game: bool) -> void:
 	info_panel.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM, PRESET_MODE_MINSIZE)
 
 
+## Toggles or sets the GUI's visibility. With [param is_toggle] true (default)
+## flips visibility; otherwise sets visibility to [param is_show]. No-op
+## until the system tree is built.
 func show_hide_gui(is_toggle := true, is_show := true) -> void:
 	if not IVStateManager.built_system:
 		return

@@ -8,21 +8,25 @@
 class_name InfoPanel
 extends PanelContainer
 
+## Astropolis selection-info panel showing tabbed details for the current
+## selection.
+##
+## Original (unpinned) instances share [member AstropolisGUI.selection_manager];
+## cloned (pinned) instances each have their own [AstroSelectionManager]
+## following an independent selection. [InfoTabMargin], [InfoTabContainer],
+## and the per-tab subpanels are added procedurally so they save and restore
+## on game load.
 
-const SCENE := "res://public/ui/info_panel.tscn"
 
-# TODO: We could move clone logic here now that self referencing is ok.
+const SCENE := "res://public/ui/info_panel.tscn"  ## Scene file for instancing.
 
-# InfoTabMargin, InfoTabContainer, and the subpanels are added procedurally so
-# they can be saved and restored on game load.
-# 'selection_manager' points to AstropolisGUI.selection_manager if this is the
-# original (unpinned) InfoPanel. If this is a cloned (pinned) InfoPanel, then
-# it has its own SelectionManager instance.
-
+## Emitted when the user clicks the pin button. Listener should clone this
+## panel and add the clone to the GUI tree.
 signal clone_and_pin_requested(info_panel: InfoPanel)
 
 
-const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL
+const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
+## Member names persisted by save/load.
 const PERSIST_PROPERTIES: Array[StringName] = [
 	&"anchor_top",
 	&"anchor_left",
@@ -32,7 +36,11 @@ const PERSIST_PROPERTIES: Array[StringName] = [
 	&"is_pinned",
 ]
 
+## Selection manager driving this panel. Shared with the GUI for the
+## original (unpinned) panel; private for cloned (pinned) panels.
 var selection_manager: AstroSelectionManager
+## True if this panel is a pinned clone. Pinned panels show a close button
+## and follow their own selection.
 var is_pinned := false
 
 var _build_subpanels := false
@@ -61,6 +69,9 @@ func _clear_procedural() -> void:
 	selection_manager = null
 
 
+## Tells this panel to build its [InfoTabMargin] and tab subpanels at ready.
+## Set to true on the original (non-cloned) panel; cloned panels skip this
+## because they're already populated when serialized.
 func set_build_subpanels(build_subpanels: bool) -> void:
 	_build_subpanels = build_subpanels
 

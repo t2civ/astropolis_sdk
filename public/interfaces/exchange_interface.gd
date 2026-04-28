@@ -8,22 +8,33 @@
 class_name ExchangeInterface
 extends Interface
 
-# SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-# will have access to API (just like any Godot class) but the GDScript class
-# will be removed.
-#
-# One per Body that has >1 Facility. Arrays indexed by resource_type.
-# 0.0 means no current price (for _prices, _bid_prices and _ask_prices).
-# Data flows server -> interface.
-#
-# Warning! This object lives and dies on the AI thread! Containers and many
-# methods are not threadsafe. Accessing non-container properties is safe.
+## [ExchangeInterface] is a per-body resource market. One per [BodyInterface]
+## with 2+ facilities.
+##
+## Holds current trade prices, bid/ask prices, and volumes, all indexed by
+## resource_type. A value of 0.0 in [code]_prices[/code], [code]_bid_prices[/code],
+## or [code]_ask_prices[/code] means "no current price". Data flows
+## server -> interface only.
+##
+## Server-side Exchange pushes changes to [ExchangeInterface].
+##
+## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
+## will have access to API (just like any Godot class) but the GDScript class
+## will be removed.
+##
+## Warning! This object lives and dies on the AI thread! Containers and many
+## methods are not threadsafe. Accessing non-container properties is safe.
 
-static var exchange_interfaces: Array[ExchangeInterface] = [] # indexed by exchange_id
 
-var exchange_id := -1
-var body: BodyInterface # immutable post-init; resolved in process_ai_init
-var body_name: StringName
+## All [ExchangeInterface] instances, indexed by [member exchange_id].
+static var exchange_interfaces: Array[ExchangeInterface] = []
+
+var exchange_id := -1  ## Index into [member exchange_interfaces].
+## Hosting [BodyInterface]. Immutable post-init; resolved in
+## [method process_ai_init] (deferred because [code]MktsAI[/code] drains
+## before [code]OpsAI[/code] does).
+var body: BodyInterface
+var body_name: StringName  ## Name of the hosting body.
 
 # 0.0 means no current price (no ask price, no bid price, etc.)
 var _prices: Array[float]
@@ -58,18 +69,24 @@ func get_exchange() -> ExchangeInterface:
 # ********************************** READ *************************************
 # all threadsafe
 
+## Returns the current trade price for [param type], or 0.0 if no current
+## price.
 func get_price(type: int) -> float:
 	return _prices[type]
 
 
+## Returns the current bid price for [param type], or 0.0 if no current bid.
 func get_bid_price(type: int) -> float:
 	return _bid_prices[type]
 
 
+## Returns the current ask price for [param type], or 0.0 if no current ask.
 func get_ask_price(type: int) -> float:
 	return _ask_prices[type]
 
 
+## Returns the trading volume for [param type] over the previous interval
+## (per day).
 func get_volume(type: int) -> float:
 	return _volumes[type]
 

@@ -7,12 +7,14 @@
 # *****************************************************************************
 class_name ITabMarkets
 extends MarginContainer
-const SCENE := "res://public/ui/itab_markets.tscn"
 
-# Tabs follow row enumerations in resource_classes.tsv.
-#
-# FIXME: Volume, Bid/Ask get and format.
-# TODO: Header localizations.
+## "Markets" tab subpanel for [InfoPanel]. Shows resource prices, bid/ask,
+## and volume for the current selection's [ExchangeInterface], grouped by
+## resource class.
+##
+## Tab indices follow row enumerations in [code]resource_classes.tsv[/code].
+
+const SCENE := "res://public/ui/itab_markets.tscn"  ## Scene file for instancing.
 
 enum {
 	TAB_ENERGY,
@@ -61,13 +63,14 @@ var _name_column_width := 230.0 # TODO: resize on GUI resize (also in RowItem)
 
 # table indexing
 var _db_tables := IVTableData.db_tables
-var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
 var _resource_names: Array[StringName] = _db_tables[&"resources"][&"name"]
 var _trade_classes: Array[int] = _db_tables[&"resources"][&"trade_class"]
 var _trade_units: Array[StringName] = _db_tables[&"resources"][&"trade_unit"]
 var _gui_ea: Array[bool] = _db_tables[&"resources"][&"gui_ea"]
 var _currency_unit: Array[bool] = _db_tables[&"resources"][&"currency_unit"]
-var _resource_classes_resources: Array[Array] = _tables_aux[&"resource_classes_resources"]
+var _resource_resource_classes: Array[int] = _db_tables[&"resources"][&"resource_class"]
+var _resource_classes_resources: Array[PackedInt32Array] = Utils.invert_many_to_one_indexing_to_packed(
+		_resource_resource_classes, IVTableData.table_n_rows[&"resource_classes"])
 
 
 @onready var _no_markets_label: Label = $NoMarkets
@@ -139,6 +142,8 @@ func _clear() -> void:
 	_tab_container.tab_changed.disconnect(_select_tab)
 
 
+## Refreshes the active markets tab. Wired to [InfoTabContainer]'s shared 1 s
+## timer.
 func timer_update() -> void:
 	_update_tab()
 
@@ -187,7 +192,7 @@ func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
 	var is_inventory := true if inventory else false
 
 	var tab := current_tab
-	var resource_class_resources: Array = _resource_classes_resources[tab]
+	var resource_class_resources: PackedInt32Array = _resource_classes_resources[tab]
 	var data := []
 	var n_resources := resource_class_resources.size()
 	var i := 0

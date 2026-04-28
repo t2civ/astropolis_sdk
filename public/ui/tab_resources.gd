@@ -8,14 +8,21 @@
 class_name TabResources
 extends MarginContainer
 
+## Resource composition widget for [ITabPhysical]. Shows per-stratum resource
+## abundances, dispersions, and discovery fractions for the selected body,
+## grouped by polity (commons / territorial).
+
+
 const CONTENT_MARGIN_LEFT := 16
-const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
-const MIN_DISCOVERED_BOOST := 1.1 # Don't show unless this much better than mean
+const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT  ## See [enum IVBody.BodyFlags].
+## Threshold above the mean abundance below which the discovery column is
+## hidden — discovered values within ~10% of the mean don't add information.
+const MIN_DISCOVERED_BOOST := 1.1
 
 
 var _db_tables := IVTableData.db_tables
-var _tables_aux: Dictionary = ThreadsafeGlobal.tables_aux
-var _is_extraction_resources: Array[int] = _tables_aux[&"extraction_resources"]
+var _is_extraction_resources: PackedInt32Array = PackedInt32Array(IVTableData.get_db_true_rows(
+		&"resources", &"is_extraction"))
 var _n_is_extraction_resources := _is_extraction_resources.size()
 var _stratum_names: Array[StringName] = _db_tables[&"stratum_groups"][&"name"]
 var _survey_names: Array[StringName] = _db_tables[&"surveys"][&"name"]
@@ -35,12 +42,16 @@ func _ready() -> void:
 	_stratum_types = IVTableData.enumeration_dicts[&"strata"] # FIXME: why here?
 
 
+## Refreshes the resource grid for the cached selection. No-op if no
+## selection is set yet.
 func refresh() -> void:
 	if !_body_name or !_selection_name:
 		return
 	MainThreadGlobal.call_ai_thread(_get_ai_data.bind(_body_name, _selection_name))
 
 
+## Updates the cached selection ([param body_name] + [param selection_name])
+## and triggers a refresh if it changed.
 func update_selection(body_name: StringName, selection_name: StringName) -> void:
 	assert(body_name and selection_name)
 	if _body_name != body_name or _selection_name != selection_name:

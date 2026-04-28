@@ -8,6 +8,8 @@
 class_name Enums
 extends Object
 
+## Astropolis-wide enums shared across server, interface, and table-driven code.
+
 
 ## Generic 'type' enums may be used and re-used in different contexts.
 enum Types {
@@ -20,6 +22,8 @@ enum Types {
 	PLANETS,
 }
 
+## Trade classes group resources by handling (electricity, bulk, cryogenic,
+## etc.) for trade and storage logic.
 enum TradeClasses {
 	TRADE_CLASS_ELECTRICITY,
 	TRADE_CLASS_BULK,
@@ -30,12 +34,16 @@ enum TradeClasses {
 	TRADE_CLASS_SERVICES,
 }
 
+## Top-level kind of a [PlayerInterface] (state polity, space agency, or
+## private company).
 enum PlayerClasses {
 	PLAYER_CLASS_POLITY,
 	PLAYER_CLASS_AGENCY,
 	PLAYER_CLASS_COMPANY,
 }
 
+## Process category that determines how an operation runs (renewable,
+## conversion, extraction, or dev/debug).
 enum ProcessGroup {
 	PROCESS_GROUP_RENEWABLE,
 	PROCESS_GROUP_CONVERSION,
@@ -43,12 +51,15 @@ enum ProcessGroup {
 	PROCESS_GROUP_DONT_PROCESS, # dev/debug
 }
 
+## Random-player selection options for game start.
 enum RandomPlayer {
 	RANDOM,
 #	RANDOM_SPACE_AGENCY,
 #	RANDOM_SPACE_COMPANY,
 }
 
+## Astropolis additions to ivoyager [code]IVBody.BodyFlags[/code]. Bits 40+
+## (ivoyager reserves the lower bits).
 enum BodyFlags2 {
 	BODYFLAGS_STATION = 1 << 40,
 	BODYFLAGS_GUI_HAS_MOONS = 1 << 41,
@@ -60,6 +71,8 @@ enum BodyFlags2 {
 
 # accounting
 
+## Per-line items used in financial statements (income, cash flow, balance
+## sheet) and their corresponding [enum AccountClass] groupings.
 enum AccountItem {
 	REVENUE,
 	INC_STMT_GROSS,
@@ -94,10 +107,13 @@ enum AccountItem {
 	BALANCE_LONG_TERM_DEBT,
 }
 
+## High-level financial-statement category for an [enum AccountItem].
 enum AccountClass {
 	ACCOUNT_INCOME,
 	ACCOUNT_CASH_FLOW,
 	ACCOUNT_BALANCE,
 }
 
+## Per-project offset added to [enum AccountItem] codes when accounting
+## entries are scoped to a specific project.
 const ACCOUNTING_PROJECT_OFFSET := 10000

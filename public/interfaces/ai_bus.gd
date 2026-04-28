@@ -8,22 +8,29 @@
 class_name AIBus
 extends RefCounted
 
+## Cross-thread signal bus for AI-thread interface events. Shared singleton
+## referenced by [member Interface.ai_bus].
+##
+## Listeners receive these signals on the AI thread. To call main-thread code
+## from a handler, use [code]call_deferred()[/code].
 
-# Signals are on the AI thread.
-#
-# To call Main thread from AI thread, use call_deferred().
 
-# emit on ai thread only!
+## Emitted on the AI thread when a new [Interface] joins the registry.
 signal interface_added(interface: Interface)
+
+## Emitted on the AI thread when an [Interface] reports a state change. The
+## payload is consumed by sync routines on the receiver side.
 signal interface_changed(entity_type: int, entity_id: int, data: Array)
 
-signal player_owner_changed(fixme: Variant) # FIXME - added for NetworkLobby; not hooked up anywhere else
+## Emitted when player ownership changes. FIXME — added for NetworkLobby;
+## not hooked up anywhere else yet.
+signal player_owner_changed(fixme: Variant)
 
 
 
-static var verbose := false
-static var verbose2 := false
-static var is_autoplay := false
+static var verbose := false  ## Enable verbose AI logging.
+static var verbose2 := false  ## Enable extra-verbose AI logging.
+static var is_autoplay := false  ## True while the local player has handed control to AI.
 
-static var is_multiplayer_server := false
-static var is_multiplayer_client := false
+static var is_multiplayer_server := false  ## True if this peer is the multiplayer server.
+static var is_multiplayer_client := false  ## True if this peer is a multiplayer client.

@@ -8,12 +8,16 @@
 class_name LocalSelections
 extends MarginContainer
 
-# Contains local selections for info panel navigation:
-#    Spacefaring Polities (-> local facility)
-#    Space Agencies (-> local facility)
-#    Space Companies (-> local facility)
-#    Offworld Facilities (-> in orbit or satellite bodies w/ facility)
-#    System Facilities (star selection only; -> in orbit or satellite bodies w/ facility)
+## Contextual selection list for info panel navigation. Shows quick-select
+## buttons grouped into:[br]
+## • Spacefaring Polities (→ local facility)[br]
+## • Space Agencies (→ local facility)[br]
+## • Space Companies (→ local facility)[br]
+## • Offworld Facilities (→ orbit or satellite bodies with a facility)[br]
+## • System Facilities (star selection only; → all orbit/satellite bodies)
+##
+## Each section is a [code]FoldableContainer[/code]. Buttons fire selections
+## through the parent [AstroSelectionManager].
 
 var _selection_manager: AstroSelectionManager
 var _selection_lookup: Dictionary[String, StringName] = {} # item text -> selection name
