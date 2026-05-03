@@ -43,6 +43,8 @@ func _ready() -> void:
 
 ## Refreshes development stats. Wired to [InfoTabContainer]'s shared 1 s timer.
 func timer_update() -> void:
+	if !IVStateManager.running:
+		return
 	_dev_stats.update()
 
 
