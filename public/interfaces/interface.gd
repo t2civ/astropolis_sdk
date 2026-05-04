@@ -41,7 +41,7 @@ signal persist_data_changed(network_id: int, data: Array)
 
 
 ## Bit flags marking which parts of an [Interface] (and its components) are
-## dirty for sync. Use the [code]DIRTY_*[/code] constant aliases below.
+## dirty for sync.
 enum DirtyFlags {
 	DIRTY_QUARTER = 1,
 	DIRTY_BASE = 1 << 1,
@@ -55,31 +55,10 @@ enum DirtyFlags {
 	DIRTY_STRATA = 1 << 9,
 }
 
-## Bit flag: [member run_qtr] advanced; quarterly histories may need rollover.
-const DIRTY_QUARTER := DirtyFlags.DIRTY_QUARTER
-## Bit flag: base entity properties have changed (e.g. [member gui_name]).
-const DIRTY_BASE := DirtyFlags.DIRTY_BASE
-## Bit flag: [OperationsNet] has dirty data to sync.
-const DIRTY_OPERATIONS := DirtyFlags.DIRTY_OPERATIONS
-## Bit flag: [InventoryNet] has dirty data to sync.
-const DIRTY_INVENTORY := DirtyFlags.DIRTY_INVENTORY
-## Bit flag: [FinancialsNet] has dirty data to sync.
-const DIRTY_FINANCIALS := DirtyFlags.DIRTY_FINANCIALS
-## Bit flag: [PopulationNet] has dirty data to sync.
-const DIRTY_POPULATION := DirtyFlags.DIRTY_POPULATION
-## Bit flag: [BiomeNet] has dirty data to sync.
-const DIRTY_BIOME := DirtyFlags.DIRTY_BIOME
-## Bit flag: [CyberspaceNet] has dirty data to sync.
-const DIRTY_CYBERSPACE := DirtyFlags.DIRTY_CYBERSPACE
-## Bit flag: [ExchangeInterface] state has dirty data to sync.
-const DIRTY_EXCHANGE := DirtyFlags.DIRTY_EXCHANGE
-## Bit flag: strata data has changed.
-const DIRTY_STRATA := DirtyFlags.DIRTY_STRATA
-
-## Identifies the kind of server entity an [Interface] proxies. Use the
-## [code]ENTITY_*[/code] constant aliases below. [code]N_ENTITY_TYPES[/code]
-## is the count of real types; [code]ENTITY_SERVER[/code] and
-## [code]ENTITY_INTERFACE[/code] are extra sync-routing markers.
+## Identifies the kind of server entity an [Interface] proxies.
+## [code]N_ENTITY_TYPES[/code] is the count of real types;
+## [code]ENTITY_SERVER[/code] and [code]ENTITY_INTERFACE[/code] are extra
+## sync-routing markers.
 enum EntityType {
 	ENTITY_FACILITY,
 	ENTITY_PLAYER,
@@ -92,18 +71,8 @@ enum EntityType {
 	N_ENTITY_TYPES,
 }
 
-const ENTITY_FACILITY := EntityType.ENTITY_FACILITY  ## See [enum EntityType].
-const ENTITY_PLAYER := EntityType.ENTITY_PLAYER  ## See [enum EntityType].
-const ENTITY_BODY := EntityType.ENTITY_BODY  ## See [enum EntityType].
-const ENTITY_JOIN := EntityType.ENTITY_JOIN  ## See [enum EntityType].
-const ENTITY_EXCHANGE := EntityType.ENTITY_EXCHANGE  ## See [enum EntityType].
-const ENTITY_TRADER := EntityType.ENTITY_TRADER  ## See [enum EntityType].
-const N_ENTITY_TYPES := EntityType.N_ENTITY_TYPES  ## See [enum EntityType].
-const ENTITY_SERVER := EntityType.ENTITY_SERVER  ## See [enum EntityType].
-const ENTITY_INTERFACE := EntityType.ENTITY_INTERFACE  ## See [enum EntityType].
-
 ## Identifies which net-sync component on an [Interface] a sync payload
-## targets. Use the [code]COMPONENT_*[/code] constant aliases below.
+## targets.
 enum ComponentType {
 	COMPONENT_OPERATIONS,
 	COMPONENT_INVENTORY,
@@ -114,15 +83,6 @@ enum ComponentType {
 	COMPONENT_STRATUM,
 	N_COMPONENT_TYPES,
 }
-
-const COMPONENT_OPERATIONS := ComponentType.COMPONENT_OPERATIONS  ## See [enum ComponentType].
-const COMPONENT_INVENTORY := ComponentType.COMPONENT_INVENTORY  ## See [enum ComponentType].
-const COMPONENT_FINANCIALS := ComponentType.COMPONENT_FINANCIALS  ## See [enum ComponentType].
-const COMPONENT_POPULATION := ComponentType.COMPONENT_POPULATION  ## See [enum ComponentType].
-const COMPONENT_BIOME := ComponentType.COMPONENT_BIOME  ## See [enum ComponentType].
-const COMPONENT_CYBERSPACE := ComponentType.COMPONENT_CYBERSPACE  ## See [enum ComponentType].
-const COMPONENT_STRATUM := ComponentType.COMPONENT_STRATUM  ## See [enum ComponentType].
-const N_COMPONENT_TYPES := ComponentType.N_COMPONENT_TYPES  ## See [enum ComponentType].
 
 
 ## Wall-clock time between [method process_ai_interval] calls (one game week).

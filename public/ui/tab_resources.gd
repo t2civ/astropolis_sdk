@@ -14,7 +14,6 @@ extends MarginContainer
 
 
 const CONTENT_MARGIN_LEFT := 16
-const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT  ## See [enum IVBody.BodyFlags].
 ## Threshold above the mean abundance below which the discovery column is
 ## hidden — discovered values within ~10% of the mean don't add information.
 const MIN_DISCOVERED_BOOST := 1.1
@@ -65,6 +64,7 @@ func update_selection(body_name: StringName, selection_name: StringName) -> void
 # AI thread !!!!
 
 func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
+	const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 	var data: Array = []
 	var polity_name := ""
 	if selection_name.begins_with("FACILITY_"):
@@ -74,7 +74,7 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 	if !body_interface:
 		_update_no_resources.call_deferred()
 		return
-	
+
 	if !body_interface.has_strata():
 		var is_unknown := not body_interface.body_flags & BODYFLAGS_SPACECRAFT
 		_update_no_resources.call_deferred(is_unknown)

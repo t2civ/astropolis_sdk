@@ -20,8 +20,6 @@ extends MarginContainer
 ## target has data.
 signal has_stats_changed(has_stats: bool)
 
-const SHORT_MIXED_CASE := IVQFormat.TextFormat.SHORT_MIXED_CASE  ## See [enum IVQFormat.TextFormat].
-
 # GUI values - parent should set only once at init
 ## Display string for zero values. Set to [code]""[/code] to print zeros
 ## with units instead of a placeholder.
@@ -43,9 +41,10 @@ var required_component := &"operations"
 var content: Array[Array] = [
 	# label_txt, target_path
 	[&"LABEL_POPULATION", &"get_development_population", IVQFormat.named_number.bind(3,
-			SHORT_MIXED_CASE, true)],
+			IVQFormat.TextFormat.SHORT_MIXED_CASE, true)],
 	[&"LABEL_ECONOMY", &"get_development_economy", IVQFormat.modified_named_number.bind(3,
-			SHORT_MIXED_CASE, false, 999999.5, "$", "", 1.0 / IVUnits.unit_multipliers[&"$"])],
+			IVQFormat.TextFormat.SHORT_MIXED_CASE, false, 999999.5, "$", "",
+			1.0 / IVUnits.unit_multipliers[&"$"])],
 	[&"LABEL_POWER", &"get_development_power", IVQFormat.prefixed_unit.bind(&"W")],
 	[&"LABEL_CONSTRUCTIONS", &"get_development_constructions", IVQFormat.prefixed_unit.bind(&"t")],
 	[&"LABEL_MANUFACTURING", &"get_development_manufacturing", IVQFormat.prefixed_unit.bind(&"t/h")],

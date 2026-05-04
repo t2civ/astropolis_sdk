@@ -64,6 +64,7 @@ var texture_2d: Texture2D
 
 
 func _init() -> void:
+	const ENTITY_FACILITY := Interface.EntityType.ENTITY_FACILITY
 	super()
 	entity_type = ENTITY_FACILITY
 
@@ -86,6 +87,7 @@ func remove() -> void:
 ## Sets [member gui_name] and marks the interface dirty. Reverse-flow:
 ## interface -> server.
 func set_gui_name(new_gui_name: String) -> void:
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
 	_dirty |= DIRTY_BASE
 	gui_name = new_gui_name
 
@@ -179,6 +181,7 @@ func get_development_biodiversity() -> float:
 ## Sets the op command for [param type]. Interface-authoritative: this change
 ## flows interface -> server.
 func set_operations_op_command(type: int, command: int) -> void:
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	if operations.set_op_command(type, command):
 		_dirty |= DIRTY_OPERATIONS
 
@@ -186,6 +189,7 @@ func set_operations_op_command(type: int, command: int) -> void:
 ## Sets the target utilization for [param type]. Interface-authoritative:
 ## this change flows interface -> server.
 func set_operations_target_utilization(type: int, value: float) -> void:
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	if operations.set_target_utilization(type, value):
 		_dirty |= DIRTY_OPERATIONS
 
@@ -274,12 +278,18 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_INVENTORY := Interface.DirtyFlags.DIRTY_INVENTORY
+	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
+	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	
+
 	if dirty & DIRTY_BASE:
 		var float_data: Array[float] = data[2]
 		var string_data: Array[String] = data[3]
@@ -331,6 +341,8 @@ func sync_server_dirty(data: Array) -> void:
 
 func _sync_ai_changes() -> void:
 	# Only here if _dirty != 0.
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	var data := [_dirty]
 	if _dirty & DIRTY_BASE:
 		data.append(gui_name)

@@ -41,6 +41,7 @@ var temp_placeholder := 0.0
 
 
 func _init() -> void:
+	const ENTITY_TRADER := Interface.EntityType.ENTITY_TRADER
 	super()
 	entity_type = ENTITY_TRADER
 
@@ -62,6 +63,7 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]

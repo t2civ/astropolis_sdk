@@ -63,6 +63,7 @@ var strata: Array[StratumNet] = []
 
 
 func _init() -> void:
+	const ENTITY_BODY := Interface.EntityType.ENTITY_BODY
 	super()
 	entity_type = ENTITY_BODY
 
@@ -312,11 +313,17 @@ func set_network_init(data: Array) -> void:
 
 func sync_server_dirty(data: Array) -> void:
 	const SIGN_BIT := 1 << 63
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_STRATA := Interface.DirtyFlags.DIRTY_STRATA
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	
+
 	if dirty & DIRTY_BASE:
 		var float_data: Array[float] = data[2]
 		var string_data: Array[String] = data[3]

@@ -47,6 +47,7 @@ var _sync := SyncHelper.new()
 
 
 func _init() -> void:
+	const ENTITY_EXCHANGE := Interface.EntityType.ENTITY_EXCHANGE
 	super()
 	entity_type = ENTITY_EXCHANGE
 
@@ -115,6 +116,7 @@ func process_ai_init() -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
+	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
