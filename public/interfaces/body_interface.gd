@@ -37,28 +37,24 @@ extends Interface
 static var body_interfaces: Array[BodyInterface] = []
 
 var body_id := -1  ## Index into [member body_interfaces].
-var body_flags := 0  ## Body flags from [code]IVBody.BodyFlags[/code].
+var body_flags := 0  ## Body flags from [enum IVBody.BodyFlags].
 var solar_occlusion: float  ## Average solar irradiance occlusion at this body.
 var is_satellites := false  ## True while this body has at least one satellite.
 var is_facilities := false  ## True while this body hosts at least one facility.
-
-var parent: BodyInterface  ## Parent body, or null for the top body.
-
-## Direct satellites of this body, keyed by name. Resizable container — not
-## threadsafe!
+var parent: BodyInterface  ## Parent body, or null for the top body only.
+## Direct satellite bodies, keyed by name. Resizable container — not threadsafe!
 var satellites: Dictionary[StringName, BodyInterface]
 ## Facilities at this body. Resizable container — not threadsafe!
 var facilities: Array[Interface] = []
-
-var operations: OperationsNet  ## Aggregate [OperationsNet] (null when absent).
-var population: PopulationNet  ## Aggregate [PopulationNet] (null when absent).
-var biome: BiomeNet  ## Aggregate [BiomeNet] (null when absent).
-var cyberspace: CyberspaceNet  ## Aggregate [CyberspaceNet] (null when absent).
-## [ExchangeInterface] for this body. Null unless this body has 2+ facilities.
-var exchange: ExchangeInterface
-## [StratumNet] composition layers (atmosphere, surface, subsurface).
-## Resizable container — not threadsafe!
+## Composition layers for this body (atmosphere, surface, etc.). Resizable
+## container — not threadsafe!
 var strata: Array[StratumNet] = []
+var exchange: ExchangeInterface ## Null unless this body has 2+ facilities.
+
+var operations: OperationsNet ## Aggregate component propagated from facilities at this body.
+var population: PopulationNet ## Aggregate component propagated from facilities at this body.
+var biome: BiomeNet ## Aggregate component propagated from facilities at this body.
+var cyberspace: CyberspaceNet ## Aggregate component propagated from facilities at this body.
 
 
 
@@ -281,11 +277,14 @@ func set_network_init(data: Array) -> void:
 	if parent_name:
 		parent = interfaces_by_name[parent_name]
 		parent.add_satellite(self)
-	var operations_data: Array = data[8]
-	var population_data: Array = data[9]
-	var biome_data: Array = data[10]
-	var cyberspace_data: Array = data[11]
-	var strata_data: Array = data[12]
+	var exchange_name: String = data[8]
+	if exchange_name:
+		exchange = interfaces_by_name[exchange_name]
+	var operations_data: Array = data[9]
+	var population_data: Array = data[10]
+	var biome_data: Array = data[11]
+	var cyberspace_data: Array = data[12]
+	var strata_data: Array = data[13]
 
 	if operations_data:
 		operations = OperationsNet.new(true)
@@ -318,18 +317,21 @@ func sync_server_dirty(data: Array) -> void:
 	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
 	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
 	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
 	const DIRTY_STRATA := Interface.DirtyFlags.DIRTY_STRATA
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
+	var s := 0 # string_data offset
 
 	if dirty & DIRTY_BASE:
 		var float_data: Array[float] = data[2]
 		var string_data: Array[String] = data[3]
-		gui_name = string_data[0]
+		gui_name = string_data[s]
 		solar_occlusion = float_data[0]
-	
+		s += 1
+
 	if dirty & DIRTY_OPERATIONS:
 		if !operations:
 			operations = OperationsNet.new(true)
@@ -350,6 +352,10 @@ func sync_server_dirty(data: Array) -> void:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 3
+	if dirty & DIRTY_EXCHANGE:
+		var string_data: Array[String] = data[3]
+		var exchange_name: String = string_data[s]
+		exchange = interfaces_by_name[exchange_name] if exchange_name else null
 	if dirty & DIRTY_STRATA:
 		var flag_index := 0
 		var more_dirty := 1

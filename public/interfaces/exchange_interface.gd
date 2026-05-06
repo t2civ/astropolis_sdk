@@ -112,7 +112,6 @@ func set_network_init(data: Array) -> void:
 func process_ai_init() -> void:
 	if !body:
 		body = interfaces_by_name[body_name]
-		body.exchange = self
 
 
 func sync_server_dirty(data: Array) -> void:

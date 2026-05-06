@@ -8,11 +8,13 @@
 class_name AIBus
 extends RefCounted
 
-## Cross-thread signal bus for AI-thread interface events. Shared singleton
-## referenced by [member Interface.ai_bus].
+## Signal and data bus for AI-thread.
 ##
-## Listeners receive these signals on the AI thread. To call main-thread code
-## from a handler, use [code]call_deferred()[/code].
+## Listeners receive signals on the AI thread. To call main-thread code
+## from a handler, use [code]call_deferred()[/code].[br][br]
+##
+## Note: Use this object in the future for unsafe data that needs to be
+## maintained in the AI thread.
 
 
 ## Emitted on the AI thread when a new [Interface] joins the registry.
