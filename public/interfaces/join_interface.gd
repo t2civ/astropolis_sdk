@@ -80,6 +80,7 @@ var join_depth := 0
 
 
 func _init() -> void:
+	const ENTITY_JOIN := Interface.EntityType.ENTITY_JOIN
 	super()
 	entity_type = ENTITY_JOIN
 
@@ -200,7 +201,12 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-
+	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
+	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
 	var offsets: Array[int] = data[0]
 	var int_data: Array[int] = data[1]
 	var dirty: int = offsets[0]

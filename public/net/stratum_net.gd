@@ -84,7 +84,7 @@ static var _is_class_instanced := false
 
 
 
-static func _on_instanced() -> void:
+static func _on_class_instanced() -> void:
 	_extraction_resources = PackedInt32Array(IVTableData.get_db_true_rows(&"resources",
 			&"is_extraction"))
 	_resource_extractions = Utils.invert_packed_subset_indexing(_extraction_resources,
@@ -102,7 +102,7 @@ func _init(is_new := false) -> void:
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_on_instanced()
+		_on_class_instanced()
 
 	if !is_new: # loaded game
 		return

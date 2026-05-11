@@ -15,10 +15,6 @@ extends MarginContainer
 
 const SCENE := "res://public/ui/itab_development.tscn"  ## Scene file for instancing.
 
-const BodyFlags := IVBody.BodyFlags  ## Convenience alias for [enum IVBody.BodyFlags].
-const BodyFlags2 := Enums.BodyFlags2  ## Convenience alias for [enum Enums.BodyFlags2].
-const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY  ## See [enum Enums.PlayerClasses].
-
 const PERSIST_MODE := IVGlobal.PERSIST_PROCEDURAL  ## Save/load mode (procedural node).
 const PERSIST_PROPERTIES: Array[StringName] = []  ## Member names persisted by save/load.
 
@@ -43,6 +39,8 @@ func _ready() -> void:
 
 ## Refreshes development stats. Wired to [InfoTabContainer]'s shared 1 s timer.
 func timer_update() -> void:
+	if !IVStateManager.running:
+		return
 	_dev_stats.update()
 
 
@@ -51,6 +49,8 @@ func _update_no_development(has_stats: bool) -> void:
 
 
 func _update_selection(_dummy := false) -> void:
+	const BodyFlags := IVBody.BodyFlags
+	const BodyFlags2 := Enums.BodyFlags2
 	if !visible or !IVStateManager.running:
 		return
 	var selection_name := _selection_manager.get_name()

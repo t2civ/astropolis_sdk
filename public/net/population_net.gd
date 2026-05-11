@@ -51,7 +51,7 @@ static var _carrying_capacity_group2s: PackedInt32Array
 static var _is_class_instanced := false
 
 
-static func _on_instanced() -> void:
+static func _on_class_instanced() -> void:
 	_n_populations = _table_n_rows[&"populations"]
 	_table_populations = _db_tables[&"populations"]
 	_carrying_capacity_groups = PackedInt32Array(
@@ -64,7 +64,7 @@ func _init(is_new := false, is_facility_ := false) -> void:
 	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_on_instanced()
+		_on_class_instanced()
 	if !is_new: # game load
 		return
 	_numbers = arrays.init_array(_n_populations, 0.0, TYPE_FLOAT)

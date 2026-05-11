@@ -131,6 +131,6 @@ mouse_filter = 2
 layout_mode = 2
 
 [node name="ControlModResizable" parent="." unique_id=234796794 instance=ExtResource("14_05gyw")]
-sizes = Array[Vector2]([Vector2(435, 291), Vector2(575, 354), Vector2(712, 421)])
+base_size = Vector2(575, 354)
 
 [node name="ControlModDraggable" parent="." unique_id=1602541557 instance=ExtResource("15_jg165")]

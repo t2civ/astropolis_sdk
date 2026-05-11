@@ -7,8 +7,8 @@
 # *****************************************************************************
 extends Node
 
-## Main-thread autoload (registered as [code]MainThreadGlobal[/code]) for
-## safe Interface lookups from GUI and other main-thread code.
+## Singleton [MainThreadGlobal] holds data and API safe for main thread only,
+## mainly for GUI or other SceneTree use.
 ##
 ## This global is the canonical entry point for finding [Interface]s by name
 ## on the main thread. The returned [Interface] objects themselves live on

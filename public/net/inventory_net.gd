@@ -61,7 +61,7 @@ static var _n_storage_classes: int
 static var _resource_storage_classes: PackedInt32Array
 
 
-static func _on_instanced() -> void:
+static func _on_class_instanced() -> void:
 	_n_resources = IVTableData.table_n_rows[&"resources"]
 	_n_storage_classes = IVTableData.table_n_rows[&"storage_classes"]
 	var resource_table: Dictionary[StringName, Array] = IVTableData.db_tables[&"resources"]
@@ -71,7 +71,7 @@ static func _on_instanced() -> void:
 func _init(is_new := false) -> void:
 	if !_is_class_instanced:
 		_is_class_instanced = true
-		_on_instanced()
+		_on_class_instanced()
 	if !is_new: # game load
 		return
 	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)

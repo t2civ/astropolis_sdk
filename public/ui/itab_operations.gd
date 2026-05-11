@@ -34,10 +34,6 @@ enum {
 	MODULE_SINGULAR,
 }
 
-const PROCESS_GROUP_RENEWABLE := Enums.ProcessGroup.PROCESS_GROUP_RENEWABLE
-const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
-const PROCESS_GROUP_EXTRACTION := Enums.ProcessGroup.PROCESS_GROUP_EXTRACTION
-
 const N_COLUMNS := 7
 
 const SUBGROUP_INDENT := 25
@@ -221,6 +217,7 @@ func _settings_listener(setting: StringName, value: Variant) -> void:
 # AI thread !!!!
 
 func _get_ai_data(target_name: StringName) -> void:
+	const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
 	var data := []
 	var interface := Interface.get_interface_by_name(target_name)
 	if !interface:
