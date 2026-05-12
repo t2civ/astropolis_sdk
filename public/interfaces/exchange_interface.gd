@@ -8,23 +8,36 @@
 class_name ExchangeInterface
 extends Interface
 
-## [ExchangeInterface] is a per-body resource market. One per [BodyInterface]
-## with 2+ facilities.
+## [ExchangeInterface] is a per-body resource market.
 ##
-## Holds current trade prices, bid/ask prices, and volumes, all indexed by
-## resource_type. A value of 0.0 in [code]_prices[/code], [code]_bid_prices[/code],
-## or [code]_ask_prices[/code] means "no current price". Data flows
-## server -> interface only.
+## Created when a [BodyInterface] gains >1 [FacilityInterface]. Hosts local and
+## remote [TraderInterface]es.[br][br]
 ##
-## Server-side Exchange pushes changes to [ExchangeInterface].
+## Arrays are indexed by resource_type unless indicated otherwise. A value of
+## 0.0 in any "price" variable means N/A or no current price.[br][br]
+##
+## Asks and Bids ("orders") are fixed-size PackedInt64Array structures with the
+## following elements:[br][br]
+##
+##   [0] id (ask_id or bid_id)[br]
+##   [1] resource_type[br]
+##   [2] order_quantity (in trade_unit)[br]
+##   [3] unfilled_quantity (in trade_unit)[br]
+##   [4] price (per trade_unit)[br]
+##   [5] expiration (epoch seconds)[br]
+##   [6] trader_id[br][br]
+##
+## Server-side Exchange pushes changes to [ExchangeInterface]. Data flows
+## server -> interface only.[br][br]
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.
+## will be removed.[br][br]
 ##
 ## Warning! This object lives and dies on the AI thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
+const ORDER_SIZE := 7
 
 ## All [ExchangeInterface] instances, indexed by [member exchange_id].
 static var exchange_interfaces: Array[ExchangeInterface] = []
@@ -36,13 +49,18 @@ var exchange_id := -1  ## Index into [member exchange_interfaces].
 var body: BodyInterface
 var body_name: StringName  ## Name of the hosting body.
 
-# 0.0 means no current price (no ask price, no bid price, etc.)
 var _prices: Array[float]
-var _bid_prices: Array[float]
 var _ask_prices: Array[float]
-var _volumes: Array[float] # over previous interval /d
+var _bid_prices: Array[float]
+var _volumes: Array[float]
+
+var _asks: Dictionary[int, PackedInt64Array] = {}  ## Asks indexed by ask_id.
+var _bids: Dictionary[int, PackedInt64Array] = {}  ## Bids indexed by bid_id.
 
 var _sync := SyncHelper.new()
+
+# Recycled order arrays.
+var _free_orders: Array[PackedInt64Array] = []
 
 
 
@@ -76,14 +94,14 @@ func get_price(type: int) -> float:
 	return _prices[type]
 
 
-## Returns the current bid price for [param type], or 0.0 if no current bid.
-func get_bid_price(type: int) -> float:
-	return _bid_prices[type]
-
-
 ## Returns the current ask price for [param type], or 0.0 if no current ask.
 func get_ask_price(type: int) -> float:
 	return _ask_prices[type]
+
+
+## Returns the current bid price for [param type], or 0.0 if no current bid.
+func get_bid_price(type: int) -> float:
+	return _bid_prices[type]
 
 
 ## Returns the trading volume for [param type] over the previous interval
@@ -104,9 +122,11 @@ func set_network_init(data: Array) -> void:
 	# interfaces_by_name because MktsAI is drained before OpsAI.
 	run_qtr = data[6]
 	_prices = data[7]
-	_bid_prices = data[8]
-	_ask_prices = data[9]
+	_ask_prices = data[8]
+	_bid_prices = data[9]
 	_volumes = data[10]
+	_asks = data[11]
+	_bids = data[12]
 
 
 func process_ai_init() -> void:
@@ -125,9 +145,11 @@ func sync_server_dirty(data: Array) -> void:
 		var float_data: Array[float] = data[2]
 		_sync.init_for_add(int_data, float_data, offsets[k], offsets[k + 1])
 		_sync.set_floats_dirty(_prices)
-		_sync.set_floats_dirty(_bid_prices)
 		_sync.set_floats_dirty(_ask_prices)
+		_sync.set_floats_dirty(_bid_prices)
 		_sync.set_floats_dirty(_volumes)
+		_add_orders_delta(_asks, int_data)
+		_add_orders_delta(_bids, int_data)
 		k += 2
 
 	assert(int_data[0] >= run_qtr)
@@ -137,3 +159,43 @@ func sync_server_dirty(data: Array) -> void:
 		else:
 			run_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
+
+
+# Reads an orders delta from [param int_data] (starting at the position
+# [member _sync] currently points to) and applies it to [param target]:
+# upserts overwrite by order[0] (ask_id / bid_id), removes erase by id.
+# Recycles arrays via [member _free_orders] in both directions.
+# Compact format: [upserts_count] [order(ORDER_SIZE ints)]* [removes_count] [id]*
+func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Array[int]) -> void:
+	
+	# FIXME: `_sync._int_offset`
+	
+	var int_offset := _sync._int_offset
+	var upserts_count := int_data[int_offset]
+	int_offset += 1
+	var i := 0
+	while i < upserts_count:
+		var order := _alloc_order()
+		for j in ORDER_SIZE:
+			order[j] = int_data[int_offset + j]
+		int_offset += ORDER_SIZE
+		target[order[0]] = order
+		i += 1
+	var removes_count := int_data[int_offset]
+	int_offset += 1
+	i = 0
+	while i < removes_count:
+		var id := int_data[int_offset]
+		int_offset += 1
+		_free_orders.append(target[id])
+		target.erase(id)
+		i += 1
+	_sync._int_offset = int_offset
+
+
+func _alloc_order() -> PackedInt64Array:
+	if _free_orders:
+		return _free_orders.pop_back()
+	var order := PackedInt64Array()
+	order.resize(ORDER_SIZE)
+	return order
