@@ -20,10 +20,11 @@ extends RefCounted
 ## SDK Note: This class is for internal sync only. It will be ported to C++
 ## along with the component classes.
 
+var int_offset: int
+var float_offset: int
+
 var _int_data: Array[int]
 var _float_data: Array[float]
-var _int_offset: int
-var _float_offset: int
 
 
 ## Marks element [param index] dirty in [param dirty_array] (a chunked bit
@@ -41,12 +42,12 @@ static func set_dirty(dirty_array: Array[int], index: int) -> void:
 ## Initializes for receive (decode): bind buffers and offsets so [method
 ## set_floats_dirty], [method set_ints_dirty], [method add_floats_delta], etc.
 ## can read out of [param int_data] / [param float_data].
-func init_for_add(int_data: Array[int], float_data: Array[float], int_offset: int,
-		float_offset: int) -> void:
+func init_for_add(int_data: Array[int], float_data: Array[float], int_offset_: int,
+		float_offset_: int) -> void:
 	_int_data = int_data
 	_float_data = float_data
-	_int_offset = int_offset
-	_float_offset = float_offset
+	int_offset = int_offset_
+	float_offset = float_offset_
 
 
 ## Initializes for send (encode): bind output buffers so [method
@@ -168,15 +169,15 @@ func set_floats_dirty(array: Array[float]) -> void:
 	var flag_index := 0
 	var sign_bit := SIGN_BIT
 	while sign_bit:
-		var flags := _int_data[_int_offset]
-		_int_offset += 1
+		var flags := _int_data[int_offset]
+		int_offset += 1
 		sign_bit &= flags
 		flags &= ~SIGN_BIT
 		while flags:
 			var lsb := flags & -flags
 			var index := BIT_INDEXES[lsb] + flag_index * 63
-			array[index] = _float_data[_float_offset]
-			_float_offset += 1
+			array[index] = _float_data[float_offset]
+			float_offset += 1
 			flags &= ~lsb
 		flag_index += 1
 
@@ -184,13 +185,13 @@ func set_floats_dirty(array: Array[float]) -> void:
 ## Single-chunk variant of [method set_floats_dirty] (up to 63 entries).
 func set_floats_dirty_63(array: Array[float]) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
-	var flags := _int_data[_int_offset]
-	_int_offset += 1
+	var flags := _int_data[int_offset]
+	int_offset += 1
 	while flags:
 		var lsb := flags & -flags
 		var index := BIT_INDEXES[lsb]
-		array[index] = _float_data[_float_offset]
-		_float_offset += 1
+		array[index] = _float_data[float_offset]
+		float_offset += 1
 		flags &= ~lsb
 
 
@@ -202,15 +203,15 @@ func set_ints_dirty(array: Array[int]) -> void:
 	var flag_index := 0
 	var sign_bit := SIGN_BIT
 	while sign_bit:
-		var flags := _int_data[_int_offset]
-		_int_offset += 1
+		var flags := _int_data[int_offset]
+		int_offset += 1
 		sign_bit &= flags
 		flags &= ~SIGN_BIT
 		while flags:
 			var lsb := flags & -flags
 			var index := BIT_INDEXES[lsb] + flag_index * 63
-			array[index] = _int_data[_int_offset]
-			_int_offset += 1
+			array[index] = _int_data[int_offset]
+			int_offset += 1
 			flags &= ~lsb
 		flag_index += 1
 
@@ -218,13 +219,13 @@ func set_ints_dirty(array: Array[int]) -> void:
 ## Single-chunk variant of [method set_ints_dirty] (up to 63 entries).
 func set_ints_dirty_63(array: Array[int]) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
-	var flags := _int_data[_int_offset]
-	_int_offset += 1
+	var flags := _int_data[int_offset]
+	int_offset += 1
 	while flags:
 		var lsb := flags & -flags
 		var index := BIT_INDEXES[lsb]
-		array[index] = _int_data[_int_offset]
-		_int_offset += 1
+		array[index] = _int_data[int_offset]
+		int_offset += 1
 		flags &= ~lsb
 
 
@@ -236,15 +237,15 @@ func add_floats_delta(delta_array: Array[float]) -> void:
 	var flag_index := 0
 	var sign_bit := SIGN_BIT
 	while sign_bit:
-		var flags := _int_data[_int_offset]
-		_int_offset += 1
+		var flags := _int_data[int_offset]
+		int_offset += 1
 		sign_bit &= flags
 		flags &= ~SIGN_BIT
 		while flags:
 			var lsb := flags & -flags
 			var index := BIT_INDEXES[lsb] + flag_index * 63
-			delta_array[index] += _float_data[_float_offset]
-			_float_offset += 1
+			delta_array[index] += _float_data[float_offset]
+			float_offset += 1
 			flags &= ~lsb
 		flag_index += 1
 
@@ -252,11 +253,11 @@ func add_floats_delta(delta_array: Array[float]) -> void:
 ## Single-chunk variant of [method add_floats_delta] (up to 63 entries).
 func add_floats_delta_63(delta_array: Array[float]) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
-	var flags := _int_data[_int_offset]
-	_int_offset += 1
+	var flags := _int_data[int_offset]
+	int_offset += 1
 	while flags:
 		var lsb := flags & -flags
 		var index := BIT_INDEXES[lsb]
-		delta_array[index] += _float_data[_float_offset]
-		_float_offset += 1
+		delta_array[index] += _float_data[float_offset]
+		float_offset += 1
 		flags &= ~lsb

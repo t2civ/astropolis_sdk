@@ -59,7 +59,7 @@ var _bids: Dictionary[int, PackedInt64Array] = {}  ## Bids indexed by bid_id.
 
 var _sync := SyncHelper.new()
 
-# Recycled order arrays.
+# Recycled orders.
 var _free_orders: Array[PackedInt64Array] = []
 
 
@@ -161,21 +161,19 @@ func sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
-# Reads an orders delta from [param int_data] (starting at the position
-# [member _sync] currently points to) and applies it to [param target]:
-# upserts overwrite by order[0] (ask_id / bid_id), removes erase by id.
-# Recycles arrays via [member _free_orders] in both directions.
-# Compact format: [upserts_count] [order(ORDER_SIZE ints)]* [removes_count] [id]*
+# Recycles removed orders.
 func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Array[int]) -> void:
-	
-	# FIXME: `_sync._int_offset`
-	
-	var int_offset := _sync._int_offset
+	var int_offset := _sync.int_offset
 	var upserts_count := int_data[int_offset]
 	int_offset += 1
 	var i := 0
 	while i < upserts_count:
-		var order := _alloc_order()
+		var order: PackedInt64Array
+		if _free_orders:
+			order = _free_orders.pop_back()
+		else:
+			order = PackedInt64Array()
+			order.resize(ORDER_SIZE)
 		for j in ORDER_SIZE:
 			order[j] = int_data[int_offset + j]
 		int_offset += ORDER_SIZE
@@ -190,12 +188,4 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Arra
 		_free_orders.append(target[id])
 		target.erase(id)
 		i += 1
-	_sync._int_offset = int_offset
-
-
-func _alloc_order() -> PackedInt64Array:
-	if _free_orders:
-		return _free_orders.pop_back()
-	var order := PackedInt64Array()
-	order.resize(ORDER_SIZE)
-	return order
+	_sync.int_offset = int_offset
