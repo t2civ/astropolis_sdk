@@ -39,9 +39,10 @@ enum ResourceFlags {
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var run_qtr := -1
 
-var _stocks: Array[float] # total present resource quantity (>= 0.0)
-var _ops_reserves: Array[float] # tracker: quantity reserved for operations
-var _trade_reserves: Array[float] # tracker: quantity reserved for trade
+var _stocks: Array[float] # physically present and owned (>= 0.0)
+var _remote_stores: Array[float] # physically present but remotely owned (awaiting transport)
+var _ops_reserves: Array[float] # tracker: stocks reserved for operations
+var _trade_reserves: Array[float] # tracker: stocks reserved for trade
 var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
 var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
 var _rates: Array[float] # current facility production (+) or consumption (-)
@@ -50,7 +51,7 @@ var _resource_flags: Array[int] # enum ResourceFlags
 var _storages: Array[float] # indexed by storage_type; capacity per storage class
 
 # lazy calculations
-var _storages_used: Array[float] # indexed by storage_type; sum of _stocks
+var _storages_used: Array[float] # indexed by storage_type; sum of _stocks + _remote_stores
 var _storages_used_valid := false
 
 var _sync := SyncHelper.new()
@@ -75,6 +76,7 @@ func _init(is_new := false) -> void:
 	if !is_new: # game load
 		return
 	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)
+	_remote_stores = _stocks.duplicate()
 	_ops_reserves = _stocks.duplicate()
 	_trade_reserves = _stocks.duplicate()
 	_in_transits = _stocks.duplicate()
@@ -92,6 +94,12 @@ func _init(is_new := false) -> void:
 ## Returns total stock for [param type] (>= 0.0).
 func get_stock(type: int) -> float:
 	return _stocks[type]
+
+
+## Returns the remote-store quantity for [param type] (physically present but
+## remotely owned, awaiting transport; >= 0.0).
+func get_remote_store(type: int) -> float:
+	return _remote_stores[type]
 
 
 ## Returns the ops-reserve buffer for [param type] (quantity reserved for
@@ -152,14 +160,15 @@ func get_storage_used(storage_type: int) -> float:
 func set_network_init(data: Array) -> void:
 	run_qtr = data[0]
 	_stocks = data[1]
-	_ops_reserves = data[2]
-	_trade_reserves = data[3]
-	_in_transits = data[4]
-	_contracteds = data[5]
-	_rates = data[6]
-	_resource_flags = data[7]
-	_storages = data[8]
-	_expected_rates = data[9]
+	_remote_stores = data[2]
+	_ops_reserves = data[3]
+	_trade_reserves = data[4]
+	_in_transits = data[5]
+	_contracteds = data[6]
+	_rates = data[7]
+	_resource_flags = data[8]
+	_storages = data[9]
+	_expected_rates = data[10]
 	_storages_used_valid = false
 
 
@@ -174,6 +183,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(_stocks)
+	_sync.set_floats_dirty(_remote_stores)
 	_sync.set_floats_dirty(_ops_reserves)
 	_sync.set_floats_dirty(_trade_reserves)
 	_sync.set_floats_dirty(_in_transits)
@@ -192,5 +202,5 @@ func _recompute_storages_used() -> void:
 		var storage_class := _resource_storage_classes[resource_type]
 		if storage_class == -1:
 			continue
-		_storages_used[storage_class] += _stocks[resource_type]
+		_storages_used[storage_class] += _stocks[resource_type] + _remote_stores[resource_type]
 	_storages_used_valid = true
