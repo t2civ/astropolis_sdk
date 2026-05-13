@@ -44,15 +44,19 @@ signal persist_data_changed(network_id: int, data: Array)
 ## dirty for sync.
 enum DirtyFlags {
 	DIRTY_QUARTER = 1,
-	DIRTY_BASE = 1 << 1,
-	DIRTY_OPERATIONS = 1 << 2,
-	DIRTY_INVENTORY = 1 << 3,
-	DIRTY_FINANCIALS = 1 << 4,
-	DIRTY_POPULATION = 1 << 5,
-	DIRTY_BIOME = 1 << 6,
-	DIRTY_CYBERSPACE = 1 << 7,
-	DIRTY_EXCHANGE = 1 << 8,
-	DIRTY_STRATA = 1 << 9,
+	DIRTY_FACILITY = 1 << 1,
+	DIRTY_PLAYER = 1 << 2,
+	DIRTY_BODY = 1 << 3,
+	DIRTY_JOIN = 1 << 4,
+	DIRTY_EXCHANGE = 1 << 5,
+	DIRTY_TRADER = 1 << 6,
+	DIRTY_OPERATIONS = 1 << 7,
+	DIRTY_INVENTORY = 1 << 8,
+	DIRTY_FINANCIALS = 1 << 9,
+	DIRTY_POPULATION = 1 << 10,
+	DIRTY_BIOME = 1 << 11,
+	DIRTY_CYBERSPACE = 1 << 12,
+	DIRTY_STRATA = 1 << 13,
 }
 
 ## Identifies the kind of server entity an [Interface] proxies.

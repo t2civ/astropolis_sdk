@@ -187,7 +187,7 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_PLAYER := Interface.DirtyFlags.DIRTY_PLAYER
 	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
 	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
@@ -201,7 +201,7 @@ func sync_server_dirty(data: Array) -> void:
 	#if dirty & DIRTY_QUARTER:
 		#prints("NET", self)
 
-	if dirty & DIRTY_BASE:
+	if dirty & DIRTY_PLAYER:
 		var string_data: Array[String] = data[3]
 		gui_name = string_data[0]
 		player_class = int_data[1]

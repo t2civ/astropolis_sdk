@@ -30,13 +30,12 @@ static var trader_interfaces: Array[TraderInterface] = []
 # immutable post-init
 var trader_id := -1  ## Index into [member trader_interfaces].
 var facility_id := -1  ## [member FacilityInterface.facility_id] this trader belongs to.
-## True if this trader's facility is at the same body as the exchange.
-var local := false
+var local: bool ## Is trader facility at this exchange body? Otherwise, "remote".
 var facility: FacilityInterface  ## Owning [FacilityInterface].
 var exchange: ExchangeInterface  ## Hosting [ExchangeInterface].
 
-# sync from server (DIRTY_BASE)
-## Placeholder for upcoming trader stats. Synced via [constant DIRTY_BASE].
+# sync from server (DIRTY_TRADER)
+## Placeholder for upcoming trader stats. Synced via [constant DIRTY_TRADER].
 var temp_placeholder := 0.0
 
 
@@ -63,11 +62,11 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_TRADER := Interface.DirtyFlags.DIRTY_TRADER
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
-	if dirty & DIRTY_BASE:
+	if dirty & DIRTY_TRADER:
 		var float_data: PackedFloat64Array = data[2]
 		temp_placeholder = float_data[0]
 	assert(int_data[0] >= run_qtr)

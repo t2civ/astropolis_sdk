@@ -87,8 +87,8 @@ func remove() -> void:
 ## Sets [member gui_name] and marks the interface dirty. Reverse-flow:
 ## interface -> server.
 func set_gui_name(new_gui_name: String) -> void:
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
-	_dirty |= DIRTY_BASE
+	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
+	_dirty |= DIRTY_FACILITY
 	gui_name = new_gui_name
 
 
@@ -278,7 +278,7 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
 	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_INVENTORY := Interface.DirtyFlags.DIRTY_INVENTORY
 	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
@@ -290,7 +290,7 @@ func sync_server_dirty(data: Array) -> void:
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 
-	if dirty & DIRTY_BASE:
+	if dirty & DIRTY_FACILITY:
 		var float_data: PackedFloat64Array = data[2]
 		var string_data: Array[String] = data[3]
 		facility_class = int_data[1]
@@ -341,10 +341,10 @@ func sync_server_dirty(data: Array) -> void:
 
 func _sync_ai_changes() -> void:
 	# Only here if _dirty != 0.
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
 	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	var data := [_dirty]
-	if _dirty & DIRTY_BASE:
+	if _dirty & DIRTY_FACILITY:
 		data.append(gui_name)
 	if _dirty & DIRTY_OPERATIONS:
 		data.append(operations.get_interface_dirty())

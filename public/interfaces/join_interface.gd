@@ -201,7 +201,7 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_JOIN := Interface.DirtyFlags.DIRTY_JOIN
 	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
 	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
@@ -212,7 +212,7 @@ func sync_server_dirty(data: Array) -> void:
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 
-	if dirty & DIRTY_BASE:
+	if dirty & DIRTY_JOIN:
 		join_depth = int_data[1]
 
 	if dirty & DIRTY_OPERATIONS:

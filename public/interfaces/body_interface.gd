@@ -312,25 +312,24 @@ func set_network_init(data: Array) -> void:
 
 func sync_server_dirty(data: Array) -> void:
 	const SIGN_BIT := 1 << 63
-	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
+	const DIRTY_BODY := Interface.DirtyFlags.DIRTY_BODY
 	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
 	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
 	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
-	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
 	const DIRTY_STRATA := Interface.DirtyFlags.DIRTY_STRATA
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
-	var s := 0 # string_data offset
 
-	if dirty & DIRTY_BASE:
+	if dirty & DIRTY_BODY:
 		var float_data: PackedFloat64Array = data[2]
 		var string_data: Array[String] = data[3]
-		gui_name = string_data[s]
+		gui_name = string_data[0]
+		var exchange_name: String = string_data[1]
+		exchange = interfaces_by_name[exchange_name] if exchange_name else null
 		solar_occlusion = float_data[0]
-		s += 1
 
 	if dirty & DIRTY_OPERATIONS:
 		if !operations:
@@ -352,10 +351,6 @@ func sync_server_dirty(data: Array) -> void:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 3
-	if dirty & DIRTY_EXCHANGE:
-		var string_data: Array[String] = data[3]
-		var exchange_name: String = string_data[s]
-		exchange = interfaces_by_name[exchange_name] if exchange_name else null
 	if dirty & DIRTY_STRATA:
 		var flag_index := 0
 		var more_dirty := 1
