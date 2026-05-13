@@ -31,12 +31,12 @@ extends RefCounted
 # All data flows server -> interface.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var run_qtr := -1
-var _numbers: Array[float]
-var _intrinsic_growths: Array[float] # Facility only
-var _carrying_capacities: Array[float] # Facility only; indexed by carrying_capacity_group
-var _migration_pressures: Array[float] # Facility only; +/- emigration/immigration
+var _numbers: PackedFloat64Array
+var _intrinsic_growths: PackedFloat64Array # Facility only
+var _carrying_capacities: PackedFloat64Array # Facility only; indexed by carrying_capacity_group
+var _migration_pressures: PackedFloat64Array # Facility only; +/- emigration/immigration
 
-var _history_numbers: Array[Array] # Array for ea pop type; [..., qrt_before_last, last_qrt]
+var _history_numbers: Array[PackedFloat64Array] # Array for ea pop type; [..., qrt_before_last, last_qrt]
 
 var _is_facility := false
 
@@ -61,21 +61,20 @@ static func _on_class_instanced() -> void:
 
 
 func _init(is_new := false, is_facility_ := false) -> void:
-	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_on_class_instanced()
 	if !is_new: # game load
 		return
-	_numbers = arrays.init_array(_n_populations, 0.0, TYPE_FLOAT)
-	_history_numbers = arrays.init_array(_n_populations, [] as Array[float], TYPE_ARRAY)
+	_numbers.resize(_n_populations)
+	_history_numbers.resize(_n_populations)
 	if !is_facility_:
 		return
 	_is_facility = true
-	_intrinsic_growths = _numbers.duplicate()
+	_intrinsic_growths.resize(_n_populations)
 	var n_carrying_capacity_groups: int = _table_n_rows.carrying_capacity_groups
-	_carrying_capacities = arrays.init_array(n_carrying_capacity_groups, 0.0, TYPE_FLOAT)
-	_migration_pressures = _numbers.duplicate()
+	_carrying_capacities.resize(n_carrying_capacity_groups)
+	_migration_pressures.resize(_n_populations)
 
 
 # ********************************* READ **************************************
@@ -145,8 +144,8 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set and rolling quarter history if the server quarter advanced.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr: int = int_data[0]
 	if run_qtr < svr_qtr:

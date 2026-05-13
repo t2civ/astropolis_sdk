@@ -67,8 +67,8 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories

@@ -285,13 +285,13 @@ func sync_server_dirty(data: Array) -> void:
 	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
 	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
 	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
-	var offsets: Array[int] = data[0]
-	var int_data: Array[int] = data[1]
+	var offsets: PackedInt64Array = data[0]
+	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 
 	if dirty & DIRTY_BASE:
-		var float_data: Array[float] = data[2]
+		var float_data: PackedFloat64Array = data[2]
 		var string_data: Array[String] = data[3]
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])

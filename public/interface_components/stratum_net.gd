@@ -55,15 +55,15 @@ var is_atmosphere: bool  ## True if this stratum is the body's atmosphere.
 var survey_level := 0.0  ## Current survey level; controls [member discoveries].
 var survey_type := -1  ## Index into [code]surveys.tsv[/code].
 
-var masses: Array[float]  ## Per-resource estimated mass (extraction subset).
-var masses_cv: Array[float]  ## Coefficient of variation for [member masses].
+var masses: PackedFloat64Array  ## Per-resource estimated mass (extraction subset).
+var masses_cv: PackedFloat64Array  ## Coefficient of variation for [member masses].
 ## Per-resource spatial heterogeneity (log10 units). Higher means more
 ## concentrated deposits, better for mining.
-var dispersions: Array[float]
-var dispersions_cv: Array[float]  ## Coefficient of variation for [member dispersions].
+var dispersions: PackedFloat64Array
+var dispersions_cv: PackedFloat64Array  ## Coefficient of variation for [member dispersions].
 ## Per-resource discovery fraction, derived from mass/total, dispersion,
 ## and [member survey_level].
-var discoveries: Array[float]
+var discoveries: PackedFloat64Array
 
 
 # indexing
@@ -99,18 +99,17 @@ static func _on_class_instanced() -> void:
 
 
 func _init(is_new := false) -> void:
-	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_on_class_instanced()
 
 	if !is_new: # loaded game
 		return
-	masses = arrays.init_array(_n_extraction_resources, 0.0, TYPE_FLOAT)
-	masses_cv = masses.duplicate()
-	dispersions = masses.duplicate()
-	dispersions_cv = masses.duplicate()
-	discoveries = masses.duplicate()
+	masses.resize(_n_extraction_resources)
+	masses_cv.resize(_n_extraction_resources)
+	dispersions.resize(_n_extraction_resources)
+	dispersions_cv.resize(_n_extraction_resources)
+	discoveries.resize(_n_extraction_resources)
 
 # ********************************** READ *************************************
 # all threadsafe
@@ -152,7 +151,7 @@ func get_dispersion(resource_type: int) -> float:
 ## base_deposit, discovered][/code]. [code]abundance[/code],
 ## [code]base_deposit[/code], and [code]discovered[/code] are fractions;
 ## [code]dispersion[/code] is in log10 units.
-func get_resource_data(resource_type: int) -> Array[float]:
+func get_resource_data(resource_type: int) -> PackedFloat64Array:
 	var index: int = _resource_extractions[resource_type]
 	assert(index != -1, "resource_type must have is_extraction == true")
 	var abundance := masses[index] / total_mass
@@ -161,7 +160,7 @@ func get_resource_data(resource_type: int) -> Array[float]:
 	var dispersion_sd := dispersion * dispersions_cv[index]
 	var base_deposit := minf(1.0, abundance * 10 ** dispersion)
 	var discovered := discoveries[index]
-	return [abundance, abundance_sd, dispersion, dispersion_sd, base_deposit, discovered]
+	return PackedFloat64Array([abundance, abundance_sd, dispersion, dispersion_sd, base_deposit, discovered])
 
 
 ## Returns the base deposit fraction for [param resource_type] before survey
@@ -225,8 +224,8 @@ func set_network_init(data: Array) -> void:
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # Do we need this?

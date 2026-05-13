@@ -39,19 +39,19 @@ enum ResourceFlags {
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var run_qtr := -1
 
-var _stocks: Array[float] # physically present and owned (>= 0.0)
-var _remote_stores: Array[float] # physically present but remotely owned (awaiting transport)
-var _ops_reserves: Array[float] # tracker: stocks reserved for operations
-var _trade_reserves: Array[float] # tracker: stocks reserved for trade
-var _in_transits: Array[float] # on the way (>= 0.0), posibly under contract
-var _contracteds: Array[float] # sum of all contracts (+/-), here or elsewhere
-var _rates: Array[float] # current facility production (+) or consumption (-)
-var _expected_rates: Array[float] # smoothed forward-looking; gross_production - gross_consumption
-var _resource_flags: Array[int] # enum ResourceFlags
-var _storages: Array[float] # indexed by storage_type; capacity per storage class
+var _stocks: PackedFloat64Array # physically present and owned (>= 0.0)
+var _remote_stores: PackedFloat64Array # physically present but remotely owned (awaiting transport)
+var _ops_reserves: PackedFloat64Array # tracker: stocks reserved for operations
+var _trade_reserves: PackedFloat64Array # tracker: stocks reserved for trade
+var _in_transits: PackedFloat64Array # on the way (>= 0.0), posibly under contract
+var _contracteds: PackedFloat64Array # sum of all contracts (+/-), here or elsewhere
+var _rates: PackedFloat64Array # current facility production (+) or consumption (-)
+var _expected_rates: PackedFloat64Array # smoothed forward-looking; gross_production - gross_consumption
+var _resource_flags: PackedInt64Array # enum ResourceFlags
+var _storages: PackedFloat64Array # indexed by storage_type; capacity per storage class
 
 # lazy calculations
-var _storages_used: Array[float] # indexed by storage_type; sum of _stocks + _remote_stores
+var _storages_used: PackedFloat64Array # indexed by storage_type; sum of _stocks + _remote_stores
 var _storages_used_valid := false
 
 var _sync := SyncHelper.new()
@@ -75,17 +75,17 @@ func _init(is_new := false) -> void:
 		_on_class_instanced()
 	if !is_new: # game load
 		return
-	_stocks = IVArrays.init_array(_n_resources, 0.0, TYPE_FLOAT)
-	_remote_stores = _stocks.duplicate()
-	_ops_reserves = _stocks.duplicate()
-	_trade_reserves = _stocks.duplicate()
-	_in_transits = _stocks.duplicate()
-	_contracteds = _stocks.duplicate()
-	_rates = _stocks.duplicate()
-	_expected_rates = _stocks.duplicate()
-	_resource_flags = IVArrays.init_array(_n_resources, 0, TYPE_INT)
-	_storages = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
-	_storages_used = IVArrays.init_array(_n_storage_classes, 0.0, TYPE_FLOAT)
+	_stocks.resize(_n_resources)
+	_remote_stores.resize(_n_resources)
+	_ops_reserves.resize(_n_resources)
+	_trade_reserves.resize(_n_resources)
+	_in_transits.resize(_n_resources)
+	_contracteds.resize(_n_resources)
+	_rates.resize(_n_resources)
+	_expected_rates.resize(_n_resources)
+	_resource_flags.resize(_n_resources)
+	_storages.resize(_n_storage_classes)
+	_storages_used.resize(_n_storage_classes)
 
 
 # ********************************** READ *************************************
@@ -175,8 +175,8 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set. Called by the parent [Interface] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 
 	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories

@@ -86,24 +86,24 @@ var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _constructions := 0.0 # total mass of all things construced
 var _nominal_information := 0.0 # only if we don't have Cyberspace here!
 
-var _crews: Array[float] # indexed by population_type (can have crew w/out Population component)
+var _crews: PackedFloat64Array # indexed by population_type (can have crew w/out Population component)
 
-var _capacities: Array[float] # set by facility modules
-var _run_rates: Array[float] # <= capacities; defines operation utilization
-var _effective_rates: Array[float] # may differ from run rates, usually less
+var _capacities: PackedFloat64Array # set by facility modules
+var _run_rates: PackedFloat64Array # <= capacities; defines operation utilization
+var _effective_rates: PackedFloat64Array # may differ from run rates, usually less
 
 # Facility, Player only (_has_financials = true)
-var _revenue_rates: Array[float] # at current rate & prices
-var _cogs_rates: Array[float] # cost of goods sold; at current rate & prices
+var _revenue_rates: PackedFloat64Array # at current rate & prices
+var _cogs_rates: PackedFloat64Array # cost of goods sold; at current rate & prices
 
 # Facility only
-var _capacity_factors: Array[float] # environmental limit (renewable power) or historical (others)
-var _gross_margins: Array[float] # at current prices (even if rate = 0)
-var _op_flags: Array[int] # enum; Facility only
+var _capacity_factors: PackedFloat64Array # environmental limit (renewable power) or historical (others)
+var _gross_margins: PackedFloat64Array # at current prices (even if rate = 0)
+var _op_flags: PackedInt64Array # enum; Facility only
 
 # Facility only; set via FacilityInterface. Reverse data flow: interface -> server!
-var _op_commands: Array[int] # enum; Facility only
-var _target_utilizations: Array[float]
+var _op_commands: PackedInt64Array # enum; Facility only
+var _target_utilizations: PackedFloat64Array
 
 # Operations data here
 var _has_financials := false
@@ -112,8 +112,8 @@ var _is_facility := false
 
 
 # interface dirty data (dirty indexes as bit flags)
-var _dirty_op_commands: Array[int] = []
-var _dirty_target_utilizations: Array[int] = []
+var _dirty_op_commands: PackedInt64Array
+var _dirty_target_utilizations: PackedInt64Array
 
 var _sync := SyncHelper.new()
 
@@ -139,7 +139,6 @@ static func _on_class_instanced() -> void:
 
 
 func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> void:
-	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_on_class_instanced()
@@ -148,21 +147,25 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_has_financials = has_financials_
 	_is_facility = is_facility_
 	var n_populations: int = _table_n_rows[&"populations"]
-	_crews = arrays.init_array(n_populations, 0.0, TYPE_FLOAT)
-	_capacities = arrays.init_array(_n_operations, 0.0, TYPE_FLOAT)
-	_run_rates = _capacities.duplicate()
-	_effective_rates = _capacities.duplicate()
+	_crews.resize(n_populations)
+	_capacities.resize(_n_operations)
+	_run_rates.resize(_n_operations)
+	_effective_rates.resize(_n_operations)
 	if !_has_financials:
 		return
-	_revenue_rates = _capacities.duplicate()
-	_cogs_rates = _capacities.duplicate()
+	_revenue_rates.resize(_n_operations)
+	_cogs_rates.resize(_n_operations)
 	if !_is_facility:
 		return
-	_capacity_factors = arrays.init_array(_n_operations, 0.0, TYPE_FLOAT)
-	_gross_margins = arrays.init_array(_n_operations, NAN, TYPE_FLOAT)
-	_op_flags = arrays.init_array(_n_operations, OpFlags.IS_IDLE_UNPROFITABLE, TYPE_INT)
-	_op_commands = arrays.init_array(_n_operations, OpCommands.AUTOMATE, TYPE_INT)
-	_target_utilizations = arrays.init_array(_n_operations, 1.0, TYPE_FLOAT)
+	_capacity_factors.resize(_n_operations)
+	_gross_margins.resize(_n_operations)
+	_gross_margins.fill(NAN)
+	_op_flags.resize(_n_operations)
+	_op_flags.fill(OpFlags.IS_IDLE_UNPROFITABLE)
+	_op_commands.resize(_n_operations)
+	_op_commands.fill(OpCommands.AUTOMATE)
+	_target_utilizations.resize(_n_operations)
+	_target_utilizations.fill(1.0)
 	@warning_ignore("integer_division")
 	var n_op_flags := (_n_operations - 1) / 63 + 1
 	_dirty_op_commands.resize(n_op_flags)
@@ -572,8 +575,8 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set. Called by the parent [Interface] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
 	run_qtr = svr_qtr # TODO: histories
@@ -614,8 +617,8 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 ## ([code]_op_commands[/code] and [code]_target_utilizations[/code]). Mirrors
 ## the forward pattern: bit-packed dirty flags + dense values via [SyncHelper].
 func get_interface_dirty() -> Array:
-	var int_data: Array[int] = []
-	var float_data: Array[float] = []
+	var int_data := PackedInt64Array()
+	var float_data := PackedFloat64Array()
 	_sync.init_for_take(int_data, float_data)
 	_sync.get_ints_dirty(_op_commands, _dirty_op_commands)
 	_sync.get_floats_dirty(_target_utilizations, _dirty_target_utilizations)

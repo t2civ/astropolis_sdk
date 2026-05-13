@@ -23,13 +23,13 @@ extends RefCounted
 var int_offset: int
 var float_offset: int
 
-var _int_data: Array[int]
-var _float_data: Array[float]
+var _int_data: PackedInt64Array
+var _float_data: PackedFloat64Array
 
 
 ## Marks element [param index] dirty in [param dirty_array] (a chunked bit
 ## flag array using bit 63 as a chunk-continues marker).
-static func set_dirty(dirty_array: Array[int], index: int) -> void:
+static func set_dirty(dirty_array: PackedInt64Array, index: int) -> void:
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
 	while index >= 63:
@@ -42,7 +42,7 @@ static func set_dirty(dirty_array: Array[int], index: int) -> void:
 ## Initializes for receive (decode): bind buffers and offsets so [method
 ## set_floats_dirty], [method set_ints_dirty], [method add_floats_delta], etc.
 ## can read out of [param int_data] / [param float_data].
-func init_for_add(int_data: Array[int], float_data: Array[float], int_offset_: int,
+func init_for_add(int_data: PackedInt64Array, float_data: PackedFloat64Array, int_offset_: int,
 		float_offset_: int) -> void:
 	_int_data = int_data
 	_float_data = float_data
@@ -53,7 +53,7 @@ func init_for_add(int_data: Array[int], float_data: Array[float], int_offset_: i
 ## Initializes for send (encode): bind output buffers so [method
 ## get_floats_dirty], [method get_ints_dirty], [method take_floats_delta], etc.
 ## can append into [param int_data] / [param float_data].
-func init_for_take(int_data: Array[int], float_data: Array[float]) -> void:
+func init_for_take(int_data: PackedInt64Array, float_data: PackedFloat64Array) -> void:
 	_int_data = int_data
 	_float_data = float_data
 
@@ -62,7 +62,7 @@ func init_for_take(int_data: Array[int], float_data: Array[float]) -> void:
 
 ## Encodes dirty entries of [param array] into the bound output buffers, using
 ## chunked dirty flags from [param flags_array]. Clears the flag entries.
-func get_ints_dirty(array: Array[int], flags_array: Array[int]) -> void:
+func get_ints_dirty(array: PackedInt64Array, flags_array: PackedInt64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -82,7 +82,7 @@ func get_ints_dirty(array: Array[int], flags_array: Array[int]) -> void:
 
 
 ## Single-chunk variant of [method get_ints_dirty] (up to 63 entries).
-func get_ints_dirty_63(array: Array[int], flags: int) -> void:
+func get_ints_dirty_63(array: PackedInt64Array, flags: int) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	_int_data.append(flags)
 	while flags:
@@ -94,7 +94,7 @@ func get_ints_dirty_63(array: Array[int], flags: int) -> void:
 
 ## Encodes dirty entries of [param array] into the bound output buffers, using
 ## chunked dirty flags from [param flags_array]. Clears the flag entries.
-func get_floats_dirty(array: Array[float], flags_array: Array[int]) -> void:
+func get_floats_dirty(array: PackedFloat64Array, flags_array: PackedInt64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -114,7 +114,7 @@ func get_floats_dirty(array: Array[float], flags_array: Array[int]) -> void:
 
 
 ## Single-chunk variant of [method get_floats_dirty] (up to 63 entries).
-func get_floats_dirty_63(array: Array[float], flags: int) -> void:
+func get_floats_dirty_63(array: PackedFloat64Array, flags: int) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	_int_data.append(flags)
 	while flags:
@@ -127,7 +127,7 @@ func get_floats_dirty_63(array: Array[float], flags: int) -> void:
 ## Adds dirty entries of [param delta] into [param base] and emits each delta
 ## value into the output buffer; zeroes the consumed delta entries. Used for
 ## sending an accumulator's diff to the receiver.
-func take_floats_delta(base: Array[float], delta: Array[float], flags_array: Array[int]) -> void:
+func take_floats_delta(base: PackedFloat64Array, delta: PackedFloat64Array, flags_array: PackedInt64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -149,7 +149,7 @@ func take_floats_delta(base: Array[float], delta: Array[float], flags_array: Arr
 
 
 ## Single-chunk variant of [method take_floats_delta] (up to 63 entries).
-func take_floats_delta_63(base: Array[float], delta: Array[float], flags: int) -> void:
+func take_floats_delta_63(base: PackedFloat64Array, delta: PackedFloat64Array, flags: int) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	_int_data.append(flags)
 	while flags:
@@ -163,7 +163,7 @@ func take_floats_delta_63(base: Array[float], delta: Array[float], flags: int) -
 
 ## Reads dirty values out of the bound input buffers, writing each to its
 ## indexed slot in [param array]. Mirror of [method get_floats_dirty].
-func set_floats_dirty(array: Array[float]) -> void:
+func set_floats_dirty(array: PackedFloat64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -183,7 +183,7 @@ func set_floats_dirty(array: Array[float]) -> void:
 
 
 ## Single-chunk variant of [method set_floats_dirty] (up to 63 entries).
-func set_floats_dirty_63(array: Array[float]) -> void:
+func set_floats_dirty_63(array: PackedFloat64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	var flags := _int_data[int_offset]
 	int_offset += 1
@@ -197,7 +197,7 @@ func set_floats_dirty_63(array: Array[float]) -> void:
 
 ## Reads dirty values out of the bound input buffers, writing each to its
 ## indexed slot in [param array]. Mirror of [method get_ints_dirty].
-func set_ints_dirty(array: Array[int]) -> void:
+func set_ints_dirty(array: PackedInt64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -217,7 +217,7 @@ func set_ints_dirty(array: Array[int]) -> void:
 
 
 ## Single-chunk variant of [method set_ints_dirty] (up to 63 entries).
-func set_ints_dirty_63(array: Array[int]) -> void:
+func set_ints_dirty_63(array: PackedInt64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	var flags := _int_data[int_offset]
 	int_offset += 1
@@ -231,7 +231,7 @@ func set_ints_dirty_63(array: Array[int]) -> void:
 
 ## Reads dirty delta values out of the bound input buffers and adds each to
 ## its indexed slot in [param delta_array]. Mirror of [method take_floats_delta].
-func add_floats_delta(delta_array: Array[float]) -> void:
+func add_floats_delta(delta_array: PackedFloat64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	const SIGN_BIT := 1 << 63
 	var flag_index := 0
@@ -251,7 +251,7 @@ func add_floats_delta(delta_array: Array[float]) -> void:
 
 
 ## Single-chunk variant of [method add_floats_delta] (up to 63 entries).
-func add_floats_delta_63(delta_array: Array[float]) -> void:
+func add_floats_delta_63(delta_array: PackedFloat64Array) -> void:
 	const BIT_INDEXES := Utils.BIT_INDEXES
 	var flags := _int_data[int_offset]
 	int_offset += 1

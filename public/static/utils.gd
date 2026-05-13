@@ -258,7 +258,7 @@ static func deduct_weighted_float_arrays(base: Array[Array], base_weights: Array
 
 ## If [param error_inf] is set, zero-sum condition is indicated by INF at index
 ## 0 (only). Default behavior is to return a zero-sum array unchanged.
-static func normalize_float_array(array: Array[float], normalized_sum := 1.0,
+static func normalize_float_array(array: PackedFloat64Array, normalized_sum := 1.0,
 		error_inf := false) -> void:
 	# if array sums to 0.0, returns an array of INF values
 	var sum := 0.0
@@ -279,7 +279,7 @@ static func normalize_float_array(array: Array[float], normalized_sum := 1.0,
 
 
 ## Returns the sum of all elements in [param array].
-static func get_float_array_sum(array: Array[float]) -> float:
+static func get_float_array_sum(array: PackedFloat64Array) -> float:
 	var sum := 0.0
 	var i := array.size()
 	while i > 0:
@@ -298,7 +298,7 @@ static func multiply_float_array_by_float(array: Array[float], multiplier: float
 
 ## In-place element-wise multiplication of [param base] by [param multiply].
 ## Expects equal-length arrays.
-static func multiply_float_array_by_array(base: Array[float], multiply: Array[float]) -> void:
+static func multiply_float_array_by_array(base: PackedFloat64Array, multiply: PackedFloat64Array) -> void:
 	var i := base.size()
 	while i > 0:
 		i -= 1

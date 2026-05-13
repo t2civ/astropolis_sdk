@@ -49,10 +49,10 @@ var exchange_id := -1  ## Index into [member exchange_interfaces].
 var body: BodyInterface
 var body_name: StringName  ## Name of the hosting body.
 
-var _prices: Array[float]
-var _ask_prices: Array[float]
-var _bid_prices: Array[float]
-var _volumes: Array[float]
+var _prices: PackedFloat64Array
+var _ask_prices: PackedFloat64Array
+var _bid_prices: PackedFloat64Array
+var _volumes: PackedFloat64Array
 
 var _asks: Dictionary[int, PackedInt64Array] = {}  ## Asks indexed by ask_id.
 var _bids: Dictionary[int, PackedInt64Array] = {}  ## Bids indexed by bid_id.
@@ -136,13 +136,13 @@ func process_ai_init() -> void:
 
 func sync_server_dirty(data: Array) -> void:
 	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
-	var offsets: Array[int] = data[0]
-	var int_data: Array[int] = data[1]
+	var offsets: PackedInt64Array = data[0]
+	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 
 	if dirty & DIRTY_EXCHANGE:
-		var float_data: Array[float] = data[2]
+		var float_data: PackedFloat64Array = data[2]
 		_sync.init_for_add(int_data, float_data, offsets[k], offsets[k + 1])
 		_sync.set_floats_dirty(_prices)
 		_sync.set_floats_dirty(_ask_prices)
@@ -162,7 +162,7 @@ func sync_server_dirty(data: Array) -> void:
 
 
 # Recycles removed orders.
-func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Array[int]) -> void:
+func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: PackedInt64Array) -> void:
 	var int_offset := _sync.int_offset
 	var upserts_count := int_data[int_offset]
 	int_offset += 1

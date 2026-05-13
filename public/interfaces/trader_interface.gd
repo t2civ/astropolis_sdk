@@ -64,11 +64,11 @@ func set_network_init(data: Array) -> void:
 
 func sync_server_dirty(data: Array) -> void:
 	const DIRTY_BASE := Interface.DirtyFlags.DIRTY_BASE
-	var offsets: Array[int] = data[0]
-	var int_data: Array[int] = data[1]
+	var offsets: PackedInt64Array = data[0]
+	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	if dirty & DIRTY_BASE:
-		var float_data: Array[float] = data[2]
+		var float_data: PackedFloat64Array = data[2]
 		temp_placeholder = float_data[0]
 	assert(int_data[0] >= run_qtr)
 	if int_data[0] > run_qtr:

@@ -243,13 +243,13 @@ func get_compostion_body_radius(index: int) -> float:
 
 
 ## Returns the per-resource mass array for the [StratumNet] at [param index].
-func get_stratum_masses(index: int) -> Array[float]:
+func get_stratum_masses(index: int) -> PackedFloat64Array:
 	return strata[index].masses
 
 
 ## Returns the per-resource dispersion array for the [StratumNet] at
 ## [param index].
-func get_stratum_dispersions(index: int) -> Array[float]:
+func get_stratum_dispersions(index: int) -> PackedFloat64Array:
 	return strata[index].dispersions
 
 
@@ -260,7 +260,7 @@ func get_stratum_survey_type(index: int) -> int:
 
 ## Returns survey/discovery data for [param resource_type] in the
 ## [StratumNet] at [param index].
-func get_stratum_resource_data(index: int, resource_type: int) -> Array[float]:
+func get_stratum_resource_data(index: int, resource_type: int) -> PackedFloat64Array:
 	return strata[index].get_resource_data(resource_type)
 
 
@@ -319,14 +319,14 @@ func sync_server_dirty(data: Array) -> void:
 	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
 	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
 	const DIRTY_STRATA := Interface.DirtyFlags.DIRTY_STRATA
-	var offsets: Array[int] = data[0]
-	var int_data: Array[int] = data[1]
+	var offsets: PackedInt64Array = data[0]
+	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 	var s := 0 # string_data offset
 
 	if dirty & DIRTY_BASE:
-		var float_data: Array[float] = data[2]
+		var float_data: PackedFloat64Array = data[2]
 		var string_data: Array[String] = data[3]
 		gui_name = string_data[s]
 		solar_occlusion = float_data[0]

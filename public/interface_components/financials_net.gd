@@ -42,13 +42,13 @@ var run_qtr := -1
 var _revenue := 0.0 # positive
 var _gross_output := 0.0 # = all producer revenue (exludes resellers, tax revenue, etc.)
 var _cost_of_goods_sold := 0.0 # positive
-var _accountings: Array[float] # TODO: e.g., MINING_REVENUE, MINING_COGS, etc.
+var _accountings: PackedFloat64Array # TODO: e.g., MINING_REVENUE, MINING_COGS, etc.
 
 # history
-var _revenue_history: Array[float] = []
-var _gross_output_history: Array[float] = []
-var _cost_of_goods_sold_history: Array[float] = []
-var _accountings_history: Array[Array] = []
+var _revenue_history: PackedFloat64Array
+var _gross_output_history: PackedFloat64Array
+var _cost_of_goods_sold_history: PackedFloat64Array
+var _accountings_history: Array[PackedFloat64Array] = []
 
 var _sync := SyncHelper.new()
 
@@ -57,12 +57,11 @@ var _n_accountings := 10 # WIP
 
 
 func _init(is_new := false) -> void:
-	const arrays := preload("uid://bv7xrcpcm24nc")
 	if !is_new: # game load
 		return
 	
 	# debug dev
-	_accountings = arrays.init_array(_n_accountings, 0.0, TYPE_FLOAT)
+	_accountings.resize(_n_accountings)
 
 
 # ********************************** READ *************************************
@@ -108,8 +107,8 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set and rolling quarter history if the server quarter advanced.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
-	var int_data: Array[int] = data[1]
-	var float_data: Array[float] = data[2]
+	var int_data: PackedInt64Array = data[1]
+	var float_data: PackedFloat64Array = data[2]
 
 	var dirty := int_data[int_offset]
 	int_offset += 1
