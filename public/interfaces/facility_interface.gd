@@ -292,7 +292,7 @@ func sync_server_dirty(data: Array) -> void:
 
 	if dirty & DIRTY_FACILITY:
 		var float_data: PackedFloat64Array = data[2]
-		var string_data: Array[String] = data[3]
+		var string_data: PackedStringArray = data[3]
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
 		closed_cycle_ops = bool(int_data[3])

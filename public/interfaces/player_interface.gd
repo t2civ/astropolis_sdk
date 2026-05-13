@@ -202,7 +202,7 @@ func sync_server_dirty(data: Array) -> void:
 		#prints("NET", self)
 
 	if dirty & DIRTY_PLAYER:
-		var string_data: Array[String] = data[3]
+		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
 		player_class = int_data[1]
 		var part_of_name := string_data[1]

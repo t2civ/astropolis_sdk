@@ -325,7 +325,7 @@ func sync_server_dirty(data: Array) -> void:
 
 	if dirty & DIRTY_BODY:
 		var float_data: PackedFloat64Array = data[2]
-		var string_data: Array[String] = data[3]
+		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
 		var exchange_name: String = string_data[1]
 		exchange = interfaces_by_name[exchange_name] if exchange_name else null
