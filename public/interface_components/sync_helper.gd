@@ -261,3 +261,45 @@ func add_floats_delta_63(delta_array: PackedFloat64Array) -> void:
 		delta_array[index] += _float_data[float_offset]
 		float_offset += 1
 		flags &= ~lsb
+
+
+## Reads sparse changes from the bound int/float input buffers and applies them
+## to [param base] (additive): for each upsert, looks up the keyed
+## PackedFloat64Array (allocating a new one of size [param n_indexes] when the
+## key is new), then adds each delta value into its indexed slot. Erases keys
+## listed in the removes section. Mirror of
+## [SvrSyncHelper.take_sparse_floats_dict_delta].
+func add_sparse_floats_dict_delta(base: Dictionary[int, PackedFloat64Array],
+		n_indexes: int) -> void:
+	var upserts_count := _int_data[int_offset]
+	int_offset += 1
+	var i := 0
+	while i < upserts_count:
+		var key := _int_data[int_offset]
+		int_offset += 1
+		var n_changes := _int_data[int_offset]
+		int_offset += 1
+		var arr: PackedFloat64Array
+		if base.has(key):
+			arr = base[key]
+		else:
+			arr = PackedFloat64Array()
+			arr.resize(n_indexes)
+			base[key] = arr
+		var j := 0
+		while j < n_changes:
+			var index := _int_data[int_offset]
+			int_offset += 1
+			arr[index] += _float_data[float_offset]
+			float_offset += 1
+			j += 1
+		i += 1
+
+	var removes_count := _int_data[int_offset]
+	int_offset += 1
+	i = 0
+	while i < removes_count:
+		var key := _int_data[int_offset]
+		int_offset += 1
+		base.erase(key)
+		i += 1

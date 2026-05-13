@@ -40,7 +40,7 @@ enum ResourceFlags {
 var run_qtr := -1
 
 var _stocks: PackedFloat64Array # physically present and owned (>= 0.0)
-var _remote_stores: PackedFloat64Array # physically present but remotely owned (awaiting transport)
+var _remote_stores: Dictionary[int, PackedFloat64Array] # indexed by owning facility_id
 var _ops_reserves: PackedFloat64Array # tracker: stocks reserved for operations
 var _trade_reserves: PackedFloat64Array # tracker: stocks reserved for trade
 var _in_transits: PackedFloat64Array # on the way (>= 0.0), posibly under contract
@@ -51,7 +51,7 @@ var _resource_flags: PackedInt64Array # enum ResourceFlags
 var _storages: PackedFloat64Array # indexed by storage_type; capacity per storage class
 
 # lazy calculations
-var _storages_used: PackedFloat64Array # indexed by storage_type; sum of _stocks + _remote_stores
+var _storages_used: PackedFloat64Array # indexed by storage_type; sum of _stocks + values of _remote_stores
 var _storages_used_valid := false
 
 var _sync := SyncHelper.new()
@@ -76,7 +76,6 @@ func _init(is_new := false) -> void:
 	if !is_new: # game load
 		return
 	_stocks.resize(_n_resources)
-	_remote_stores.resize(_n_resources)
 	_ops_reserves.resize(_n_resources)
 	_trade_reserves.resize(_n_resources)
 	_in_transits.resize(_n_resources)
@@ -96,10 +95,12 @@ func get_stock(type: int) -> float:
 	return _stocks[type]
 
 
-## Returns the remote-store quantity for [param type] (physically present but
-## remotely owned, awaiting transport; >= 0.0).
-func get_remote_store(type: int) -> float:
-	return _remote_stores[type]
+## Returns the remote-store quantity owned by [param facility_id_] for
+## [param resource_type], physically present here (>= 0.0).
+func get_remote_store(facility_id_: int, resource_type: int) -> float:
+	if !_remote_stores.has(facility_id_):
+		return 0.0
+	return _remote_stores[facility_id_][resource_type]
 
 
 ## Returns the ops-reserve buffer for [param type] (quantity reserved for
@@ -183,7 +184,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.set_floats_dirty(_stocks)
-	_sync.set_floats_dirty(_remote_stores)
+	_sync.add_sparse_floats_dict_delta(_remote_stores, _n_resources)
 	_sync.set_floats_dirty(_ops_reserves)
 	_sync.set_floats_dirty(_trade_reserves)
 	_sync.set_floats_dirty(_in_transits)
@@ -202,5 +203,11 @@ func _recompute_storages_used() -> void:
 		var storage_class := _resource_storage_classes[resource_type]
 		if storage_class == -1:
 			continue
-		_storages_used[storage_class] += _stocks[resource_type] + _remote_stores[resource_type]
+		_storages_used[storage_class] += _stocks[resource_type]
+	for arr: PackedFloat64Array in _remote_stores.values():
+		for resource_type in _n_resources:
+			var storage_class := _resource_storage_classes[resource_type]
+			if storage_class == -1:
+				continue
+			_storages_used[storage_class] += arr[resource_type]
 	_storages_used_valid = true
