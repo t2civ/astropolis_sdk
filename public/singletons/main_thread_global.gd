@@ -55,10 +55,10 @@ var _proxies_expected := false # true once expect_proxies has been called
 # *****************************************************************************
 
 func _ready() -> void:
-	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 
 
-func _clear() -> void:
+func _clear_procedural() -> void:
 	proxies_by_name.clear()
 	body_selection_redirect.clear()
 	proxies_ready_emitted = false

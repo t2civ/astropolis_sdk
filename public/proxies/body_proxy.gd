@@ -66,9 +66,10 @@ func _init() -> void:
 
 
 func _clear_circular_references() -> void:
-	# down hierarchy only
+	parent = null
 	satellites.clear()
 	facilities.clear()
+	broker = null
 
 
 # *****************************************************************************

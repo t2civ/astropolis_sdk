@@ -152,9 +152,8 @@ func _init() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
 
 
-## Tears down references on this proxy so it can be freed cleanly.
-## Subclasses override to also detach from related proxies (body, player,
-## etc.) before chaining to [code]super()[/code].
+## Runtime mid-game removal entry point. Subclass overrides MUST chain to
+## [code]super.remove()[/code] so cycles are broken outside of quit.
 func remove() -> void:
 	_clear_circular_references()
 
@@ -386,8 +385,9 @@ func propagate_server_delta(_data: Array) -> void:
 # *****************************************************************************
 # Private
 
+## Override to null every outgoing Proxy/Resource ref. Both sides of a
+## 2-cycle should clear — redundant on success, robust under refactoring.
 func _clear_circular_references() -> void:
-	# down hierarchy only
 	pass
 
 # *****************************************************************************

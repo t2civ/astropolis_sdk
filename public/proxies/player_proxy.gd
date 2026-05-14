@@ -61,7 +61,7 @@ func _init() -> void:
 
 
 func _clear_circular_references() -> void:
-	# down hierarchy only
+	part_of = null
 	facilities.clear()
 
 

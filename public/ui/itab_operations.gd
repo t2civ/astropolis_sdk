@@ -113,7 +113,7 @@ var _fold_icon_substitute := MeshTexture.new()
 
 
 func _ready() -> void:
-	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	visibility_changed.connect(_update_tab)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)
 	_selection_manager.selection_changed.connect(_update_tab)
@@ -158,7 +158,7 @@ func _ready() -> void:
 	_update_tab()
 
 
-func _clear() -> void:
+func _clear_procedural() -> void:
 	if _selection_manager:
 		_selection_manager.selection_changed.disconnect(_update_tab)
 		_selection_manager = null

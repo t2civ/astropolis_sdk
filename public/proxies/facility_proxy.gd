@@ -71,6 +71,14 @@ func _init() -> void:
 	entity_type = ENTITY_FACILITY
 
 
+func _clear_circular_references() -> void:
+	body = null
+	player = null
+	trader = null
+	joins.clear()
+	texture_2d = null
+
+
 #func process_ai_interval(_delta: float) -> void:
 #	prints(name, operations.capacities[0])
 
@@ -79,11 +87,13 @@ func _init() -> void:
 # *****************************************************************************
 # proxy API
 
-## Detaches this facility from its body and player. Call before letting the
-## reference go.
+## Detaches this facility from its body and player, then breaks its outgoing
+## refs via [method super.remove]. Called by the server side at runtime when a
+## facility is removed mid-game.
 func remove() -> void:
 	body.remove_facility(self)
 	player.remove_facility(self)
+	super.remove()
 
 
 ## Sets [member gui_name] and marks the proxy dirty. Reverse-flow:
