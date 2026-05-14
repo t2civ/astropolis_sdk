@@ -33,7 +33,7 @@ enum {
 }
 
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 
 var _computation_rate := 0.0
 var _information := 1.0 # min 1.0
@@ -59,7 +59,7 @@ func get_information() -> float:
 
 ## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
-	run_qtr = data[0]
+	ordinal_qtr = data[0]
 	_computation_rate = data[1]
 	_information = data[2]
 
@@ -71,7 +71,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
-	run_qtr = svr_qtr # TODO: histories
+	ordinal_qtr = svr_qtr # TODO: histories
 	
 	var dirty := int_data[int_offset]
 	int_offset += 1

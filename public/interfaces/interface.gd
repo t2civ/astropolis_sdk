@@ -109,14 +109,14 @@ var name := &""  ## Unique, immutable identifier (e.g. [code]&"PLAYER_NASA"[/cod
 var gui_name := ""  ## Display name; mutable. Empty player gui_name hides from GUI.
 ## Quarterly clock as [code]year * 4 + (quarter - 1)[/code]. Never set for a
 ## [BodyInterface] without a facility.
-var run_qtr := -1
+var ordinal_qtr := -1
 var last_interval := -INF  ## Time of last [method process_ai_interval] call.
 var next_interval := -INF  ## Time of next [method process_ai_interval] call.
 
 ## Member names persisted by save/load. Append in subclass [code]_init()[/code].
 ## Nested containers are ok; NO OBJECTS!
 var persist := [
-	&"run_qtr",
+	&"ordinal_qtr",
 	&"last_interval",
 	&"next_interval",
 ]
@@ -350,7 +350,7 @@ func process_ai_interval(_delta: float) -> void:
 
 
 ## Called after component histories have updated for the new quarter
-## ([member run_qtr] advanced). Never called for a [BodyInterface] without a
+## ([member ordinal_qtr] advanced). Never called for a [BodyInterface] without a
 ## facility.
 func process_ai_new_quarter() -> void:
 	pass

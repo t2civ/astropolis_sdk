@@ -330,12 +330,12 @@ func sync_server_dirty(data: Array) -> void:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
 	
-	assert(int_data[0] >= run_qtr)
-	if int_data[0] > run_qtr:
-		if run_qtr == -1:
-			run_qtr = int_data[0]
+	assert(int_data[0] >= ordinal_qtr)
+	if int_data[0] > ordinal_qtr:
+		if ordinal_qtr == -1:
+			ordinal_qtr = int_data[0]
 		else:
-			run_qtr = int_data[0]
+			ordinal_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
 
 

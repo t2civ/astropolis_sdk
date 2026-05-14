@@ -393,7 +393,7 @@ func _read_operations(ops: OperationsNet, nonzero: bool,
 			break
 	return {
 		"component": "operations",
-		"run_qtr": ops.run_qtr,
+		"ordinal_qtr": ops.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -451,7 +451,7 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 			break
 	return {
 		"component": "inventory",
-		"run_qtr": inv.run_qtr,
+		"ordinal_qtr": inv.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -479,7 +479,7 @@ func _read_population(pop: PopulationNet, nonzero: bool,
 			break
 	return {
 		"component": "population",
-		"run_qtr": pop.run_qtr,
+		"ordinal_qtr": pop.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -522,7 +522,7 @@ func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 			break
 	return {
 		"component": "exchange",
-		"run_qtr": exchange.run_qtr,
+		"ordinal_qtr": exchange.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -532,7 +532,7 @@ func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 func _read_financials(fin: FinancialsNet) -> Dictionary:
 	return {
 		"component": "financials",
-		"run_qtr": fin.run_qtr,
+		"ordinal_qtr": fin.ordinal_qtr,
 		"revenue": fin._revenue,
 		"gross_output": fin._gross_output,
 		"cost_of_goods_sold": fin._cost_of_goods_sold,
@@ -544,7 +544,7 @@ func _read_financials(fin: FinancialsNet) -> Dictionary:
 func _read_biome(bio: BiomeNet) -> Dictionary:
 	return {
 		"component": "biome",
-		"run_qtr": bio.run_qtr,
+		"ordinal_qtr": bio.ordinal_qtr,
 		"bioproductivity": bio.get_bioproductivity(),
 		"biomass": bio.get_biomass(),
 		"biodiversity": bio.get_biodiversity(),
@@ -554,7 +554,7 @@ func _read_biome(bio: BiomeNet) -> Dictionary:
 func _read_cyberspace(cyb: CyberspaceNet) -> Dictionary:
 	return {
 		"component": "cyberspace",
-		"run_qtr": cyb.run_qtr,
+		"ordinal_qtr": cyb.ordinal_qtr,
 		"computation_rate": cyb.get_computation_rate(),
 		"information": cyb.get_information(),
 	}

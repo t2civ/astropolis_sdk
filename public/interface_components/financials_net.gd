@@ -38,7 +38,7 @@ enum {
 
 # interface sync
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 var _revenue := 0.0 # positive
 var _gross_output := 0.0 # = all producer revenue (exludes resellers, tax revenue, etc.)
 var _cost_of_goods_sold := 0.0 # positive
@@ -93,7 +93,7 @@ func get_gross_output_lfq() -> float:
 
 ## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
-	run_qtr = data[0]
+	ordinal_qtr = data[0]
 	_revenue = data[1]
 	_gross_output = data[2]
 	_cost_of_goods_sold = data[3]
@@ -128,25 +128,25 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	
 	# finished quarter?
 	var svr_qtr := int_data[0]
-	assert(svr_qtr >= run_qtr)
-	if svr_qtr > run_qtr:
+	assert(svr_qtr >= ordinal_qtr)
+	if svr_qtr > ordinal_qtr:
 		_update_quarter(svr_qtr)
 
 
 func _update_quarter(svr_qtr: int) -> void:
 	# Server & interface do this in parallel, so no history sync needed.
-	if run_qtr == -1: # no history to save yet
-		run_qtr = svr_qtr
+	if ordinal_qtr == -1: # no history to save yet
+		ordinal_qtr = svr_qtr
 		return
 	
-	while run_qtr < svr_qtr: # loop for edge-case missed quarter
+	while ordinal_qtr < svr_qtr: # loop for edge-case missed quarter
 		
 		_revenue_history.append(_revenue)
 		_gross_output_history.append(_gross_output)
 		_cost_of_goods_sold_history.append(_cost_of_goods_sold)
 		_accountings_history.append(_accountings.duplicate())
 		
-		run_qtr += 1
+		ordinal_qtr += 1
 	
 	# zero income & cash flow items
 	_revenue = 0.0

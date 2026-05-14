@@ -81,7 +81,7 @@ enum {
 
 # Interface read-only! Data flows server -> interface.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _constructions := 0.0 # total mass of all things construced
 var _nominal_information := 0.0 # only if we don't have Cyberspace here!
@@ -553,7 +553,7 @@ func set_target_utilization(type: int, value: float) -> bool:
 
 ## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
-	run_qtr = data[0]
+	ordinal_qtr = data[0]
 	_gross_output_lfq = data[1]
 	_constructions = data[2]
 	_nominal_information = data[3]
@@ -579,7 +579,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
-	run_qtr = svr_qtr # TODO: histories
+	ordinal_qtr = svr_qtr # TODO: histories
 	
 	var dirty := int_data[int_offset]
 	int_offset += 1

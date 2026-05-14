@@ -38,7 +38,7 @@ enum {
 }
 
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 var stratum_index := -1  ## Index into [member BodyInterface.strata].
 var name: StringName  ## Stratum row name from [code]strata.tsv[/code].
 var stratum_group := -1  ## Index into [code]stratum_groups.tsv[/code].
@@ -228,7 +228,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
-	run_qtr = svr_qtr # Do we need this?
+	ordinal_qtr = svr_qtr # Do we need this?
 	
 	var dirty := int_data[int_offset]
 	int_offset += 1

@@ -35,7 +35,7 @@ enum {
 
 
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 var _bioproductivity := 0.0
 var _biomass := 0.0
 var _biodiversity := 1.0 # min 1.0
@@ -69,7 +69,7 @@ func get_biodiversity() -> float:
 
 ## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
-	run_qtr = data[0]
+	ordinal_qtr = data[0]
 	_bioproductivity = data[1]
 	_biomass = data[2]
 	_biodiversity = data[3]
@@ -82,7 +82,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr := int_data[0]
-	run_qtr = svr_qtr # TODO: histories
+	ordinal_qtr = svr_qtr # TODO: histories
 	
 	var dirty := int_data[int_offset]
 	int_offset += 1

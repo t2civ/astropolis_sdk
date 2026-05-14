@@ -30,7 +30,7 @@ extends RefCounted
 
 # All data flows server -> interface.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var run_qtr := -1
+var ordinal_qtr := -1
 var _numbers: PackedFloat64Array
 var _intrinsic_growths: PackedFloat64Array # Facility only
 var _carrying_capacities: PackedFloat64Array # Facility only; indexed by carrying_capacity_group
@@ -132,7 +132,7 @@ func get_number_for_carrying_capacity_group(carrying_capacity_group: int) -> flo
 
 ## Initializes this component from the server-supplied init payload.
 func set_network_init(data: Array) -> void:
-	run_qtr = data[0]
+	ordinal_qtr = data[0]
 	_numbers = data[1]
 	_intrinsic_growths = data[2]
 	_carrying_capacities = data[3]
@@ -148,7 +148,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var float_data: PackedFloat64Array = data[2]
 	
 	var svr_qtr: int = int_data[0]
-	if run_qtr < svr_qtr:
+	if ordinal_qtr < svr_qtr:
 		_update_history(svr_qtr) # before new quarter changes
 	
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
@@ -163,12 +163,12 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 
 func _update_history(svr_qtr: int) -> void:
-	if run_qtr == -1: # new - no history to save yet
-		run_qtr = svr_qtr
+	if ordinal_qtr == -1: # new - no history to save yet
+		ordinal_qtr = svr_qtr
 		return
-	while run_qtr < svr_qtr: # loop in case we missed a quarter
+	while ordinal_qtr < svr_qtr: # loop in case we missed a quarter
 		var i := 0
 		while i < _n_populations:
 			_history_numbers[i].append(_numbers[i])
 			i += 1
-		run_qtr += 1
+		ordinal_qtr += 1

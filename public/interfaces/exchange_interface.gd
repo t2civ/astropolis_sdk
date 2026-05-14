@@ -120,7 +120,7 @@ func set_network_init(data: Array) -> void:
 	body_name = data[5]
 	# body is resolved in process_ai_init — BodyInterface may not yet be in
 	# interfaces_by_name because MktsAI is drained before OpsAI.
-	run_qtr = data[6]
+	ordinal_qtr = data[6]
 	_prices = data[7]
 	_ask_prices = data[8]
 	_bid_prices = data[9]
@@ -152,12 +152,12 @@ func sync_server_dirty(data: Array) -> void:
 		_add_orders_delta(_bids, int_data)
 		k += 2
 
-	assert(int_data[0] >= run_qtr)
-	if int_data[0] > run_qtr:
-		if run_qtr == -1:
-			run_qtr = int_data[0]
+	assert(int_data[0] >= ordinal_qtr)
+	if int_data[0] > ordinal_qtr:
+		if ordinal_qtr == -1:
+			ordinal_qtr = int_data[0]
 		else:
-			run_qtr = int_data[0]
+			ordinal_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
 
 
