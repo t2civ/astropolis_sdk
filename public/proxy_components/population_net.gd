@@ -8,14 +8,14 @@
 class_name PopulationNet
 extends RefCounted
 
-## Net-synced population component held by [FacilityInterface],
-## [PlayerInterface], [BodyInterface], or [JoinInterface].
+## Net-synced population component held by [FacilityProxy],
+## [PlayerProxy], [BodyProxy], or [JoinProxy].
 ##
 ## Holds population numbers, intrinsic growth rates, carrying capacities, and
 ## migration pressures. Arrays are indexed by population_type unless otherwise
 ## noted; carrying capacities are indexed by carrying_capacity_group.
 ## Intrinsic growth, carrying capacities, and migration pressures are
-## [FacilityInterface] only; aggregate hosts only carry [member _numbers].
+## [FacilityProxy] only; aggregate hosts only carry [member _numbers].
 ##
 ## Server-side Population pushes changes to [PopulationNet] via sync.
 ##
@@ -23,12 +23,12 @@ extends RefCounted
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Interface], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the AI thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 
 
-# All data flows server -> interface.
+# All data flows server -> proxy.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var ordinal_qtr := -1
 var _numbers: PackedFloat64Array

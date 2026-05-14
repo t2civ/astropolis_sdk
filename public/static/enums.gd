@@ -8,7 +8,7 @@
 class_name Enums
 extends Object
 
-## Astropolis-wide enums shared across server, interface, and table-driven code.
+## Astropolis-wide enums shared across server, proxy, and table-driven code.
 
 
 ## Generic 'type' enums may be used and re-used in different contexts.
@@ -34,7 +34,7 @@ enum TradeClasses {
 	TRADE_CLASS_SERVICES,
 }
 
-## Top-level kind of a [PlayerInterface] (state polity, space agency, or
+## Top-level kind of a [PlayerProxy] (state polity, space agency, or
 ## private company).
 enum PlayerClasses {
 	PLAYER_CLASS_POLITY,

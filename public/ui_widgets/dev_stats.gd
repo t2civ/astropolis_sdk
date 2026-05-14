@@ -9,10 +9,10 @@ class_name DevStats
 extends MarginContainer
 
 ## Multi-target development-stats grid. Shows population, economy, power,
-## manufacturing, etc. as rows × interface targets as columns.
+## manufacturing, etc. as rows × proxy targets as columns.
 ##
 ## Used by [ITabDevelopment] and the standalone development panel. Calls
-## interface methods on the AI thread, then builds the grid on the main
+## proxy methods on the AI thread, then builds the grid on the main
 ## thread.
 
 
@@ -24,14 +24,14 @@ signal has_stats_changed(has_stats: bool)
 ## Display string for zero values. Set to [code]""[/code] to print zeros
 ## with units instead of a placeholder.
 var zero_value := "-"
-## If true, missing interfaces still get a column (with no data).
-var show_missing_interface := true
+## If true, missing proxies still get a column (with no data).
+var show_missing_proxy := true
 ## If false, rows that have no data across all targets are skipped.
 var force_rows := true
 ## Minimum number of columns including the row-label column. Pads with empty
 ## columns if there are fewer targets than this.
 var min_columns := 3
-## Component name (string property on [Interface]) that must exist for a
+## Component name (string property on [Proxy]) that must exist for a
 ## target to count as having data.
 var required_component := &"operations"
 
@@ -57,13 +57,13 @@ var content: Array[Array] = [
 	[&"LABEL_BIODIVERSITY", &"get_development_biodiversity", IVQFormat.prefixed_unit.bind(&"spp")],
 ]
 
-## Interface names to query, one per column.
+## Proxy names to query, one per column.
 var targets: Array[StringName] = [&"PLANET_EARTH", &"JOIN_OFFWORLD"]
 ## Header text per column (translated keys); if non-empty, used instead of
-## the interface's own name.
+## the proxy's own name.
 var column_names: Array[StringName] = [&"PLANET_EARTH", &"TXT_OFF_EARTH"]
 ## Fallback header per column when [member column_names] is empty and the
-## target interface is missing. Empty entries fall back to the target string.
+## target proxy is missing. Empty entries fall back to the target string.
 var fallback_names: Array[StringName] = [&"", &""]
 
 var _thread_targets: Array[StringName]
@@ -97,40 +97,40 @@ func _set_data() -> void:
 	_thread_column_names = column_names
 	_thread_fallback_names = fallback_names
 	
-	# get Interfaces and check required components
-	var interfaces: Array[Interface] = []
+	# get Proxies and check required components
+	var proxies: Array[Proxy] = []
 	var has_data := false
 	for target in _thread_targets:
-		var interface := Interface.get_interface_by_name(target)
-		if interface:
-			if interface.get(required_component):
+		var proxy := Proxy.get_proxy_by_name(target)
+		if proxy:
+			if proxy.get(required_component):
 				has_data = true
 			else:
-				interface = null
-		if interface or show_missing_interface:
-			interfaces.append(interface) # may be null
+				proxy = null
+		if proxy or show_missing_proxy:
+			proxies.append(proxy) # may be null
 	if !has_data:
 		_no_data.call_deferred()
 		return
 
 	# do counts
-	var n_interfaces := interfaces.size()
+	var n_proxies := proxies.size()
 	var n_spacers := 0
-	if n_interfaces < min_columns - 1:
-		n_spacers = min_columns - n_interfaces - 1
-	
+	if n_proxies < min_columns - 1:
+		n_spacers = min_columns - n_proxies - 1
+
 	# start building data
-	data.append(n_interfaces + 1 + n_spacers) # n_columns
-	
+	data.append(n_proxies + 1 + n_spacers) # n_columns
+
 	# headers
 	var i := 0
-	while i < n_interfaces:
-		var interface: Interface = interfaces[i]
+	while i < n_proxies:
+		var proxy: Proxy = proxies[i]
 		var use_name := ""
 		if _thread_column_names:
 			use_name = _thread_column_names[i]
-		elif interface:
-			use_name = interface.gui_name if interface.gui_name else tr(interface.name)
+		elif proxy:
+			use_name = proxy.gui_name if proxy.gui_name else tr(proxy.name)
 		elif _thread_fallback_names[i]:
 			use_name = _thread_fallback_names[i]
 		else:
@@ -148,10 +148,10 @@ func _set_data() -> void:
 		var method: StringName = line_array[1]
 		var values := []
 		var is_data := false
-		for interface in interfaces:
+		for proxy in proxies:
 			var value: Variant = 0.0
-			if interface:
-				value = interface.call(method)
+			if proxy:
+				value = proxy.call(method)
 				if value != null:
 					is_data = true
 			values.append(value)

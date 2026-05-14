@@ -8,7 +8,7 @@
 class_name StratumNet
 extends RefCounted
 
-## Net-synced stratum component held by [BodyInterface]. Represents a
+## Net-synced stratum component held by [BodyProxy]. Represents a
 ## geological layer or polity territory of a body.
 ##
 ## A body can have any number of strata. A spacecraft body has 0 strata; the
@@ -25,7 +25,7 @@ extends RefCounted
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Interface], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the AI thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 
@@ -39,7 +39,7 @@ enum {
 
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var ordinal_qtr := -1
-var stratum_index := -1  ## Index into [member BodyInterface.strata].
+var stratum_index := -1  ## Index into [member BodyProxy.strata].
 var name: StringName  ## Stratum row name from [code]strata.tsv[/code].
 var stratum_group := -1  ## Index into [code]stratum_groups.tsv[/code].
 var polity_name: StringName  ## Polity owning this stratum, or [code]&""[/code] for commons.

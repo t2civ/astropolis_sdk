@@ -8,8 +8,8 @@
 class_name OperationsNet
 extends RefCounted
 
-## Net-synced operations component held by [FacilityInterface],
-## [PlayerInterface], [BodyInterface], or [JoinInterface].
+## Net-synced operations component held by [FacilityProxy],
+## [PlayerProxy], [BodyProxy], or [JoinProxy].
 ##
 ## Holds capacities, run rates, effective rates, optional financials, and
 ## (Facility only) operation flags, commands, and target utilizations. Arrays
@@ -21,9 +21,9 @@ extends RefCounted
 ## replacement).
 ##
 ## Server-side Operations pushes changes to [OperationsNet] via sync. All
-## vars are interface read-only except [code]_op_commands[/code] and
-## [code]_target_utilizations[/code], which are interface-authoritative
-## during runtime: data flows interface -> server. Use [method set_op_command]
+## vars are proxy read-only except [code]_op_commands[/code] and
+## [code]_target_utilizations[/code], which are proxy-authoritative
+## during runtime: data flows proxy -> server. Use [method set_op_command]
 ## and [method set_target_utilization] to modify; the server picks up changes
 ## via reverse sync. Server is the source only at game start and after load,
 ## via [method get_network_init] / [method set_network_init]. Financials are
@@ -34,13 +34,13 @@ extends RefCounted
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Interface], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the AI thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 
 
 ## Bit flags describing operation availability and run logic. Set/cleared
-## by the server; interface read-only.
+## by the server; proxy read-only.
 enum OpFlags {
 	# Op availability
 	CAN_HAVE = 1,
@@ -59,7 +59,7 @@ enum OpFlags {
 	MAXIMIZE_COMMAND = 1 << 15,
 }
 
-## Player/AI op-control commands. Interface-authoritative on facilities; set
+## Player/AI op-control commands. Proxy-authoritative on facilities; set
 ## via [method set_op_command].
 enum OpCommands {
 	AUTOMATE,        ## Self-manage for shortages, commitments, or profit.
@@ -79,7 +79,7 @@ enum {
 }
 
 
-# Interface read-only! Data flows server -> interface.
+# Proxy read-only! Data flows server -> proxy.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var ordinal_qtr := -1
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
@@ -101,7 +101,7 @@ var _capacity_factors: PackedFloat64Array # environmental limit (renewable power
 var _gross_margins: PackedFloat64Array # at current prices (even if rate = 0)
 var _op_flags: PackedInt64Array # enum; Facility only
 
-# Facility only; set via FacilityInterface. Reverse data flow: interface -> server!
+# Facility only; set via FacilityProxy. Reverse data flow: proxy -> server!
 var _op_commands: PackedInt64Array # enum; Facility only
 var _target_utilizations: PackedFloat64Array
 
@@ -111,7 +111,7 @@ var _is_facility := false
 
 
 
-# interface dirty data (dirty indexes as bit flags)
+# proxy dirty data (dirty indexes as bit flags)
 var _dirty_op_commands: PackedInt64Array
 var _dirty_target_utilizations: PackedInt64Array
 
@@ -229,13 +229,13 @@ func get_nominal_biomass() -> float:
 # misc
 
 ## Returns true if this component carries financials. Always true for
-## [FacilityInterface] and [PlayerInterface], and for [JoinInterface]s of
+## [FacilityProxy] and [PlayerProxy], and for [JoinProxy]s of
 ## those.
 func has_financials() -> bool:
 	return _has_financials
 
 
-## Returns true if this component is hosted by a [FacilityInterface].
+## Returns true if this component is hosted by a [FacilityProxy].
 func is_facility() -> bool:
 	return _is_facility
 
@@ -339,7 +339,7 @@ func get_utilization(type: int) -> float:
 
 
 ## Returns target utilization for operation [param type] (player or AI
-## intent — interface-authoritative for facilities).
+## intent — proxy-authoritative for facilities).
 func get_target_utilization(type: int) -> float:
 	return _target_utilizations[type]
 
@@ -523,11 +523,11 @@ func get_module_computation(module_type: int) -> float:
 	return sum
 
 
-# **************************** INTERFACE MODIFY *******************************
+# ***************************** PROXY MODIFY **********************************
 
-## Sets the op command for operation [param type]. Interface-authoritative:
-## this change flows interface -> server. Returns true if the value changed
-## (caller marks [constant Interface.DIRTY_OPERATIONS]).
+## Sets the op command for operation [param type]. Proxy-authoritative:
+## this change flows proxy -> server. Returns true if the value changed
+## (caller marks [constant Proxy.DirtyFlags.DIRTY_OPERATIONS]).
 func set_op_command(type: int, command: int) -> bool:
 	assert(command < OpCommands.N_OP_COMMANDS)
 	if _op_commands[type] == command:
@@ -538,8 +538,8 @@ func set_op_command(type: int, command: int) -> bool:
 
 
 ## Sets the target utilization for operation [param type] to [param value].
-## Interface-authoritative: this change flows interface -> server. Returns
-## true if the value changed (caller marks [constant Interface.DIRTY_OPERATIONS]).
+## Proxy-authoritative: this change flows proxy -> server. Returns
+## true if the value changed (caller marks [constant Proxy.DirtyFlags.DIRTY_OPERATIONS]).
 func set_target_utilization(type: int, value: float) -> bool:
 	assert(!is_nan(value))
 	assert(value >= 0.0)
@@ -573,7 +573,7 @@ func set_network_init(data: Array) -> void:
 
 
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
-## are set. Called by the parent [Interface] during sync.
+## are set. Called by the parent [Proxy] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var int_data: PackedInt64Array = data[1]
 	var float_data: PackedFloat64Array = data[2]
@@ -613,10 +613,10 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_ints_dirty(_op_flags) # not accumulator!
 
 
-## Returns the reverse-flow payload for interface-authoritative fields
+## Returns the reverse-flow payload for proxy-authoritative fields
 ## ([code]_op_commands[/code] and [code]_target_utilizations[/code]). Mirrors
 ## the forward pattern: bit-packed dirty flags + dense values via [SyncHelper].
-func get_interface_dirty() -> Array:
+func get_proxy_dirty() -> Array:
 	var int_data := PackedInt64Array()
 	var float_data := PackedFloat64Array()
 	_sync.init_for_take(int_data, float_data)

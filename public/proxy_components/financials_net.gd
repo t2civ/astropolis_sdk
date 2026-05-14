@@ -8,8 +8,8 @@
 class_name FinancialsNet
 extends RefCounted
 
-## Net-synced financials component held by [FacilityInterface],
-## [PlayerInterface], or player-specific [JoinInterface]s.
+## Net-synced financials component held by [FacilityProxy],
+## [PlayerProxy], or player-specific [JoinProxy]s.
 ##
 ## Holds revenue, gross output, cost of goods sold, additional accountings,
 ## and per-item history (last N quarters). Income and cash-flow items are
@@ -23,7 +23,7 @@ extends RefCounted
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Interface], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the AI thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 
@@ -36,7 +36,7 @@ enum {
 }
 
 
-# interface sync
+# proxy sync
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var ordinal_qtr := -1
 var _revenue := 0.0 # positive
@@ -134,7 +134,7 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 
 func _update_quarter(svr_qtr: int) -> void:
-	# Server & interface do this in parallel, so no history sync needed.
+	# Server & proxy do this in parallel, so no history sync needed.
 	if ordinal_qtr == -1: # no history to save yet
 		ordinal_qtr = svr_qtr
 		return

@@ -219,13 +219,13 @@ func _settings_listener(setting: StringName, value: Variant) -> void:
 func _get_ai_data(target_name: StringName) -> void:
 	const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
 	var data := []
-	var interface := Interface.get_interface_by_name(target_name)
-	if !interface:
+	var proxy := Proxy.get_proxy_by_name(target_name)
+	if !proxy:
 		_update_no_operations.call_deferred()
 		return
 
 	var tab := current_tab
-	var operations := interface.get_operations()
+	var operations := proxy.get_operations()
 	var has_financials := operations.has_financials()
 
 	var modules: PackedInt32Array = _op_classes_modules[tab]

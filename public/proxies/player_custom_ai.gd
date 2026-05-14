@@ -6,10 +6,10 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name PlayerCustomAI
-extends PlayerInterface
+extends PlayerProxy
 
 ## Example custom player AI. Could extend either [PlayerBaseAI] or
-## [PlayerInterface]; setting [constant OVERRIDE_AI] to [code]true[/code]
+## [PlayerProxy]; setting [constant OVERRIDE_AI] to [code]true[/code]
 ## makes this the selected AI for players locally.
 
 

@@ -8,19 +8,19 @@
 class_name AstroSelectionManager
 extends IVSelectionManager
 
-## Astropolis subclass of [IVSelectionManager] that adds [Interface]
+## Astropolis subclass of [IVSelectionManager] that adds [Proxy]
 ## selections (alongside ivoyager's [code]IVBody[/code] / [code]IVSmallBodiesGroup[/code]
 ## selections).
 ##
 ## Registers itself as the [code]IVSelectionManager[/code] replacement at
-## static init and registers [member MainThreadGlobal.interfaces_by_name] as
-## an additional selection-name source so any [Interface] can be selected by
+## static init and registers [member MainThreadGlobal.proxies_by_name] as
+## an additional selection-name source so any [Proxy] can be selected by
 ## name.
 
 
 static func _static_init() -> void:
 	replacement_subclass = AstroSelectionManager
-	add_selection_dictionary(MainThreadGlobal.interfaces_by_name)
+	add_selection_dictionary(MainThreadGlobal.proxies_by_name)
 
 
 ## Returns the translated GUI name for the currently-selected body, or

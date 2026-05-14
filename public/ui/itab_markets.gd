@@ -9,7 +9,7 @@ class_name ITabMarkets
 extends MarginContainer
 
 ## "Markets" tab subpanel for [InfoPanel]. Shows resource prices, bid/ask,
-## and volume for the current selection's [ExchangeInterface], grouped by
+## and volume for the current selection's [ExchangeProxy], grouped by
 ## resource class.
 ##
 ## Tab indices follow row enumerations in [code]resource_classes.tsv[/code].
@@ -164,13 +164,13 @@ func _update_tab(_suppress_camera_move := false) -> void:
 		return
 		
 	var target_name := _selection_manager.get_name()
-	var interface := MainThreadGlobal.get_interface_by_name(target_name)
-	if !interface:
+	var proxy := MainThreadGlobal.get_proxy_by_name(target_name)
+	if !proxy:
 		_update_no_markets()
 		return
-	
-	var exchange := interface.get_exchange()
-	var inventory := interface.get_inventory()
+
+	var exchange := proxy.get_exchange()
+	var inventory := proxy.get_inventory()
 
 	if exchange or inventory:
 		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(exchange, inventory))
@@ -186,7 +186,7 @@ func _update_no_markets() -> void:
 # *****************************************************************************
 # AI thread !!!!
 
-func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
+func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
 
 	var is_exchange := true if exchange else false
 	var is_inventory := true if inventory else false

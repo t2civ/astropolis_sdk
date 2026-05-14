@@ -8,7 +8,7 @@
 class_name SyncHelper
 extends RefCounted
 
-## Helper component for interface-side sync: bit-packed dirty-flag
+## Helper component for proxy-side sync: bit-packed dirty-flag
 ## sync over flat [int]/[float] payload arrays.
 ##
 ## Used by [OperationsNet], [InventoryNet], [FinancialsNet], and the other net

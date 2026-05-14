@@ -17,12 +17,12 @@ extends RefCounted
 ## maintained in the AI thread.
 
 
-## Emitted on the AI thread when a new [Interface] joins the registry.
-signal interface_added(interface: Interface)
+## Emitted on the AI thread when a new [Proxy] joins the registry.
+signal proxy_added(proxy: Proxy)
 
-## Emitted on the AI thread when an [Interface] reports a state change. The
+## Emitted on the AI thread when a [Proxy] reports a state change. The
 ## payload is consumed by sync routines on the receiver side.
-signal interface_changed(entity_type: int, entity_id: int, data: Array)
+signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 
 ## Emitted when player ownership changes. FIXME — added for NetworkLobby;
 ## not hooked up anywhere else yet.

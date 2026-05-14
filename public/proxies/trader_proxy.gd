@@ -1,18 +1,18 @@
-# trader_interface.gd
+# trader_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name TraderInterface
-extends Interface
+class_name TraderProxy
+extends Proxy
 
-## [TraderInterface] buys and sells resources for a specific [FacilityInterface].
+## [TraderProxy] buys and sells resources for a specific [FacilityProxy].
 ##
 ## A trader is paired 1-to-1 with a facility and trades on its behalf via the
-## [BrokerInterface] at the facility's body. Server-side Trader pushes changes
-## to [TraderInterface].
+## [BrokerProxy] at the facility's body. Server-side Trader pushes changes
+## to [TraderProxy].
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
@@ -24,29 +24,29 @@ extends Interface
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [TraderInterface] instances, indexed by [member trader_id].
-static var trader_interfaces: Array[TraderInterface] = []
+## All [TraderProxy] instances, indexed by [member trader_id].
+static var trader_proxies: Array[TraderProxy] = []
 
 
 # immutable post-init
-var trader_id := -1  ## Index into [member trader_interfaces].
-var facility_id := -1  ## [member FacilityInterface.facility_id] this trader belongs to.
-var facility: FacilityInterface  ## Owning [FacilityInterface].
+var trader_id := -1  ## Index into [member trader_proxies].
+var facility_id := -1  ## [member FacilityProxy.facility_id] this trader belongs to.
+var facility: FacilityProxy  ## Owning [FacilityProxy].
 
 
 
 func _init() -> void:
-	const ENTITY_TRADER := Interface.EntityType.ENTITY_TRADER
+	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
 	super()
 	entity_type = ENTITY_TRADER
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
-## Returns the [BrokerInterface] at this trader's body, or null briefly during
+## Returns the [BrokerProxy] at this trader's body, or null briefly during
 ## first-facility-on-body init.
-func get_broker() -> BrokerInterface:
+func get_broker() -> BrokerProxy:
 	return facility.body.broker
 
 
@@ -57,7 +57,7 @@ func set_network_init(data: Array) -> void:
 	trader_id = data[2]
 	name = data[3]
 	facility_id = data[4]
-	facility = FacilityInterface.facility_interfaces[facility_id]
+	facility = FacilityProxy.facility_proxies[facility_id]
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id

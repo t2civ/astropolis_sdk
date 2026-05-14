@@ -1,15 +1,15 @@
-# join_interface.gd
+# join_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name JoinInterface
-extends Interface
+class_name JoinProxy
+extends Proxy
 
-## Provides GUI and AI data interface (read only!) for a server 'Join' object,
-## which joins component data from Facilities, Bodies and other Joins. 
+## Provides GUI and AI data proxy (read only!) for a server 'Join' object,
+## which joins component data from Facilities, Bodies and other Joins.
 ##
 ## Joins handle 5 components (Operations, Financials, Population, Biome and
 ## Cyberspace) that ultimately derive all data from Facilities. Note that Body
@@ -62,8 +62,8 @@ extends Interface
 ##    will have access to API (just like any Godot class) but the GDScript class
 ##    will be removed.
 
-## All [JoinInterface] instances, indexed by [member join_id].
-static var join_interfaces: Array[JoinInterface] = []
+## All [JoinProxy] instances, indexed by [member join_id].
+static var join_proxies: Array[JoinProxy] = []
 
 var operations: OperationsNet  ## Aggregate [OperationsNet] (always present).
 ## Aggregate [FinancialsNet]. Only set on player-specific joins.
@@ -73,20 +73,20 @@ var biome: BiomeNet  ## Aggregate [BiomeNet] (always present).
 var cyberspace: CyberspaceNet  ## Aggregate [CyberspaceNet] (always present).
 
 # read-only!
-var join_id := -1  ## Index into [member join_interfaces].
+var join_id := -1  ## Index into [member join_proxies].
 ## Depth in the aggregation DAG: 0 for a sink (e.g. [code]JOIN_ALL[/code]).
 var join_depth := 0
 
 
 
 func _init() -> void:
-	const ENTITY_JOIN := Interface.EntityType.ENTITY_JOIN
+	const ENTITY_JOIN := Proxy.EntityType.ENTITY_JOIN
 	super()
 	entity_type = ENTITY_JOIN
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
 func has_development() -> bool:
 	return true
@@ -147,7 +147,7 @@ func get_development_biodiversity() -> float:
 	if biome:
 		var biodiversity := biome.get_biodiversity()
 		if biodiversity == 1.0 and get_development_population() == 0.0:
-			return 0.0 
+			return 0.0
 		return biodiversity
 	return 0.0
 
@@ -201,12 +201,12 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_JOIN := Interface.DirtyFlags.DIRTY_JOIN
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
-	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
-	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
-	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_JOIN := Proxy.DirtyFlags.DIRTY_JOIN
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_FINANCIALS := Proxy.DirtyFlags.DIRTY_FINANCIALS
+	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
@@ -229,7 +229,7 @@ func sync_server_dirty(data: Array) -> void:
 		k += 3
 	if dirty & DIRTY_CYBERSPACE:
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
-	
+
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
 		if ordinal_qtr == -1:

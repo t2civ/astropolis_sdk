@@ -1,17 +1,17 @@
-# exchange_interface.gd
+# exchange_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name ExchangeInterface
-extends Interface
+class_name ExchangeProxy
+extends Proxy
 
-## [ExchangeInterface] is a per-body resource market.
+## [ExchangeProxy] is a per-body resource market.
 ##
-## Created when a [BodyInterface] gains >1 [FacilityInterface]. Receives orders
-## routed by the [BrokerInterface] at this body for [TraderInterface]s.[br][br]
+## Created when a [BodyProxy] gains >1 [FacilityProxy]. Receives orders
+## routed by the [BrokerProxy] at this body for [TraderProxy]s.[br][br]
 ##
 ## Arrays are indexed by resource_type unless indicated otherwise. A value of
 ## 0.0 in any "price" variable means N/A or no current price.[br][br]
@@ -27,8 +27,8 @@ extends Interface
 ##   [5] expiration (epoch seconds)[br]
 ##   [6] trader_id[br][br]
 ##
-## Server-side Exchange pushes changes to [ExchangeInterface]. Data flows
-## server -> interface only.[br][br]
+## Server-side Exchange pushes changes to [ExchangeProxy]. Data flows
+## server -> proxy only.[br][br]
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
@@ -39,14 +39,14 @@ extends Interface
 
 const ORDER_SIZE := 7
 
-## All [ExchangeInterface] instances, indexed by [member exchange_id].
-static var exchange_interfaces: Array[ExchangeInterface] = []
+## All [ExchangeProxy] instances, indexed by [member exchange_id].
+static var exchange_proxies: Array[ExchangeProxy] = []
 
-var exchange_id := -1  ## Index into [member exchange_interfaces].
-## Hosting [BodyInterface]. Immutable post-init; resolved in
+var exchange_id := -1  ## Index into [member exchange_proxies].
+## Hosting [BodyProxy]. Immutable post-init; resolved in
 ## [method process_ai_init] (deferred because [code]MktsAI[/code] drains
 ## before [code]OpsAI[/code] does).
-var body: BodyInterface
+var body: BodyProxy
 var body_name: StringName  ## Name of the hosting body.
 
 var _prices: PackedFloat64Array
@@ -65,7 +65,7 @@ var _free_orders: Array[PackedInt64Array] = []
 
 
 func _init() -> void:
-	const ENTITY_EXCHANGE := Interface.EntityType.ENTITY_EXCHANGE
+	const ENTITY_EXCHANGE := Proxy.EntityType.ENTITY_EXCHANGE
 	super()
 	entity_type = ENTITY_EXCHANGE
 
@@ -75,13 +75,13 @@ func _clear_circular_references() -> void:
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
 func has_markets() -> bool:
 	return true
 
 
-func get_exchange() -> ExchangeInterface:
+func get_exchange() -> ExchangeProxy:
 	return self
 
 
@@ -118,8 +118,8 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
-	# body is resolved in process_ai_init — BodyInterface may not yet be in
-	# interfaces_by_name because MktsAI is drained before OpsAI.
+	# body is resolved in process_ai_init — BodyProxy may not yet be in
+	# proxies_by_name because MktsAI is drained before OpsAI.
 	ordinal_qtr = data[6]
 	_prices = data[7]
 	_ask_prices = data[8]
@@ -131,11 +131,11 @@ func set_network_init(data: Array) -> void:
 
 func process_ai_init() -> void:
 	if !body:
-		body = interfaces_by_name[body_name]
+		body = proxies_by_name[body_name]
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_EXCHANGE := Interface.DirtyFlags.DIRTY_EXCHANGE
+	const DIRTY_EXCHANGE := Proxy.DirtyFlags.DIRTY_EXCHANGE
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]

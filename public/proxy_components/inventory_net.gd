@@ -8,21 +8,21 @@
 class_name InventoryNet
 extends RefCounted
 
-## Net-synced inventory component held by [FacilityInterface].
+## Net-synced inventory component held by [FacilityProxy].
 ##
 ## Holds resource stocks, reserves (ops, trade), in-transits, contracts,
 ## rates, and storage capacity/usage. Arrays are indexed by resource_type;
 ## storage arrays by storage_class. All values are in internal units.
 ##
 ## Server-side Inventory pushes changes to [InventoryNet] via sync. Only
-## [FacilityInterface] has an inventory — [PlayerInterface], [BodyInterface],
-## and [JoinInterface] do not aggregate inventory.
+## [FacilityProxy] has an inventory — [PlayerProxy], [BodyProxy],
+## and [JoinProxy] do not aggregate inventory.
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Interface], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the AI thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 
@@ -35,7 +35,7 @@ enum ResourceFlags {
 	IS_MARKET = 1 << 5,
 }
 
-# Interface read-only! Data flows server -> interface.
+# Proxy read-only! Data flows server -> proxy.
 ## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
 var ordinal_qtr := -1
 
@@ -174,7 +174,7 @@ func set_network_init(data: Array) -> void:
 
 
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
-## are set. Called by the parent [Interface] during sync.
+## are set. Called by the parent [Proxy] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	var int_data: PackedInt64Array = data[1]
 	var float_data: PackedFloat64Array = data[2]

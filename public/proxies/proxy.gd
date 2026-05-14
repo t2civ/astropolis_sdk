@@ -1,23 +1,23 @@
-# interface.gd
+# proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name Interface
+class_name Proxy
 extends RefCounted
 
 ## Base class for entity proxies between AI/GUI clients and the game server.
 ##
-## All GUI and in-game AI interaction with game internals goes through an
-## [Interface]. Subclasses include [FacilityInterface], [PlayerInterface],
-## [BodyInterface], [JoinInterface], [TraderInterface], and
-## [ExchangeInterface]. Each is paired with a server-side entity that pushes
+## All GUI and in-game AI interaction with game internals goes through a
+## [Proxy]. Subclasses include [FacilityProxy], [PlayerProxy],
+## [BodyProxy], [JoinProxy], [TraderProxy], and
+## [ExchangeProxy]. Each is paired with a server-side entity that pushes
 ## changes via sync methods. A few "player control" properties have reverse
-## interface -> server data flow.
+## proxy -> server data flow.
 ##
-## Components attached to an [Interface] are net-sync objects: [OperationsNet],
+## Components attached to a [Proxy] are net-sync objects: [OperationsNet],
 ## [InventoryNet], [FinancialsNet], [PopulationNet], [BiomeNet],
 ## [CyberspaceNet], and [StratumNet].
 ##
@@ -31,16 +31,16 @@ extends RefCounted
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## Emitted on the AI thread when this interface's mirrored state changes;
+## Emitted on the AI thread when this proxy's mirrored state changes;
 ## payload is consumed by the sync layer on the receiver side. AI thread only!
-signal interface_changed(entity_type: int, entity_id: int, data: Array)
+signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 
 ## Emitted when persistent (saveable) data changes. Don't emit this directly;
 ## mark the relevant dirty flag and let the sync layer emit.
 signal persist_data_changed(network_id: int, data: Array)
 
 
-## Bit flags marking which parts of an [Interface] (and its components) are
+## Bit flags marking which parts of a [Proxy] (and its components) are
 ## dirty for sync.
 enum DirtyFlags {
 	DIRTY_QUARTER = 1,
@@ -60,9 +60,9 @@ enum DirtyFlags {
 	DIRTY_BROKER = 1 << 14,
 }
 
-## Identifies the kind of server entity an [Interface] proxies.
+## Identifies the kind of server entity a [Proxy] proxies.
 ## [code]N_ENTITY_TYPES[/code] is the count of real types;
-## [code]ENTITY_SERVER[/code] and [code]ENTITY_INTERFACE[/code] are extra
+## [code]ENTITY_SERVER[/code] and [code]ENTITY_PROXY[/code] are extra
 ## sync-routing markers.
 enum EntityType {
 	ENTITY_FACILITY,
@@ -73,11 +73,11 @@ enum EntityType {
 	ENTITY_TRADER,
 	ENTITY_BROKER,
 	ENTITY_SERVER,
-	ENTITY_INTERFACE,
+	ENTITY_PROXY,
 	N_ENTITY_TYPES,
 }
 
-## Identifies which net-sync component on an [Interface] a sync payload
+## Identifies which net-sync component on a [Proxy] a sync payload
 ## targets.
 enum ComponentType {
 	COMPONENT_OPERATIONS,
@@ -95,22 +95,22 @@ enum ComponentType {
 const INTERVAL := 7.0 * IVUnits.DAY
 
 
-## All [Interface] instances, indexed by [member interface_id]. AI thread only.
-static var interfaces: Array[Interface] = []
-## All [Interface] instances keyed by [member name] (e.g. [code]&"PLAYER_NASA"[/code],
+## All [Proxy] instances, indexed by [member proxy_id]. AI thread only.
+static var proxies: Array[Proxy] = []
+## All [Proxy] instances keyed by [member name] (e.g. [code]&"PLAYER_NASA"[/code],
 ## [code]&"JOIN_OFFWORLD"[/code]). AI thread only.
-static var interfaces_by_name: Dictionary[StringName, Interface] = {}
+static var proxies_by_name: Dictionary[StringName, Proxy] = {}
 
-## Shared bus for AI-thread signals between interfaces and the AI layer.
+## Shared bus for AI-thread signals between proxies and the AI layer.
 static var ai_bus := AIBus.new()
 
 
-var interface_id := -1  ## Index into [member interfaces].
+var proxy_id := -1  ## Index into [member proxies].
 var entity_type := -1  ## See [enum EntityType]. Set by subclass [code]_init()[/code].
 var name := &""  ## Unique, immutable identifier (e.g. [code]&"PLAYER_NASA"[/code]).
 var gui_name := ""  ## Display name; mutable. Empty player gui_name hides from GUI.
 ## Quarterly clock as [code]year * 4 + (quarter - 1)[/code]. Never set for a
-## [BodyInterface] without a facility.
+## [BodyProxy] without a facility.
 var ordinal_qtr := -1
 var last_interval := -INF  ## Time of last [method process_ai_interval] call.
 var next_interval := -INF  ## Time of next [method process_ai_interval] call.
@@ -123,7 +123,7 @@ var persist := [
 	&"next_interval",
 ]
 
-## True if this interface should run AI logic this frame. Read-only; managed
+## True if this proxy should run AI logic this frame. Read-only; managed
 ## by the AI/server-control machinery.
 var use_this_ai := false
 
@@ -152,28 +152,28 @@ func _init() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
 
 
-## Tears down references on this interface so it can be freed cleanly.
-## Subclasses override to also detach from related interfaces (body, player,
+## Tears down references on this proxy so it can be freed cleanly.
+## Subclasses override to also detach from related proxies (body, player,
 ## etc.) before chaining to [code]super()[/code].
 func remove() -> void:
 	_clear_circular_references()
 
 
-## Returns the [Interface] with the given [param interface_name], or null if
-## no such interface exists. AI thread only.
-static func get_interface_by_name(interface_name: StringName) -> Interface:
-	return interfaces_by_name.get(interface_name)
+## Returns the [Proxy] with the given [param proxy_name], or null if
+## no such proxy exists. AI thread only.
+static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
+	return proxies_by_name.get(proxy_name)
 
 
 # override below if applicable
 
-## Returns true if this interface contributes development statistics
+## Returns true if this proxy contributes development statistics
 ## (population, economy, power, manufacturing, etc.). Default false.
 func has_development() -> bool:
 	return false
 
 
-## Returns true if this interface participates in markets. Default false.
+## Returns true if this proxy participates in markets. Default false.
 func has_markets() -> bool:
 	return false
 
@@ -229,76 +229,76 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
-## Returns the [member name] of this interface's [BodyInterface], or
+## Returns the [member name] of this proxy's [BodyProxy], or
 ## [code]&""[/code] if not applicable.
 func get_body_name() -> StringName:
 	return &""
 
 
-## Returns body flags for this interface's [BodyInterface] (see ivoyager
+## Returns body flags for this proxy's [BodyProxy] (see ivoyager
 ## [code]IVBody.BodyFlags[/code]), or 0 if not applicable.
 func get_body_flags() -> int:
 	return 0
 
 
-## Returns the [member name] of this interface's [PlayerInterface], or
+## Returns the [member name] of this proxy's [PlayerProxy], or
 ## [code]&""[/code] if not applicable.
 func get_player_name() -> StringName:
 	return &""
 
 
-## Returns the player class index for this interface's [PlayerInterface], or
+## Returns the player class index for this proxy's [PlayerProxy], or
 ## -1 if not applicable.
 func get_player_class() -> int:
 	return -1
 
 
-## Returns the polity name for this interface, or [code]&""[/code] if not
+## Returns the polity name for this proxy, or [code]&""[/code] if not
 ## applicable.
 func get_polity_name() -> StringName:
 	return &""
 
 
-## Returns this interface's facilities. AI thread only! Default empty.
-func get_facilities() -> Array[Interface]:
+## Returns this proxy's facilities. AI thread only! Default empty.
+func get_facilities() -> Array[Proxy]:
 	return []
 
 
 # Components
 
-## Returns the [OperationsNet] component, or null if this interface has none.
+## Returns the [OperationsNet] component, or null if this proxy has none.
 func get_operations() -> OperationsNet:
 	return null
 
 
-## Returns the [InventoryNet] component, or null if this interface has none.
+## Returns the [InventoryNet] component, or null if this proxy has none.
 func get_inventory() -> InventoryNet:
 	return null
 
 
-## Returns the [FinancialsNet] component, or null if this interface has none.
+## Returns the [FinancialsNet] component, or null if this proxy has none.
 func get_financials() -> FinancialsNet:
 	return null
 
 
-## Returns the [PopulationNet] component, or null if this interface has none.
+## Returns the [PopulationNet] component, or null if this proxy has none.
 func get_population() -> PopulationNet:
 	return null
 
 
-## Returns the [BiomeNet] component, or null if this interface has none.
+## Returns the [BiomeNet] component, or null if this proxy has none.
 func get_biome() -> BiomeNet:
 	return null
 
 
-## Returns the [CyberspaceNet] component, or null if this interface has none.
+## Returns the [CyberspaceNet] component, or null if this proxy has none.
 func get_cyberspace() -> CyberspaceNet:
 	return null
 
 
-## Returns the [ExchangeInterface] this interface participates in, or null if
+## Returns the [ExchangeProxy] this proxy participates in, or null if
 ## not applicable.
-func get_exchange() -> ExchangeInterface:
+func get_exchange() -> ExchangeProxy:
 	return null
 
 
@@ -352,7 +352,7 @@ func process_ai_interval(_delta: float) -> void:
 
 
 ## Called after component histories have updated for the new quarter
-## ([member ordinal_qtr] advanced). Never called for a [BodyInterface] without a
+## ([member ordinal_qtr] advanced). Never called for a [BodyProxy] without a
 ## facility.
 func process_ai_new_quarter() -> void:
 	pass
@@ -361,7 +361,7 @@ func process_ai_new_quarter() -> void:
 # *****************************************************************************
 # sync
 
-## Initializes this interface from a server-supplied init payload. Subclasses
+## Initializes this proxy from a server-supplied init payload. Subclasses
 ## override to unpack their fields.
 func set_network_init(_data: Array) -> void:
 	pass
@@ -378,7 +378,7 @@ func _sync_ai_changes() -> void:
 
 
 ## Propagates a server-supplied delta payload (e.g. an aggregate change)
-## down through this interface's components. Subclasses override as needed.
+## down through this proxy's components. Subclasses override as needed.
 func propagate_server_delta(_data: Array) -> void:
 	pass
 

@@ -1,21 +1,21 @@
-# player_interface.gd
+# player_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name PlayerInterface
-extends Interface
+class_name PlayerProxy
+extends Proxy
 
-## [PlayerInterface] represents a polity, faction, or sub-entity that owns
-## [FacilityInterface]s.
+## [PlayerProxy] represents a polity, faction, or sub-entity that owns
+## [FacilityProxy]s.
 ##
-## A [PlayerInterface] aggregates component data ([OperationsNet],
+## A [PlayerProxy] aggregates component data ([OperationsNet],
 ## [FinancialsNet], [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated
 ## from its facilities. It has no [InventoryNet] of its own.
 ##
-## Server-side Player pushes changes to [PlayerInterface] and its components.
+## Server-side Player pushes changes to [PlayerProxy] and its components.
 ## Players are never removed during a game; an "alive" player is one with
 ## [member is_facilities] true.
 ##
@@ -29,22 +29,22 @@ extends Interface
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [PlayerInterface] instances, indexed by [member player_id].
-static var player_interfaces: Array[PlayerInterface] = []
+## All [PlayerProxy] instances, indexed by [member player_id].
+static var player_proxies: Array[PlayerProxy] = []
 
 # public read-only
-var player_id := -1  ## Index into [member player_interfaces].
+var player_id := -1  ## Index into [member player_proxies].
 var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
 ## Owning polity for this player when [code]polity_name[/code] differs from
 ## [member name] (sub-players only).
-var part_of: PlayerInterface
+var part_of: PlayerProxy
 var polity_name: StringName  ## Name of the polity for this player.
 var homeworld := ""  ## Name of this player's homeworld body.
 ## True while this player owns at least one facility ("alive" test).
 var is_facilities := true
 
 ## Facilities owned by this player. Resizable container — not threadsafe!
-var facilities: Array[Interface] = []
+var facilities: Array[Proxy] = []
 
 var operations := OperationsNet.new(true, true)  ## Aggregate [OperationsNet] component.
 var financials := FinancialsNet.new(true)  ## Aggregate [FinancialsNet] component.
@@ -55,7 +55,7 @@ var cyberspace := CyberspaceNet.new(true)  ## Aggregate [CyberspaceNet] componen
 
 
 func _init() -> void:
-	const ENTITY_PLAYER := Interface.EntityType.ENTITY_PLAYER
+	const ENTITY_PLAYER := Proxy.EntityType.ENTITY_PLAYER
 	super()
 	entity_type = ENTITY_PLAYER
 
@@ -66,7 +66,7 @@ func _clear_circular_references() -> void:
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
 
 func has_development() -> bool:
@@ -90,7 +90,7 @@ func get_polity_name() -> StringName:
 
 
 ## Returns this player's [member facilities]. AI thread only!
-func get_facilities() -> Array[Interface]:
+func get_facilities() -> Array[Proxy]:
 	return facilities
 
 
@@ -169,16 +169,16 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	player_class = data[5]
 	var part_of_name: StringName = data[6]
-	part_of = interfaces_by_name[part_of_name] if part_of_name else null
+	part_of = proxies_by_name[part_of_name] if part_of_name else null
 	polity_name = data[7]
 	homeworld = data[8]
-	
+
 	var operations_data: Array = data[9]
 	var financials_data: Array = data[10]
 	var population_data: Array = data[11]
 	var biome_data: Array = data[12]
 	var cyberspace_data: Array = data[13]
-	
+
 	operations.set_network_init(operations_data)
 	financials.set_network_init(financials_data)
 	population.set_network_init(population_data)
@@ -187,12 +187,12 @@ func set_network_init(data: Array) -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_PLAYER := Interface.DirtyFlags.DIRTY_PLAYER
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
-	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
-	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
-	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_PLAYER := Proxy.DirtyFlags.DIRTY_PLAYER
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_FINANCIALS := Proxy.DirtyFlags.DIRTY_FINANCIALS
+	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
@@ -206,10 +206,10 @@ func sync_server_dirty(data: Array) -> void:
 		gui_name = string_data[0]
 		player_class = int_data[1]
 		var part_of_name := string_data[1]
-		part_of = interfaces_by_name[part_of_name] if part_of_name else null
+		part_of = proxies_by_name[part_of_name] if part_of_name else null
 		polity_name = string_data[2]
 		homeworld = string_data[3]
-	
+
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
@@ -224,7 +224,7 @@ func sync_server_dirty(data: Array) -> void:
 		k += 3
 	if dirty & DIRTY_CYBERSPACE:
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
-	
+
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
 		if ordinal_qtr == -1:
@@ -236,7 +236,7 @@ func sync_server_dirty(data: Array) -> void:
 
 
 ## Registers [param facility] under this player. Marks the player "alive".
-func add_facility(facility: Interface) -> void:
+func add_facility(facility: Proxy) -> void:
 	assert(!facilities.has(facility))
 	facilities.append(facility)
 	is_facilities = true
@@ -244,6 +244,6 @@ func add_facility(facility: Interface) -> void:
 
 ## Removes [param facility] from this player. Updates [member is_facilities]
 ## to reflect whether the player still owns any facilities.
-func remove_facility(facility: Interface) -> void:
+func remove_facility(facility: Proxy) -> void:
 	facilities.erase(facility)
 	is_facilities = !facilities.is_empty()

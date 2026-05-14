@@ -1,23 +1,23 @@
-# facility_interface.gd
+# facility_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name FacilityInterface
-extends Interface
+class_name FacilityProxy
+extends Proxy
 
-## [FacilityInterface] represents a Player's development at a Body (see
-## [PlayerInterface] and [BodyInterface]).
+## [FacilityProxy] represents a Player's development at a Body (see
+## [PlayerProxy] and [BodyProxy]).
 ##
 ## A Facility runs operations enabled by modules (see corresponding data
-## tables). A [FacilityInterface] has required components [OperationsNet],
+## tables). A [FacilityProxy] has required components [OperationsNet],
 ## [InventoryNet] and [FinancialsNet], and optional components [PopulationNet],
 ## [BiomeNet], and [CyberspaceNet].
 ##
-## Server-side Facility pushes changes to [FacilityInterface] and its components.
-## A few "player control" properties have reverse interface -> server data flow.
+## Server-side Facility pushes changes to [FacilityProxy] and its components.
+## A few "player control" properties have reverse proxy -> server data flow.
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
@@ -28,12 +28,12 @@ extends Interface
 ## Warning! This object lives and dies on the AI thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
-## All [FacilityInterface] instances, indexed by [member facility_id].
-static var facility_interfaces: Array[FacilityInterface] = []
+## All [FacilityProxy] instances, indexed by [member facility_id].
+static var facility_proxies: Array[FacilityProxy] = []
 
-var facility_id := -1  ## Index into [member facility_interfaces].
+var facility_id := -1  ## Index into [member facility_proxies].
 var facility_class := -1  ## Facility class index. Not implemented yet.
-var trader_id := -1  ## [member TraderInterface.trader_id] of this facility's paired trader.
+var trader_id := -1  ## [member TraderProxy.trader_id] of this facility's paired trader.
 ## Public-sector share of this facility, often 0.0 or 1.0, sometimes mixed.
 var public_sector: float
 ## True if this is a small focused activity (affects stats and tax treatment).
@@ -48,10 +48,10 @@ var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
 var exchanges: Array[StringName]  ## Names of exchanges this facility participates in.
 
-var body: BodyInterface  ## Hosting [BodyInterface].
-var player: PlayerInterface  ## Owning [PlayerInterface].
-var trader: TraderInterface  ## Paired [TraderInterface]; set when TraderInterface registers.
-var joins: Array[JoinInterface] = []  ## [JoinInterface] aggregates this facility belongs to.
+var body: BodyProxy  ## Hosting [BodyProxy].
+var player: PlayerProxy  ## Owning [PlayerProxy].
+var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
+var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -66,7 +66,7 @@ var texture_2d: Texture2D
 
 
 func _init() -> void:
-	const ENTITY_FACILITY := Interface.EntityType.ENTITY_FACILITY
+	const ENTITY_FACILITY := Proxy.EntityType.ENTITY_FACILITY
 	super()
 	entity_type = ENTITY_FACILITY
 
@@ -77,7 +77,7 @@ func _init() -> void:
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
 ## Detaches this facility from its body and player. Call before letting the
 ## reference go.
@@ -86,10 +86,10 @@ func remove() -> void:
 	player.remove_facility(self)
 
 
-## Sets [member gui_name] and marks the interface dirty. Reverse-flow:
-## interface -> server.
+## Sets [member gui_name] and marks the proxy dirty. Reverse-flow:
+## proxy -> server.
 func set_gui_name(new_gui_name: String) -> void:
-	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
+	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
 	_dirty |= DIRTY_FACILITY
 	gui_name = new_gui_name
 
@@ -178,20 +178,20 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
-# Operations (interface-authoritative; reverse data flow interface -> server)
+# Operations (proxy-authoritative; reverse data flow proxy -> server)
 
-## Sets the op command for [param type]. Interface-authoritative: this change
-## flows interface -> server.
+## Sets the op command for [param type]. Proxy-authoritative: this change
+## flows proxy -> server.
 func set_operations_op_command(type: int, command: int) -> void:
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	if operations.set_op_command(type, command):
 		_dirty |= DIRTY_OPERATIONS
 
 
-## Sets the target utilization for [param type]. Interface-authoritative:
-## this change flows interface -> server.
+## Sets the target utilization for [param type]. Proxy-authoritative:
+## this change flows proxy -> server.
 func set_operations_target_utilization(type: int, value: float) -> void:
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	if operations.set_target_utilization(type, value):
 		_dirty |= DIRTY_OPERATIONS
 
@@ -222,9 +222,9 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace
 
 
-## Returns the spot [ExchangeInterface] at this facility's body, or null if the
+## Returns the spot [ExchangeProxy] at this facility's body, or null if the
 ## body has no spot exchange (broker absent or fewer than 2 facilities).
-func get_exchange() -> ExchangeInterface:
+func get_exchange() -> ExchangeProxy:
 	return body.get_spot_exchange()
 
 
@@ -243,13 +243,13 @@ func set_network_init(data: Array) -> void:
 	time_horizon = data[10]
 	polity_name = data[11]
 	exchanges = data[12]
-	player = interfaces_by_name[data[13]]
+	player = proxies_by_name[data[13]]
 	player.add_facility(self)
-	body = interfaces_by_name[data[14]]
+	body = proxies_by_name[data[14]]
 	body.add_facility(self)
 	var join_names: Array = data[15]
 	for join_name: StringName in join_names:
-		var join: JoinInterface = get_interface_by_name(join_name)
+		var join: JoinProxy = get_proxy_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
 
@@ -259,11 +259,11 @@ func set_network_init(data: Array) -> void:
 	var population_data: Array = data[19]
 	var biome_data: Array = data[20]
 	var cyberspace_data: Array = data[21]
-	
+
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
 	financials.set_network_init(financials_data)
-	
+
 	if population_data:
 		population = PopulationNet.new(true, true)
 		population.set_network_init(population_data)
@@ -273,20 +273,20 @@ func set_network_init(data: Array) -> void:
 	if cyberspace_data:
 		cyberspace = CyberspaceNet.new(true)
 		cyberspace.set_network_init(cyberspace_data)
-	
+
 	# IVSelectionManager
 	var ivbody := IVBody.bodies[body.name]
 	texture_2d = ivbody.texture_2d
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_INVENTORY := Interface.DirtyFlags.DIRTY_INVENTORY
-	const DIRTY_FINANCIALS := Interface.DirtyFlags.DIRTY_FINANCIALS
-	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
-	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
-	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
+	const DIRTY_FINANCIALS := Proxy.DirtyFlags.DIRTY_FINANCIALS
+	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
@@ -307,7 +307,7 @@ func sync_server_dirty(data: Array) -> void:
 		exchanges.clear()
 		for i in n_exchanges:
 			exchanges.append(StringName(string_data[2 + i]))
-	
+
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
 		k += 2
@@ -331,7 +331,7 @@ func sync_server_dirty(data: Array) -> void:
 		if !cyberspace:
 			cyberspace = CyberspaceNet.new(true)
 		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
-	
+
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
 		if ordinal_qtr == -1:
@@ -343,12 +343,12 @@ func sync_server_dirty(data: Array) -> void:
 
 func _sync_ai_changes() -> void:
 	# Only here if _dirty != 0.
-	const DIRTY_FACILITY := Interface.DirtyFlags.DIRTY_FACILITY
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	var data := [_dirty]
 	if _dirty & DIRTY_FACILITY:
 		data.append(gui_name)
 	if _dirty & DIRTY_OPERATIONS:
-		data.append(operations.get_interface_dirty())
+		data.append(operations.get_proxy_dirty())
 	_dirty = 0
-	ai_bus.emit_signal("interface_changed", entity_type, facility_id, data)
+	ai_bus.emit_signal("proxy_changed", entity_type, facility_id, data)

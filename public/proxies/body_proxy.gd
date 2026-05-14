@@ -1,24 +1,24 @@
-# body_interface.gd
+# body_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name BodyInterface
-extends Interface
+class_name BodyProxy
+extends Proxy
 
-## [BodyInterface] corresponds to an [IVBody] in the simulation, hosting
+## [BodyProxy] corresponds to an [IVBody] in the simulation, hosting
 ## facilities and aggregating their stats.
 ##
-## A [BodyInterface] aggregates component data ([OperationsNet],
+## A [BodyProxy] aggregates component data ([OperationsNet],
 ## [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated from its
 ## facilities, and exposes its [StratumNet] composition (atmosphere,
-## surface, subsurface). It has a [BrokerInterface] when at least one facility
-## is present, and the broker has a spot [ExchangeInterface] when 2+ facilities
+## surface, subsurface). It has a [BrokerProxy] when at least one facility
+## is present, and the broker has a spot [ExchangeProxy] when 2+ facilities
 ## are present.
 ##
-## Server-side Body pushes changes to [BodyInterface] and its components.
+## Server-side Body pushes changes to [BodyProxy] and its components.
 ##
 ## To get the corresponding scene-tree [code]IVBody[/code] node use
 ## [code]IVBody.bodies[body_name][/code]. Be aware that the SceneTree runs
@@ -34,23 +34,23 @@ extends Interface
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [BodyInterface] instances, indexed by [member body_id].
-static var body_interfaces: Array[BodyInterface] = []
+## All [BodyProxy] instances, indexed by [member body_id].
+static var body_proxies: Array[BodyProxy] = []
 
-var body_id := -1  ## Index into [member body_interfaces].
+var body_id := -1  ## Index into [member body_proxies].
 var body_flags := 0  ## Body flags from [enum IVBody.BodyFlags].
 var solar_occlusion: float  ## Average solar irradiance occlusion at this body.
 var is_satellites := false  ## True while this body has at least one satellite.
 var is_facilities := false  ## True while this body hosts at least one facility.
-var parent: BodyInterface  ## Parent body, or null for the top body only.
+var parent: BodyProxy  ## Parent body, or null for the top body only.
 ## Direct satellite bodies, keyed by name. Resizable container — not threadsafe!
-var satellites: Dictionary[StringName, BodyInterface]
+var satellites: Dictionary[StringName, BodyProxy]
 ## Facilities at this body. Resizable container — not threadsafe!
-var facilities: Array[Interface] = []
+var facilities: Array[Proxy] = []
 ## Composition layers for this body (atmosphere, surface, etc.). Resizable
 ## container — not threadsafe!
 var strata: Array[StratumNet] = []
-var broker: BrokerInterface ## Null until first facility added.
+var broker: BrokerProxy ## Null until first facility added.
 
 var operations: OperationsNet ## Aggregate component propagated from facilities at this body.
 var population: PopulationNet ## Aggregate component propagated from facilities at this body.
@@ -60,7 +60,7 @@ var cyberspace: CyberspaceNet ## Aggregate component propagated from facilities 
 
 
 func _init() -> void:
-	const ENTITY_BODY := Interface.EntityType.ENTITY_BODY
+	const ENTITY_BODY := Proxy.EntityType.ENTITY_BODY
 	super()
 	entity_type = ENTITY_BODY
 
@@ -72,7 +72,7 @@ func _clear_circular_references() -> void:
 
 
 # *****************************************************************************
-# interface API
+# proxy API
 
 
 func has_development() -> bool:
@@ -92,7 +92,7 @@ func get_body_flags() -> int:
 
 
 ## Returns this body's [member facilities]. AI thread only!
-func get_facilities() -> Array[Interface]:
+func get_facilities() -> Array[Proxy]:
 	return facilities
 
 
@@ -163,7 +163,7 @@ func get_development_biodiversity() -> float:
 	if biome:
 		var biodiversity := biome.get_biodiversity()
 		if biodiversity == 1.0 and get_development_population() == 0.0:
-			return 0.0 
+			return 0.0
 		return biodiversity
 	return 0.0
 
@@ -186,11 +186,11 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_spot_exchange() -> ExchangeInterface:
+func get_spot_exchange() -> ExchangeProxy:
 	return broker.spot_exchange if broker else null
 
 
-func get_exchange() -> ExchangeInterface:
+func get_exchange() -> ExchangeProxy:
 	return get_spot_exchange()
 
 
@@ -280,11 +280,11 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[6]
 	var parent_name: String = data[7]
 	if parent_name:
-		parent = interfaces_by_name[parent_name]
+		parent = proxies_by_name[parent_name]
 		parent.add_satellite(self)
 	var broker_name: String = data[8]
 	if broker_name:
-		broker = interfaces_by_name[broker_name]
+		broker = proxies_by_name[broker_name]
 	var operations_data: Array = data[9]
 	var population_data: Array = data[10]
 	var biome_data: Array = data[11]
@@ -313,16 +313,16 @@ func set_network_init(data: Array) -> void:
 			stratum.set_network_init(stratum_data)
 			strata[i] = stratum
 			i += 1
-	
+
 
 func sync_server_dirty(data: Array) -> void:
 	const SIGN_BIT := 1 << 63
-	const DIRTY_BODY := Interface.DirtyFlags.DIRTY_BODY
-	const DIRTY_OPERATIONS := Interface.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_POPULATION := Interface.DirtyFlags.DIRTY_POPULATION
-	const DIRTY_BIOME := Interface.DirtyFlags.DIRTY_BIOME
-	const DIRTY_CYBERSPACE := Interface.DirtyFlags.DIRTY_CYBERSPACE
-	const DIRTY_STRATA := Interface.DirtyFlags.DIRTY_STRATA
+	const DIRTY_BODY := Proxy.DirtyFlags.DIRTY_BODY
+	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
+	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
+	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
+	const DIRTY_STRATA := Proxy.DirtyFlags.DIRTY_STRATA
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
@@ -333,7 +333,7 @@ func sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
 		var broker_name: String = string_data[1]
-		broker = interfaces_by_name[broker_name] if broker_name else null
+		broker = proxies_by_name[broker_name] if broker_name else null
 		solar_occlusion = float_data[0]
 
 	if dirty & DIRTY_OPERATIONS:
@@ -373,11 +373,11 @@ func sync_server_dirty(data: Array) -> void:
 				i += 1
 				dirty_strata >>= 1
 			flag_index += 1
-		
-		
-		
-		
-		
+
+
+
+
+
 		#var dirty_strata_1 := offsets[k]
 		#k += 1
 		#var i := 0
@@ -398,8 +398,8 @@ func sync_server_dirty(data: Array) -> void:
 				#k += 2
 			#i += 1
 			#dirty_strata_2 >>= 1
-	
-	
+
+
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
 		if ordinal_qtr == -1:
@@ -410,26 +410,26 @@ func sync_server_dirty(data: Array) -> void:
 
 
 ## Registers [param satellite] under this body. Updates [member is_satellites].
-func add_satellite(satellite: BodyInterface) -> void:
+func add_satellite(satellite: BodyProxy) -> void:
 	assert(!satellites.has(satellite.name))
 	satellites[satellite.name] = satellite
 	is_satellites = true
 
 
 ## Removes [param satellite] from this body. Updates [member is_satellites].
-func remove_satellite(satellite: BodyInterface) -> void:
+func remove_satellite(satellite: BodyProxy) -> void:
 	satellites.erase(satellite.name)
 	is_satellites = !satellites.is_empty()
 
 
 ## Registers [param facility] at this body. Updates [member is_facilities].
-func add_facility(facility: Interface) -> void:
+func add_facility(facility: Proxy) -> void:
 	assert(!facilities.has(facility))
 	facilities.append(facility)
 	is_facilities = true
 
 
 ## Removes [param facility] from this body. Updates [member is_facilities].
-func remove_facility(facility: Interface) -> void:
+func remove_facility(facility: Proxy) -> void:
 	facilities.erase(facility)
 	is_facilities = !facilities.is_empty()
