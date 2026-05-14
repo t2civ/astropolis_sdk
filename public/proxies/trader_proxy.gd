@@ -41,6 +41,11 @@ func _init() -> void:
 	entity_type = ENTITY_TRADER
 
 
+func _clear_circular_references() -> void:
+	# Breaks the FacilityProxy.trader ↔ TraderProxy.facility 2-cycle.
+	facility = null
+
+
 # *****************************************************************************
 # proxy API
 

@@ -13,14 +13,17 @@ Usage:
 
 import argparse
 import os
-import subprocess
 import sys
 import time
 
 # Import generic test infrastructure from the assistant plugin
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),
                                 "..", "..", "addons", "ivoyager_assistant", "tools"))
-from assistant_test import AssistantClient, TestRunner as GenericTestRunner
+from assistant_test import (
+    AssistantClient,
+    GodotLauncher,
+    TestRunner as GenericTestRunner,
+)
 
 
 class AstropolisTestRunner:
@@ -408,12 +411,13 @@ def main():
                         help="Skip generic save/load cycle")
     args = parser.parse_args()
 
-    godot_proc = None
+    launcher = None
     if args.launch:
         godot = args.godot or "../Godot_v4.6.2-stable_win64_console.exe"
         project = args.project or "."
         print("Launching Godot: %s --path %s" % (godot, project))
-        godot_proc = subprocess.Popen([godot, "--path", project])
+        launcher = GodotLauncher(godot, project)
+        launcher.start()
 
     client = AssistantClient(host=args.host, port=args.port)
     try:
@@ -447,8 +451,10 @@ def main():
         success = False
     finally:
         client.close()
-        if godot_proc:
-            godot_proc.wait(timeout=10)
+        if launcher:
+            launcher.shutdown_and_report()
+            if launcher.leaks:
+                success = False
 
     sys.exit(0 if success else 1)
 
