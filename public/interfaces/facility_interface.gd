@@ -33,6 +33,7 @@ static var facility_interfaces: Array[FacilityInterface] = []
 
 var facility_id := -1  ## Index into [member facility_interfaces].
 var facility_class := -1  ## Facility class index. Not implemented yet.
+var trader_id := -1  ## [member TraderInterface.trader_id] of this facility's paired trader.
 ## Public-sector share of this facility, often 0.0 or 1.0, sometimes mixed.
 var public_sector: float
 ## True if this is a small focused activity (affects stats and tax treatment).
@@ -49,6 +50,7 @@ var exchanges: Array[StringName]  ## Names of exchanges this facility participat
 
 var body: BodyInterface  ## Hosting [BodyInterface].
 var player: PlayerInterface  ## Owning [PlayerInterface].
+var trader: TraderInterface  ## Paired [TraderInterface]; set when TraderInterface registers.
 var joins: Array[JoinInterface] = []  ## [JoinInterface] aggregates this facility belongs to.
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
@@ -220,10 +222,10 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace
 
 
-## Returns the [ExchangeInterface] hosting this facility, or null if the
-## body has no exchange.
+## Returns the spot [ExchangeInterface] at this facility's body, or null if the
+## body has no spot exchange (broker absent or fewer than 2 facilities).
 func get_exchange() -> ExchangeInterface:
-	return body.exchange
+	return body.get_spot_exchange()
 
 
 # *****************************************************************************

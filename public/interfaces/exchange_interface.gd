@@ -10,8 +10,8 @@ extends Interface
 
 ## [ExchangeInterface] is a per-body resource market.
 ##
-## Created when a [BodyInterface] gains >1 [FacilityInterface]. Hosts local and
-## remote [TraderInterface]es.[br][br]
+## Created when a [BodyInterface] gains >1 [FacilityInterface]. Receives orders
+## routed by the [BrokerInterface] at this body for [TraderInterface]s.[br][br]
 ##
 ## Arrays are indexed by resource_type unless indicated otherwise. A value of
 ## 0.0 in any "price" variable means N/A or no current price.[br][br]

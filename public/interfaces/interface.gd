@@ -57,6 +57,7 @@ enum DirtyFlags {
 	DIRTY_BIOME = 1 << 11,
 	DIRTY_CYBERSPACE = 1 << 12,
 	DIRTY_STRATA = 1 << 13,
+	DIRTY_BROKER = 1 << 14,
 }
 
 ## Identifies the kind of server entity an [Interface] proxies.
@@ -70,6 +71,7 @@ enum EntityType {
 	ENTITY_JOIN,
 	ENTITY_EXCHANGE,
 	ENTITY_TRADER,
+	ENTITY_BROKER,
 	ENTITY_SERVER,
 	ENTITY_INTERFACE,
 	N_ENTITY_TYPES,

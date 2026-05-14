@@ -8,14 +8,15 @@
 class_name BodyInterface
 extends Interface
 
-## [BodyInterface] represents a celestial body in the simulation, hosting
+## [BodyInterface] corresponds to an [IVBody] in the simulation, hosting
 ## facilities and aggregating their stats.
 ##
 ## A [BodyInterface] aggregates component data ([OperationsNet],
 ## [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated from its
 ## facilities, and exposes its [StratumNet] composition (atmosphere,
-## surface, subsurface). It owns an [ExchangeInterface] when there are 2+
-## facilities at this body.
+## surface, subsurface). It has a [BrokerInterface] when at least one facility
+## is present, and the broker has a spot [ExchangeInterface] when 2+ facilities
+## are present.
 ##
 ## Server-side Body pushes changes to [BodyInterface] and its components.
 ##
@@ -49,7 +50,7 @@ var facilities: Array[Interface] = []
 ## Composition layers for this body (atmosphere, surface, etc.). Resizable
 ## container — not threadsafe!
 var strata: Array[StratumNet] = []
-var exchange: ExchangeInterface ## Null unless this body has 2+ facilities.
+var broker: BrokerInterface ## Null until first facility added.
 
 var operations: OperationsNet ## Aggregate component propagated from facilities at this body.
 var population: PopulationNet ## Aggregate component propagated from facilities at this body.
@@ -185,8 +186,12 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
+func get_spot_exchange() -> ExchangeInterface:
+	return broker.spot_exchange if broker else null
+
+
 func get_exchange() -> ExchangeInterface:
-	return exchange # possible null
+	return get_spot_exchange()
 
 
 # Strata
@@ -277,9 +282,9 @@ func set_network_init(data: Array) -> void:
 	if parent_name:
 		parent = interfaces_by_name[parent_name]
 		parent.add_satellite(self)
-	var exchange_name: String = data[8]
-	if exchange_name:
-		exchange = interfaces_by_name[exchange_name]
+	var broker_name: String = data[8]
+	if broker_name:
+		broker = interfaces_by_name[broker_name]
 	var operations_data: Array = data[9]
 	var population_data: Array = data[10]
 	var biome_data: Array = data[11]
@@ -327,8 +332,8 @@ func sync_server_dirty(data: Array) -> void:
 		var float_data: PackedFloat64Array = data[2]
 		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
-		var exchange_name: String = string_data[1]
-		exchange = interfaces_by_name[exchange_name] if exchange_name else null
+		var broker_name: String = string_data[1]
+		broker = interfaces_by_name[broker_name] if broker_name else null
 		solar_occlusion = float_data[0]
 
 	if dirty & DIRTY_OPERATIONS:
