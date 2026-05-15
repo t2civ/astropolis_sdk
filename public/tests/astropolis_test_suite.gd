@@ -173,7 +173,7 @@ func _list_components(params: Dictionary) -> Variant:
 	components["cyberspace"] = {"present": proxy.get_cyberspace() != null,
 			"type": "scalar"}
 
-	var has_exchange := proxy.get_exchange() != null
+	var has_exchange := proxy.get_spot_exchange(-1) != null
 	components["exchange"] = {
 		"present": has_exchange,
 		"index_table": "resources" if has_exchange else "",
@@ -247,7 +247,7 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 				return _no_component_error(proxy, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
 		"exchange":
-			var exchange := proxy.get_exchange()
+			var exchange := proxy.get_spot_exchange(-1)
 			if !exchange:
 				return _no_component_error(proxy, component)
 			return _read_exchange(exchange, nonzero, entry_filter, field_filter)

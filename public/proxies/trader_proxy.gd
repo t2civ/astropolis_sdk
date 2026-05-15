@@ -33,6 +33,10 @@ var trader_id := -1  ## Index into [member trader_proxies].
 var facility_id := -1  ## [member FacilityProxy.facility_id] this trader belongs to.
 var facility: FacilityProxy  ## Owning [FacilityProxy].
 
+# Cached in set_network_init.
+var _broker: BrokerProxy
+var _player_id := -1
+
 
 
 func _init() -> void:
@@ -44,15 +48,15 @@ func _init() -> void:
 func _clear_circular_references() -> void:
 	# Breaks the FacilityProxy.trader ↔ TraderProxy.facility 2-cycle.
 	facility = null
+	_broker = null
 
 
 # *****************************************************************************
 # proxy API
 
-## Returns the [BrokerProxy] at this trader's body, or null briefly during
-## first-facility-on-body init.
+## Returns the [BrokerProxy] at this trader's body.
 func get_broker() -> BrokerProxy:
-	return facility.body.broker
+	return _broker
 
 
 # *****************************************************************************
@@ -66,6 +70,8 @@ func set_network_init(data: Array) -> void:
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id
+	_broker = facility._broker
+	_player_id = facility._player_id
 
 
 func sync_server_dirty(data: Array) -> void:

@@ -187,12 +187,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_spot_exchange() -> ExchangeProxy:
-	return broker.spot_exchange if broker else null
-
-
-func get_exchange() -> ExchangeProxy:
-	return get_spot_exchange()
+func get_spot_exchange(player_id: int) -> ExchangeProxy:
+	return broker.get_spot_exchange(player_id) if broker else null
 
 
 # Strata

@@ -81,7 +81,8 @@ func has_markets() -> bool:
 	return true
 
 
-func get_exchange() -> ExchangeProxy:
+@warning_ignore("unused_parameter")
+func get_spot_exchange(_player_id: int) -> ExchangeProxy:
 	return self
 
 
