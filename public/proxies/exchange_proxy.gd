@@ -8,16 +8,21 @@
 class_name ExchangeProxy
 extends Proxy
 
-## [ExchangeProxy] is a per-body resource market.
+## Provides resource spot prices and spot and futures markets.
 ##
-## Created when a [BodyProxy] gains >1 [FacilityProxy]. Receives orders
-## routed by the [BrokerProxy] at this body for [TraderProxy]s.[br][br]
+## A [BodyProxy] with a [FacilityProxy] always gains an exchange. At minimum, the
+## exchange provides "spot" prices for relevant resources, determined either
+## via spot market trades or by fiat (using a market maker functionality).[br][br]
 ##
-## Arrays are indexed by resource_type unless indicated otherwise. A value of
-## 0.0 in any "price" variable means N/A or no current price.[br][br]
+## If a body has >1 facilities, [ExchangeProxy] provides a resource spot market.
+## The spot market processes spot orders for within-body, immediate-delivery
+## trades only. These orders originate from local [TraderProxy]s only. Note that
+## more than one exchange per body will be implemented in the future to support
+## player sanctions (this may result in runtime changes in [member
+## Proxy.spot_exchage]).[br][br]
 ##
-## Asks and Bids ("orders") are fixed-size PackedInt64Array structures with the
-## following elements:[br][br]
+## Spot orders (spot bids and spot asks) are fixed-size [PackedInt64Array]
+## structures with the following elements:[br][br]
 ##
 ##   [0] id (ask_id or bid_id)[br]
 ##   [1] resource_type[br]
@@ -27,15 +32,32 @@ extends Proxy
 ##   [5] expiration (epoch seconds)[br]
 ##   [6] trader_id[br][br]
 ##
+## Exchanges also design and list (or delist) futures contracts as appropriate.
+## Futures contracts specify time and place of delivery of a resource. They can
+## be traded by anyone (a local or remote trader) but are the only means for
+## inter-body resource trades. I.e., this is how interplanetary commerce and
+## remote resupply happen. The single [BrokerProxy] at a body lists available
+## futures contracts for delivery at a body and routes futures orders to an
+## appropriate exchange (more than one exchange may list the same futures
+## delivery contract).[br][br]
+##
+## WIP: Futuers contracts and orders...[br][br]
+##
+## WIP: code planning...[br][br]
+##
+##   - Phase 1: Implement spot trading so that Earth nations can trade and the
+##     Earth economy simulation basically "works" and can be tunned.
+##   - Phase 2: Implement futures trading to support ISS, Tiangong, and
+##     runtime-added Moon Base, etc. This will require a functioning transport
+##     system with a transport schedular and market.[br][br]
+##
+## Arrays are indexed by resource_type unless indicated otherwise. A value of
+## 0.0 in any "price" variable means N/A or no current price.[br][br]
+##
 ## Server-side Exchange pushes changes to [ExchangeProxy]. Data flows
-## server -> proxy only.[br][br]
-##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.[br][br]
-##
-## Warning! This object lives and dies on the AI thread! Containers and many
-## methods are not threadsafe. Accessing non-container properties is safe.
+## server -> proxy only. WARNING: This object lives and dies on the AI thread!
+## Containers and many methods are not threadsafe. Accessing non-container
+## properties is safe.
 
 const ORDER_SIZE := 7
 
@@ -81,7 +103,6 @@ func has_markets() -> bool:
 	return true
 
 
-@warning_ignore("unused_parameter")
 func get_spot_exchange(_player_id: int) -> ExchangeProxy:
 	return self
 
@@ -91,23 +112,23 @@ func get_spot_exchange(_player_id: int) -> ExchangeProxy:
 
 ## Returns the current trade price for [param type], or 0.0 if no current
 ## price.
-func get_price(type: int) -> float:
+func get_spot_price(type: int) -> float:
 	return _prices[type]
 
 
 ## Returns the current ask price for [param type], or 0.0 if no current ask.
-func get_ask_price(type: int) -> float:
+func get_spot_ask_price(type: int) -> float:
 	return _ask_prices[type]
 
 
 ## Returns the current bid price for [param type], or 0.0 if no current bid.
-func get_bid_price(type: int) -> float:
+func get_spot_bid_price(type: int) -> float:
 	return _bid_prices[type]
 
 
 ## Returns the trading volume for [param type] over the previous interval
 ## (per day).
-func get_volume(type: int) -> float:
+func get_spot_volume(type: int) -> float:
 	return _volumes[type]
 
 

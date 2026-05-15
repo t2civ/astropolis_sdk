@@ -297,7 +297,6 @@ func get_cyberspace() -> CyberspaceNet:
 
 ## Returns the spot [ExchangeProxy] for [param _player_id], or null if not
 ## applicable.
-@warning_ignore("unused_parameter")
 func get_spot_exchange(_player_id: int) -> ExchangeProxy:
 	return null
 

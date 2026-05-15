@@ -496,22 +496,22 @@ func _read_exchange(exchange: ExchangeProxy, nonzero: bool,
 		var entry := {}
 		var dominated_by_zero := true
 		if _has_field("price", field_filter):
-			var v := exchange.get_price(i)
+			var v := exchange.get_spot_price(i)
 			entry["price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("bid_price", field_filter):
-			var v := exchange.get_bid_price(i)
+			var v := exchange.get_spot_bid_price(i)
 			entry["bid_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("ask_price", field_filter):
-			var v := exchange.get_ask_price(i)
+			var v := exchange.get_spot_ask_price(i)
 			entry["ask_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("volume", field_filter):
-			var v := exchange.get_volume(i)
+			var v := exchange.get_spot_volume(i)
 			entry["volume"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false

@@ -8,19 +8,14 @@
 class_name BrokerProxy
 extends Proxy
 
-## Provides order API for [TraderProxy] and routes orders to an appropriate
-## [ExchangeProxy].
+## Provides appropriate spot [ExchangeProxy] on request, lists futures contracts,
+## and routes futures orders to an appropriate [ExchangeProxy].
 ##
-## A [BrokerProxy] exists at each [BodyProxy] that hosts at least one
-## [FacilityProxy]. [member spot_exchanges] holds the spot [ExchangeProxy]s
-## at this Broker's body; use [method get_spot_exchange] to pick.[br][br]
+## A [BrokerProxy] is created at a [BodyProxy] when it gains its first
+## [FacilityProxy].[br][br]
 ##
 ## Server-side Broker pushes changes to [BrokerProxy]. Data flows
 ## server -> proxy only.[br][br]
-##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.[br][br]
 ##
 ## Warning! This object lives and dies on the AI thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
@@ -65,7 +60,6 @@ func _clear_circular_references() -> void:
 
 
 ## Returns the spot [ExchangeProxy] for [param _player_id]. Thread-safe.
-@warning_ignore("unused_parameter")
 func get_spot_exchange(_player_id: int) -> ExchangeProxy:
 	return spot_exchanges[0]
 

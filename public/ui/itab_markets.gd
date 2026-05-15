@@ -207,10 +207,10 @@ func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
 		var contracted := 0.0
 
 		if is_exchange:
-			price = exchange.get_price(resource_type)
-			bid = exchange.get_bid_price(resource_type)
-			ask = exchange.get_ask_price(resource_type)
-			volume = exchange.get_volume(resource_type)
+			price = exchange.get_spot_price(resource_type)
+			bid = exchange.get_spot_bid_price(resource_type)
+			ask = exchange.get_spot_ask_price(resource_type)
+			volume = exchange.get_spot_volume(resource_type)
 		if is_inventory:
 			in_stock = inventory.get_stock(resource_type)
 			contracted = inventory.get_contracted(resource_type)
