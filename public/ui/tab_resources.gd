@@ -329,7 +329,7 @@ class StratumFoldable extends FoldableContainer:
 			var resource_data: Array = resources_data[i]
 			var resource_type: int = resource_data[0]
 			var resource_name := _resource_names[resource_type]
-			var distribution_data: Array[float] = resource_data[1]
+			var distribution_data: PackedFloat64Array = resource_data[1]
 			var mean := distribution_data[0] * 100
 			var mean_sd := distribution_data[1] * 100
 			var dispersion := distribution_data[2]
