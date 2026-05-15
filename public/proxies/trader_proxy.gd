@@ -32,10 +32,8 @@ static var trader_proxies: Array[TraderProxy] = []
 var trader_id := -1  ## Index into [member trader_proxies].
 var facility_id := -1  ## [member FacilityProxy.facility_id] this trader belongs to.
 var facility: FacilityProxy  ## Owning [FacilityProxy].
-
-# Cached in set_network_init.
-var _broker: BrokerProxy
-var _player_id := -1
+var broker: BrokerProxy  ## Set after init. Lives on markets thread!
+var spot_exchange: ExchangeProxy  ## Set after init. Lives on markets thread!
 
 
 
@@ -48,15 +46,17 @@ func _init() -> void:
 func _clear_circular_references() -> void:
 	# Breaks the FacilityProxy.trader ↔ TraderProxy.facility 2-cycle.
 	facility = null
-	_broker = null
+	broker = null
+	spot_exchange = null
 
 
 # *****************************************************************************
 # proxy API
 
-## Returns the [BrokerProxy] at this trader's body.
-func get_broker() -> BrokerProxy:
-	return _broker
+## Returns this trader's spot [ExchangeProxy], or null if not yet set.
+## [param _player_id] is unused for direct-routed traders.
+func get_spot_exchange(_player_id: int) -> ExchangeProxy:
+	return spot_exchange
 
 
 # *****************************************************************************
@@ -70,12 +70,26 @@ func set_network_init(data: Array) -> void:
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id
-	_broker = facility._broker
-	_player_id = facility._player_id
+	var broker_name: StringName = data[5]
+	if broker_name:
+		broker = proxies_by_name[broker_name]
+	var spot_exchange_name: StringName = data[6]
+	if spot_exchange_name:
+		spot_exchange = proxies_by_name[spot_exchange_name]
 
 
 func sync_server_dirty(data: Array) -> void:
+	const DIRTY_TRADER := Proxy.DirtyFlags.DIRTY_TRADER
+	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
+	var dirty: int = offsets[0]
+
+	if dirty & DIRTY_TRADER:
+		var string_data: PackedStringArray = data[3]
+		var broker_name := string_data[0]
+		broker = proxies_by_name[StringName(broker_name)] if broker_name else null
+		var spot_exchange_name := string_data[1]
+		spot_exchange = proxies_by_name[StringName(spot_exchange_name)] if spot_exchange_name else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:

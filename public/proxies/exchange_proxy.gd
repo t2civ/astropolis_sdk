@@ -19,7 +19,7 @@ extends Proxy
 ## trades only. These orders originate from local [TraderProxy]s only. Note that
 ## more than one exchange per body will be implemented in the future to support
 ## player sanctions (this may result in runtime changes in [member
-## Proxy.spot_exchage]).[br][br]
+## FacilityProxy.spot_exchange] and [member TraderProxy.spot_exchange]).[br][br]
 ##
 ## Spot orders (spot bids and spot asks) are fixed-size [PackedInt64Array]
 ## structures with the following elements:[br][br]

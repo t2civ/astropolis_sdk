@@ -48,14 +48,11 @@ var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
 var exchanges: Array[StringName]  ## Names of exchanges this facility participates in.
 
-var body: BodyProxy  ## Hosting [BodyProxy].
 var player: PlayerProxy  ## Owning [PlayerProxy].
+var body: BodyProxy  ## Hosting [BodyProxy].
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
-
-# Cached in set_network_init.
-var _broker: BrokerProxy
-var _player_id := -1
+var spot_exchange: ExchangeProxy  ## Set after init. Lives on markets thread!
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -80,8 +77,8 @@ func _clear_circular_references() -> void:
 	player = null
 	trader = null
 	joins.clear()
+	spot_exchange = null
 	texture_2d = null
-	_broker = null
 
 
 #func process_ai_interval(_delta: float) -> void:
@@ -237,10 +234,11 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace
 
 
-## Returns the spot [ExchangeProxy] at this facility's body for
-## [param player_id], or null if no broker yet.
-func get_spot_exchange(player_id: int) -> ExchangeProxy:
-	return _broker.get_spot_exchange(player_id) if _broker else null
+## Returns this facility's spot [ExchangeProxy], or null if not yet set.
+## [param _player_id] is unused for direct-routed facilities; the per-player
+## sanctions routing happens at the Broker layer.
+func get_spot_exchange(_player_id: int) -> ExchangeProxy:
+	return spot_exchange
 
 
 # *****************************************************************************
@@ -262,20 +260,21 @@ func set_network_init(data: Array) -> void:
 	player.add_facility(self)
 	body = proxies_by_name[data[14]]
 	body.add_facility(self)
-	_broker = body.broker
-	_player_id = player.player_id
 	var join_names: Array = data[15]
 	for join_name: StringName in join_names:
 		var join: JoinProxy = get_proxy_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
+	var spot_exchange_name: StringName = data[16]
+	if spot_exchange_name:
+		spot_exchange = proxies_by_name[spot_exchange_name]
 
-	var operations_data: Array = data[16]
-	var inventory_data: Array = data[17]
-	var financials_data: Array = data[18]
-	var population_data: Array = data[19]
-	var biome_data: Array = data[20]
-	var cyberspace_data: Array = data[21]
+	var operations_data: Array = data[17]
+	var inventory_data: Array = data[18]
+	var financials_data: Array = data[19]
+	var population_data: Array = data[20]
+	var biome_data: Array = data[21]
+	var cyberspace_data: Array = data[22]
 
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -321,9 +320,11 @@ func sync_server_dirty(data: Array) -> void:
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
+		var spot_exchange_name := string_data[2]
+		spot_exchange = proxies_by_name[StringName(spot_exchange_name)] if spot_exchange_name else null
 		exchanges.clear()
 		for i in n_exchanges:
-			exchanges.append(StringName(string_data[2 + i]))
+			exchanges.append(StringName(string_data[3 + i]))
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
