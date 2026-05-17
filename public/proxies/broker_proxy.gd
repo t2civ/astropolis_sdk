@@ -37,8 +37,8 @@ var body_name: StringName  ## Name of the hosting body.
 ## Spot [MarketProxy]s at this Broker's body, indexed by routing slot;
 ## slot 0 is the default. Resolved in [method process_ai_init] (deferred
 ## because broker init drains from [code]MktsAI[/code] before market init).
-var spot_markets: Array[MarketProxy]
-var _spot_market_names: PackedStringArray
+var markets: Array[MarketProxy]
+var _market_names: PackedStringArray
 
 
 
@@ -46,13 +46,13 @@ func _init() -> void:
 	const ENTITY_BROKER := Proxy.EntityType.ENTITY_BROKER
 	super()
 	entity_type = ENTITY_BROKER
-	spot_markets.resize(N_MAX_MARKETS)
+	markets.resize(N_MAX_MARKETS)
 
 
 func _clear_circular_references() -> void:
 	body = null
 	for i in N_MAX_MARKETS:
-		spot_markets[i] = null
+		markets[i] = null
 
 
 # *****************************************************************************
@@ -60,8 +60,8 @@ func _clear_circular_references() -> void:
 
 
 ## Returns the spot [MarketProxy] for [param _player_id]. Thread-safe.
-func get_spot_market(_player_id: int) -> MarketProxy:
-	return spot_markets[0]
+func get_market(_player_id: int) -> MarketProxy:
+	return markets[0]
 
 
 # *****************************************************************************
@@ -72,19 +72,19 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
-	# body and spot_markets are resolved in process_ai_init — their
+	# body and markets are resolved in process_ai_init — their
 	# proxies may not yet be in proxies_by_name because MktsAI is drained
 	# before OpsAI, and broker init messages drain before market ones.
-	_spot_market_names = data[6]
+	_market_names = data[6]
 
 
 func process_ai_init() -> void:
 	if !body:
 		body = proxies_by_name[body_name]
 	for i in N_MAX_MARKETS:
-		var market_name := _spot_market_names[i]
-		if !spot_markets[i] and market_name:
-			spot_markets[i] = proxies_by_name[StringName(market_name)]
+		var market_name := _market_names[i]
+		if !markets[i] and market_name:
+			markets[i] = proxies_by_name[StringName(market_name)]
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -97,7 +97,7 @@ func sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		for i in N_MAX_MARKETS:
 			var market_name := string_data[i]
-			spot_markets[i] = proxies_by_name[StringName(market_name)] if market_name else null
+			markets[i] = proxies_by_name[StringName(market_name)] if market_name else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:

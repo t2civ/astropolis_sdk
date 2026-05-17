@@ -33,7 +33,7 @@ var trader_id := -1  ## Index into [member trader_proxies].
 var facility_id := -1  ## [member FacilityProxy.facility_id] this trader belongs to.
 var facility: FacilityProxy  ## Owning [FacilityProxy].
 var broker: BrokerProxy  ## Set after init. Lives on markets thread!
-var spot_market: MarketProxy  ## Set after init. Lives on markets thread!
+var market: MarketProxy  ## Set after init. Lives on markets thread!
 
 
 
@@ -47,7 +47,7 @@ func _clear_circular_references() -> void:
 	# Breaks the FacilityProxy.trader ↔ TraderProxy.facility 2-cycle.
 	facility = null
 	broker = null
-	spot_market = null
+	market = null
 
 
 # *****************************************************************************
@@ -55,8 +55,8 @@ func _clear_circular_references() -> void:
 
 ## Returns this trader's spot [MarketProxy], or null if not yet set.
 ## [param _player_id] is unused for direct-routed traders.
-func get_spot_market(_player_id: int) -> MarketProxy:
-	return spot_market
+func get_market(_player_id: int) -> MarketProxy:
+	return market
 
 
 # *****************************************************************************
@@ -73,9 +73,9 @@ func set_network_init(data: Array) -> void:
 	var broker_name: StringName = data[5]
 	if broker_name:
 		broker = proxies_by_name[broker_name]
-	var spot_market_name: StringName = data[6]
-	if spot_market_name:
-		spot_market = proxies_by_name[spot_market_name]
+	var market_name: StringName = data[6]
+	if market_name:
+		market = proxies_by_name[market_name]
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -88,8 +88,8 @@ func sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		var broker_name := string_data[0]
 		broker = proxies_by_name[StringName(broker_name)] if broker_name else null
-		var spot_market_name := string_data[1]
-		spot_market = proxies_by_name[StringName(spot_market_name)] if spot_market_name else null
+		var market_name := string_data[1]
+		market = proxies_by_name[StringName(market_name)] if market_name else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:

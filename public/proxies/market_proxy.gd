@@ -19,7 +19,7 @@ extends Proxy
 ## trades only. These orders originate from local [TraderProxy]s only. Note that
 ## more than one market per body will be implemented in the future to support
 ## player sanctions (this may result in runtime changes in [member
-## FacilityProxy.spot_market] and [member TraderProxy.spot_market]).[br][br]
+## FacilityProxy.market] and [member TraderProxy.market]).[br][br]
 ##
 ## Spot orders (spot bids and spot asks) are fixed-size [PackedInt64Array]
 ## structures with the following elements:[br][br]
@@ -107,7 +107,7 @@ func has_markets() -> bool:
 	return true
 
 
-func get_spot_market(_player_id: int) -> MarketProxy:
+func get_market(_player_id: int) -> MarketProxy:
 	return self
 
 

@@ -187,8 +187,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_spot_market(player_id: int) -> MarketProxy:
-	return broker.get_spot_market(player_id) if broker else null
+func get_market(player_id: int) -> MarketProxy:
+	return broker.get_market(player_id) if broker else null
 
 
 # Strata

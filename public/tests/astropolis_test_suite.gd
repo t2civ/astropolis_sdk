@@ -173,7 +173,7 @@ func _list_components(params: Dictionary) -> Variant:
 	components["cyberspace"] = {"present": proxy.get_cyberspace() != null,
 			"type": "scalar"}
 
-	var has_market := proxy.get_spot_market(-1) != null
+	var has_market := proxy.get_market(-1) != null
 	components["market"] = {
 		"present": has_market,
 		"index_table": "resources" if has_market else "",
@@ -247,7 +247,7 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 				return _no_component_error(proxy, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
 		"market":
-			var market := proxy.get_spot_market(-1)
+			var market := proxy.get_market(-1)
 			if !market:
 				return _no_component_error(proxy, component)
 			return _read_market(market, nonzero, entry_filter, field_filter)

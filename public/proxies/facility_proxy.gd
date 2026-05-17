@@ -51,7 +51,7 @@ var player: PlayerProxy  ## Owning [PlayerProxy].
 var body: BodyProxy  ## Hosting [BodyProxy].
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
-var spot_market: MarketProxy  ## Set after init. Lives on markets thread!
+var market: MarketProxy  ## Set after init. Lives on markets thread!
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -76,7 +76,7 @@ func _clear_circular_references() -> void:
 	player = null
 	trader = null
 	joins.clear()
-	spot_market = null
+	market = null
 	texture_2d = null
 
 
@@ -236,8 +236,8 @@ func get_cyberspace() -> CyberspaceNet:
 ## Returns this facility's spot [MarketProxy], or null if not yet set.
 ## [param _player_id] is unused for direct-routed facilities; the per-player
 ## sanctions routing happens at the Broker layer.
-func get_spot_market(_player_id: int) -> MarketProxy:
-	return spot_market
+func get_market(_player_id: int) -> MarketProxy:
+	return market
 
 
 # *****************************************************************************
@@ -263,9 +263,9 @@ func set_network_init(data: Array) -> void:
 		var join: JoinProxy = get_proxy_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
-	var spot_market_name: StringName = data[15]
-	if spot_market_name:
-		spot_market = proxies_by_name[spot_market_name]
+	var market_name: StringName = data[15]
+	if market_name:
+		market = proxies_by_name[market_name]
 
 	var operations_data: Array = data[16]
 	var inventory_data: Array = data[17]
@@ -317,8 +317,8 @@ func sync_server_dirty(data: Array) -> void:
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
-		var spot_market_name := string_data[2]
-		spot_market = proxies_by_name[StringName(spot_market_name)] if spot_market_name else null
+		var market_name := string_data[2]
+		market = proxies_by_name[StringName(market_name)] if market_name else null
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
