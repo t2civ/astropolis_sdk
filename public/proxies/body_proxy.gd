@@ -15,7 +15,7 @@ extends Proxy
 ## [PopulationNet], [BiomeNet], [CyberspaceNet]) propagated from its
 ## facilities, and exposes its [StratumNet] composition (atmosphere,
 ## surface, subsurface). It has a [BrokerProxy] when at least one facility
-## is present, and the broker has a spot [ExchangeProxy] when 2+ facilities
+## is present, and the broker has a spot [MarketProxy] when 2+ facilities
 ## are present.
 ##
 ## Server-side Body pushes changes to [BodyProxy] and its components.
@@ -187,8 +187,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace # possible null
 
 
-func get_spot_exchange(player_id: int) -> ExchangeProxy:
-	return broker.get_spot_exchange(player_id) if broker else null
+func get_spot_market(player_id: int) -> MarketProxy:
+	return broker.get_spot_market(player_id) if broker else null
 
 
 # Strata

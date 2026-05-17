@@ -1,25 +1,25 @@
-# exchange_proxy.gd
+# market_proxy.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name ExchangeProxy
+class_name MarketProxy
 extends Proxy
 
-## Provides resource spot prices and spot and futures markets.
+## Provides resource spot prices and a market for spot and futures trading.
 ##
-## A [BodyProxy] with a [FacilityProxy] always gains an exchange. At minimum, the
-## exchange provides "spot" prices for relevant resources, determined either
-## via spot market trades or by fiat (using a market maker functionality).[br][br]
+## A [BodyProxy] with a [FacilityProxy] always gains a market. At minimum, the
+## market provides "spot" prices for relevant resources, determined either
+## via spot market trades or by fiat using a market maker functionality.[br][br]
 ##
-## If a body has >1 facilities, [ExchangeProxy] provides a resource spot market.
+## If a body has >1 facilities, [MarketProxy] provides a resource spot market.
 ## The spot market processes spot orders for within-body, immediate-delivery
 ## trades only. These orders originate from local [TraderProxy]s only. Note that
-## more than one exchange per body will be implemented in the future to support
+## more than one market per body will be implemented in the future to support
 ## player sanctions (this may result in runtime changes in [member
-## FacilityProxy.spot_exchange] and [member TraderProxy.spot_exchange]).[br][br]
+## FacilityProxy.spot_market] and [member TraderProxy.spot_market]).[br][br]
 ##
 ## Spot orders (spot bids and spot asks) are fixed-size [PackedInt64Array]
 ## structures with the following elements:[br][br]
@@ -32,14 +32,11 @@ extends Proxy
 ##   [5] expiration (epoch seconds)[br]
 ##   [6] trader_id[br][br]
 ##
-## Exchanges also design and list (or delist) futures contracts as appropriate.
-## Futures contracts specify time and place of delivery of a resource. They can
-## be traded by anyone (a local or remote trader) but are the only means for
-## inter-body resource trades. I.e., this is how interplanetary commerce and
-## remote resupply happen. The single [BrokerProxy] at a body lists available
-## futures contracts for delivery at a body and routes futures orders to an
-## appropriate exchange (more than one exchange may list the same futures
-## delivery contract).[br][br]
+## Markets also list futures contracts for delivery at the market [member body].
+## Futures contracts specify time of delivery of a specific resource quantity.
+## They can be traded by anyone (a local or remote trader) and are the means for
+## inter-body resource trades. The futures market is the driving force behind
+## interplanetary commerce and remote resupply.[br][br]
 ##
 ## WIP: Futuers contracts and orders...[br][br]
 ##
@@ -49,35 +46,42 @@ extends Proxy
 ##     Earth economy simulation basically "works" and can be tunned.
 ##   - Phase 2: Implement futures trading to support ISS, Tiangong, and
 ##     runtime-added Moon Base, etc. This will require a functioning transport
-##     system with a transport schedular and market.[br][br]
+##     system.[br][br]
+##
+## TODO: Although [Market] provides the "interface" for futures contracts delivered
+## at [member body], the physical machinery of futures trading happens at a
+## centralized [Exchange] possibly elsewhere. E.g., futures contracts for
+## delivery to Earth-orbiting stations or a Moon Base are likely to originate
+## and trade at an Earth futures exchange (such as the Chicago Mercantile
+## Exchange). Only highly developed bodies have physical exchanges.[br][br]
 ##
 ## Arrays are indexed by resource_type unless indicated otherwise. A value of
 ## 0.0 in any "price" variable means N/A or no current price.[br][br]
 ##
-## Server-side Exchange pushes changes to [ExchangeProxy]. Data flows
+## Server-side Market pushes changes to [MarketProxy]. Data flows
 ## server -> proxy only. WARNING: This object lives and dies on the AI thread!
 ## Containers and many methods are not threadsafe. Accessing non-container
 ## properties is safe.
 
-const ORDER_SIZE := 7
+const SPOT_ORDER_SIZE := 7
 
-## All [ExchangeProxy] instances, indexed by [member exchange_id].
-static var exchange_proxies: Array[ExchangeProxy] = []
+## All [MarketProxy] instances, indexed by [member market_id].
+static var market_proxies: Array[MarketProxy] = []
 
-var exchange_id := -1  ## Index into [member exchange_proxies].
+var market_id := -1  ## Index into [member market_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
 ## [method process_ai_init] (deferred because [code]MktsAI[/code] drains
 ## before [code]OpsAI[/code] does).
-var body: BodyProxy
-var body_name: StringName  ## Name of the hosting body.
+var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
+var body_name: StringName  ## @deprecate: why is this here?
 
 var _prices: PackedFloat64Array
 var _ask_prices: PackedFloat64Array
 var _bid_prices: PackedFloat64Array
 var _volumes: PackedFloat64Array
 
-var _asks: Dictionary[int, PackedInt64Array] = {}  ## Asks indexed by ask_id.
-var _bids: Dictionary[int, PackedInt64Array] = {}  ## Bids indexed by bid_id.
+var _asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
+var _bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
 
 var _sync := SyncHelper.new()
 
@@ -87,9 +91,9 @@ var _free_orders: Array[PackedInt64Array] = []
 
 
 func _init() -> void:
-	const ENTITY_EXCHANGE := Proxy.EntityType.ENTITY_EXCHANGE
+	const ENTITY_MARKET := Proxy.EntityType.ENTITY_MARKET
 	super()
-	entity_type = ENTITY_EXCHANGE
+	entity_type = ENTITY_MARKET
 
 
 func _clear_circular_references() -> void:
@@ -103,7 +107,7 @@ func has_markets() -> bool:
 	return true
 
 
-func get_spot_exchange(_player_id: int) -> ExchangeProxy:
+func get_spot_market(_player_id: int) -> MarketProxy:
 	return self
 
 
@@ -136,7 +140,7 @@ func get_spot_volume(type: int) -> float:
 # sync - DON'T MODIFY!
 
 func set_network_init(data: Array) -> void:
-	exchange_id = data[2]
+	market_id = data[2]
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
@@ -157,13 +161,13 @@ func process_ai_init() -> void:
 
 
 func sync_server_dirty(data: Array) -> void:
-	const DIRTY_EXCHANGE := Proxy.DirtyFlags.DIRTY_EXCHANGE
+	const DIRTY_MARKET := Proxy.DirtyFlags.DIRTY_MARKET
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
 	var k := 1 # offsets offset
 
-	if dirty & DIRTY_EXCHANGE:
+	if dirty & DIRTY_MARKET:
 		var float_data: PackedFloat64Array = data[2]
 		_sync.init_for_add(int_data, float_data, offsets[k], offsets[k + 1])
 		_sync.set_floats_dirty(_prices)
@@ -195,10 +199,10 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Pack
 			order = _free_orders.pop_back()
 		else:
 			order = PackedInt64Array()
-			order.resize(ORDER_SIZE)
-		for j in ORDER_SIZE:
+			order.resize(SPOT_ORDER_SIZE)
+		for j in SPOT_ORDER_SIZE:
 			order[j] = int_data[int_offset + j]
-		int_offset += ORDER_SIZE
+		int_offset += SPOT_ORDER_SIZE
 		target[order[0]] = order
 		i += 1
 	var removes_count := int_data[int_offset]

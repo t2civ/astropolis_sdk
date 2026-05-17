@@ -9,7 +9,7 @@ class_name ITabMarkets
 extends MarginContainer
 
 ## "Markets" tab subpanel for [InfoPanel]. Shows resource prices, bid/ask,
-## and volume for the current selection's [ExchangeProxy], grouped by
+## and volume for the current selection's [MarketProxy], grouped by
 ## resource class.
 ##
 ## Tab indices follow row enumerations in [code]resource_classes.tsv[/code].
@@ -169,11 +169,11 @@ func _update_tab(_suppress_camera_move := false) -> void:
 		_update_no_markets()
 		return
 
-	var exchange := proxy.get_spot_exchange(-1)
+	var market := proxy.get_spot_market(-1)
 	var inventory := proxy.get_inventory()
 
-	if exchange or inventory:
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(exchange, inventory))
+	if market or inventory:
+		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(market, inventory))
 	else:
 		_update_no_markets()
 
@@ -186,9 +186,9 @@ func _update_no_markets() -> void:
 # *****************************************************************************
 # AI thread !!!!
 
-func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
+func _get_ai_data(market: MarketProxy, inventory: InventoryNet) -> void:
 
-	var is_exchange := true if exchange else false
+	var is_market := true if market else false
 	var is_inventory := true if inventory else false
 
 	var tab := current_tab
@@ -206,11 +206,11 @@ func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
 		var in_stock := 0.0
 		var contracted := 0.0
 
-		if is_exchange:
-			price = exchange.get_spot_price(resource_type)
-			bid = exchange.get_spot_bid_price(resource_type)
-			ask = exchange.get_spot_ask_price(resource_type)
-			volume = exchange.get_spot_volume(resource_type)
+		if is_market:
+			price = market.get_spot_price(resource_type)
+			bid = market.get_spot_bid_price(resource_type)
+			ask = market.get_spot_ask_price(resource_type)
+			volume = market.get_spot_volume(resource_type)
 		if is_inventory:
 			in_stock = inventory.get_stock(resource_type)
 			contracted = inventory.get_contracted(resource_type)
@@ -226,7 +226,7 @@ func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
 
 
 
-	_update_tab_display.call_deferred(tab, n_resources, data, is_exchange, is_inventory)
+	_update_tab_display.call_deferred(tab, n_resources, data, is_market, is_inventory)
 	
 
 # *****************************************************************************
@@ -234,7 +234,7 @@ func _get_ai_data(exchange: ExchangeProxy, inventory: InventoryNet) -> void:
 
 # TODO: Volume vs bid/ask toggle
 
-func _update_tab_display(tab: int, n_resources: int, data: Array, _is_exchange: bool,
+func _update_tab_display(tab: int, n_resources: int, data: Array, _is_market: bool,
 		is_inventory: bool) -> void:
 	# We convert prices and quantities to trade_unit here. We're assuming
 	# all trade_units are multipliers, but that could change (e.g., if we

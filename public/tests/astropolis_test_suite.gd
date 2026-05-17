@@ -173,11 +173,11 @@ func _list_components(params: Dictionary) -> Variant:
 	components["cyberspace"] = {"present": proxy.get_cyberspace() != null,
 			"type": "scalar"}
 
-	var has_exchange := proxy.get_spot_exchange(-1) != null
-	components["exchange"] = {
-		"present": has_exchange,
-		"index_table": "resources" if has_exchange else "",
-		"n_indices": int(table_n_rows[&"resources"]) if has_exchange else 0,
+	var has_market := proxy.get_spot_market(-1) != null
+	components["market"] = {
+		"present": has_market,
+		"index_table": "resources" if has_market else "",
+		"n_indices": int(table_n_rows[&"resources"]) if has_market else 0,
 	}
 
 	return {
@@ -246,11 +246,11 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 			if !pop:
 				return _no_component_error(proxy, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
-		"exchange":
-			var exchange := proxy.get_spot_exchange(-1)
-			if !exchange:
+		"market":
+			var market := proxy.get_spot_market(-1)
+			if !market:
 				return _no_component_error(proxy, component)
-			return _read_exchange(exchange, nonzero, entry_filter, field_filter)
+			return _read_market(market, nonzero, entry_filter, field_filter)
 		"financials":
 			var fin := proxy.get_financials()
 			if !fin:
@@ -269,7 +269,7 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 
 	return {"_error": {"code": ERR_INVALID_PARAMS,
 			"message": ("Unknown component: %s (valid: operations, inventory,"
-			+ " population, exchange, financials, biome, cyberspace)")
+			+ " population, market, financials, biome, cyberspace)")
 			% component}}
 
 
@@ -486,7 +486,7 @@ func _read_population(pop: PopulationNet, nonzero: bool,
 	}
 
 
-func _read_exchange(exchange: ExchangeProxy, nonzero: bool,
+func _read_market(market: MarketProxy, nonzero: bool,
 		entry_filter: Array, field_filter: Array) -> Dictionary:
 	var indices := _get_entry_indices(&"resources", entry_filter)
 	var entries := {}
@@ -496,22 +496,22 @@ func _read_exchange(exchange: ExchangeProxy, nonzero: bool,
 		var entry := {}
 		var dominated_by_zero := true
 		if _has_field("price", field_filter):
-			var v := exchange.get_spot_price(i)
+			var v := market.get_spot_price(i)
 			entry["price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("bid_price", field_filter):
-			var v := exchange.get_spot_bid_price(i)
+			var v := market.get_spot_bid_price(i)
 			entry["bid_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("ask_price", field_filter):
-			var v := exchange.get_spot_ask_price(i)
+			var v := market.get_spot_ask_price(i)
 			entry["ask_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("volume", field_filter):
-			var v := exchange.get_spot_volume(i)
+			var v := market.get_spot_volume(i)
 			entry["volume"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
@@ -521,8 +521,8 @@ func _read_exchange(exchange: ExchangeProxy, nonzero: bool,
 		if entries.size() >= MAX_INDEXED_ENTRIES:
 			break
 	return {
-		"component": "exchange",
-		"ordinal_qtr": exchange.ordinal_qtr,
+		"component": "market",
+		"ordinal_qtr": market.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),

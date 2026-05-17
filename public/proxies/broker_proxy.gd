@@ -8,8 +8,8 @@
 class_name BrokerProxy
 extends Proxy
 
-## Provides appropriate spot [ExchangeProxy] on request, lists futures contracts,
-## and routes futures orders to an appropriate [ExchangeProxy].
+## Provides appropriate spot [MarketProxy] on request, lists futures contracts,
+## and routes futures orders to an appropriate [MarketProxy].
 ##
 ## A [BrokerProxy] is created at a [BodyProxy] when it gains its first
 ## [FacilityProxy].[br][br]
@@ -21,7 +21,7 @@ extends Proxy
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-const N_MAX_EXCHANGES := 5 ## Must match Broker.N_MAX_EXCHANGES.
+const N_MAX_MARKETS := 5 ## Must match Broker.N_MAX_MARKETS.
 
 
 ## All [BrokerProxy] instances, indexed by [member broker_id].
@@ -34,11 +34,11 @@ var broker_id := -1  ## Index into [member broker_proxies].
 ## before [code]OpsAI[/code] does).
 var body: BodyProxy
 var body_name: StringName  ## Name of the hosting body.
-## Spot [ExchangeProxy]s at this Broker's body, indexed by routing slot;
+## Spot [MarketProxy]s at this Broker's body, indexed by routing slot;
 ## slot 0 is the default. Resolved in [method process_ai_init] (deferred
-## because broker init drains from [code]MktsAI[/code] before exchange init).
-var spot_exchanges: Array[ExchangeProxy]
-var _spot_exchange_names: PackedStringArray
+## because broker init drains from [code]MktsAI[/code] before market init).
+var spot_markets: Array[MarketProxy]
+var _spot_market_names: PackedStringArray
 
 
 
@@ -46,22 +46,22 @@ func _init() -> void:
 	const ENTITY_BROKER := Proxy.EntityType.ENTITY_BROKER
 	super()
 	entity_type = ENTITY_BROKER
-	spot_exchanges.resize(N_MAX_EXCHANGES)
+	spot_markets.resize(N_MAX_MARKETS)
 
 
 func _clear_circular_references() -> void:
 	body = null
-	for i in N_MAX_EXCHANGES:
-		spot_exchanges[i] = null
+	for i in N_MAX_MARKETS:
+		spot_markets[i] = null
 
 
 # *****************************************************************************
 # proxy API
 
 
-## Returns the spot [ExchangeProxy] for [param _player_id]. Thread-safe.
-func get_spot_exchange(_player_id: int) -> ExchangeProxy:
-	return spot_exchanges[0]
+## Returns the spot [MarketProxy] for [param _player_id]. Thread-safe.
+func get_spot_market(_player_id: int) -> MarketProxy:
+	return spot_markets[0]
 
 
 # *****************************************************************************
@@ -72,19 +72,19 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
-	# body and spot_exchanges are resolved in process_ai_init — their
+	# body and spot_markets are resolved in process_ai_init — their
 	# proxies may not yet be in proxies_by_name because MktsAI is drained
-	# before OpsAI, and broker init messages drain before exchange ones.
-	_spot_exchange_names = data[6]
+	# before OpsAI, and broker init messages drain before market ones.
+	_spot_market_names = data[6]
 
 
 func process_ai_init() -> void:
 	if !body:
 		body = proxies_by_name[body_name]
-	for i in N_MAX_EXCHANGES:
-		var exchange_name := _spot_exchange_names[i]
-		if !spot_exchanges[i] and exchange_name:
-			spot_exchanges[i] = proxies_by_name[StringName(exchange_name)]
+	for i in N_MAX_MARKETS:
+		var market_name := _spot_market_names[i]
+		if !spot_markets[i] and market_name:
+			spot_markets[i] = proxies_by_name[StringName(market_name)]
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -95,9 +95,9 @@ func sync_server_dirty(data: Array) -> void:
 
 	if dirty & DIRTY_BROKER:
 		var string_data: PackedStringArray = data[3]
-		for i in N_MAX_EXCHANGES:
-			var exchange_name := string_data[i]
-			spot_exchanges[i] = proxies_by_name[StringName(exchange_name)] if exchange_name else null
+		for i in N_MAX_MARKETS:
+			var market_name := string_data[i]
+			spot_markets[i] = proxies_by_name[StringName(market_name)] if market_name else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:

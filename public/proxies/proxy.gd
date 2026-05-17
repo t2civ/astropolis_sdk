@@ -13,7 +13,7 @@ extends RefCounted
 ## All GUI and in-game AI interaction with game internals goes through a
 ## [Proxy]. Subclasses include [FacilityProxy], [PlayerProxy],
 ## [BodyProxy], [JoinProxy], [TraderProxy], and
-## [ExchangeProxy]. Each is paired with a server-side entity that pushes
+## [MarketProxy]. Each is paired with a server-side entity that pushes
 ## changes via sync methods. A few "player control" properties have reverse
 ## proxy -> server data flow.
 ##
@@ -48,7 +48,7 @@ enum DirtyFlags {
 	DIRTY_PLAYER = 1 << 2,
 	DIRTY_BODY = 1 << 3,
 	DIRTY_JOIN = 1 << 4,
-	DIRTY_EXCHANGE = 1 << 5,
+	DIRTY_MARKET = 1 << 5,
 	DIRTY_TRADER = 1 << 6,
 	DIRTY_OPERATIONS = 1 << 7,
 	DIRTY_INVENTORY = 1 << 8,
@@ -69,7 +69,7 @@ enum EntityType {
 	ENTITY_PLAYER,
 	ENTITY_BODY,
 	ENTITY_JOIN,
-	ENTITY_EXCHANGE,
+	ENTITY_MARKET,
 	ENTITY_TRADER,
 	ENTITY_BROKER,
 	ENTITY_SERVER,
@@ -295,9 +295,9 @@ func get_cyberspace() -> CyberspaceNet:
 	return null
 
 
-## Returns the spot [ExchangeProxy] for [param _player_id], or null if not
+## Returns the spot [MarketProxy] for [param _player_id], or null if not
 ## applicable.
-func get_spot_exchange(_player_id: int) -> ExchangeProxy:
+func get_spot_market(_player_id: int) -> MarketProxy:
 	return null
 
 

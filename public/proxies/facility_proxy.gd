@@ -39,20 +39,20 @@ var public_sector: float
 ## True if this is a small focused activity (affects stats and tax treatment).
 var is_unitary: bool
 ## True if all resource streams flow from/to inventory (no atmosphere/surface
-## exchange).
+## market).
 var closed_cycle_ops: bool
 ## Fraction of solar irradiance occluded at this site (0.0–1.0).
 var solar_occlusion: float
 ## Time horizon used by AI and automations (inventory reserves, resupply, etc.).
 var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
-var exchanges: Array[StringName]  ## Names of exchanges this facility participates in.
+var markets: Array[StringName]  ## Names of markets this facility participates in.
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
 var body: BodyProxy  ## Hosting [BodyProxy].
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
-var spot_exchange: ExchangeProxy  ## Set after init. Lives on markets thread!
+var spot_market: MarketProxy  ## Set after init. Lives on markets thread!
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -77,7 +77,7 @@ func _clear_circular_references() -> void:
 	player = null
 	trader = null
 	joins.clear()
-	spot_exchange = null
+	spot_market = null
 	texture_2d = null
 
 
@@ -234,11 +234,11 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace
 
 
-## Returns this facility's spot [ExchangeProxy], or null if not yet set.
+## Returns this facility's spot [MarketProxy], or null if not yet set.
 ## [param _player_id] is unused for direct-routed facilities; the per-player
 ## sanctions routing happens at the Broker layer.
-func get_spot_exchange(_player_id: int) -> ExchangeProxy:
-	return spot_exchange
+func get_spot_market(_player_id: int) -> MarketProxy:
+	return spot_market
 
 
 # *****************************************************************************
@@ -255,7 +255,7 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	exchanges = data[12]
+	markets = data[12]
 	player = proxies_by_name[data[13]]
 	player.add_facility(self)
 	body = proxies_by_name[data[14]]
@@ -265,9 +265,9 @@ func set_network_init(data: Array) -> void:
 		var join: JoinProxy = get_proxy_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
-	var spot_exchange_name: StringName = data[16]
-	if spot_exchange_name:
-		spot_exchange = proxies_by_name[spot_exchange_name]
+	var spot_market_name: StringName = data[16]
+	if spot_market_name:
+		spot_market = proxies_by_name[spot_market_name]
 
 	var operations_data: Array = data[17]
 	var inventory_data: Array = data[18]
@@ -314,17 +314,17 @@ func sync_server_dirty(data: Array) -> void:
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
 		closed_cycle_ops = bool(int_data[3])
-		var n_exchanges := int_data[4]
+		var n_markets := int_data[4]
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
-		var spot_exchange_name := string_data[2]
-		spot_exchange = proxies_by_name[StringName(spot_exchange_name)] if spot_exchange_name else null
-		exchanges.clear()
-		for i in n_exchanges:
-			exchanges.append(StringName(string_data[3 + i]))
+		var spot_market_name := string_data[2]
+		spot_market = proxies_by_name[StringName(spot_market_name)] if spot_market_name else null
+		markets.clear()
+		for i in n_markets:
+			markets.append(StringName(string_data[3 + i]))
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
