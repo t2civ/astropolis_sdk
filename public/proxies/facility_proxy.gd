@@ -46,7 +46,6 @@ var solar_occlusion: float
 ## Time horizon used by AI and automations (inventory reserves, resupply, etc.).
 var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
-var markets: Array[StringName]  ## Names of markets this facility participates in.
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
 var body: BodyProxy  ## Hosting [BodyProxy].
@@ -255,26 +254,25 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	markets = data[12]
-	player = proxies_by_name[data[13]]
+	player = proxies_by_name[data[12]]
 	player.add_facility(self)
-	body = proxies_by_name[data[14]]
+	body = proxies_by_name[data[13]]
 	body.add_facility(self)
-	var join_names: Array = data[15]
+	var join_names: Array = data[14]
 	for join_name: StringName in join_names:
 		var join: JoinProxy = get_proxy_by_name(join_name)
 		assert(!joins.has(join))
 		joins.append(join)
-	var spot_market_name: StringName = data[16]
+	var spot_market_name: StringName = data[15]
 	if spot_market_name:
 		spot_market = proxies_by_name[spot_market_name]
 
-	var operations_data: Array = data[17]
-	var inventory_data: Array = data[18]
-	var financials_data: Array = data[19]
-	var population_data: Array = data[20]
-	var biome_data: Array = data[21]
-	var cyberspace_data: Array = data[22]
+	var operations_data: Array = data[16]
+	var inventory_data: Array = data[17]
+	var financials_data: Array = data[18]
+	var population_data: Array = data[19]
+	var biome_data: Array = data[20]
+	var cyberspace_data: Array = data[21]
 
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -314,7 +312,6 @@ func sync_server_dirty(data: Array) -> void:
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
 		closed_cycle_ops = bool(int_data[3])
-		var n_markets := int_data[4]
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
@@ -322,9 +319,6 @@ func sync_server_dirty(data: Array) -> void:
 		polity_name = string_data[1]
 		var spot_market_name := string_data[2]
 		spot_market = proxies_by_name[StringName(spot_market_name)] if spot_market_name else null
-		markets.clear()
-		for i in n_markets:
-			markets.append(StringName(string_data[3 + i]))
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])
