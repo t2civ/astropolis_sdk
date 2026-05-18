@@ -215,6 +215,13 @@ class AstropolisTestRunner:
                            "PLANET_EARTH has population component")
         self.g.assert_true(components.get("biome", {}).get("present", False),
                            "PLANET_EARTH has biome component")
+        # Regression guard: BodyProxy.get_market routes through
+        # broker.markets[0]. The broker's markets array is populated lazily
+        # via Proxy.process_ai_init; if that hook is gated on persisted
+        # state, post-load resolution silently breaks and the markets tab
+        # shows "no markets" for the body. See proxy.gd:_refs_resolved.
+        self.g.assert_true(components.get("market", {}).get("present", False),
+                           "PLANET_EARTH has market component (post-load broker resolved)")
 
         ops_info = components.get("operations", {})
         self.g.assert_true(ops_info.get("index_table") == "operations",
