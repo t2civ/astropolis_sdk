@@ -1,26 +1,26 @@
-# ai_bus.gd
+# proxy_bus.gd
 # This file is part of Astropolis
 # https://t2civ.com
 # *****************************************************************************
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
-class_name AIBus
+class_name ProxyBus
 extends RefCounted
 
-## Signal and data bus for AI-thread.
+## Signal and data bus for the proxy thread.
 ##
-## Listeners receive signals on the AI thread. To call main-thread code
+## Listeners receive signals on the proxy thread. To call main-thread code
 ## from a handler, use [code]call_deferred()[/code].[br][br]
 ##
 ## Note: Use this object in the future for unsafe data that needs to be
-## maintained in the AI thread.
+## maintained on the proxy thread.
 
 
-## Emitted on the AI thread when a new [Proxy] joins the registry.
+## Emitted on the proxy thread when a new [Proxy] joins the registry.
 signal proxy_added(proxy: Proxy)
 
-## Emitted on the AI thread when a [Proxy] reports a state change. The
+## Emitted on the proxy thread when a [Proxy] reports a state change. The
 ## payload is consumed by sync routines on the receiver side.
 signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 
@@ -29,8 +29,8 @@ signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 signal player_owner_changed(fixme: Variant)
 
 
-static var verbose := false  ## Enable verbose AI logging.
-static var verbose2 := false  ## Enable extra-verbose AI logging.
+static var verbose := false  ## Enable verbose proxy logging.
+static var verbose2 := false  ## Enable extra-verbose proxy logging.
 static var is_autoplay := false  ## True while the local player has handed control to AI.
 
 static var is_multiplayer_server := false  ## True if this peer is the multiplayer server.

@@ -186,7 +186,7 @@ func _update_tab(_dummy := false) -> void:
 	
 	
 	if MainThreadGlobal.has_development(target_name):
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(target_name))
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(target_name))
 	else:
 		_update_no_operations()
 
@@ -214,9 +214,9 @@ func _settings_listener(setting: StringName, value: Variant) -> void:
 
 
 # *****************************************************************************
-# AI thread !!!!
+# proxy thread !!!!
 
-func _get_ai_data(target_name: StringName) -> void:
+func _get_proxy_data(target_name: StringName) -> void:
 	const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
 	var data := []
 	var proxy := Proxy.get_proxy_by_name(target_name)

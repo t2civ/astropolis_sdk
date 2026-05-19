@@ -173,7 +173,7 @@ func _update_tab(_suppress_camera_move := false) -> void:
 	var inventory := proxy.get_inventory()
 
 	if market or inventory:
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(market, inventory))
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(market, inventory))
 	else:
 		_update_no_markets()
 
@@ -184,9 +184,9 @@ func _update_no_markets() -> void:
 
 
 # *****************************************************************************
-# AI thread !!!!
+# proxy thread !!!!
 
-func _get_ai_data(market: MarketProxy, inventory: InventoryNet) -> void:
+func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
 
 	var is_market := true if market else false
 	var is_inventory := true if inventory else false

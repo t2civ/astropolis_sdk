@@ -25,7 +25,7 @@ extends Proxy
 ##
 ## To modify AI, see comments in '_base_ai.gd' files.
 ##
-## Warning! This object lives and dies on the AI thread! Containers and many
+## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 ## All [FacilityProxy] instances, indexed by [member facility_id].
@@ -363,4 +363,4 @@ func _sync_ai_changes() -> void:
 	if _dirty & DIRTY_OPERATIONS:
 		data.append(operations.get_proxy_dirty())
 	_dirty = 0
-	ai_bus.emit_signal("proxy_changed", entity_type, facility_id, data)
+	proxy_bus.emit_signal("proxy_changed", entity_type, facility_id, data)

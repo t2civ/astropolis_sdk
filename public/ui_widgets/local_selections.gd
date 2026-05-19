@@ -83,11 +83,11 @@ func _update_selection(_dummy := false) -> void:
 		return
 	_is_busy = true
 	var body_name := _selection_manager.get_body_name()
-	MainThreadGlobal.call_ai_thread(_set_selections_on_ai_thread.bind(body_name))
+	MainThreadGlobal.call_proxy_thread(_set_selections_on_proxy_thread.bind(body_name))
 
 
-func _set_selections_on_ai_thread(body_name: StringName) -> void:
-	# AI thread!
+func _set_selections_on_proxy_thread(body_name: StringName) -> void:
+	# proxy thread!
 	const BODYFLAGS_STAR := IVBody.BodyFlags.BODYFLAGS_STAR
 	
 	_polities.clear()
@@ -109,7 +109,7 @@ func _set_selections_on_ai_thread(body_name: StringName) -> void:
 
 
 func _set_selections_recursive(body: BodyProxy, is_star: bool, root_call := false) -> void:
-	# AI thread!
+	# proxy thread!
 	const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 	const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
 	const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY

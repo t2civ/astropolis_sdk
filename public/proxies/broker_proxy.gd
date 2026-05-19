@@ -17,7 +17,7 @@ extends Proxy
 ## Server-side Broker pushes changes to [BrokerProxy]. Data flows
 ## server -> proxy only.[br][br]
 ##
-## Warning! This object lives and dies on the AI thread! Containers and many
+## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
@@ -30,13 +30,13 @@ static var broker_proxies: Array[BrokerProxy] = []
 
 var broker_id := -1  ## Index into [member broker_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
-## [method process_ai_init] (deferred because [code]MktsAI[/code] drains
-## before [code]OpsAI[/code] does).
+## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
+## before [code]OpsProxy[/code] does).
 var body: BodyProxy
 var body_name: StringName  ## Name of the hosting body.
 ## Spot [MarketProxy]s at this Broker's body, indexed by routing slot;
 ## slot 0 is the default. Resolved in [method process_ai_init] (deferred
-## because broker init drains from [code]MktsAI[/code] before market init).
+## because broker init drains from [code]MktsProxy[/code] before market init).
 var markets: Array[MarketProxy]
 var _market_names: PackedStringArray
 
@@ -73,8 +73,8 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_name = data[5]
 	# body and markets are resolved in process_ai_init — their
-	# proxies may not yet be in proxies_by_name because MktsAI is drained
-	# before OpsAI, and broker init messages drain before market ones.
+	# proxies may not yet be in proxies_by_name because MktsProxy is drained
+	# before OpsProxy, and broker init messages drain before market ones.
 	_market_names = data[6]
 
 

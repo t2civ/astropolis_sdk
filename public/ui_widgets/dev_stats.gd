@@ -12,7 +12,7 @@ extends MarginContainer
 ## manufacturing, etc. as rows × proxy targets as columns.
 ##
 ## Used by [ITabDevelopment] and the standalone development panel. Calls
-## proxy methods on the AI thread, then builds the grid on the main
+## proxy methods on the proxy thread, then builds the grid on the main
 ## thread.
 
 
@@ -83,13 +83,13 @@ func update_targets(targets_: Array[StringName], column_names_: Array[StringName
 	update()
 
 
-## Refreshes the grid by dispatching to the AI thread.
+## Refreshes the grid by dispatching to the proxy thread.
 func update() -> void:
-	MainThreadGlobal.call_ai_thread(_set_data)
+	MainThreadGlobal.call_proxy_thread(_set_data)
 
 
 # *****************************************************************************
-# AI thread !!!!
+# proxy thread !!!!
 
 func _set_data() -> void:
 	var data := []

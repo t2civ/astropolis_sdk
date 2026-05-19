@@ -27,12 +27,12 @@ extends RefCounted
 ##
 ## To modify AI, see comments in '_base_ai.gd' files.
 ##
-## Warning! This object lives and dies on the AI thread! Containers and many
+## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## Emitted on the AI thread when this proxy's mirrored state changes;
-## payload is consumed by the sync layer on the receiver side. AI thread only!
+## Emitted on the proxy thread when this proxy's mirrored state changes;
+## payload is consumed by the sync layer on the receiver side. proxy thread only!
 signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 
 ## Emitted when persistent (saveable) data changes. Don't emit this directly;
@@ -103,14 +103,14 @@ enum ProxyServerMethods {
 const INTERVAL := 7.0 * IVUnits.DAY
 
 
-## All [Proxy] instances, indexed by [member proxy_id]. AI thread only.
+## All [Proxy] instances, indexed by [member proxy_id]. proxy thread only.
 static var proxies: Array[Proxy] = []
 ## All [Proxy] instances keyed by [member name] (e.g. [code]&"PLAYER_NASA"[/code],
-## [code]&"JOIN_OFFWORLD"[/code]). AI thread only.
+## [code]&"JOIN_OFFWORLD"[/code]). proxy thread only.
 static var proxies_by_name: Dictionary[StringName, Proxy] = {}
 
-## Shared bus for AI-thread signals between proxies and the AI layer.
-static var ai_bus := AIBus.new()
+## Shared bus for proxy-thread signals between proxies and the AI/GUI layer.
+static var proxy_bus := ProxyBus.new()
 
 @warning_ignore_start("unused_private_class_variable")
 static var _times: Array = IVGlobal.times
@@ -160,7 +160,7 @@ var _is_local_use_ai := false # local player sets/unsets
 
 
 ## Returns the [Proxy] with the given [param proxy_name], or null if
-## no such proxy exists. AI thread only.
+## no such proxy exists. proxy thread only.
 static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
 	return proxies_by_name.get(proxy_name)
 
@@ -269,7 +269,7 @@ func get_polity_name() -> StringName:
 	return &""
 
 
-## Returns this proxy's facilities. AI thread only! Default empty.
+## Returns this proxy's facilities. proxy thread only! Default empty.
 func get_facilities() -> Array[Proxy]:
 	return []
 
@@ -324,7 +324,7 @@ func get_market(_player_id: int) -> MarketProxy:
 
 
 # *****************************************************************************
-# AI thread
+# proxy thread
 
 
 # subclass overrides
@@ -350,7 +350,7 @@ func process_ai(time: float) -> void:
 		_sync_ai_changes()
 
 
-## Called once on the AI thread after this proxy is registered. Runs once
+## Called once on the proxy thread after this proxy is registered. Runs once
 ## per process lifetime — including after a game load, because the post-load
 ## proxy is a fresh instance whose [member proxies_by_name] refs need
 ## re-resolution (AI-state members in [member persist] survive, but in-memory
@@ -426,4 +426,4 @@ func _clear_circular_references() -> void:
 #
 #
 #func _reset_ai() -> void:
-#	use_this_ai = _is_server_ai or (_is_local_player and (_is_local_use_ai or _ai_bus.is_autoplay))
+#	use_this_ai = _is_server_ai or (_is_local_player and (_is_local_use_ai or _proxy_bus.is_autoplay))

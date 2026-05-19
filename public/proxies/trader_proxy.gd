@@ -20,7 +20,7 @@ extends Proxy
 ##
 ## To modify AI, see comments in '_base_ai.gd' files.
 ##
-## Warning! This object lives and dies on the AI thread! Containers and many
+## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
@@ -100,7 +100,7 @@ func sync_server_dirty(data: Array) -> void:
 
 
 # ********************** TRADER METHODS (VIA CHANNELS) ************************
-# Send to Market on the markets thread via AIMkts. NOT threadsafe!
+# Send to Market on the markets thread via ProxyMkts. NOT threadsafe!
 
 ## Adds a spot sell market order. All market orders will be filled or canceled in one cycle.
 func _spot_sell(resource_type: int, quantity: int) -> void:
@@ -142,4 +142,4 @@ func _send_to_market(method_id: int, data: Array) -> void:
 	const ENTITY_MARKET := EntityType.ENTITY_MARKET
 	var address := market_id << 16 | method_id << 8 | ENTITY_MARKET
 	data.append(address)
-	ai_bus.proxy_markets_messages.append(data)
+	proxy_bus.proxy_markets_messages.append(data)

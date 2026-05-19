@@ -25,7 +25,7 @@ extends RefCounted
 ## will have access to API (just like any Godot class) but the GDScript class
 ## will be removed.
 ##
-## Warning! Like [Proxy], this object is touched on the AI thread.
+## Warning! Like [Proxy], this object is touched on the proxy thread.
 ## Containers and many methods are not threadsafe; accessing non-container
 ## properties is safe.
 

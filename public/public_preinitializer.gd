@@ -12,14 +12,14 @@ extends RefCounted
 ## ivoyager plugins (core, save, units, assistant) up to Astropolis-specific
 ## defaults.
 ##
-## Configures: AI thread verbosity, start time and sim time mode, program
+## Configures: proxy thread verbosity, start time and sim time mode, program
 ## class registration ([InfoCloner], [code]AstropolisGUI[/code]),
 ## translations, units formatting, save/load gates, and the
 ## [code]IVAssistantServer[/code] ready predicate.
 
 
-const AI_VERBOSE := false  ## Enable AI verbose logging.
-const AI_VERBOSE2 := false  ## Enable extra-verbose AI logging.
+const PROXY_VERBOSE := false  ## Enable proxy verbose logging.
+const PROXY_VERBOSE2 := false  ## Enable extra-verbose proxy logging.
 const IVOYAGER_VERBOSE := false  ## Enable ivoyager core verbose logging.
 const USE_THREADS := true  ## Run the simulation on worker threads (recommended).
 
@@ -35,8 +35,8 @@ func _init() -> void:
 	IVStateManager.core_init_program_objects_instantiated.connect(_on_program_objects_instantiated)
 
 	# properties
-	AIBus.verbose = AI_VERBOSE
-	AIBus.verbose2 = AI_VERBOSE2
+	ProxyBus.verbose = PROXY_VERBOSE
+	ProxyBus.verbose2 = PROXY_VERBOSE2
 	IVCoreSettings.use_threads = USE_THREADS
 	IVCoreSettings.start_time_date_clock = [2025, 1, 1, 12, 0, 0]
 	IVCoreSettings.start_time_is_terrestrial_time = false
@@ -61,7 +61,7 @@ func _init() -> void:
 	IVSave.file_description = "Astropolis Save"
 	IVSave.autosave_uses_suffix_generator = true
 	IVSave.quicksave_uses_suffix_generator = true
-	# Block save/load until Proxies have settled on the main thread. The AI
+	# Block save/load until Proxies have settled on the main thread. The proxy
 	# thread posts add_proxy() calls via call_deferred for several frames
 	# after simulator_started, so MainThreadGlobal.proxies_ready_emitted is
 	# the correct barrier. See main_thread_global.gd.

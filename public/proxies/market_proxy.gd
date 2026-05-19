@@ -59,7 +59,7 @@ extends Proxy
 ## 0.0 in any "price" variable means N/A or no current price.[br][br]
 ##
 ## Server-side Market pushes changes to [MarketProxy]. Data flows
-## server -> proxy only. WARNING: This object lives and dies on the AI thread!
+## server -> proxy only. WARNING: This object lives and dies on the proxy thread!
 ## Containers and many methods are not threadsafe. Accessing non-container
 ## properties is safe.
 
@@ -70,8 +70,8 @@ static var market_proxies: Array[MarketProxy] = []
 
 var market_id := -1  ## Index into [member market_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
-## [method process_ai_init] (deferred because [code]MktsAI[/code] drains
-## before [code]OpsAI[/code] does).
+## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
+## before [code]OpsProxy[/code] does).
 var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
 var body_name: StringName  ## @deprecate: why is this here?
 
@@ -144,7 +144,7 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_name = data[5]
 	# body is resolved in process_ai_init — BodyProxy may not yet be in
-	# proxies_by_name because MktsAI is drained before OpsAI.
+	# proxies_by_name because MktsProxy is drained before OpsProxy.
 	ordinal_qtr = data[6]
 	_prices = data[7]
 	_ask_prices = data[8]

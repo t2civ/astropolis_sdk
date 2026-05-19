@@ -46,7 +46,7 @@ func _ready() -> void:
 func refresh() -> void:
 	if !_body_name or !_selection_name:
 		return
-	MainThreadGlobal.call_ai_thread(_get_ai_data.bind(_body_name, _selection_name))
+	MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(_body_name, _selection_name))
 
 
 ## Updates the cached selection ([param body_name] + [param selection_name])
@@ -56,14 +56,14 @@ func update_selection(body_name: StringName, selection_name: StringName) -> void
 	if _body_name != body_name or _selection_name != selection_name:
 		_body_name = body_name
 		_selection_name = selection_name
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(body_name, selection_name))
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(body_name, selection_name))
 
 
 
 # *****************************************************************************
-# AI thread !!!!
+# proxy thread !!!!
 
-func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
+func _get_proxy_data(body_name: StringName, selection_name: StringName) -> void:
 	const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 	var data: Array = []
 	var polity_name := ""

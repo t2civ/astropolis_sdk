@@ -48,7 +48,7 @@ class AstropolisTestRunner:
         """Poll MainThreadGlobal.proxies_ready via get_astropolis_state.
 
         `IVStateManager.simulator_started` (and the `started` state flag) fire
-        before the AI thread has finished posting `add_proxy` calls to the
+        before the proxy thread has finished posting `add_proxy` calls to the
         main thread. `proxies_ready` is the Astropolis-specific barrier that
         guarantees the Proxy registry has settled. See main_thread_global.gd.
         """

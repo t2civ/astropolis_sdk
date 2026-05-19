@@ -12,9 +12,9 @@ extends Node
 ##
 ## This global is the canonical entry point for finding [Proxy]s by name
 ## on the main thread. The returned [Proxy] objects themselves live on
-## the AI thread — only call [Proxy] methods marked threadsafe from the
-## main thread; for the rest, use [method call_ai_thread] to dispatch work
-## to the AI thread.
+## the proxy thread — only call [Proxy] methods marked threadsafe from the
+## main thread; for the rest, use [method call_proxy_thread] to dispatch work
+## to the proxy thread.
 ##
 ## Access on main thread only!
 
@@ -25,14 +25,14 @@ signal proxy_added(proxy: Proxy)
 ## Emitted on the main thread when a [Proxy] leaves the registry.
 signal proxy_removed(proxy: Proxy)
 
-## Emitted by [method call_ai_thread] to dispatch a [Callable] for execution
-## on the AI thread.
-signal ai_thread_called(callable: Callable)
+## Emitted by [method call_proxy_thread] to dispatch a [Callable] for execution
+## on the proxy thread.
+signal proxy_thread_called(callable: Callable)
 
 ## Emitted once when every [Proxy] has reached the main thread. This is
 ## the correct barrier for "Proxy system is ready" — waiting on
 ## [code]IVStateManager.simulator_started[/code] alone is insufficient because
-## proxies arrive on the main thread via deferred calls from the AI server
+## proxies arrive on the main thread via deferred calls from the proxy
 ## thread and can continue arriving for a short time after simulator_started.
 signal proxies_ready
 
@@ -69,10 +69,10 @@ func _clear_procedural() -> void:
 # *****************************************************************************
 # Access on main thread only!
 
-## Dispatches [param callable] to the AI thread via [signal ai_thread_called].
+## Dispatches [param callable] to the proxy thread via [signal proxy_thread_called].
 ## Use this from main-thread code that needs to run logic on a [Proxy].
-func call_ai_thread(callable: Callable) -> void:
-	ai_thread_called.emit(callable)
+func call_proxy_thread(callable: Callable) -> void:
+	proxy_thread_called.emit(callable)
 
 
 ## Returns the body-selection redirect target for [param body_name], or

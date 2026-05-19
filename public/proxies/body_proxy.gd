@@ -30,7 +30,7 @@ extends Proxy
 ##
 ## To modify AI, see comments in '_base_ai.gd' files.
 ##
-## Warning! This object lives and dies on the AI thread! Containers and many
+## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
@@ -92,7 +92,7 @@ func get_body_flags() -> int:
 	return body_flags
 
 
-## Returns this body's [member facilities]. AI thread only!
+## Returns this body's [member facilities]. proxy thread only!
 func get_facilities() -> Array[Proxy]:
 	return facilities
 
