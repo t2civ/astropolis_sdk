@@ -21,7 +21,7 @@ extends Proxy
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-const N_MAX_MARKETS := 5 ## Must match Broker.N_MAX_MARKETS.
+const MAX_MARKETS_PER_BODY := 5 ## Must match Broker.MAX_MARKETS_PER_BODY.
 
 
 ## All [BrokerProxy] instances, indexed by [member broker_id].
@@ -46,12 +46,12 @@ func _init() -> void:
 	const ENTITY_BROKER := Proxy.EntityType.ENTITY_BROKER
 	super()
 	entity_type = ENTITY_BROKER
-	markets.resize(N_MAX_MARKETS)
+	markets.resize(MAX_MARKETS_PER_BODY)
 
 
 func _clear_circular_references() -> void:
 	body = null
-	for i in N_MAX_MARKETS:
+	for i in MAX_MARKETS_PER_BODY:
 		markets[i] = null
 
 
@@ -81,7 +81,7 @@ func set_network_init(data: Array) -> void:
 func process_ai_init() -> void:
 	if !body:
 		body = proxies_by_name[body_name]
-	for i in N_MAX_MARKETS:
+	for i in MAX_MARKETS_PER_BODY:
 		var market_name := _market_names[i]
 		if !markets[i] and market_name:
 			markets[i] = proxies_by_name[StringName(market_name)]
@@ -95,7 +95,7 @@ func sync_server_dirty(data: Array) -> void:
 
 	if dirty & DIRTY_BROKER:
 		var string_data: PackedStringArray = data[3]
-		for i in N_MAX_MARKETS:
+		for i in MAX_MARKETS_PER_BODY:
 			var market_name := string_data[i]
 			markets[i] = proxies_by_name[StringName(market_name)] if market_name else null
 

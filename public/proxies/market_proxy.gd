@@ -21,7 +21,7 @@ extends Proxy
 ## player sanctions (this may result in runtime changes in [member
 ## FacilityProxy.market] and [member TraderProxy.market]).[br][br]
 ##
-## Spot orders (spot bids and spot asks) are fixed-size [PackedInt64Array]
+## Spot limit orders (bids and asks) are fixed-size [PackedInt64Array]
 ## structures with the following elements:[br][br]
 ##
 ##   [0] id (ask_id or bid_id)[br]
@@ -63,7 +63,7 @@ extends Proxy
 ## Containers and many methods are not threadsafe. Accessing non-container
 ## properties is safe.
 
-const SPOT_ORDER_SIZE := 7
+const SPOT_LIMIT_ORDER_SIZE := 7
 
 ## All [MarketProxy] instances, indexed by [member market_id].
 static var market_proxies: Array[MarketProxy] = []
@@ -83,10 +83,9 @@ var _volumes: PackedFloat64Array
 var _asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
 var _bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
 
-var _sync := SyncHelper.new()
+var _recycled_limit_orders: Array[PackedInt64Array] = []
 
-# Recycled orders.
-var _free_orders: Array[PackedInt64Array] = []
+var _sync := SyncHelper.new()
 
 
 
@@ -195,14 +194,14 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Pack
 	var i := 0
 	while i < upserts_count:
 		var order: PackedInt64Array
-		if _free_orders:
-			order = _free_orders.pop_back()
+		if _recycled_limit_orders:
+			order = _recycled_limit_orders.pop_back()
 		else:
 			order = PackedInt64Array()
-			order.resize(SPOT_ORDER_SIZE)
-		for j in SPOT_ORDER_SIZE:
+			order.resize(SPOT_LIMIT_ORDER_SIZE)
+		for j in SPOT_LIMIT_ORDER_SIZE:
 			order[j] = int_data[int_offset + j]
-		int_offset += SPOT_ORDER_SIZE
+		int_offset += SPOT_LIMIT_ORDER_SIZE
 		target[order[0]] = order
 		i += 1
 	var removes_count := int_data[int_offset]
@@ -211,7 +210,7 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Pack
 	while i < removes_count:
 		var id := int_data[int_offset]
 		int_offset += 1
-		_free_orders.append(target[id])
+		_recycled_limit_orders.append(target[id])
 		target.erase(id)
 		i += 1
 	_sync.int_offset = int_offset

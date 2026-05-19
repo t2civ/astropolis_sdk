@@ -28,12 +28,13 @@ extends Proxy
 static var trader_proxies: Array[TraderProxy] = []
 
 
-# immutable post-init
-var trader_id := -1  ## Index into [member trader_proxies].
-var facility_id := -1  ## [member FacilityProxy.facility_id] this trader belongs to.
-var facility: FacilityProxy  ## Owning [FacilityProxy].
-var broker: BrokerProxy  ## Set after init. Lives on markets thread!
-var market: MarketProxy  ## Set after init. Lives on markets thread!
+var trader_id := -1  ## Index in [member trader_proxies].
+var facility: FacilityProxy  ## Owning [FacilityProxy]. Immutable after init.
+var facility_id := -1  ## [member FacilityProxy.facility_id] of [member facility].
+var broker: BrokerProxy  ## Immutable after init. Lives on markets thread!
+var broker_id := -1  ## [member BrokerProxy.broker_id] of [member broker].
+var market: MarketProxy  ## May change at runtime. Lives on markets thread!
+var market_id := -1  ## [member MarketProxy.market_id] of [member market].
 
 
 
@@ -70,12 +71,12 @@ func set_network_init(data: Array) -> void:
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id
-	var broker_name: StringName = data[5]
-	if broker_name:
-		broker = proxies_by_name[broker_name]
-	var market_name: StringName = data[6]
-	if market_name:
-		market = proxies_by_name[market_name]
+	broker_id = data[5]
+	broker = BrokerProxy.broker_proxies[broker_id]
+	assert(broker)
+	market_id = data[6]
+	market = MarketProxy.market_proxies[market_id]
+	assert(market)
 
 
 func sync_server_dirty(data: Array) -> void:
@@ -85,11 +86,9 @@ func sync_server_dirty(data: Array) -> void:
 	var dirty: int = offsets[0]
 
 	if dirty & DIRTY_TRADER:
-		var string_data: PackedStringArray = data[3]
-		var broker_name := string_data[0]
-		broker = proxies_by_name[StringName(broker_name)] if broker_name else null
-		var market_name := string_data[1]
-		market = proxies_by_name[StringName(market_name)] if market_name else null
+		market_id = int_data[1]
+		market = MarketProxy.market_proxies[market_id]
+		assert(market)
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
