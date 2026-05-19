@@ -77,8 +77,7 @@ enum EntityType {
 	N_ENTITY_TYPES,
 }
 
-## Identifies which net-sync component on a [Proxy] a sync payload
-## targets.
+## Identifies which net-sync component on a [Proxy] a sync payload targets.
 enum ComponentType {
 	COMPONENT_OPERATIONS,
 	COMPONENT_INVENTORY,
@@ -90,6 +89,15 @@ enum ComponentType {
 	N_COMPONENT_TYPES,
 }
 
+## Server methods that can originate from Proxy.
+enum ProxyServerMethods {
+	SPOT_SELL,
+	SPOT_BUY,
+	SPOT_ASK,
+	CANCEL_SPOT_ASK,
+	SPOT_BID,
+	CANCEL_SPOT_BID,
+}
 
 ## Wall-clock time between [method process_ai_interval] calls (one game week).
 const INTERVAL := 7.0 * IVUnits.DAY
@@ -103,6 +111,14 @@ static var proxies_by_name: Dictionary[StringName, Proxy] = {}
 
 ## Shared bus for AI-thread signals between proxies and the AI layer.
 static var ai_bus := AIBus.new()
+
+@warning_ignore_start("unused_private_class_variable")
+static var _times: Array = IVGlobal.times
+static var _date: Array = IVGlobal.date
+static var _clock: Array = IVGlobal.clock
+static var _db_tables := IVTableData.db_tables
+static var _table_n_rows: Dictionary = IVTableData.table_n_rows
+@warning_ignore_restore("unused_private_class_variable")
 
 
 var proxy_id := -1  ## Index into [member proxies].
@@ -127,16 +143,6 @@ var persist := [
 ## by the AI/server-control machinery.
 var use_this_ai := false
 
-@warning_ignore("unused_private_class_variable")
-static var _times: Array = IVGlobal.times
-@warning_ignore("unused_private_class_variable")
-static var _date: Array = IVGlobal.date
-@warning_ignore("unused_private_class_variable")
-static var _clock: Array = IVGlobal.clock
-@warning_ignore("unused_private_class_variable")
-static var _db_tables := IVTableData.db_tables
-@warning_ignore("unused_private_class_variable")
-static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 
 # private
 var _dirty := 0
@@ -153,6 +159,12 @@ var _is_server_ai := false
 var _is_local_use_ai := false # local player sets/unsets
 
 
+## Returns the [Proxy] with the given [param proxy_name], or null if
+## no such proxy exists. AI thread only.
+static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
+	return proxies_by_name.get(proxy_name)
+
+
 func _init() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
 
@@ -161,12 +173,6 @@ func _init() -> void:
 ## [code]super.remove()[/code] so cycles are broken outside of quit.
 func remove() -> void:
 	_clear_circular_references()
-
-
-## Returns the [Proxy] with the given [param proxy_name], or null if
-## no such proxy exists. AI thread only.
-static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
-	return proxies_by_name.get(proxy_name)
 
 
 # override below if applicable
@@ -368,6 +374,8 @@ func process_ai_new_quarter() -> void:
 	pass
 
 
+
+
 # *****************************************************************************
 # sync
 
@@ -400,6 +408,13 @@ func propagate_server_delta(_data: Array) -> void:
 ## 2-cycle should clear — redundant on success, robust under refactoring.
 func _clear_circular_references() -> void:
 	pass
+
+
+# *****************************************************************************
+# Proxy -> Server method calls
+
+
+
 
 # *****************************************************************************
 # Internal main thread

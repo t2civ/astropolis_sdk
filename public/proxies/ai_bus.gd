@@ -29,10 +29,11 @@ signal proxy_changed(entity_type: int, entity_id: int, data: Array)
 signal player_owner_changed(fixme: Variant)
 
 
-
 static var verbose := false  ## Enable verbose AI logging.
 static var verbose2 := false  ## Enable extra-verbose AI logging.
 static var is_autoplay := false  ## True while the local player has handed control to AI.
 
 static var is_multiplayer_server := false  ## True if this peer is the multiplayer server.
 static var is_multiplayer_client := false  ## True if this peer is a multiplayer client.
+
+var proxy_markets_messages: Array[Array] = []

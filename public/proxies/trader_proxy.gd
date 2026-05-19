@@ -97,3 +97,49 @@ func sync_server_dirty(data: Array) -> void:
 		else:
 			ordinal_qtr = int_data[0]
 			process_ai_new_quarter() # after component histories have updated
+
+
+# ********************** TRADER METHODS (VIA CHANNELS) ************************
+# Send to Market on the markets thread via AIMkts. NOT threadsafe!
+
+## Adds a spot sell market order. All market orders will be filled or canceled in one cycle.
+func _spot_sell(resource_type: int, quantity: int) -> void:
+	const SPOT_SELL := ProxyServerMethods.SPOT_SELL
+	_send_to_market(SPOT_SELL, [resource_type, quantity, trader_id])
+
+
+## Adds a spot buy market order. All market orders will be filled or canceled in one cycle.
+func _spot_buy(resource_type: int, quantity: int) -> void:
+	const SPOT_BUY := ProxyServerMethods.SPOT_BUY
+	_send_to_market(SPOT_BUY, [resource_type, quantity, trader_id])
+
+
+## Adds a spot sell limit (ask) order.
+func _spot_ask(resource_type: int, quantity: int, price: int, expiration: int) -> void:
+	const SPOT_ASK := ProxyServerMethods.SPOT_ASK
+	_send_to_market(SPOT_ASK, [resource_type, quantity, price, expiration, trader_id])
+
+
+## Removes a spot sell limit (ask) order if not processed already.
+func _cancel_spot_ask(ask_id: int) -> void:
+	const CANCEL_SPOT_ASK := ProxyServerMethods.CANCEL_SPOT_ASK
+	_send_to_market(CANCEL_SPOT_ASK, [ask_id])
+
+
+## Adds a spot buy limit (bid) order.
+func _spot_bid(resource_type: int, quantity: int, price: int, expiration: int) -> void:
+	const SPOT_BID := ProxyServerMethods.SPOT_BID
+	_send_to_market(SPOT_BID, [resource_type, quantity, price, expiration, trader_id])
+
+
+## Removes a spot buy limit (bid) order if not processed already.
+func _cancel_spot_bid(bid_id: int) -> void:
+	const CANCEL_SPOT_BID := ProxyServerMethods.CANCEL_SPOT_BID
+	_send_to_market(CANCEL_SPOT_BID, [bid_id])
+
+
+func _send_to_market(method_id: int, data: Array) -> void:
+	const ENTITY_MARKET := EntityType.ENTITY_MARKET
+	var address := market_id << 16 | method_id << 8 | ENTITY_MARKET
+	data.append(address)
+	ai_bus.proxy_markets_messages.append(data)
