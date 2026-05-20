@@ -37,6 +37,7 @@ var market: MarketProxy  ## May change at runtime. Lives on markets thread!
 var market_id := -1  ## [member MarketProxy.market_id] of [member market].
 
 
+# ***************************** INIT & DESTROY ********************************
 
 func _init() -> void:
 	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
@@ -50,17 +51,14 @@ func _clear_circular_references() -> void:
 	broker = null
 	market = null
 
+# ******************************** PROXY API **********************************
 
-# *****************************************************************************
-# proxy API
-
-## Returns this trader's spot [MarketProxy], or null if not yet set.
-## [param _player_id] is unused for direct-routed traders.
+## Returns this trader's [MarketProxy]. Mutable but always exists after init.
 func get_market(_player_id: int) -> MarketProxy:
 	return market
 
+# *************************** INCOMING SERVER CALLS ***************************
 
-# *****************************************************************************
 # sync from server
 
 func set_network_init(data: Array) -> void:
@@ -79,7 +77,7 @@ func set_network_init(data: Array) -> void:
 	assert(market)
 
 
-func sync_server_dirty(data: Array) -> void:
+func _sync_server_dirty(data: Array) -> void:
 	const DIRTY_TRADER := Proxy.DirtyFlags.DIRTY_TRADER
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
@@ -99,8 +97,8 @@ func sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
-# ********************** TRADER METHODS (VIA CHANNELS) ************************
-# Send to Market on the markets thread via ProxyMkts. NOT threadsafe!
+# ********************** MARKET METHODS (VIA CHANNEL) *************************
+# Send to Market. Call on proxy thread.
 
 ## Adds a spot sell market order. All market orders will be filled or canceled in one cycle.
 func _spot_sell(resource_type: int, quantity: int) -> void:
@@ -137,6 +135,9 @@ func _cancel_spot_bid(bid_id: int) -> void:
 	const CANCEL_SPOT_BID := ProxyServerMethods.CANCEL_SPOT_BID
 	_send_to_market(CANCEL_SPOT_BID, [bid_id])
 
+
+# *************************** INTERNAL PRIVATE ********************************
+# Don't override!
 
 func _send_to_market(method_id: int, data: Array) -> void:
 	const ENTITY_MARKET := EntityType.ENTITY_MARKET

@@ -312,7 +312,7 @@ func set_network_init(data: Array) -> void:
 			i += 1
 
 
-func sync_server_dirty(data: Array) -> void:
+func _sync_server_dirty(data: Array) -> void:
 	const SIGN_BIT := 1 << 63
 	const DIRTY_BODY := Proxy.DirtyFlags.DIRTY_BODY
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS

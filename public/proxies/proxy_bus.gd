@@ -10,11 +10,10 @@ extends RefCounted
 
 ## Signal and data bus for the proxy thread.
 ##
-## Listeners receive signals on the proxy thread. To call main-thread code
-## from a handler, use [code]call_deferred()[/code].[br][br]
+## Listeners receive signals on the proxy thread.[br][br]
 ##
-## Note: Use this object in the future for unsafe data that needs to be
-## maintained on the proxy thread.
+## Use this object for unsafe data that needs to be maintained and accessed on
+## the proxy thread.
 
 
 ## Emitted on the proxy thread when a new [Proxy] joins the registry.

@@ -293,7 +293,7 @@ func set_network_init(data: Array) -> void:
 	texture_2d = ivbody.texture_2d
 
 
-func sync_server_dirty(data: Array) -> void:
+func _sync_server_dirty(data: Array) -> void:
 	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY

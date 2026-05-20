@@ -388,7 +388,7 @@ func set_network_init(_data: Array) -> void:
 
 ## Applies a server-supplied dirty payload, updating fields whose
 ## [code]DIRTY_*[/code] flags are set. Subclasses override to unpack.
-func sync_server_dirty(_data: Array) -> void:
+func _sync_server_dirty(_data: Array) -> void:
 	pass
 
 

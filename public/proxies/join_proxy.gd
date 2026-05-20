@@ -200,7 +200,7 @@ func set_network_init(data: Array) -> void:
 	cyberspace.set_network_init(cyberspace_data)
 
 
-func sync_server_dirty(data: Array) -> void:
+func _sync_server_dirty(data: Array) -> void:
 	const DIRTY_JOIN := Proxy.DirtyFlags.DIRTY_JOIN
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_FINANCIALS := Proxy.DirtyFlags.DIRTY_FINANCIALS

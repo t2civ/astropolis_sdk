@@ -87,7 +87,7 @@ func process_ai_init() -> void:
 			markets[i] = proxies_by_name[StringName(market_name)]
 
 
-func sync_server_dirty(data: Array) -> void:
+func _sync_server_dirty(data: Array) -> void:
 	const DIRTY_BROKER := Proxy.DirtyFlags.DIRTY_BROKER
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
