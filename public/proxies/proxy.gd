@@ -97,6 +97,7 @@ enum ProxyServerMethods {
 	CANCEL_SPOT_ASK,
 	SPOT_BID,
 	CANCEL_SPOT_BID,
+	N_PROXY_SERVER_METHODS,
 }
 
 ## Wall-clock time between [method process_ai_interval] calls (one game week).
