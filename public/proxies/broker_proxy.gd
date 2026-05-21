@@ -24,11 +24,7 @@ extends Proxy
 const MAX_MARKETS_PER_BODY := 5 ## Must match Broker.MAX_MARKETS_PER_BODY.
 
 
-## All [BrokerProxy] instances, indexed by [member broker_id].
-static var broker_proxies: Array[BrokerProxy] = []
-
-
-var broker_id := -1  ## Index into [member broker_proxies].
+var broker_id := -1  ## Index into [member ProxyBus.broker_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
 ## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
 ## before [code]OpsProxy[/code] does).
@@ -73,18 +69,19 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_name = data[5]
 	# body and markets are resolved in process_ai_init — their
-	# proxies may not yet be in proxies_by_name because MktsProxy is drained
-	# before OpsProxy, and broker init messages drain before market ones.
+	# proxies may not yet be in proxy_bus.proxies_by_name because MktsProxy
+	# is drained before OpsProxy, and broker init messages drain before
+	# market ones.
 	_market_names = data[6]
 
 
 func process_ai_init() -> void:
 	if !body:
-		body = proxies_by_name[body_name]
+		body = proxy_bus.proxies_by_name[body_name]
 	for i in MAX_MARKETS_PER_BODY:
 		var market_name := _market_names[i]
 		if !markets[i] and market_name:
-			markets[i] = proxies_by_name[StringName(market_name)]
+			markets[i] = proxy_bus.proxies_by_name[StringName(market_name)]
 
 
 func _sync_server_dirty(data: Array) -> void:
@@ -97,7 +94,7 @@ func _sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		for i in MAX_MARKETS_PER_BODY:
 			var market_name := string_data[i]
-			markets[i] = proxies_by_name[StringName(market_name)] if market_name else null
+			markets[i] = proxy_bus.proxies_by_name[StringName(market_name)] if market_name else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:

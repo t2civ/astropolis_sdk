@@ -29,11 +29,8 @@ extends Proxy
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [PlayerProxy] instances, indexed by [member player_id].
-static var player_proxies: Array[PlayerProxy] = []
-
 # public read-only
-var player_id := -1  ## Index into [member player_proxies].
+var player_id := -1  ## Index into [member ProxyBus.player_proxies].
 var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
 ## Owning polity for this player when [code]polity_name[/code] differs from
 ## [member name] (sub-players only).
@@ -169,7 +166,7 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	player_class = data[5]
 	var part_of_name: StringName = data[6]
-	part_of = proxies_by_name[part_of_name] if part_of_name else null
+	part_of = proxy_bus.proxies_by_name[part_of_name] if part_of_name else null
 	polity_name = data[7]
 	homeworld = data[8]
 
@@ -206,7 +203,7 @@ func _sync_server_dirty(data: Array) -> void:
 		gui_name = string_data[0]
 		player_class = int_data[1]
 		var part_of_name := string_data[1]
-		part_of = proxies_by_name[part_of_name] if part_of_name else null
+		part_of = proxy_bus.proxies_by_name[part_of_name] if part_of_name else null
 		polity_name = string_data[2]
 		homeworld = string_data[3]
 

@@ -65,10 +65,7 @@ extends Proxy
 
 const SPOT_LIMIT_ORDER_SIZE := 7
 
-## All [MarketProxy] instances, indexed by [member market_id].
-static var market_proxies: Array[MarketProxy] = []
-
-var market_id := -1  ## Index into [member market_proxies].
+var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
 ## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
 ## before [code]OpsProxy[/code] does).
@@ -144,7 +141,7 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_name = data[5]
 	# body is resolved in process_ai_init — BodyProxy may not yet be in
-	# proxies_by_name because MktsProxy is drained before OpsProxy.
+	# proxy_bus.proxies_by_name because MktsProxy is drained before OpsProxy.
 	ordinal_qtr = data[6]
 	_prices = data[7]
 	_ask_prices = data[8]
@@ -156,7 +153,7 @@ func set_network_init(data: Array) -> void:
 
 func process_ai_init() -> void:
 	if !body:
-		body = proxies_by_name[body_name]
+		body = proxy_bus.proxies_by_name[body_name]
 
 
 func _sync_server_dirty(data: Array) -> void:

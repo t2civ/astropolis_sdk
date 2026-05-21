@@ -28,10 +28,7 @@ extends Proxy
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
-## All [FacilityProxy] instances, indexed by [member facility_id].
-static var facility_proxies: Array[FacilityProxy] = []
-
-var facility_id := -1  ## Index into [member facility_proxies].
+var facility_id := -1  ## Index into [member ProxyBus.facility_proxies].
 var facility_class := -1  ## Facility class index. Not implemented yet.
 var trader_id := -1  ## [member TraderProxy.trader_id] of this facility's paired trader.
 ## Public-sector share of this facility, often 0.0 or 1.0, sometimes mixed.
@@ -254,9 +251,9 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	player = proxies_by_name[data[12]]
+	player = proxy_bus.proxies_by_name[data[12]]
 	player.add_facility(self)
-	body = proxies_by_name[data[13]]
+	body = proxy_bus.proxies_by_name[data[13]]
 	body.add_facility(self)
 	var join_names: Array = data[14]
 	for join_name: StringName in join_names:
@@ -265,7 +262,7 @@ func set_network_init(data: Array) -> void:
 		joins.append(join)
 	var market_name: StringName = data[15]
 	if market_name:
-		market = proxies_by_name[market_name]
+		market = proxy_bus.proxies_by_name[market_name]
 
 	var operations_data: Array = data[16]
 	var inventory_data: Array = data[17]
@@ -318,7 +315,7 @@ func _sync_server_dirty(data: Array) -> void:
 		gui_name = string_data[0]
 		polity_name = string_data[1]
 		var market_name := string_data[2]
-		market = proxies_by_name[StringName(market_name)] if market_name else null
+		market = proxy_bus.proxies_by_name[StringName(market_name)] if market_name else null
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])

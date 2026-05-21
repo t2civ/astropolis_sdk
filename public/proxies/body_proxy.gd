@@ -34,10 +34,7 @@ extends Proxy
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [BodyProxy] instances, indexed by [member body_id].
-static var body_proxies: Array[BodyProxy] = []
-
-var body_id := -1  ## Index into [member body_proxies].
+var body_id := -1  ## Index into [member ProxyBus.body_proxies].
 var body_flags := 0  ## Body flags from [enum IVBody.BodyFlags].
 var solar_occlusion: float  ## Average solar irradiance occlusion at this body.
 var is_satellites := false  ## True while this body has at least one satellite.
@@ -277,11 +274,11 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[6]
 	var parent_name: String = data[7]
 	if parent_name:
-		parent = proxies_by_name[parent_name]
+		parent = proxy_bus.proxies_by_name[parent_name]
 		parent.add_satellite(self)
 	var broker_name: String = data[8]
 	if broker_name:
-		broker = proxies_by_name[broker_name]
+		broker = proxy_bus.proxies_by_name[broker_name]
 	var operations_data: Array = data[9]
 	var population_data: Array = data[10]
 	var biome_data: Array = data[11]
@@ -330,7 +327,7 @@ func _sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
 		var broker_name: String = string_data[1]
-		broker = proxies_by_name[broker_name] if broker_name else null
+		broker = proxy_bus.proxies_by_name[broker_name] if broker_name else null
 		solar_occlusion = float_data[0]
 
 	if dirty & DIRTY_OPERATIONS:

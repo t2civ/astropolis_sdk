@@ -24,11 +24,7 @@ extends Proxy
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
 
-## All [TraderProxy] instances, indexed by [member trader_id].
-static var trader_proxies: Array[TraderProxy] = []
-
-
-var trader_id := -1  ## Index in [member trader_proxies].
+var trader_id := -1  ## Index in [member ProxyBus.trader_proxies].
 var facility: FacilityProxy  ## Owning [FacilityProxy]. Immutable after init.
 var facility_id := -1  ## [member FacilityProxy.facility_id] of [member facility].
 var broker: BrokerProxy  ## Immutable after init. Lives on markets thread!
@@ -65,15 +61,15 @@ func set_network_init(data: Array) -> void:
 	trader_id = data[2]
 	name = data[3]
 	facility_id = data[4]
-	facility = FacilityProxy.facility_proxies[facility_id]
+	facility = proxy_bus.facility_proxies[facility_id]
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id
 	broker_id = data[5]
-	broker = BrokerProxy.broker_proxies[broker_id]
+	broker = proxy_bus.broker_proxies[broker_id]
 	assert(broker)
 	market_id = data[6]
-	market = MarketProxy.market_proxies[market_id]
+	market = proxy_bus.market_proxies[market_id]
 	assert(market)
 
 
@@ -85,7 +81,7 @@ func _sync_server_dirty(data: Array) -> void:
 
 	if dirty & DIRTY_TRADER:
 		market_id = int_data[1]
-		market = MarketProxy.market_proxies[market_id]
+		market = proxy_bus.market_proxies[market_id]
 		assert(market)
 
 	assert(int_data[0] >= ordinal_qtr)

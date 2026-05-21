@@ -104,14 +104,8 @@ enum ProxyServerMethods {
 const INTERVAL := 7.0 * IVUnits.DAY
 
 
-## All [Proxy] instances, indexed by [member proxy_id]. proxy thread only.
-static var proxies: Array[Proxy] = []
-## All [Proxy] instances keyed by [member name] (e.g. [code]&"PLAYER_NASA"[/code],
-## [code]&"JOIN_OFFWORLD"[/code]). proxy thread only.
-static var proxies_by_name: Dictionary[StringName, Proxy] = {}
-
-## Shared bus for proxy-thread signals between proxies and the AI/GUI layer.
-static var proxy_bus := ProxyBus.new()
+## Shared [ProxyBus] for proxy-thread signals and data. 
+static var proxy_bus: ProxyBus # set by server
 
 @warning_ignore_start("unused_private_class_variable")
 static var _times: Array = IVGlobal.times
@@ -122,7 +116,7 @@ static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 @warning_ignore_restore("unused_private_class_variable")
 
 
-var proxy_id := -1  ## Index into [member proxies].
+var proxy_id := -1  ## Index into [member ProxyBus.proxies].
 var entity_type := -1  ## See [enum EntityType]. Set by subclass [code]_init()[/code].
 var name := &""  ## Unique, immutable identifier (e.g. [code]&"PLAYER_NASA"[/code]).
 var gui_name := ""  ## Display name; mutable. Empty player gui_name hides from GUI.
@@ -149,8 +143,8 @@ var use_this_ai := false
 var _dirty := 0
 # Unpersisted. Drives one-call-per-process-lifetime [method process_ai_init].
 # Not in [member persist]: post-load proxies are fresh instances whose
-# cross-proxy refs (from [member proxies_by_name]) must re-resolve. See
-# [method process_ai_init] docs.
+# cross-proxy refs (from [member ProxyBus.proxies_by_name]) must re-resolve.
+# See [method process_ai_init] docs.
 var _refs_resolved := false
 @warning_ignore("unused_private_class_variable")
 var _is_local_player := false # gives GUI access
@@ -163,7 +157,7 @@ var _is_local_use_ai := false # local player sets/unsets
 ## Returns the [Proxy] with the given [param proxy_name], or null if
 ## no such proxy exists. proxy thread only.
 static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
-	return proxies_by_name.get(proxy_name)
+	return proxy_bus.proxies_by_name.get(proxy_name)
 
 
 func _init() -> void:
@@ -353,7 +347,7 @@ func process_ai(time: float) -> void:
 
 ## Called once on the proxy thread after this proxy is registered. Runs once
 ## per process lifetime — including after a game load, because the post-load
-## proxy is a fresh instance whose [member proxies_by_name] refs need
+## proxy is a fresh instance whose [member ProxyBus.proxies_by_name] refs need
 ## re-resolution (AI-state members in [member persist] survive, but in-memory
 ## refs do not). Override to resolve cross-proxy refs and to perform one-time
 ## AI setup. Idempotent overrides required.
@@ -413,18 +407,3 @@ func _clear_circular_references() -> void:
 
 # *****************************************************************************
 # Proxy -> Server method calls
-
-
-
-
-# *****************************************************************************
-# Internal main thread
-
-#func set_player(is_local_player: bool, is_server_ai: bool) -> void:
-#	_is_local_player = is_local_player
-#	_is_server_ai = is_server_ai
-#	_reset_ai()
-#
-#
-#func _reset_ai() -> void:
-#	use_this_ai = _is_server_ai or (_is_local_player and (_is_local_use_ai or _proxy_bus.is_autoplay))

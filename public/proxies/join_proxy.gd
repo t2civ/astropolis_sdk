@@ -62,8 +62,6 @@ extends Proxy
 ##    will have access to API (just like any Godot class) but the GDScript class
 ##    will be removed.
 
-## All [JoinProxy] instances, indexed by [member join_id].
-static var join_proxies: Array[JoinProxy] = []
 
 var operations: OperationsNet  ## Aggregate [OperationsNet] (always present).
 ## Aggregate [FinancialsNet]. Only set on player-specific joins.
@@ -73,7 +71,7 @@ var biome: BiomeNet  ## Aggregate [BiomeNet] (always present).
 var cyberspace: CyberspaceNet  ## Aggregate [CyberspaceNet] (always present).
 
 # read-only!
-var join_id := -1  ## Index into [member join_proxies].
+var join_id := -1  ## Index into [member ProxyBus.join_proxies].
 ## Depth in the aggregation DAG: 0 for a sink (e.g. [code]JOIN_ALL[/code]).
 var join_depth := 0
 
