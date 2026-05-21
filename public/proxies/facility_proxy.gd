@@ -68,7 +68,7 @@ func _init() -> void:
 	entity_type = ENTITY_FACILITY
 
 
-func _clear_circular_references() -> void:
+func _clear_for_destruction() -> void:
 	body = null
 	player = null
 	trader = null

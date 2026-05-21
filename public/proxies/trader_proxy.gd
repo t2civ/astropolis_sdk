@@ -41,7 +41,7 @@ func _init() -> void:
 	entity_type = ENTITY_TRADER
 
 
-func _clear_circular_references() -> void:
+func _clear_for_destruction() -> void:
 	# Breaks the FacilityProxy.trader ↔ TraderProxy.facility 2-cycle.
 	facility = null
 	broker = null
@@ -117,7 +117,7 @@ func _spot_ask(resource_type: int, quantity: int, price: int, expiration: int) -
 ## Removes a spot sell limit (ask) order if not processed already.
 func _cancel_spot_ask(ask_id: int) -> void:
 	const CANCEL_SPOT_ASK := ProxyServerMethods.CANCEL_SPOT_ASK
-	_send_to_market(CANCEL_SPOT_ASK, [ask_id])
+	_send_to_market(CANCEL_SPOT_ASK, [ask_id, trader_id])
 
 
 ## Adds a spot buy limit (bid) order.
@@ -129,7 +129,7 @@ func _spot_bid(resource_type: int, quantity: int, price: int, expiration: int) -
 ## Removes a spot buy limit (bid) order if not processed already.
 func _cancel_spot_bid(bid_id: int) -> void:
 	const CANCEL_SPOT_BID := ProxyServerMethods.CANCEL_SPOT_BID
-	_send_to_market(CANCEL_SPOT_BID, [bid_id])
+	_send_to_market(CANCEL_SPOT_BID, [bid_id, trader_id])
 
 
 # *************************** INTERNAL PRIVATE ********************************

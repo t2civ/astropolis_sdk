@@ -45,7 +45,7 @@ func _init() -> void:
 	markets.resize(MAX_MARKETS_PER_BODY)
 
 
-func _clear_circular_references() -> void:
+func _clear_for_destruction() -> void:
 	body = null
 	for i in MAX_MARKETS_PER_BODY:
 		markets[i] = null

@@ -5,6 +5,7 @@
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
+@abstract
 class_name Proxy
 extends RefCounted
 
@@ -29,6 +30,8 @@ extends RefCounted
 ##
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
+##
+## TODO: @abstract methods and file organization.
 
 
 ## Emitted on the proxy thread when this proxy's mirrored state changes;
@@ -94,9 +97,11 @@ enum ProxyServerMethods {
 	SPOT_SELL,
 	SPOT_BUY,
 	SPOT_ASK,
-	CANCEL_SPOT_ASK,
 	SPOT_BID,
+	CANCEL_SPOT_ASK,
 	CANCEL_SPOT_BID,
+	CANCEL_ALL_SPOT_ASKS,
+	CANCEL_ALL_SPOT_BIDS,
 	N_PROXY_SERVER_METHODS,
 }
 
@@ -161,13 +166,13 @@ static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
 
 
 func _init() -> void:
-	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_circular_references)
+	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_for_destruction)
 
 
 ## Runtime mid-game removal entry point. Subclass overrides MUST chain to
 ## [code]super.remove()[/code] so cycles are broken outside of quit.
 func remove() -> void:
-	_clear_circular_references()
+	_clear_for_destruction()
 
 
 # override below if applicable
@@ -401,7 +406,7 @@ func propagate_server_delta(_data: Array) -> void:
 
 ## Override to null every outgoing Proxy/Resource ref. Both sides of a
 ## 2-cycle should clear — redundant on success, robust under refactoring.
-func _clear_circular_references() -> void:
+func _clear_for_destruction() -> void:
 	pass
 
 

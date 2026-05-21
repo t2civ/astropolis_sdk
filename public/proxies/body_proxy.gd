@@ -62,7 +62,7 @@ func _init() -> void:
 	entity_type = ENTITY_BODY
 
 
-func _clear_circular_references() -> void:
+func _clear_for_destruction() -> void:
 	parent = null
 	satellites.clear()
 	facilities.clear()
