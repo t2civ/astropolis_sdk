@@ -33,7 +33,7 @@ var market: MarketProxy  ## May change at runtime. Lives on markets thread!
 var market_id := -1  ## [member MarketProxy.market_id] of [member market].
 
 
-# ***************************** INIT & DESTROY ********************************
+# ************************* VIRTUAL & IMPLIMENTATION **************************
 
 func _init() -> void:
 	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
@@ -47,15 +47,6 @@ func _clear_for_destruction() -> void:
 	broker = null
 	market = null
 
-# ******************************** PROXY API **********************************
-
-## Returns this trader's [MarketProxy]. Mutable but always exists after init.
-func get_market(_player_id: int) -> MarketProxy:
-	return market
-
-# *************************** INCOMING SERVER CALLS ***************************
-
-# sync from server
 
 func set_network_init(data: Array) -> void:
 	trader_id = data[2]
@@ -93,8 +84,16 @@ func _sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
-# ********************** MARKET METHODS (VIA CHANNEL) *************************
-# Send to Market. Call on proxy thread.
+# ***************************** THREAD-SAFE READ ******************************
+
+## Returns this trader's [MarketProxy]. Mutable but always exists after init.
+func get_market(_player_id: int) -> MarketProxy:
+	return market
+
+
+
+# ******************************** AI METHODS *********************************
+# Call on proxy thread.
 
 ## Adds a spot sell market order. All market orders will be filled or canceled in one cycle.
 func _spot_sell(resource_type: int, quantity: int) -> void:

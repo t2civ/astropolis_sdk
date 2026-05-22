@@ -63,7 +63,7 @@ extends Proxy
 ## Containers and many methods are not threadsafe. Accessing non-container
 ## properties is safe.
 
-const SPOT_LIMIT_ORDER_SIZE := 7
+const SPOT_ORDER_SIZE := 7
 
 var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
@@ -72,16 +72,14 @@ var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
 var body_name: StringName  ## @deprecate: why is this here?
 
-var _prices: PackedFloat64Array
-var _ask_prices: PackedFloat64Array
-var _bid_prices: PackedFloat64Array
-var _volumes: PackedFloat64Array
+var _spot_prices: PackedFloat64Array
+var _spot_ask_prices: PackedFloat64Array
+var _spot_bid_prices: PackedFloat64Array
+var _spot_volumes: PackedFloat64Array
+var _spot_asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
+var _spot_bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
 
-var _asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
-var _bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
-
-var _recycled_limit_orders: Array[PackedInt64Array] = []
-
+var _recycled_spot_orders: Array[PackedInt64Array] = []
 var _sync := SyncHelper.new()
 
 
@@ -113,23 +111,23 @@ func get_market(_player_id: int) -> MarketProxy:
 ## Returns the current trade price for [param type], or 0.0 if no current
 ## price.
 func get_spot_price(type: int) -> float:
-	return _prices[type]
+	return _spot_prices[type]
 
 
 ## Returns the current ask price for [param type], or 0.0 if no current ask.
 func get_spot_ask_price(type: int) -> float:
-	return _ask_prices[type]
+	return _spot_ask_prices[type]
 
 
 ## Returns the current bid price for [param type], or 0.0 if no current bid.
 func get_spot_bid_price(type: int) -> float:
-	return _bid_prices[type]
+	return _spot_bid_prices[type]
 
 
 ## Returns the trading volume for [param type] over the previous interval
 ## (per day).
 func get_spot_volume(type: int) -> float:
-	return _volumes[type]
+	return _spot_volumes[type]
 
 
 # *****************************************************************************
@@ -143,12 +141,12 @@ func set_network_init(data: Array) -> void:
 	# body is resolved in process_ai_init — BodyProxy may not yet be in
 	# proxy_bus.proxies_by_name because MktsProxy is drained before OpsProxy.
 	ordinal_qtr = data[6]
-	_prices = data[7]
-	_ask_prices = data[8]
-	_bid_prices = data[9]
-	_volumes = data[10]
-	_asks = data[11]
-	_bids = data[12]
+	_spot_prices = data[7]
+	_spot_ask_prices = data[8]
+	_spot_bid_prices = data[9]
+	_spot_volumes = data[10]
+	_spot_asks = data[11]
+	_spot_bids = data[12]
 
 
 func process_ai_init() -> void:
@@ -166,12 +164,12 @@ func _sync_server_dirty(data: Array) -> void:
 	if dirty & DIRTY_MARKET:
 		var float_data: PackedFloat64Array = data[2]
 		_sync.init_for_add(int_data, float_data, offsets[k], offsets[k + 1])
-		_sync.set_floats_dirty(_prices)
-		_sync.set_floats_dirty(_ask_prices)
-		_sync.set_floats_dirty(_bid_prices)
-		_sync.set_floats_dirty(_volumes)
-		_add_orders_delta(_asks, int_data)
-		_add_orders_delta(_bids, int_data)
+		_sync.set_floats_dirty(_spot_prices)
+		_sync.set_floats_dirty(_spot_ask_prices)
+		_sync.set_floats_dirty(_spot_bid_prices)
+		_sync.set_floats_dirty(_spot_volumes)
+		_add_orders_delta(_spot_asks, int_data)
+		_add_orders_delta(_spot_bids, int_data)
 		k += 2
 
 	assert(int_data[0] >= ordinal_qtr)
@@ -184,21 +182,22 @@ func _sync_server_dirty(data: Array) -> void:
 
 
 # Recycles removed orders.
-func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: PackedInt64Array) -> void:
+func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: PackedInt64Array
+		) -> void:
 	var int_offset := _sync.int_offset
 	var upserts_count := int_data[int_offset]
 	int_offset += 1
 	var i := 0
 	while i < upserts_count:
 		var order: PackedInt64Array
-		if _recycled_limit_orders:
-			order = _recycled_limit_orders.pop_back()
+		if _recycled_spot_orders:
+			order = _recycled_spot_orders.pop_back()
 		else:
 			order = PackedInt64Array()
-			order.resize(SPOT_LIMIT_ORDER_SIZE)
-		for j in SPOT_LIMIT_ORDER_SIZE:
+			order.resize(SPOT_ORDER_SIZE)
+		for j in SPOT_ORDER_SIZE:
 			order[j] = int_data[int_offset + j]
-		int_offset += SPOT_LIMIT_ORDER_SIZE
+		int_offset += SPOT_ORDER_SIZE
 		target[order[0]] = order
 		i += 1
 	var removes_count := int_data[int_offset]
@@ -207,7 +206,7 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Pack
 	while i < removes_count:
 		var id := int_data[int_offset]
 		int_offset += 1
-		_recycled_limit_orders.append(target[id])
+		_recycled_spot_orders.append(target[id])
 		target.erase(id)
 		i += 1
 	_sync.int_offset = int_offset

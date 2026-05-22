@@ -105,12 +105,11 @@ enum ProxyServerMethods {
 	N_PROXY_SERVER_METHODS,
 }
 
-## Wall-clock time between [method process_ai_interval] calls (one game week).
-const INTERVAL := 7.0 * IVUnits.DAY
+
+const INTERVAL := 7.0 * IVUnits.DAY ## Time between [method process_ai_interval] calls.
 
 
-## Shared [ProxyBus] for proxy-thread signals and data. 
-static var proxy_bus: ProxyBus # set by server
+static var proxy_bus: ProxyBus ## Shared [ProxyBus] for proxy-thread signals and data.
 
 @warning_ignore_start("unused_private_class_variable")
 static var _times: Array = IVGlobal.times
@@ -144,25 +143,26 @@ var persist := [
 var use_this_ai := false
 
 
-# private
 var _dirty := 0
 # Unpersisted. Drives one-call-per-process-lifetime [method process_ai_init].
 # Not in [member persist]: post-load proxies are fresh instances whose
 # cross-proxy refs (from [member ProxyBus.proxies_by_name]) must re-resolve.
 # See [method process_ai_init] docs.
 var _refs_resolved := false
-@warning_ignore("unused_private_class_variable")
+@warning_ignore_start("unused_private_class_variable")
 var _is_local_player := false # gives GUI access
-@warning_ignore("unused_private_class_variable")
 var _is_server_ai := false
-@warning_ignore("unused_private_class_variable")
 var _is_local_use_ai := false # local player sets/unsets
+@warning_ignore_restore("unused_private_class_variable")
 
 
-## Returns the [Proxy] with the given [param proxy_name], or null if
-## no such proxy exists. proxy thread only.
+# ***************************** CREATE & STATIC *******************************
+
+## Returns a [Proxy] by [param proxy_name], or null if doesn't exist. Call on
+## proxy thread only!
 static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
 	return proxy_bus.proxies_by_name.get(proxy_name)
+
 
 
 func _init() -> void:
