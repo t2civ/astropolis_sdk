@@ -55,8 +55,9 @@ extends Proxy
 ## and trade at an Earth futures exchange (such as the Chicago Mercantile
 ## Exchange). Only highly developed bodies have physical exchanges.[br][br]
 ##
-## Arrays are indexed by resource_type unless indicated otherwise. A value of
-## 0.0 in any "price" variable means N/A or no current price.[br][br]
+## Arrays are indexed by resource_type unless indicated otherwise. Internal
+## price storage is integer trade units; a stored 0 means N/A or no current
+## price (sim-unit getters return 0.0 in that case).[br][br]
 ##
 ## Server-side Market pushes changes to [MarketProxy]. Data flows
 ## server -> proxy only. WARNING: This object lives and dies on the proxy thread!
@@ -65,6 +66,11 @@ extends Proxy
 
 const SPOT_ORDER_SIZE := 7
 
+
+static var _is_class_instanced := false
+static var _resource_trade_unit_multipliers: PackedFloat64Array # convert trade -> sim
+
+
 var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 ## Hosting [BodyProxy]. Immutable post-init; resolved in
 ## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
@@ -72,9 +78,9 @@ var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
 var body_name: StringName  ## @deprecate: why is this here?
 
-var _spot_prices: PackedFloat64Array
-var _spot_ask_prices: PackedFloat64Array
-var _spot_bid_prices: PackedFloat64Array
+var _spot_prices: PackedInt64Array
+var _spot_ask_prices: PackedInt64Array
+var _spot_bid_prices: PackedInt64Array
 var _spot_volumes: PackedFloat64Array
 var _spot_asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
 var _spot_bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
@@ -84,10 +90,17 @@ var _sync := SyncHelper.new()
 
 
 
+static func _on_class_instanced() -> void:
+	_resource_trade_unit_multipliers = ThreadsafeGlobal.resource_trade_unit_multipliers
+
+
 func _init() -> void:
 	const ENTITY_MARKET := Proxy.EntityType.ENTITY_MARKET
 	super()
 	entity_type = ENTITY_MARKET
+	if !_is_class_instanced:
+		_is_class_instanced = true
+		_on_class_instanced()
 
 
 func _clear_for_destruction() -> void:
@@ -108,26 +121,46 @@ func get_market(_player_id: int) -> MarketProxy:
 # ********************************** READ *************************************
 # all threadsafe
 
-## Returns the current trade price for [param type], or 0.0 if no current
-## price.
+## Returns the current trade price for [param type] in sim units (USD per
+## sim-unit of resource), or 0.0 if no current price.
 func get_spot_price(type: int) -> float:
-	return _spot_prices[type]
+	return float(_spot_prices[type]) / _resource_trade_unit_multipliers[type]
 
 
-## Returns the current ask price for [param type], or 0.0 if no current ask.
+## Returns the current ask price for [param type] in sim units, or 0.0 if no
+## current ask.
 func get_spot_ask_price(type: int) -> float:
-	return _spot_ask_prices[type]
+	return float(_spot_ask_prices[type]) / _resource_trade_unit_multipliers[type]
 
 
-## Returns the current bid price for [param type], or 0.0 if no current bid.
+## Returns the current bid price for [param type] in sim units, or 0.0 if no
+## current bid.
 func get_spot_bid_price(type: int) -> float:
-	return _spot_bid_prices[type]
+	return float(_spot_bid_prices[type]) / _resource_trade_unit_multipliers[type]
 
 
 ## Returns the trading volume for [param type] over the previous interval
 ## (per day).
 func get_spot_volume(type: int) -> float:
 	return _spot_volumes[type]
+
+
+## Returns the [MarketProxy]-internal price for [param type] in trade units (USD
+## per trade_unit, integer), or 0 if no current price.
+func get_spot_unit_price(type: int) -> int:
+	return _spot_prices[type]
+
+
+## Returns the [MarketProxy]-internal ask price for [param type] in trade units, or
+## 0 if no current ask.
+func get_spot_ask_unit_price(type: int) -> int:
+	return _spot_ask_prices[type]
+
+
+## Returns the [MarketProxy]-internal bid price for [param type] in trade units, or
+## 0 if no current bid.
+func get_spot_bid_unit_price(type: int) -> int:
+	return _spot_bid_prices[type]
 
 
 # *****************************************************************************
@@ -164,9 +197,9 @@ func _sync_server_dirty(data: Array) -> void:
 	if dirty & DIRTY_MARKET:
 		var float_data: PackedFloat64Array = data[2]
 		_sync.init_for_add(int_data, float_data, offsets[k], offsets[k + 1])
-		_sync.set_floats_dirty(_spot_prices)
-		_sync.set_floats_dirty(_spot_ask_prices)
-		_sync.set_floats_dirty(_spot_bid_prices)
+		_sync.set_ints_dirty(_spot_prices)
+		_sync.set_ints_dirty(_spot_ask_prices)
+		_sync.set_ints_dirty(_spot_bid_prices)
 		_sync.set_floats_dirty(_spot_volumes)
 		_add_orders_delta(_spot_asks, int_data)
 		_add_orders_delta(_spot_bids, int_data)

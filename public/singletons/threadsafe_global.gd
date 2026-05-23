@@ -9,7 +9,7 @@ extends Node
 
 ## Singleton [ThreadsafeGlobal] holds data accessible from any thread.
 
-## Multipliers to convert internal sim unit -> market/trade unit, indexed by
+## Multipliers to convert trade unit -> internal sim unit, indexed by
 ## resource_type. Thread-safe.
 var resource_trade_unit_multipliers: PackedFloat64Array
 
