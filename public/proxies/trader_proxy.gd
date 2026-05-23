@@ -33,7 +33,7 @@ var market: MarketProxy  ## May change at runtime. Lives on markets thread!
 var market_id := -1  ## [member MarketProxy.market_id] of [member market].
 
 
-# ************************* VIRTUAL & IMPLIMENTATION **************************
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
 	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
@@ -52,14 +52,17 @@ func set_network_init(data: Array) -> void:
 	trader_id = data[2]
 	name = data[3]
 	facility_id = data[4]
+	broker_id = data[5]
+	market_id = data[6]
+
+
+func process_ai_init() -> void:
 	facility = proxy_bus.facility_proxies[facility_id]
 	assert(facility)
 	facility.trader = self
 	facility.trader_id = trader_id
-	broker_id = data[5]
 	broker = proxy_bus.broker_proxies[broker_id]
 	assert(broker)
-	market_id = data[6]
 	market = proxy_bus.market_proxies[market_id]
 	assert(market)
 

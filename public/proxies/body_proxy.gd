@@ -33,13 +33,14 @@ extends Proxy
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
-
 var body_id := -1  ## Index into [member ProxyBus.body_proxies].
 var body_flags := 0  ## Body flags from [enum IVBody.BodyFlags].
 var solar_occlusion: float  ## Average solar irradiance occlusion at this body.
 var is_satellites := false  ## True while this body has at least one satellite.
 var is_facilities := false  ## True while this body hosts at least one facility.
-var parent: BodyProxy  ## Parent body, or null for the top body only.
+
+## Parent body, or null for the top body only.
+var parent: BodyProxy
 ## Direct satellite bodies, keyed by name. Resizable container — not threadsafe!
 var satellites: Dictionary[StringName, BodyProxy]
 ## Facilities at this body. Resizable container — not threadsafe!
@@ -47,12 +48,21 @@ var facilities: Array[Proxy] = []
 ## Composition layers for this body (atmosphere, surface, etc.). Resizable
 ## container — not threadsafe!
 var strata: Array[StratumNet] = []
-var broker: BrokerProxy ## Null until first facility added.
+## Null until first facility added.
+var broker: BrokerProxy
+## Aggregate component propagated from facilities at this body.
+var operations: OperationsNet
+## Aggregate component propagated from facilities at this body.
+var population: PopulationNet
+## Aggregate component propagated from facilities at this body.
+var biome: BiomeNet
+## Aggregate component propagated from facilities at this body.
+var cyberspace: CyberspaceNet
+## Aggregate component propagated from facilities at this body.
 
-var operations: OperationsNet ## Aggregate component propagated from facilities at this body.
-var population: PopulationNet ## Aggregate component propagated from facilities at this body.
-var biome: BiomeNet ## Aggregate component propagated from facilities at this body.
-var cyberspace: CyberspaceNet ## Aggregate component propagated from facilities at this body.
+# inited identitifiers resolved later
+var _parent_name: StringName
+var _broker_name: StringName
 
 
 
@@ -272,13 +282,8 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_flags = data[5]
 	solar_occlusion = data[6]
-	var parent_name: String = data[7]
-	if parent_name:
-		parent = proxy_bus.proxies_by_name[parent_name]
-		parent.add_satellite(self)
-	var broker_name: String = data[8]
-	if broker_name:
-		broker = proxy_bus.proxies_by_name[broker_name]
+	_parent_name = data[7]
+	_broker_name = data[8]
 	var operations_data: Array = data[9]
 	var population_data: Array = data[10]
 	var biome_data: Array = data[11]
@@ -307,6 +312,14 @@ func set_network_init(data: Array) -> void:
 			stratum.set_network_init(stratum_data)
 			strata[i] = stratum
 			i += 1
+
+
+func process_ai_init() -> void:
+	if _parent_name:
+		parent = proxy_bus.proxies_by_name[_parent_name]
+		parent.add_satellite(self)
+	if _broker_name:
+		broker = proxy_bus.proxies_by_name[_broker_name]
 
 
 func _sync_server_dirty(data: Array) -> void:
@@ -367,33 +380,6 @@ func _sync_server_dirty(data: Array) -> void:
 				i += 1
 				dirty_strata >>= 1
 			flag_index += 1
-
-
-
-
-
-		#var dirty_strata_1 := offsets[k]
-		#k += 1
-		#var i := 0
-		#while dirty_strata_1:
-			#if dirty_strata_1 & 1:
-				#var stratum := strata[i]
-				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
-				#k += 2
-			#i += 1
-			#dirty_strata_1 >>= 1
-		#var dirty_strata_2 := offsets[k]
-		#k += 1
-		#i = 63
-		#while dirty_strata_2:
-			#if dirty_strata_2 & 1:
-				#var stratum := strata[i]
-				#stratum.add_dirty(data, offsets[k], offsets[k + 1])
-				#k += 2
-			#i += 1
-			#dirty_strata_2 >>= 1
-
-
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
 		if ordinal_qtr == -1:

@@ -20,20 +20,16 @@ extends Proxy
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
-
 const MAX_MARKETS_PER_BODY := 5 ## Must match Broker.MAX_MARKETS_PER_BODY.
 
-
 var broker_id := -1  ## Index into [member ProxyBus.broker_proxies].
-## Hosting [BodyProxy]. Immutable post-init; resolved in
-## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
-## before [code]OpsProxy[/code] does).
-var body: BodyProxy
+var body: BodyProxy  ## Hosting [BodyProxy]. Immutable post-init.
 var body_name: StringName  ## Name of the hosting body.
 ## Spot [MarketProxy]s at this Broker's body, indexed by routing slot;
-## slot 0 is the default. Resolved in [method process_ai_init] (deferred
-## because broker init drains from [code]MktsProxy[/code] before market init).
+## slot 0 is the default.
 var markets: Array[MarketProxy]
+
+# inited identitifiers resolved later
 var _market_names: PackedStringArray
 
 
@@ -68,10 +64,6 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
-	# body and markets are resolved in process_ai_init — their
-	# proxies may not yet be in proxy_bus.proxies_by_name because MktsProxy
-	# is drained before OpsProxy, and broker init messages drain before
-	# market ones.
 	_market_names = data[6]
 
 

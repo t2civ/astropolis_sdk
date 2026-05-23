@@ -142,10 +142,7 @@ var use_this_ai := false
 
 
 var _dirty := 0
-# Unpersisted. Drives one-call-per-process-lifetime [method process_ai_init].
-# Not in [member persist]: post-load proxies are fresh instances whose
-# cross-proxy refs (from [member ProxyBus.proxies_by_name]) must re-resolve.
-# See [method process_ai_init] docs.
+@warning_ignore("unused_private_class_variable") # read by ProxyServer.
 var _refs_resolved := false
 @warning_ignore_start("unused_private_class_variable")
 var _is_local_player := false # gives GUI access
@@ -331,9 +328,6 @@ func get_market(_player_id: int) -> MarketProxy:
 ## AI processing). You probably shouldn't override this; consider
 ## [method process_ai_interval] instead.
 func process_ai(time: float) -> void:
-	if !_refs_resolved:
-		_refs_resolved = true
-		process_ai_init()
 	if time > next_interval:
 		if next_interval == -INF: # init
 			last_interval = time
@@ -348,12 +342,11 @@ func process_ai(time: float) -> void:
 		_sync_ai_changes()
 
 
-## Called once on the proxy thread after this proxy is registered. Runs once
-## per process lifetime — including after a game load, because the post-load
-## proxy is a fresh instance whose [member ProxyBus.proxies_by_name] refs need
-## re-resolution (AI-state members in [member persist] survive, but in-memory
-## refs do not). Override to resolve cross-proxy refs and to perform one-time
-## AI setup. Idempotent overrides required.
+## Called once per process lifetime after this proxy is registered and after
+## current-frame batched-init channels have drained. Override to resolve
+## cross-proxy refs (via [member ProxyBus.proxies_by_name] or the typed
+## arrays on [ProxyBus]) and to perform one-time AI setup. Runs again on the
+## fresh post-load instance after a game load. Idempotent overrides required.
 func process_ai_init() -> void:
 	pass
 

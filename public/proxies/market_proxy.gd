@@ -101,11 +101,8 @@ static var _resource_trade_unit_multipliers: PackedFloat64Array # convert trade 
 
 
 var market_id := -1  ## Index into [member ProxyBus.market_proxies].
-## Hosting [BodyProxy]. Immutable post-init; resolved in
-## [method process_ai_init] (deferred because [code]MktsProxy[/code] drains
-## before [code]OpsProxy[/code] does).
 var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
-var body_name: StringName  ## @deprecate: why is this here?
+var body_name: StringName  ## Name of the hosting body.
 
 var _spot_prices: PackedInt64Array
 var _spot_ask_prices: PackedInt64Array
@@ -198,8 +195,6 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	body_name = data[5]
-	# body is resolved in process_ai_init — BodyProxy may not yet be in
-	# proxy_bus.proxies_by_name because MktsProxy is drained before OpsProxy.
 	ordinal_qtr = data[6]
 	_spot_prices = data[7]
 	_spot_ask_prices = data[8]

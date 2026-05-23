@@ -45,10 +45,14 @@ var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
+var _player_name: StringName
 var body: BodyProxy  ## Hosting [BodyProxy].
+var _body_name: StringName
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
+var _join_names: Array
 var market: MarketProxy  ## Set after init. Lives on markets thread!
+var _market_name: StringName
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -251,18 +255,10 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	player = proxy_bus.proxies_by_name[data[12]]
-	player.add_facility(self)
-	body = proxy_bus.proxies_by_name[data[13]]
-	body.add_facility(self)
-	var join_names: Array = data[14]
-	for join_name: StringName in join_names:
-		var join: JoinProxy = get_proxy_by_name(join_name)
-		assert(!joins.has(join))
-		joins.append(join)
-	var market_name: StringName = data[15]
-	if market_name:
-		market = proxy_bus.proxies_by_name[market_name]
+	_player_name = data[12]
+	_body_name = data[13]
+	_join_names = data[14]
+	_market_name = data[15]
 
 	var operations_data: Array = data[16]
 	var inventory_data: Array = data[17]
@@ -285,6 +281,18 @@ func set_network_init(data: Array) -> void:
 		cyberspace = CyberspaceNet.new(true)
 		cyberspace.set_network_init(cyberspace_data)
 
+
+func process_ai_init() -> void:
+	player = proxy_bus.proxies_by_name[_player_name]
+	player.add_facility(self)
+	body = proxy_bus.proxies_by_name[_body_name]
+	body.add_facility(self)
+	for join_name: StringName in _join_names:
+		var join: JoinProxy = get_proxy_by_name(join_name)
+		assert(!joins.has(join))
+		joins.append(join)
+	if _market_name:
+		market = proxy_bus.proxies_by_name[_market_name]
 	# IVSelectionManager
 	var ivbody := IVBody.bodies[body.name]
 	texture_2d = ivbody.texture_2d

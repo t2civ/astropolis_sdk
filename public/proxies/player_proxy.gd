@@ -35,6 +35,7 @@ var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
 ## Owning polity for this player when [code]polity_name[/code] differs from
 ## [member name] (sub-players only).
 var part_of: PlayerProxy
+var _part_of_name: StringName
 var polity_name: StringName  ## Name of the polity for this player.
 var homeworld := ""  ## Name of this player's homeworld body.
 ## True while this player owns at least one facility ("alive" test).
@@ -165,8 +166,7 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	player_class = data[5]
-	var part_of_name: StringName = data[6]
-	part_of = proxy_bus.proxies_by_name[part_of_name] if part_of_name else null
+	_part_of_name = data[6]
 	polity_name = data[7]
 	homeworld = data[8]
 
@@ -181,6 +181,10 @@ func set_network_init(data: Array) -> void:
 	population.set_network_init(population_data)
 	biome.set_network_init(biome_data)
 	cyberspace.set_network_init(cyberspace_data)
+
+
+func process_ai_init() -> void:
+	part_of = proxy_bus.proxies_by_name[_part_of_name] if _part_of_name else null
 
 
 func _sync_server_dirty(data: Array) -> void:
