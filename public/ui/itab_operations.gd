@@ -213,8 +213,7 @@ func _settings_listener(setting: StringName, value: Variant) -> void:
 		_resize(gui_size)
 
 
-# *****************************************************************************
-# proxy thread !!!!
+# ******************************* PROXY THREAD ********************************
 
 func _get_proxy_data(target_name: StringName) -> void:
 	const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
@@ -333,9 +332,7 @@ func _get_proxy_data(target_name: StringName) -> void:
 	_update_tab_display.call_deferred(target_name, tab, n_modules, has_financials, data)
 
 
-# *****************************************************************************
-# Main thread !!!!
-
+# ******************************** MAIN THREAD ********************************
 
 func _update_tab_display(target_name: StringName, tab: int, n_modules: int, has_financials: bool,
 		data: Array) -> void:

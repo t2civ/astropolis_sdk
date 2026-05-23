@@ -83,8 +83,7 @@ func _init() -> void:
 	entity_type = ENTITY_JOIN
 
 
-# *****************************************************************************
-# proxy API
+# ********************************* PROXY API *********************************
 
 func has_development() -> bool:
 	return true
@@ -172,8 +171,8 @@ func get_cyberspace() -> CyberspaceNet:
 	return cyberspace
 
 
-# *****************************************************************************
-# sync - DON'T MODIFY!
+# ********************************** SYNC *************************************
+# DON'T MODIFY!
 
 func set_network_init(data: Array) -> void:
 	join_id = data[2]

@@ -183,8 +183,7 @@ func _update_no_markets() -> void:
 	_no_markets_label.show()
 
 
-# *****************************************************************************
-# proxy thread !!!!
+# ******************************* PROXY THREAD ********************************
 
 func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
 
@@ -229,8 +228,7 @@ func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
 	_update_tab_display.call_deferred(tab, n_resources, data, is_market, is_inventory)
 	
 
-# *****************************************************************************
-# Main thread !!!!
+# ******************************** MAIN THREAD ********************************
 
 # TODO: Volume vs bid/ask toggle
 

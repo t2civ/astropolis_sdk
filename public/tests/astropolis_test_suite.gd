@@ -197,8 +197,7 @@ func _query_component(params: Dictionary) -> Variant:
 	return _do_component_query(params, entry_filter, field_filter)
 
 
-# =============================================================================
-# Helpers
+# ********************************** HELPERS **********************************
 
 
 var _proxy_error: Dictionary

@@ -47,17 +47,15 @@ func _clear_for_destruction() -> void:
 		markets[i] = null
 
 
-# *****************************************************************************
-# proxy API
-
+# ********************************* PROXY API *********************************
 
 ## Returns the spot [MarketProxy] for [param _player_id]. Thread-safe.
 func get_market(_player_id: int) -> MarketProxy:
 	return markets[0]
 
 
-# *****************************************************************************
-# sync - DON'T MODIFY!
+# ********************************** SYNC *************************************
+# DON'T MODIFY!
 
 func set_network_init(data: Array) -> void:
 	broker_id = data[2]

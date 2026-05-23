@@ -132,8 +132,7 @@ func _clear_for_destruction() -> void:
 	body = null
 
 
-# *****************************************************************************
-# proxy API
+# ********************************* PROXY API *********************************
 
 func has_markets() -> bool:
 	return true
@@ -187,8 +186,8 @@ func get_spot_bid_unit_price(type: int) -> int:
 func get_spot_unit_volume(type: int) -> float:
 	return _spot_volumes[type]
 
-# *****************************************************************************
-# sync - DON'T MODIFY!
+# ********************************** SYNC *************************************
+# DON'T MODIFY!
 
 func set_network_init(data: Array) -> void:
 	market_id = data[2]

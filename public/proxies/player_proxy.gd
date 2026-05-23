@@ -63,9 +63,7 @@ func _clear_for_destruction() -> void:
 	facilities.clear()
 
 
-# *****************************************************************************
-# proxy API
-
+# ********************************* PROXY API *********************************
 
 func has_development() -> bool:
 	return true
@@ -158,8 +156,7 @@ func get_cyberspace() -> CyberspaceNet:
 
 
 
-# *****************************************************************************
-# sync
+# ********************************** SYNC *************************************
 
 func set_network_init(data: Array) -> void:
 	player_id = data[2]

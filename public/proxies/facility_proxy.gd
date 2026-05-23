@@ -86,8 +86,7 @@ func _clear_for_destruction() -> void:
 
 
 
-# *****************************************************************************
-# proxy API
+# ********************************* PROXY API *********************************
 
 ## Detaches this facility from its body and player, then breaks its outgoing
 ## refs via [method super.remove]. Called by the server side at runtime when a
@@ -241,8 +240,7 @@ func get_market(_player_id: int) -> MarketProxy:
 	return market
 
 
-# *****************************************************************************
-# sync
+# ********************************** SYNC *************************************
 
 func set_network_init(data: Array) -> void:
 	facility_id = data[2]

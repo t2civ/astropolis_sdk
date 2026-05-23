@@ -88,8 +88,7 @@ func update() -> void:
 	MainThreadGlobal.call_proxy_thread(_set_data)
 
 
-# *****************************************************************************
-# proxy thread !!!!
+# ******************************* PROXY THREAD ********************************
 
 func _set_data() -> void:
 	var data := []
@@ -186,8 +185,7 @@ func _set_data() -> void:
 	_build_grid.call_deferred(data)
 
 
-# *****************************************************************************
-# Main thread !!!!
+# ******************************** MAIN THREAD ********************************
 
 func _no_data() -> void:
 	_grid.hide()

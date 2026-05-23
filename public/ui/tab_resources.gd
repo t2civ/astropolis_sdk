@@ -60,8 +60,7 @@ func update_selection(body_name: StringName, selection_name: StringName) -> void
 
 
 
-# *****************************************************************************
-# proxy thread !!!!
+# ******************************* PROXY THREAD ********************************
 
 func _get_proxy_data(body_name: StringName, selection_name: StringName) -> void:
 	const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
@@ -134,8 +133,7 @@ func _sort_resources(a: Array, b: Array) -> bool:
 	# sort on base_deposits
 	return a[1][4] > b[1][4]
 
-# *****************************************************************************
-# Main thread !!!!
+# ******************************** MAIN THREAD ********************************
 
 func _update_display(selection_name: StringName, stratum_polities: Array, data: Array) -> void:
 

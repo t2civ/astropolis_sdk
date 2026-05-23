@@ -79,9 +79,7 @@ func _clear_for_destruction() -> void:
 	broker = null
 
 
-# *****************************************************************************
-# proxy API
-
+# ********************************* PROXY API *********************************
 
 func has_development() -> bool:
 	return is_facilities
@@ -273,8 +271,8 @@ func get_stratum_resource_data(index: int, resource_type: int) -> PackedFloat64A
 	return strata[index].get_resource_data(resource_type)
 
 
-# *****************************************************************************
-# sync - DON'T MODIFY!
+# ********************************** SYNC *************************************
+# DON'T MODIFY!
 
 func set_network_init(data: Array) -> void:
 	body_id = data[2]

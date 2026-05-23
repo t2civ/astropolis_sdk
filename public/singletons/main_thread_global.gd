@@ -52,7 +52,7 @@ var _proxies_pending := 0
 var _proxies_expected := false # true once expect_proxies has been called
 
 
-# *****************************************************************************
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _ready() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
@@ -66,8 +66,7 @@ func _clear_procedural() -> void:
 	_proxies_expected = false
 
 
-# *****************************************************************************
-# Access on main thread only!
+# ******************************** MAIN THREAD ********************************
 
 ## Dispatches [param callable] to the proxy thread via [signal proxy_thread_called].
 ## Use this from main-thread code that needs to run logic on a [Proxy].
@@ -169,8 +168,7 @@ func has_markets(proxy_name: StringName) -> bool:
 	return proxy.has_markets()
 
 
-# *****************************************************************************
-# Server only!
+# ******************************** SERVER API *********************************
 
 ## Tells [code]MainThreadGlobal[/code] how many [method add_proxy] calls
 ## to expect before emitting [signal proxies_ready]. Must be called before

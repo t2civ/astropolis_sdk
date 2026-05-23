@@ -31,7 +31,7 @@ extends RefCounted
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 ##
-## TODO: @abstract methods and file organization.
+## TODO: @abstract methods.
 
 
 ## Emitted on the proxy thread when this proxy's mirrored state changes;
@@ -160,6 +160,8 @@ static func get_proxy_by_name(proxy_name: StringName) -> Proxy:
 
 
 
+# ************************* VIRTUAL & IMPLEMENTATION **************************
+
 func _init() -> void:
 	IVStateManager.about_to_free_procedural_nodes.connect.call_deferred(_clear_for_destruction)
 
@@ -170,7 +172,77 @@ func remove() -> void:
 	_clear_for_destruction()
 
 
-# override below if applicable
+## Override to null every outgoing Proxy/Resource ref. Both sides of a
+## 2-cycle should clear — redundant on success, robust under refactoring.
+func _clear_for_destruction() -> void:
+	pass
+
+
+## Initializes this proxy from a server-supplied init payload. Subclasses
+## override to unpack their fields.
+func set_network_init(_data: Array) -> void:
+	pass
+
+
+## Applies a server-supplied dirty payload, updating fields whose
+## [code]DIRTY_*[/code] flags are set. Subclasses override to unpack.
+func _sync_server_dirty(_data: Array) -> void:
+	pass
+
+
+func _sync_ai_changes() -> void:
+	_dirty = 0
+
+
+## Propagates a server-supplied delta payload (e.g. an aggregate change)
+## down through this proxy's components. Subclasses override as needed.
+func propagate_server_delta(_data: Array) -> void:
+	pass
+
+
+## Called every one to several frames during AI processing (unless excessive
+## AI processing). You probably shouldn't override this; consider
+## [method process_ai_interval] instead.
+func process_ai(time: float) -> void:
+	if time > next_interval:
+		if next_interval == -INF: # init
+			last_interval = time
+			next_interval = time + randf_range(0.0, INTERVAL) # stagger AI processing
+		else:
+			var delta := time - last_interval
+			last_interval = time
+			while next_interval < time:
+				next_interval += INTERVAL
+			process_ai_interval(delta)
+	if _dirty:
+		_sync_ai_changes()
+
+
+## Called once per process lifetime after this proxy is registered and after
+## current-frame batched-init channels have drained. Override to resolve
+## cross-proxy refs (via [member ProxyBus.proxies_by_name] or the typed
+## arrays on [ProxyBus]) and to perform one-time AI setup. Runs again on the
+## fresh post-load instance after a game load. Idempotent overrides required.
+func process_ai_init() -> void:
+	pass
+
+
+## Called once per [constant INTERVAL] during AI processing (unless excessive
+## AI processing). Most component changes happen every [constant INTERVAL],
+## so this is the recommended place for AI logic.
+func process_ai_interval(_delta: float) -> void:
+	pass
+
+
+## Called after component histories have updated for the new quarter
+## ([member ordinal_qtr] advanced). Never called for a [BodyProxy] without a
+## facility.
+func process_ai_new_quarter() -> void:
+	pass
+
+
+
+# ***************************** THREAD-SAFE READ ******************************
 
 ## Returns true if this proxy contributes development statistics
 ## (population, economy, power, manufacturing, etc.). Default false.
@@ -307,99 +379,9 @@ func get_market(_player_id: int) -> MarketProxy:
 	return null
 
 
-
-# *****************************************************************************
-# Main thread public
-
+# TODO: Local player AI toggle (main thread).
 #func player_use_ai(use_ai: bool) -> void:
 #	if !_is_local_player:
 #		return
 #	_is_local_use_ai = use_ai
 #	_reset_ai()
-
-
-# *****************************************************************************
-# proxy thread
-
-
-# subclass overrides
-
-## Called every one to several frames during AI processing (unless excessive
-## AI processing). You probably shouldn't override this; consider
-## [method process_ai_interval] instead.
-func process_ai(time: float) -> void:
-	if time > next_interval:
-		if next_interval == -INF: # init
-			last_interval = time
-			next_interval = time + randf_range(0.0, INTERVAL) # stagger AI processing
-		else:
-			var delta := time - last_interval
-			last_interval = time
-			while next_interval < time:
-				next_interval += INTERVAL
-			process_ai_interval(delta)
-	if _dirty:
-		_sync_ai_changes()
-
-
-## Called once per process lifetime after this proxy is registered and after
-## current-frame batched-init channels have drained. Override to resolve
-## cross-proxy refs (via [member ProxyBus.proxies_by_name] or the typed
-## arrays on [ProxyBus]) and to perform one-time AI setup. Runs again on the
-## fresh post-load instance after a game load. Idempotent overrides required.
-func process_ai_init() -> void:
-	pass
-
-
-## Called once per [constant INTERVAL] during AI processing (unless excessive
-## AI processing). Most component changes happen every [constant INTERVAL],
-## so this is the recommended place for AI logic.
-func process_ai_interval(_delta: float) -> void:
-	pass
-
-
-## Called after component histories have updated for the new quarter
-## ([member ordinal_qtr] advanced). Never called for a [BodyProxy] without a
-## facility.
-func process_ai_new_quarter() -> void:
-	pass
-
-
-
-
-# *****************************************************************************
-# sync
-
-## Initializes this proxy from a server-supplied init payload. Subclasses
-## override to unpack their fields.
-func set_network_init(_data: Array) -> void:
-	pass
-
-
-## Applies a server-supplied dirty payload, updating fields whose
-## [code]DIRTY_*[/code] flags are set. Subclasses override to unpack.
-func _sync_server_dirty(_data: Array) -> void:
-	pass
-
-
-func _sync_ai_changes() -> void:
-	_dirty = 0
-
-
-## Propagates a server-supplied delta payload (e.g. an aggregate change)
-## down through this proxy's components. Subclasses override as needed.
-func propagate_server_delta(_data: Array) -> void:
-	pass
-
-
-# *****************************************************************************
-# Private
-
-## Override to null every outgoing Proxy/Resource ref. Both sides of a
-## 2-cycle should clear — redundant on success, robust under refactoring.
-func _clear_for_destruction() -> void:
-	pass
-
-
-# *****************************************************************************
-# Proxy -> Server method calls

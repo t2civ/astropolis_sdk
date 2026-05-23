@@ -191,9 +191,7 @@ func get_max_discovered(resource_types: PackedInt32Array) -> float:
 		max_discovered = maxf(max_discovered, discoveries[index])
 	return max_discovered
 
-# *****************************************************************************
-# sync
-
+# ********************************** SYNC *************************************
 
 ## Initializes this component from the server-supplied init payload.
 ## NOT reference-safe — receiver shares array references with the payload.
