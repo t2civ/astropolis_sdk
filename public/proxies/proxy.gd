@@ -94,8 +94,6 @@ enum ComponentType {
 
 ## Server methods that can originate from Proxy.
 enum ProxyServerMethods {
-	SPOT_SELL,
-	SPOT_BUY,
 	SPOT_ASK,
 	SPOT_BID,
 	CANCEL_SPOT_ASK,

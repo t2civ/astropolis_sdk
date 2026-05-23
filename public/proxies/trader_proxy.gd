@@ -95,18 +95,6 @@ func get_market(_player_id: int) -> MarketProxy:
 # ******************************** AI METHODS *********************************
 # Call on proxy thread.
 
-## Adds a spot sell market order. All market orders will be filled or canceled in one cycle.
-func _spot_sell(resource_type: int, quantity: int) -> void:
-	const SPOT_SELL := ProxyServerMethods.SPOT_SELL
-	_send_to_market(SPOT_SELL, [resource_type, quantity, trader_id])
-
-
-## Adds a spot buy market order. All market orders will be filled or canceled in one cycle.
-func _spot_buy(resource_type: int, quantity: int) -> void:
-	const SPOT_BUY := ProxyServerMethods.SPOT_BUY
-	_send_to_market(SPOT_BUY, [resource_type, quantity, trader_id])
-
-
 ## Adds a spot sell limit (ask) order.
 func _spot_ask(resource_type: int, quantity: int, price: int, expiration: int) -> void:
 	const SPOT_ASK := ProxyServerMethods.SPOT_ASK
