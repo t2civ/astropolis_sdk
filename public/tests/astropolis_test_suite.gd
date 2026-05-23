@@ -511,7 +511,7 @@ func _read_market(market: MarketProxy, nonzero: bool,
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("volume", field_filter):
-			var v := market.get_spot_volume(i)
+			var v := market.get_spot_unit_volume(i)
 			entry["volume"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false

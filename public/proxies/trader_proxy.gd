@@ -95,25 +95,27 @@ func get_market(_player_id: int) -> MarketProxy:
 # ******************************** AI METHODS *********************************
 # Call on proxy thread.
 
-## Adds a spot sell limit (ask) order.
-func _spot_ask(resource_type: int, quantity: int, price: int, expiration: int) -> void:
+## Adds a spot sell order. [param unit_quantity] and [param unit_price] are with
+## respect to trade unit. [expiration] is epoch day.
+func _spot_ask(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void:
 	const SPOT_ASK := ProxyServerMethods.SPOT_ASK
-	_send_to_market(SPOT_ASK, [resource_type, quantity, price, expiration, trader_id])
+	_send_to_market(SPOT_ASK, [resource_type, unit_quantity, unit_price, expiration, trader_id])
 
 
-## Removes a spot sell limit (ask) order if not processed already.
+## Removes a spot sell order if not processed already.
 func _cancel_spot_ask(ask_id: int) -> void:
 	const CANCEL_SPOT_ASK := ProxyServerMethods.CANCEL_SPOT_ASK
 	_send_to_market(CANCEL_SPOT_ASK, [ask_id, trader_id])
 
 
-## Adds a spot buy limit (bid) order.
-func _spot_bid(resource_type: int, quantity: int, price: int, expiration: int) -> void:
+## Adds a spot buy order. [param unit_quantity] and [param unit_price] are with
+## respect to trade unit. [expiration] is epoch day.
+func _spot_bid(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void:
 	const SPOT_BID := ProxyServerMethods.SPOT_BID
-	_send_to_market(SPOT_BID, [resource_type, quantity, price, expiration, trader_id])
+	_send_to_market(SPOT_BID, [resource_type, unit_quantity, unit_price, expiration, trader_id])
 
 
-## Removes a spot buy limit (bid) order if not processed already.
+## Removes a spot buy order if not processed already.
 func _cancel_spot_bid(bid_id: int) -> void:
 	const CANCEL_SPOT_BID := ProxyServerMethods.CANCEL_SPOT_BID
 	_send_to_market(CANCEL_SPOT_BID, [bid_id, trader_id])

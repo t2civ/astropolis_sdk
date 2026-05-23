@@ -210,7 +210,7 @@ func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
 			price = market.get_spot_unit_price(resource_type)
 			bid = market.get_spot_bid_unit_price(resource_type)
 			ask = market.get_spot_ask_unit_price(resource_type)
-			volume = market.get_spot_volume(resource_type)
+			volume = market.get_spot_unit_volume(resource_type)
 		if is_inventory:
 			in_stock = inventory.get_stock(resource_type)
 			contracted = inventory.get_contracted(resource_type)

@@ -11,7 +11,7 @@ Resources are described in `resources.descriptive.md`.
 - trade_class — DEPRECATE.
 - storage_class — One of storage classes defined in storage_classes.tsv. Describes the physical storage and transport infrastructure required for the resource. Empty for service resources.
 - trade_unit — Resource unit for trade and price display.
-- start_price — This column is duplicated from #2025.
+- start_price — INT in USD per `trade_unit` (the row's `trade_unit`). Imported and used at game start to seed market prices; `#2025` is the underlying float source from which these integers were derived.
 - #2015 (non-imported column) — Estimated price of the resource in 2015.
 - #2025 (non-imported column) — Estimated price of the resource in 2025.
 - #2035 (non-imported column) — Projected price of the resource in 2035.

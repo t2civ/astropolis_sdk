@@ -21,24 +21,41 @@ extends Proxy
 ## player sanctions (this may result in runtime changes in [member
 ## FacilityProxy.market] and [member TraderProxy.market]).[br][br]
 ##
-## Spot limit orders (bids and asks) are fixed-size [PackedInt64Array]
-## structures with the following elements:[br][br]
+## All trade orders are implemented as "limit orders". Traders can specify a
+## "market order", in effect, by specifying a permisive price and near-future
+## expiration. Traders for "market maker" facilities (i.e., those representing
+## large ports) will try to keep a surplus (trade reserve) of all relevant
+## resources and have standing bids and asks for all.[br][br]
+## 
+## Spot orders (bids and asks) are fixed-size [PackedInt64Array] structures
+## with the following elements:[br][br]
 ##
-##   [0] id (ask_id or bid_id)[br]
+##   [0] id (sequential per order type)[br]
 ##   [1] resource_type[br]
-##   [2] order_quantity (in trade_unit)[br]
-##   [3] unfilled_quantity (in trade_unit)[br]
-##   [4] price (per trade_unit)[br]
-##   [5] expiration (epoch seconds)[br]
-##   [6] trader_id[br][br]
+##   [2] unit price (USD per trade_unit)[br]
+##   [3] order_quantity (in trade_unit)[br]
+##   [4] unfilled_quantity (in trade_unit)[br]
+##   [-2] expiration (epoch days)[br]
+##   [-1] trader_id[br]
+##   (Note: Negative indexes allow consistant indexing with futures below.)[br][br]
 ##
 ## Markets also list futures contracts for delivery at the market [member body].
-## Futures contracts specify time of delivery of a specific resource quantity.
-## They can be traded by anyone (a local or remote trader) and are the means for
-## inter-body resource trades. The futures market is the driving force behind
-## interplanetary commerce and remote resupply.[br][br]
+## Futures contracts specify time of delivery (ordinal quarter) of a specific
+## resource quantity at a specific facility. They can be traded by anyone (a
+## local or remote trader) and are the means for inter-body resource trades.
+## The futures market is the driving force behind interplanetary commerce and
+## remote resupply. Futures orders (bids and asks) are fixed-size
+## [PackedInt64Array] structures with the following elements:[br][br]
 ##
-## WIP: Futuers contracts and orders...[br][br]
+##   [0] id (sequential per order type)[br]
+##   [1] resource_type[br]
+##   [2] unit price (USD per trade_unit)[br]
+##   [3] order_quantity (in trade_unit)[br]
+##   [4] unfilled_quantity (in trade_unit)[br]
+##   [5] delivery facility_id[br]
+##   [6] delivery ordinal quarter[br]
+##   [-2] expiration (epoch days)[br]
+##   [-1] trader_id[br][br]
 ##
 ## WIP: code planning...[br][br]
 ##
@@ -50,21 +67,33 @@ extends Proxy
 ##
 ## TODO: Although [Market] provides the "interface" for futures contracts delivered
 ## at [member body], the physical machinery of futures trading happens at a
-## centralized [Exchange] possibly elsewhere. E.g., futures contracts for
+## centralized "Exchange" possibly elsewhere. E.g., futures contracts for
 ## delivery to Earth-orbiting stations or a Moon Base are likely to originate
 ## and trade at an Earth futures exchange (such as the Chicago Mercantile
 ## Exchange). Only highly developed bodies have physical exchanges.[br][br]
 ##
-## Arrays are indexed by resource_type unless indicated otherwise. Internal
-## price storage is integer trade units; a stored 0 means N/A or no current
-## price (sim-unit getters return 0.0 in that case).[br][br]
+## [MarketProxy] times, prices, and order quantities are all in integer "ticks",
+## where time is specified in integer seconds (class assumes
+## IVUnits.SECOND == 1.0), price in integer USD (class assumes
+## IVUnits.USD == 1.0), and order quantity in integer "trade units"
+## (specified by `trade_unit` in table resources.tsv). Note that this differs
+## from almost all other code which uses internal "sim units" defined in
+## [IVUnits]. API convention here is to provide regular sim units in functions
+## like [method get_spot_price] and use "unit" in the name to provide
+## [Market]-internal values (e.g. [method get_spot_unit_price]). Volume is the
+## exception: it is float in sim units in both the storage and the API.[br][br]
 ##
-## Server-side Market pushes changes to [MarketProxy]. Data flows
-## server -> proxy only. WARNING: This object lives and dies on the proxy thread!
-## Containers and many methods are not threadsafe. Accessing non-container
-## properties is safe.
+## Arrays are indexed by resource_type unless indicated otherwise. A stored
+## value of 0 in any internal "price" variable means N/A or no current price
+## (sim-unit getters return 0.0 in that case).[br][br]
+##
+## Server-side Market pushes changes to [MarketProxy]. Market also recieves
+## channel method calls from [TraderProxy]. This object lives and dies on the
+## proxy thread! Resizeable containers and associated methods are not
+## threadsafe. Accessing non-container properties is safe.
 
 const SPOT_ORDER_SIZE := 7
+const FUTURES_ORDER_SIZE := 9
 
 
 static var _is_class_instanced := false
@@ -85,7 +114,6 @@ var _spot_volumes: PackedFloat64Array
 var _spot_asks: Dictionary[int, PackedInt64Array] = {}  # indexed by ask_id.
 var _spot_bids: Dictionary[int, PackedInt64Array] = {}  # indexed by bid_id.
 
-var _recycled_spot_orders: Array[PackedInt64Array] = []
 var _sync := SyncHelper.new()
 
 
@@ -121,47 +149,46 @@ func get_market(_player_id: int) -> MarketProxy:
 # ********************************** READ *************************************
 # all threadsafe
 
-## Returns the current trade price for [param type] in sim units (USD per
-## sim-unit of resource), or 0.0 if no current price.
+## Returns the current trade price for [param type] in sim units, or 0.0 if no
+## current price.
 func get_spot_price(type: int) -> float:
-	return float(_spot_prices[type]) / _resource_trade_unit_multipliers[type]
+	return _spot_prices[type] / _resource_trade_unit_multipliers[type]
 
 
 ## Returns the current ask price for [param type] in sim units, or 0.0 if no
 ## current ask.
 func get_spot_ask_price(type: int) -> float:
-	return float(_spot_ask_prices[type]) / _resource_trade_unit_multipliers[type]
+	return _spot_ask_prices[type] / _resource_trade_unit_multipliers[type]
 
 
 ## Returns the current bid price for [param type] in sim units, or 0.0 if no
 ## current bid.
 func get_spot_bid_price(type: int) -> float:
-	return float(_spot_bid_prices[type]) / _resource_trade_unit_multipliers[type]
+	return _spot_bid_prices[type] / _resource_trade_unit_multipliers[type]
 
 
-## Returns the trading volume for [param type] over the previous interval
-## (per day).
-func get_spot_volume(type: int) -> float:
-	return _spot_volumes[type]
-
-
-## Returns the [MarketProxy]-internal price for [param type] in trade units (USD
-## per trade_unit, integer), or 0 if no current price.
+## Returns the [Market]-internal unit price for [param type], or 0 if no
+## current price.
 func get_spot_unit_price(type: int) -> int:
 	return _spot_prices[type]
 
 
-## Returns the [MarketProxy]-internal ask price for [param type] in trade units, or
-## 0 if no current ask.
+## Returns the [Market]-internal ask unit price for [param type], or 0 if no
+## current ask.
 func get_spot_ask_unit_price(type: int) -> int:
 	return _spot_ask_prices[type]
 
 
-## Returns the [MarketProxy]-internal bid price for [param type] in trade units, or
-## 0 if no current bid.
+## Returns the [Market]-internal bid unit price for [param type], or 0 if no
+## current bid.
 func get_spot_bid_unit_price(type: int) -> int:
 	return _spot_bid_prices[type]
 
+
+## Returns the trading volume for [param type] in trade units per day, smoothed
+## over 7 days.
+func get_spot_unit_volume(type: int) -> float:
+	return _spot_volumes[type]
 
 # *****************************************************************************
 # sync - DON'T MODIFY!
@@ -201,8 +228,8 @@ func _sync_server_dirty(data: Array) -> void:
 		_sync.set_ints_dirty(_spot_ask_prices)
 		_sync.set_ints_dirty(_spot_bid_prices)
 		_sync.set_floats_dirty(_spot_volumes)
-		_add_orders_delta(_spot_asks, int_data)
-		_add_orders_delta(_spot_bids, int_data)
+		_add_orders_delta(_spot_asks, int_data, SPOT_ORDER_SIZE)
+		_add_orders_delta(_spot_bids, int_data, SPOT_ORDER_SIZE)
 		k += 2
 
 	assert(int_data[0] >= ordinal_qtr)
@@ -214,23 +241,18 @@ func _sync_server_dirty(data: Array) -> void:
 			process_ai_new_quarter() # after component histories have updated
 
 
-# Recycles removed orders.
-func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: PackedInt64Array
-		) -> void:
+func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: PackedInt64Array,
+		order_size: int) -> void:
 	var int_offset := _sync.int_offset
 	var upserts_count := int_data[int_offset]
 	int_offset += 1
 	var i := 0
 	while i < upserts_count:
 		var order: PackedInt64Array
-		if _recycled_spot_orders:
-			order = _recycled_spot_orders.pop_back()
-		else:
-			order = PackedInt64Array()
-			order.resize(SPOT_ORDER_SIZE)
-		for j in SPOT_ORDER_SIZE:
+		order.resize(order_size)
+		for j in order_size:
 			order[j] = int_data[int_offset + j]
-		int_offset += SPOT_ORDER_SIZE
+		int_offset += order_size
 		target[order[0]] = order
 		i += 1
 	var removes_count := int_data[int_offset]
@@ -239,7 +261,6 @@ func _add_orders_delta(target: Dictionary[int, PackedInt64Array], int_data: Pack
 	while i < removes_count:
 		var id := int_data[int_offset]
 		int_offset += 1
-		_recycled_spot_orders.append(target[id])
 		target.erase(id)
 		i += 1
 	_sync.int_offset = int_offset
