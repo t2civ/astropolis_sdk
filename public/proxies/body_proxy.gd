@@ -60,9 +60,9 @@ var biome: BiomeNet
 var cyberspace: CyberspaceNet
 ## Aggregate component propagated from facilities at this body.
 
-# inited identitifiers resolved later
-var _parent_name: StringName
-var _broker_name: StringName
+# inited identifiers resolved later
+var _parent_id := -1
+var _broker_id := -1
 
 
 
@@ -280,8 +280,8 @@ func set_network_init(data: Array) -> void:
 	gui_name = data[4]
 	body_flags = data[5]
 	solar_occlusion = data[6]
-	_parent_name = data[7]
-	_broker_name = data[8]
+	_parent_id = data[7]
+	_broker_id = data[8]
 	var operations_data: Array = data[9]
 	var population_data: Array = data[10]
 	var biome_data: Array = data[11]
@@ -313,11 +313,11 @@ func set_network_init(data: Array) -> void:
 
 
 func process_ai_init() -> void:
-	if _parent_name:
-		parent = proxy_bus.proxies_by_name[_parent_name]
+	if _parent_id != -1:
+		parent = proxy_bus.body_proxies[_parent_id]
 		parent.add_satellite(self)
-	if _broker_name:
-		broker = proxy_bus.proxies_by_name[_broker_name]
+	if _broker_id != -1:
+		broker = proxy_bus.broker_proxies[_broker_id]
 
 
 func _sync_server_dirty(data: Array) -> void:
@@ -337,8 +337,8 @@ func _sync_server_dirty(data: Array) -> void:
 		var float_data: PackedFloat64Array = data[2]
 		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
-		var broker_name: String = string_data[1]
-		broker = proxy_bus.proxies_by_name[broker_name] if broker_name else null
+		var broker_id: int = int_data[1]
+		broker = proxy_bus.broker_proxies[broker_id] if broker_id != -1 else null
 		solar_occlusion = float_data[0]
 
 	if dirty & DIRTY_OPERATIONS:

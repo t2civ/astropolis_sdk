@@ -102,8 +102,8 @@ static var _resource_trade_unit_multipliers: PackedFloat64Array # convert trade 
 
 var market_id := -1  ## Index into [member ProxyBus.market_proxies].
 var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
-var body_name: StringName  ## Name of the hosting body.
 
+var _body_id := -1
 var _spot_prices: PackedInt64Array
 var _spot_ask_prices: PackedInt64Array
 var _spot_bid_prices: PackedInt64Array
@@ -193,7 +193,7 @@ func set_network_init(data: Array) -> void:
 	market_id = data[2]
 	name = data[3]
 	gui_name = data[4]
-	body_name = data[5]
+	_body_id = data[5]
 	ordinal_qtr = data[6]
 	_spot_prices = data[7]
 	_spot_ask_prices = data[8]
@@ -205,7 +205,7 @@ func set_network_init(data: Array) -> void:
 
 func process_ai_init() -> void:
 	if !body:
-		body = proxy_bus.proxies_by_name[body_name]
+		body = proxy_bus.body_proxies[_body_id]
 
 
 func _sync_server_dirty(data: Array) -> void:

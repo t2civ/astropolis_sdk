@@ -35,7 +35,6 @@ var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
 ## Owning polity for this player when [code]polity_name[/code] differs from
 ## [member name] (sub-players only).
 var part_of: PlayerProxy
-var _part_of_name: StringName
 var polity_name: StringName  ## Name of the polity for this player.
 var homeworld := ""  ## Name of this player's homeworld body.
 ## True while this player owns at least one facility ("alive" test).
@@ -49,6 +48,9 @@ var financials := FinancialsNet.new(true)  ## Aggregate [FinancialsNet] componen
 var population := PopulationNet.new(true)  ## Aggregate [PopulationNet] component.
 var biome := BiomeNet.new(true)  ## Aggregate [BiomeNet] component.
 var cyberspace := CyberspaceNet.new(true)  ## Aggregate [CyberspaceNet] component.
+
+# inited identifiers resolved later
+var _part_of_name: StringName
 
 
 

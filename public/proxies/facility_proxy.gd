@@ -45,14 +45,10 @@ var time_horizon: float
 var polity_name: StringName  ## Name of the polity this facility belongs to.
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
-var _player_name: StringName
 var body: BodyProxy  ## Hosting [BodyProxy].
-var _body_name: StringName
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
-var _join_names: Array
 var market: MarketProxy  ## Set after init. Lives on markets thread!
-var _market_name: StringName
 
 var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
 var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
@@ -64,6 +60,12 @@ var cyberspace: CyberspaceNet  ## Optional [CyberspaceNet] component (null when 
 ## Body texture cached for [code]IVSelectionManager[/code] (currently the
 ## hosting body's [code]IVBody.texture_2d[/code]).
 var texture_2d: Texture2D
+
+# inited identifiers resolved later
+var _player_id := -1
+var _body_id := -1
+var _join_ids: PackedInt32Array
+var _market_id := -1
 
 
 func _init() -> void:
@@ -236,6 +238,7 @@ func get_cyberspace() -> CyberspaceNet:
 ## Returns this facility's spot [MarketProxy], or null if not yet set.
 ## [param _player_id] is unused for direct-routed facilities; the per-player
 ## sanctions routing happens at the Broker layer.
+@warning_ignore("shadowed_variable")
 func get_market(_player_id: int) -> MarketProxy:
 	return market
 
@@ -253,10 +256,10 @@ func set_network_init(data: Array) -> void:
 	solar_occlusion = data[9]
 	time_horizon = data[10]
 	polity_name = data[11]
-	_player_name = data[12]
-	_body_name = data[13]
-	_join_names = data[14]
-	_market_name = data[15]
+	_player_id = data[12]
+	_body_id = data[13]
+	_join_ids = data[14]
+	_market_id = data[15]
 
 	var operations_data: Array = data[16]
 	var inventory_data: Array = data[17]
@@ -281,16 +284,20 @@ func set_network_init(data: Array) -> void:
 
 
 func process_ai_init() -> void:
-	player = proxy_bus.proxies_by_name[_player_name]
+	player = proxy_bus.player_proxies[_player_id]
+	assert(player)
 	player.add_facility(self)
-	body = proxy_bus.proxies_by_name[_body_name]
+	body = proxy_bus.body_proxies[_body_id]
+	assert(body)
 	body.add_facility(self)
-	for join_name: StringName in _join_names:
-		var join: JoinProxy = get_proxy_by_name(join_name)
+	for join_id in _join_ids:
+		var join: JoinProxy = proxy_bus.join_proxies[join_id]
+		assert(join)
 		assert(!joins.has(join))
 		joins.append(join)
-	if _market_name:
-		market = proxy_bus.proxies_by_name[_market_name]
+	if _market_id != -1:
+		market = proxy_bus.market_proxies[_market_id]
+		assert(market)
 	# IVSelectionManager
 	var ivbody := IVBody.bodies[body.name]
 	texture_2d = ivbody.texture_2d
@@ -315,13 +322,13 @@ func _sync_server_dirty(data: Array) -> void:
 		facility_class = int_data[1]
 		is_unitary = bool(int_data[2])
 		closed_cycle_ops = bool(int_data[3])
+		var market_id: int = int_data[4]
+		market = proxy_bus.market_proxies[market_id] if market_id != -1 else null
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
 		polity_name = string_data[1]
-		var market_name := string_data[2]
-		market = proxy_bus.proxies_by_name[StringName(market_name)] if market_name else null
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])

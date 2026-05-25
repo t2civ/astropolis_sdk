@@ -24,13 +24,13 @@ const MAX_MARKETS_PER_BODY := 5 ## Must match Broker.MAX_MARKETS_PER_BODY.
 
 var broker_id := -1  ## Index into [member ProxyBus.broker_proxies].
 var body: BodyProxy  ## Hosting [BodyProxy]. Immutable post-init.
-var body_name: StringName  ## Name of the hosting body.
 ## Spot [MarketProxy]s at this Broker's body, indexed by routing slot;
 ## slot 0 is the default.
 var markets: Array[MarketProxy]
 
-# inited identitifiers resolved later
-var _market_names: PackedStringArray
+# inited identifiers resolved later
+var _body_id := -1
+var _market_ids: PackedInt32Array
 
 
 
@@ -61,17 +61,17 @@ func set_network_init(data: Array) -> void:
 	broker_id = data[2]
 	name = data[3]
 	gui_name = data[4]
-	body_name = data[5]
-	_market_names = data[6]
+	_body_id = data[5]
+	_market_ids = data[6]
 
 
 func process_ai_init() -> void:
 	if !body:
-		body = proxy_bus.proxies_by_name[body_name]
+		body = proxy_bus.body_proxies[_body_id]
 	for i in MAX_MARKETS_PER_BODY:
-		var market_name := _market_names[i]
-		if !markets[i] and market_name:
-			markets[i] = proxy_bus.proxies_by_name[StringName(market_name)]
+		var market_id := _market_ids[i]
+		if !markets[i] and market_id != -1:
+			markets[i] = proxy_bus.market_proxies[market_id]
 
 
 func _sync_server_dirty(data: Array) -> void:
@@ -81,10 +81,9 @@ func _sync_server_dirty(data: Array) -> void:
 	var dirty: int = offsets[0]
 
 	if dirty & DIRTY_BROKER:
-		var string_data: PackedStringArray = data[3]
 		for i in MAX_MARKETS_PER_BODY:
-			var market_name := string_data[i]
-			markets[i] = proxy_bus.proxies_by_name[StringName(market_name)] if market_name else null
+			var market_id := int_data[i + 1]
+			markets[i] = proxy_bus.market_proxies[market_id] if market_id != -1 else null
 
 	assert(int_data[0] >= ordinal_qtr)
 	if int_data[0] > ordinal_qtr:
