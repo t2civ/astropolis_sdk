@@ -42,9 +42,9 @@ var closed_cycle_ops: bool
 var solar_occlusion: float
 ## Time horizon used by AI and automations (inventory reserves, resupply, etc.).
 var time_horizon: float
-var polity_name: StringName  ## Name of the polity this facility belongs to.
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
+var polity: PlayerProxy  ## The polity of [member player].
 var body: BodyProxy  ## Hosting [BodyProxy].
 var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers.
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
@@ -63,6 +63,7 @@ var texture_2d: Texture2D
 
 # inited identifiers resolved later
 var _player_id := -1
+var _polity_id := -1
 var _body_id := -1
 var _join_ids: PackedInt32Array
 var _market_id := -1
@@ -77,6 +78,7 @@ func _init() -> void:
 func _clear_for_destruction() -> void:
 	body = null
 	player = null
+	polity = null
 	trader = null
 	joins.clear()
 	market = null
@@ -132,7 +134,7 @@ func get_player_class() -> int:
 
 
 func get_polity_name() -> StringName:
-	return polity_name
+	return polity.name
 
 
 func get_development_population(population_type := -1) -> float:
@@ -255,8 +257,8 @@ func set_network_init(data: Array) -> void:
 	closed_cycle_ops = data[8]
 	solar_occlusion = data[9]
 	time_horizon = data[10]
-	polity_name = data[11]
-	_player_id = data[12]
+	_player_id = data[11]
+	_polity_id = data[12]
 	_body_id = data[13]
 	_join_ids = data[14]
 	_market_id = data[15]
@@ -286,6 +288,8 @@ func set_network_init(data: Array) -> void:
 func process_ai_init() -> void:
 	player = proxy_bus.player_proxies[_player_id]
 	assert(player)
+	polity = proxy_bus.player_proxies[_polity_id]
+	assert(polity)
 	player.add_facility(self)
 	body = proxy_bus.body_proxies[_body_id]
 	assert(body)
@@ -324,11 +328,11 @@ func _sync_server_dirty(data: Array) -> void:
 		closed_cycle_ops = bool(int_data[3])
 		var market_id: int = int_data[4]
 		market = proxy_bus.market_proxies[market_id] if market_id != -1 else null
+		polity = proxy_bus.player_proxies[int_data[5]]
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
 		gui_name = string_data[0]
-		polity_name = string_data[1]
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])

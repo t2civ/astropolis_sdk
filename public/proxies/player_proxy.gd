@@ -30,15 +30,11 @@ extends Proxy
 
 
 # public read-only
-var player_id := -1  ## Index into [member ProxyBus.player_proxies].
-var player_class := -1  ## Player class index ([code]PlayerClasses[/code] enum).
-## Owning polity for this player when [code]polity_name[/code] differs from
-## [member name] (sub-players only).
-var part_of: PlayerProxy
-var polity_name: StringName  ## Name of the polity for this player.
-var homeworld := ""  ## Name of this player's homeworld body.
-## True while this player owns at least one facility ("alive" test).
-var is_facilities := true
+var player_id := -1 ## Index into [member ProxyBus.player_proxies].
+var player_class := -1 ## Player class index ([code]PlayerClasses[/code] enum).
+var polity: PlayerProxy ## Self if [member player_class] == [code]PLAYER_CLASS_POLITY[/code].
+var homeworld := "" ## Name of this player's homeworld body.
+var is_facilities := true ## True while this player owns at least one facility ("alive" test).
 
 ## Facilities owned by this player. Resizable container — not threadsafe!
 var facilities: Array[Proxy] = []
@@ -50,7 +46,7 @@ var biome := BiomeNet.new(true)  ## Aggregate [BiomeNet] component.
 var cyberspace := CyberspaceNet.new(true)  ## Aggregate [CyberspaceNet] component.
 
 # inited identifiers resolved later
-var _part_of_name: StringName
+var _polity_id := -1
 
 
 
@@ -61,7 +57,7 @@ func _init() -> void:
 
 
 func _clear_for_destruction() -> void:
-	part_of = null
+	polity = null
 	facilities.clear()
 
 
@@ -84,7 +80,7 @@ func get_player_class() -> int:
 
 
 func get_polity_name() -> StringName:
-	return polity_name
+	return polity.name
 
 
 ## Returns this player's [member facilities]. proxy thread only!
@@ -165,15 +161,14 @@ func set_network_init(data: Array) -> void:
 	name = data[3]
 	gui_name = data[4]
 	player_class = data[5]
-	_part_of_name = data[6]
-	polity_name = data[7]
-	homeworld = data[8]
+	_polity_id = data[6]
+	homeworld = data[7]
 
-	var operations_data: Array = data[9]
-	var financials_data: Array = data[10]
-	var population_data: Array = data[11]
-	var biome_data: Array = data[12]
-	var cyberspace_data: Array = data[13]
+	var operations_data: Array = data[8]
+	var financials_data: Array = data[9]
+	var population_data: Array = data[10]
+	var biome_data: Array = data[11]
+	var cyberspace_data: Array = data[12]
 
 	operations.set_network_init(operations_data)
 	financials.set_network_init(financials_data)
@@ -183,7 +178,8 @@ func set_network_init(data: Array) -> void:
 
 
 func process_ai_init() -> void:
-	part_of = proxy_bus.proxies_by_name[_part_of_name] if _part_of_name else null
+	polity = proxy_bus.player_proxies[_polity_id]
+	assert(polity)
 
 
 func _sync_server_dirty(data: Array) -> void:
@@ -205,10 +201,8 @@ func _sync_server_dirty(data: Array) -> void:
 		var string_data: PackedStringArray = data[3]
 		gui_name = string_data[0]
 		player_class = int_data[1]
-		var part_of_name := string_data[1]
-		part_of = proxy_bus.proxies_by_name[part_of_name] if part_of_name else null
-		polity_name = string_data[2]
-		homeworld = string_data[3]
+		polity = proxy_bus.player_proxies[int_data[2]]
+		homeworld = string_data[1]
 
 	if dirty & DIRTY_OPERATIONS:
 		operations.add_dirty(data, offsets[k], offsets[k + 1])

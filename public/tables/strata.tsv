@@ -2,7 +2,7 @@ name\Field	generic_body_class	body	body_radius	polity	stratum_group	depth	thickn
 Type	TABLE_ROW	STRING_NAME	FLOAT	STRING_NAME	TABLE_ROW	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	FLOAT	STRING
 Unit			km			km	km		km^2	km^3	g/cm^3	kg		
 Default														
-Prefix/STRATUM_	BODY_CLASS_			POLITY_	STRATUM_GROUP_									
+Prefix/STRATUM_	BODY_CLASS_			PLAYER_	STRATUM_GROUP_									
 PLANET_MERCURY_POLAR_SHADED_REGOLITH		PLANET_MERCURY	2440		POLAR_SHADED_REGOLITH	0.01	0.01	5e-4	3.74e4	3.74e2	1.5	5.61e14	0.8	MESSENGER radar and thermal mapping of PSRs; no direct sampling
 PLANET_MERCURY_REGOLITH		PLANET_MERCURY	2440		REGOLITH	0.01	0.01	0.9995	7.48e7	7.48e5	1.5	1.12e18	1.5	MESSENGER orbital spectroscopy XRS GRS; no surface sampling
 PLANET_MERCURY_NEAR_SURFACE		PLANET_MERCURY	2440		NEAR_SURFACE	1	0.99	1	7.48e7	7.41e7	2.2	1.63e20	0.8	No seismic data; lunar megaregolith analog assumed; MESSENGER gravity constraints
