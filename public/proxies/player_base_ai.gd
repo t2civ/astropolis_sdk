@@ -12,7 +12,7 @@ extends PlayerProxy
 ## base [PlayerProxy] is used for all non-owner peers.
 ##
 ## Strategies are declarative. Each [code]select_*_strategy()[/code] returns
-## an [int] enum id (see [enum GlobalStrategies], [enum ResourceStrategies],
+## an [int] enum id (see [enum GlobalStrategies], [enum PlayerResourceStrategies],
 ## etc.) cached in a [code]<name>_strategy[/code] field or in a per-item
 ## container; child AIs ([FacilityBaseAI], [TraderBaseAI]) read these
 ## declarations during their own selection. Per-strategy data lives in the
@@ -33,9 +33,19 @@ extends PlayerProxy
 ## refresh pattern is the same for all three [code]BaseAI[/code] classes.
 
 
-## The player's grand strategic posture. By convention id 0 is the no-op
-## default (NEUTRAL, AUTO, or similar) used as the starting state. Add-on
-## strategies begin at [code]N_BASE_GLOBAL_STRATEGIES[/code].
+## Emitted when [member global_strategy] changes.
+signal global_strategy_changed(strategy_id: int)
+## Emitted when an entry in [member player_resource_strategies] changes.
+signal player_resource_strategy_changed(resource_type: int, strategy_id: int)
+## Emitted when an entry in [member player_facility_strategies] changes.
+signal player_facility_strategy_changed(facility_id: int, strategy_id: int)
+## Emitted when an entry in [member body_strategies] changes.
+signal body_strategy_changed(body_id: int, strategy_id: int)
+## Emitted when an entry in [member counterparty_strategies] changes.
+signal counterparty_strategy_changed(player_id: int, strategy_id: int)
+
+
+## The player's grand strategic posture.
 enum GlobalStrategies {
 	## Starting / no-op stance; no special posture.
 	NEUTRAL,
@@ -81,11 +91,9 @@ enum GlobalStrategies {
 	N_BASE_GLOBAL_STRATEGIES,
 }
 
-## Per-resource player-level strategies (distinct from
-## [enum TraderBaseAI.ResourceStrategies] — this is how the player wants the
-## global market for the resource to look). By convention id 0 is the no-op
-## default. Add-on strategies begin at [code]N_BASE_RESOURCE_STRATEGIES[/code].
-enum ResourceStrategies {
+## Per-resource player-level strategies — this is how the player wants the
+## global market for the resource to look.
+enum PlayerResourceStrategies {
 	## No special player stance; traders apply their own per-resource
 	## strategies independently.
 	NEUTRAL,
@@ -119,18 +127,12 @@ enum ResourceStrategies {
 	## Watch closely without active intervention; reserve right to act later.
 	## Analog: contingency planning.
 	MONITOR,
-	N_BASE_RESOURCE_STRATEGIES,
+	N_BASE_PLAYER_RESOURCE_STRATEGIES,
 }
 
-## Per-owned-facility player-level strategies (distinct from
-## [enum FacilityBaseAI.FacilityStrategies] — this is how the player views
-## the role of each owned facility in the portfolio). By convention id 0 is
-## the no-op default. Add-on strategies begin at
-## [code]N_BASE_FACILITY_STRATEGIES[/code].[br]
-## TODO: rename + re-key by facility type when
-## [member FacilityProxy.facility_class] is implemented. Selection then moves
-## from per-instance to per-type.
-enum FacilityStrategies {
+## Per-owned-facility player-level strategies — this is how the player views
+## the role of each owned facility in the portfolio).
+enum PlayerFacilityStrategies {
 	## Let the facility's own AI determine its posture.
 	NEUTRAL,
 	## Showcase asset; priority resourcing and attention. Analog: corporate
@@ -158,7 +160,7 @@ enum FacilityStrategies {
 	## Active wind-down; planned closure or sale. Analog: planned plant
 	## closure.
 	DIVEST,
-	N_BASE_FACILITY_STRATEGIES,
+	N_BASE_PLAYER_FACILITY_STRATEGIES,
 }
 
 ## Per-body player-level strategies. By convention id 0 is the no-op default.
@@ -210,13 +212,7 @@ enum CounterpartyStrategies {
 }
 
 
-# **************************** STRATEGY REGISTRIES ****************************
-
-## Grand-strategy definitions; index = [enum GlobalStrategies] value. Each
-## inner [Dictionary] is per-strategy data (empty placeholder for now; may
-## grow parameter knobs and an optional [code]"method"[/code] key for
-## per-strategy logic overrides). Add-on strategies append via
-## [method register_global_strategy].
+## Grand-strategy definitions; index = [enum GlobalStrategies] value.
 static var global_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # HEGEMONY
@@ -235,9 +231,8 @@ static var global_strategy_defs: Array[Dictionary] = [
 ]
 
 ## Per-resource player-level strategy definitions; index =
-## [enum ResourceStrategies] value. Add-on strategies append via
-## [method register_resource_strategy].
-static var resource_strategy_defs: Array[Dictionary] = [
+## [enum PlayerResourceStrategies] value.
+static var player_resource_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # DOMINATE_SUPPLY
 	{}, # DOMINATE_DEMAND
@@ -252,11 +247,8 @@ static var resource_strategy_defs: Array[Dictionary] = [
 ]
 
 ## Per-owned-facility player-level strategy definitions; index =
-## [enum FacilityStrategies] value. Add-on strategies append via
-## [method register_facility_strategy].[br]
-## TODO: rename + re-key by facility type when
-## [member FacilityProxy.facility_class] is implemented.
-static var facility_strategy_defs: Array[Dictionary] = [
+## [enum PlayerFacilityStrategies] value.
+static var player_facility_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # FLAGSHIP
 	{}, # STAR
@@ -269,7 +261,7 @@ static var facility_strategy_defs: Array[Dictionary] = [
 ]
 
 ## Per-body player-level strategy definitions; index = [enum BodyStrategies]
-## value. Add-on strategies append via [method register_body_strategy].
+## value.
 static var body_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # PRIORITY_DEVELOPMENT
@@ -280,8 +272,7 @@ static var body_strategy_defs: Array[Dictionary] = [
 ]
 
 ## Per-counterparty strategy definitions; index =
-## [enum CounterpartyStrategies] value. Add-on strategies append via
-## [method register_counterparty_strategy].
+## [enum CounterpartyStrategies] value.
 static var counterparty_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # ALLY
@@ -293,145 +284,34 @@ static var counterparty_strategy_defs: Array[Dictionary] = [
 ]
 
 
-## Appends [param data] for [param strategy_id] in
-## [member global_strategy_defs]. [param strategy_id] must equal the current
-## array size (contiguous append) — surfaces colliding mod registrations as
-## a debug assert rather than silent last-write-wins.
-static func register_global_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == global_strategy_defs.size(),
-			"Non-contiguous global strategy id %d; expected %d"
-			% [strategy_id, global_strategy_defs.size()])
-	global_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member resource_strategy_defs]. See [method register_global_strategy] for
-## the contiguous-append contract.
-static func register_resource_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == resource_strategy_defs.size(),
-			"Non-contiguous resource strategy id %d; expected %d"
-			% [strategy_id, resource_strategy_defs.size()])
-	resource_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member facility_strategy_defs]. See [method register_global_strategy] for
-## the contiguous-append contract.
-static func register_facility_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == facility_strategy_defs.size(),
-			"Non-contiguous facility strategy id %d; expected %d"
-			% [strategy_id, facility_strategy_defs.size()])
-	facility_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member body_strategy_defs]. See [method register_global_strategy] for
-## the contiguous-append contract.
-static func register_body_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == body_strategy_defs.size(),
-			"Non-contiguous body strategy id %d; expected %d"
-			% [strategy_id, body_strategy_defs.size()])
-	body_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member counterparty_strategy_defs]. See [method register_global_strategy]
-## for the contiguous-append contract.
-static func register_counterparty_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == counterparty_strategy_defs.size(),
-			"Non-contiguous counterparty strategy id %d; expected %d"
-			% [strategy_id, counterparty_strategy_defs.size()])
-	counterparty_strategy_defs.append(data)
-
-
-# ********************************** AI API ***********************************
-
-## Currently selected grand strategic posture id; see [enum GlobalStrategies].
-## By convention 0 is the NEUTRAL (no-op default) value. Persisted via
-## [member Proxy.persist] so player intent survives save/load; updated each
-## quarter by [method _refresh_selections].
+## Grand strategic posture. See [enum GlobalStrategies].
 var global_strategy := 0
-
-## Currently selected per-resource player-level strategy ids, indexed by
-## [code]resource_type[/code] (resources-table row). Sized in [method _init]
-## to the resources-table row count; entries default to 0 (NEUTRAL).
-## Persisted via [member Proxy.persist].
-var resource_strategies: PackedInt32Array
-
-## Currently selected per-owned-facility player-level strategy ids, keyed by
-## [member FacilityProxy.facility_id]. Lazy-populated. Persisted via
-## [member Proxy.persist].[br]
-## Will be re-keyed by facility type when
-## [member FacilityProxy.facility_class] is implemented (see TODO on
-## [member facility_strategy_defs]).
-var facility_strategies: Dictionary[int, int]
-
-## Currently selected per-body strategy ids, keyed by [member BodyProxy.body_id].
-## Lazy-populated. Persisted via [member Proxy.persist].
+## Per-resource strategies. See [enum PlayerResourceStrategies].
+var player_resource_strategies: PackedInt32Array
+## Per-facility strategies keyed by [member FacilityProxy.facility_id]. Absent
+## is the same as "NEUTRAL". See [enum PlayerFacilityStrategies].
+var player_facility_strategies: Dictionary[int, int] 
+## Per-body strategies keyed by [member BodyProxy.body_id]. Absent is the same
+## as "NEUTRAL". See [enum BodyStrategies].
 var body_strategies: Dictionary[int, int]
-
-## Currently selected per-counterparty strategy ids, keyed by
-## [member PlayerProxy.player_id]. Lazy-populated. Persisted via
-## [member Proxy.persist].
+## Per-counterparty strategies keyed by [member PlayerProxy.player_id]. Absent
+## is the same as "NEUTRAL". See [enum CounterpartyStrategies].
 var counterparty_strategies: Dictionary[int, int]
 
+
+
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
 	super()
 	persist.append(&"global_strategy")
-	persist.append(&"resource_strategies")
-	persist.append(&"facility_strategies")
+	persist.append(&"player_resource_strategies")
+	persist.append(&"player_facility_strategies")
 	persist.append(&"body_strategies")
 	persist.append(&"counterparty_strategies")
 	var n_resources: int = _table_n_rows[&"resources"]
-	resource_strategies.resize(n_resources)
+	player_resource_strategies.resize(n_resources)
 
 
-## Selects this player's grand strategic posture.
-func select_global_strategy() -> int:
-	return 0 # NEUTRAL
-
-
-## Selects the player-level resource strategy for [param resource_type].
-func select_resource_strategy(_resource_type: int) -> int:
-	return 0 # NEUTRAL
-
-
-## Selects the player-level strategy for [param facility].
-func select_facility_strategy(_facility: FacilityProxy) -> int:
-	return 0 # NEUTRAL
-
-
-## Selects the player-level strategy for [param body].
-func select_body_strategy(_body: BodyProxy) -> int:
-	return 0 # NEUTRAL
-
-
-## Selects the player-level strategy toward [param other] player.
-func select_counterparty_strategy(_other: PlayerProxy) -> int:
-	return 0 # NEUTRAL
-
-
-## Updates [member global_strategy] from [method select_global_strategy].
-## Per-item refresh (resources, facilities, bodies, counterparties) is a TODO
-## pending enumeration sources on the base [PlayerProxy] (which resources /
-## facilities / bodies / counterparties this player cares about iterating).
-func _refresh_selections() -> void:
-	global_strategy = select_global_strategy()
-	assert(global_strategy >= 0 and global_strategy < global_strategy_defs.size(),
-			"select_global_strategy returned invalid id: %d" % global_strategy)
-	# TODO: iterate per-item categories once PlayerProxy exposes the relevant
-	# lists (resources of interest, owned facilities, known bodies, known
-	# counterparties).
-
-
-## Placeholder. Future executor will read the [code]*_strategy[/code] /
-## [code]*_strategies[/code] fields and issue player-level actions
-## (construction queue, diplomatic state changes, etc.) through base
-## [PlayerProxy] facilities (not yet exposed).
 func process_ai_interval(_delta: float) -> void:
 	pass
-
-
-func process_ai_new_quarter() -> void:
-	_refresh_selections()

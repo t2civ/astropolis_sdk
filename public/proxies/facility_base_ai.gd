@@ -12,9 +12,10 @@ extends FacilityProxy
 ## facility AI; the base [FacilityProxy] is used for all non-owner peers.
 ##
 ## Strategies are declarative. Each [code]select_*_strategy()[/code] returns
-## an [int] enum id (see [enum FacilityStrategies], [enum OperationStrategies])
-## cached in a [code]<name>_strategy[/code] field; children read parent
-## declarations during their own selection. Per-strategy data lives in the
+## an [int] enum id (see [enum FacilityStrategies],
+## [enum FacilityResourceStrategies], [enum OperationStrategies]) cached in a
+## [code]<name>_strategy[/code] field; children read parent declarations
+## during their own selection. Per-strategy data lives in the
 ## static [code]*_strategy_defs[/code] arrays as inner [Dictionary]s (empty
 ## for now); parameter knobs and an optional [code]"method"[/code] key for
 ## per-strategy logic overrides may grow into them. Cached selections are
@@ -32,9 +33,15 @@ extends FacilityProxy
 ## refresh pattern is the same for all three [code]BaseAI[/code] classes.
 
 
-## Facility-posture strategies. By convention id 0 is the no-op default
-## (NEUTRAL, AUTO, or similar) used as the starting state. Add-on strategies
-## begin at [code]N_BASE_FACILITY_STRATEGIES[/code].
+## Emitted when [member facility_strategy] changes.
+signal facility_strategy_changed(strategy_id: int)
+## Emitted when an entry in [member facility_resource_strategies] changes.
+signal facility_resource_strategy_changed(resource_type: int, strategy_id: int)
+## Emitted when an entry in [member operation_strategies] changes.
+signal operation_strategy_changed(operation_type: int, strategy_id: int)
+
+
+## Facility-posture strategies.
 enum FacilityStrategies {
 	## Starting / no-op stance; no special posture.
 	NEUTRAL,
@@ -69,9 +76,64 @@ enum FacilityStrategies {
 	N_BASE_FACILITY_STRATEGIES,
 }
 
-## Per-operation strategies. By convention id 0 is the no-op default (here
-## AUTO — delegate to server-side automation hints). Add-on strategies begin
-## at [code]N_BASE_OPERATION_STRATEGIES[/code].
+## Per-resource facility strategies — how this facility views a particular
+## resource given its own operations, inventory state, and player strategies.
+enum FacilityResourceStrategies {
+	## No special facility-level stance; trader applies its own per-resource
+	## strategy independently.
+	NEUTRAL,
+	## Primary saleable output the facility exists to produce; the operations
+	## that produce it carry the facility's revenue thesis. Analog: a copper
+	## smelter's cathode copper.
+	PRIMARY_PRODUCT,
+	## Additional saleable output run only when margins justify; capacity is
+	## discretionary. Analog: a refinery's specialty chemicals or asphalt.
+	SECONDARY_PRODUCT,
+	## Output produced in fixed ratio with another (usually primary) output;
+	## cannot be throttled independently — must be sold, stored, or its
+	## producing op must idle. Analog: a refinery's LPG alongside gasoline,
+	## sulfur from sour-crude refining.
+	COPRODUCT,
+	## Low-value output of a producing operation; not a profit center, but
+	## must move off-site to keep the line running. Analog: scrap metal,
+	## slag, spent caustic.
+	BYPRODUCT,
+	## Non-commodity output that must be disposed of (vented, dumped, stored
+	## as overburden); operations are constrained by available disposal
+	## capacity. Analog: flare gas, mine tailings, CO2 emissions.
+	WASTE,
+	## Input without which primary operations halt; supply continuity matters
+	## more than per-unit price. Analog: a fab's ultra-pure water and
+	## photoresist; a smelter's contracted electricity.
+	CRITICAL_INPUT,
+	## Operating input with adequate market liquidity and substitutability;
+	## buy lean at prevailing prices. Analog: a factory's commodity natural
+	## gas or merchant-grade steel.
+	ROUTINE_INPUT,
+	## Small-quantity consumables, reagents, MRO supplies; cost of doing
+	## business with no strategic weight. Analog: lubricants, catalyst
+	## makeup, filter media.
+	CONSUMABLE,
+	## Produced and consumed within the facility's own process loop; external
+	## trade is unwanted or impractical. Analog: a chemical complex's hydrogen
+	## produced and consumed inside the integrated fenceline; reflux streams.
+	CLOSED_LOOP_INTERMEDIATE,
+	## Accumulate inventory well beyond operating need; pull supply from the
+	## market or run producing ops at strategic-hold rates. Analog: a mill
+	## stockpiling a sanction-vulnerable ore.
+	STRATEGIC_RESERVE,
+	## Inventory is being held or worked as a directional trading position
+	## rather than for operational continuity. Analog: a refiner taking a
+	## crude position outside normal hedging.
+	SPECULATIVE_POSITION,
+	## The facility is exiting this resource long-term; wind down ops that
+	## produce or consume it and run inventory down. Analog: a multi-product
+	## plant exiting a product line; a utility's coal phase-down.
+	PHASE_OUT,
+	N_BASE_FACILITY_RESOURCE_STRATEGIES,
+}
+
+## Per-operation strategies.
 enum OperationStrategies {
 	## Delegate to server-side automation hints ([code]OpFlags[/code]); minimal
 	## AI intervention.
@@ -111,17 +173,19 @@ enum OperationStrategies {
 	## Analog: keeping a domestic semiconductor fab alive for national
 	## security.
 	STRATEGIC_HOLD,
+	## Throttle run rate to match downstream clearance — disposal capacity
+	## for waste, storage or offtake for byproducts and coproducts, atmospheric
+	## or surface caps. The op is constrained by the slowest output we can
+	## move, not by input availability or output margin. Analog: a refinery
+	## limited by sulfur-handling capacity; a mine limited by tailings-pond
+	## headroom.
+	CLEARANCE_LIMITED,
 	N_BASE_OPERATION_STRATEGIES,
 }
 
 
-# **************************** STRATEGY REGISTRIES ****************************
-
 ## Facility-posture strategy definitions; index = [enum FacilityStrategies]
-## value. Each inner [Dictionary] is per-strategy data (empty placeholder for
-## now; may grow parameter knobs and an optional [code]"method"[/code] key
-## for per-strategy logic overrides). Add-on strategies append via
-## [method register_facility_strategy].
+## value.
 static var facility_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # GROWTH
@@ -135,8 +199,26 @@ static var facility_strategy_defs: Array[Dictionary] = [
 	{}, # EMERGENCY
 ]
 
+## Per-resource facility-level strategy definitions; index =
+## [enum FacilityResourceStrategies] value.
+static var facility_resource_strategy_defs: Array[Dictionary] = [
+	{}, # NEUTRAL
+	{}, # PRIMARY_PRODUCT
+	{}, # SECONDARY_PRODUCT
+	{}, # COPRODUCT
+	{}, # BYPRODUCT
+	{}, # WASTE
+	{}, # CRITICAL_INPUT
+	{}, # ROUTINE_INPUT
+	{}, # CONSUMABLE
+	{}, # CLOSED_LOOP_INTERMEDIATE
+	{}, # STRATEGIC_RESERVE
+	{}, # SPECULATIVE_POSITION
+	{}, # PHASE_OUT
+]
+
 ## Per-operation strategy definitions; index = [enum OperationStrategies]
-## value. Add-on strategies append via [method register_operation_strategy].
+## value.
 static var operation_strategy_defs: Array[Dictionary] = [
 	{}, # AUTO
 	{}, # PROFIT_MAXIMIZE
@@ -150,82 +232,60 @@ static var operation_strategy_defs: Array[Dictionary] = [
 	{}, # LEARNING
 	{}, # HARVEST
 	{}, # STRATEGIC_HOLD
+	{}, # CLEARANCE_LIMITED
 ]
 
 
-## Appends [param data] for [param strategy_id] in
-## [member facility_strategy_defs]. [param strategy_id] must equal the current
-## array size (contiguous append) — surfaces colliding mod registrations as
-## a debug assert rather than silent last-write-wins.
-static func register_facility_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == facility_strategy_defs.size(),
-			"Non-contiguous facility strategy id %d; expected %d"
-			% [strategy_id, facility_strategy_defs.size()])
-	facility_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member operation_strategy_defs]. See [method register_facility_strategy]
-## for the contiguous-append contract.
-static func register_operation_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == operation_strategy_defs.size(),
-			"Non-contiguous operation strategy id %d; expected %d"
-			% [strategy_id, operation_strategy_defs.size()])
-	operation_strategy_defs.append(data)
-
-
-# ********************************** AI API ***********************************
-
-## Currently selected facility-posture strategy id; see
-## [enum FacilityStrategies]. By convention 0 is the NEUTRAL (no-op default)
-## value. Persisted via [member Proxy.persist] so player intent survives
-## save/load; updated each quarter by [method _refresh_selections].
+## Facility-posture strategy. See [enum FacilityStrategies].
 var facility_strategy := 0
-
-## Currently selected per-operation strategy ids, indexed by
-## [code]operation_type[/code] (operations-table row). Sized in [method _init]
-## to the operations-table row count; entries default to 0 (AUTO). Persisted
-## via [member Proxy.persist].
+## Per-resource facility-level strategies. See [enum FacilityResourceStrategies].
+var facility_resource_strategies: PackedInt32Array
+## Per-operation strategies. See [enum OperationStrategies].
 var operation_strategies: PackedInt32Array
+
+
+
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 
 func _init() -> void:
 	super()
 	persist.append(&"facility_strategy")
+	persist.append(&"facility_resource_strategies")
 	persist.append(&"operation_strategies")
+	var n_resources: int = _table_n_rows[&"resources"]
+	facility_resource_strategies.resize(n_resources)
 	var n_operations: int = _table_n_rows[&"operations"]
 	operation_strategies.resize(n_operations)
 
 
-## Selects this facility's overall posture strategy. May later consult
-## [code]player.facility_strategies[my_facility_class][/code] once
-## facility-type keying lands (see PlayerBaseAI TODO).
-func select_facility_strategy() -> int:
-	return 0 # NEUTRAL
+func process_ai_init() -> void:
+	super()
+	var player_ai := player as PlayerBaseAI
+	assert(player_ai, "FacilityBaseAI expects player to be PlayerBaseAI")
+	player_ai.global_strategy_changed.connect(_on_player_global_strategy_changed)
+	player_ai.player_resource_strategy_changed.connect(_on_player_resource_strategy_changed)
+	player_ai.player_facility_strategy_changed.connect(_on_player_facility_strategy_changed)
+	player_ai.body_strategy_changed.connect(_on_player_body_strategy_changed)
 
 
-## Selects the operation strategy for [param operation_type].
-func select_operation_strategy(_operation_type: int) -> int:
-	return 0 # AUTO
-
-
-## Updates [member facility_strategy] from [method select_facility_strategy].
-## Per-operation refresh is a TODO pending an operation-list enumeration
-## source on [FacilityProxy].
-func _refresh_selections() -> void:
-	facility_strategy = select_facility_strategy()
-	assert(facility_strategy >= 0 and facility_strategy < facility_strategy_defs.size(),
-			"select_facility_strategy returned invalid id: %d" % facility_strategy)
-	# TODO: iterate operations and refresh operation_strategies
-	# once FacilityProxy exposes its operation list.
-
-
-## Placeholder. Future executor will read [member facility_strategy] and
-## [member operation_strategies] and throttle individual operations through
-## base [FacilityProxy] facilities (not yet exposed).
 func process_ai_interval(_delta: float) -> void:
 	pass
 
 
-func process_ai_new_quarter() -> void:
-	_refresh_selections()
+# **************************** STRATEGY LISTENERS *****************************
+
+func _on_player_global_strategy_changed(_strategy_id: int) -> void:
+	pass
+
+
+func _on_player_resource_strategy_changed(_resource_type: int, _strategy_id: int) -> void:
+	pass
+
+
+func _on_player_facility_strategy_changed(_facility_id: int, _strategy_id: int) -> void:
+	pass
+
+
+func _on_player_body_strategy_changed(_target_body_id: int, _strategy_id: int) -> void:
+	pass

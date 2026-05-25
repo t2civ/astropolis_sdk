@@ -32,9 +32,7 @@ extends TraderProxy
 ## refresh pattern is the same for all three [code]BaseAI[/code] classes.
 
 
-## Trader-posture strategies. By convention id 0 is the no-op default
-## (NEUTRAL, AUTO, or similar) used as the starting state. Add-on strategies
-## from custom AI subclasses begin at [code]N_BASE_TRADER_STRATEGIES[/code].
+## Trader-posture strategies.
 enum TraderStrategies {
 	## Starting / no-op stance; no special posture.
 	NEUTRAL,
@@ -58,8 +56,7 @@ enum TraderStrategies {
 	N_BASE_TRADER_STRATEGIES,
 }
 
-## Per-resource trading strategies. By convention id 0 is the no-op default.
-## Add-on strategies begin at [code]N_BASE_RESOURCE_STRATEGIES[/code].
+## Per-resource trading strategies.
 enum ResourceStrategies {
 	## No special stance; replenish operational reserves and clear surplus at
 	## prevailing market prices.
@@ -102,17 +99,16 @@ enum ResourceStrategies {
 	## No standing position; act only on price dislocations. Analog: arbitrage
 	## / value buying.
 	OPPORTUNISTIC,
+	## Run holdings down gradually as part of an orderly exit; sell into
+	## rallies, do not add to position. Distinct from [code]LIQUIDATE[/code],
+	## which accepts unfavorable prices to clear immediately. Analog: a
+	## divesting fund quietly reducing a position over months.
+	WIND_DOWN,
 	N_BASE_RESOURCE_STRATEGIES,
 }
 
 
-# **************************** STRATEGY REGISTRIES ****************************
-
 ## Trader-posture strategy definitions; index = [enum TraderStrategies] value.
-## Each inner [Dictionary] is per-strategy data (empty placeholder for now;
-## may grow parameter knobs and an optional [code]"method"[/code] key for
-## per-strategy logic overrides). Add-on strategies append via
-## [method register_trader_strategy].
 static var trader_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # FACILITY_SUPPORT
@@ -123,7 +119,6 @@ static var trader_strategy_defs: Array[Dictionary] = [
 ]
 
 ## Per-resource strategy definitions; index = [enum ResourceStrategies] value.
-## Add-on strategies append via [method register_resource_strategy].
 static var resource_strategy_defs: Array[Dictionary] = [
 	{}, # NEUTRAL
 	{}, # JUST_IN_TIME
@@ -138,42 +133,18 @@ static var resource_strategy_defs: Array[Dictionary] = [
 	{}, # EXPORT_FOCUS
 	{}, # IMPORT_PRIORITY
 	{}, # OPPORTUNISTIC
+	{}, # WIND_DOWN
 ]
 
 
-## Appends [param data] for [param strategy_id] in [member trader_strategy_defs].
-## [param strategy_id] must equal the current array size (contiguous append) —
-## surfaces colliding mod registrations as a debug assert rather than silent
-## last-write-wins.
-static func register_trader_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == trader_strategy_defs.size(),
-			"Non-contiguous trader strategy id %d; expected %d"
-			% [strategy_id, trader_strategy_defs.size()])
-	trader_strategy_defs.append(data)
-
-
-## Appends [param data] for [param strategy_id] in
-## [member resource_strategy_defs]. See [method register_trader_strategy] for
-## the contiguous-append contract.
-static func register_resource_strategy(strategy_id: int, data: Dictionary) -> void:
-	assert(strategy_id == resource_strategy_defs.size(),
-			"Non-contiguous resource strategy id %d; expected %d"
-			% [strategy_id, resource_strategy_defs.size()])
-	resource_strategy_defs.append(data)
-
-
-# ********************************** AI API ***********************************
-
-## Currently selected trader-posture strategy id; see [enum TraderStrategies].
-## By convention 0 is the NEUTRAL (no-op default) value. Persisted via
-## [member Proxy.persist] so player intent survives save/load; updated each
-## quarter by [method _refresh_selections].
+## Trader-posture strategy. See [enum TraderStrategies].
 var trader_strategy := 0
-
-## Currently selected per-resource strategy ids, indexed by [code]resource_type[/code]
-## (resources-table row). Sized in [method _init] to the resources-table row
-## count; entries default to 0 (NEUTRAL). Persisted via [member Proxy.persist].
+## Per-resource strategies. See [enum ResourceStrategies].
 var resource_strategies: PackedInt32Array
+
+
+
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 
 func _init() -> void:
@@ -184,36 +155,18 @@ func _init() -> void:
 	resource_strategies.resize(n_resources)
 
 
-## Selects this trader's overall posture strategy. May consult parent
-## declarations via [code]facility.player.<name>_strategy[/code].
-func select_trader_strategy() -> int:
-	return 0 # NEUTRAL
+func process_ai_init() -> void:
+	super()
+	var facility_ai := facility as FacilityBaseAI
+	assert(facility_ai, "TraderBaseAI expects facility to be FacilityBaseAI")
+	facility_ai.facility_resource_strategy_changed.connect(_on_facility_resource_strategy_changed)
 
 
-## Selects the resource strategy for [param resource_type]. May consult
-## [code]facility.player.resource_strategies[resource_type][/code].
-func select_resource_strategy(_resource_type: int) -> int:
-	return 0 # NEUTRAL
-
-
-## Updates [member trader_strategy] and per-resource selections from the
-## [code]select_*[/code] methods. Override to change refresh policy.
-## Per-resource refresh is a TODO pending a traded-resource enumeration
-## source on [TraderProxy].
-func _refresh_selections() -> void:
-	trader_strategy = select_trader_strategy()
-	assert(trader_strategy >= 0 and trader_strategy < trader_strategy_defs.size(),
-			"select_trader_strategy returned invalid id: %d" % trader_strategy)
-	# TODO: iterate traded resources and refresh resource_strategies
-	# once TraderProxy exposes its resource list.
-
-
-## Placeholder. Future executor will read [member trader_strategy] and
-## [member resource_strategies] and submit/cancel bids and asks through
-## base [TraderProxy] facilities (not yet exposed).
 func process_ai_interval(_delta: float) -> void:
 	pass
 
 
-func process_ai_new_quarter() -> void:
-	_refresh_selections()
+# **************************** STRATEGY LISTENERS *****************************
+
+func _on_facility_resource_strategy_changed(_resource_type: int, _strategy_id: int) -> void:
+	pass
