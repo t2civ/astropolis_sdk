@@ -10,13 +10,19 @@ extends RefCounted
 
 ## Net-synced inventory component held by [FacilityProxy].
 ##
-## Holds resource stocks, reserves (ops, trade), in-transits, contracts,
-## rates, and storage capacity/usage. Arrays are indexed by resource_type;
-## storage arrays by storage_class. All values are in internal units.
+## Holds resource stocks, ops reserves, in-transits, contracts, rates,
+## storage capacity/usage, and AI-set strategic reserves. Arrays are indexed
+## by resource_type; storage arrays by storage_class. All values are in
+## internal units.
 ##
-## Server-side Inventory pushes changes to [InventoryNet] via sync. Only
-## [FacilityProxy] has an inventory — [PlayerProxy], [BodyProxy],
-## and [JoinProxy] do not aggregate inventory.
+## Server-side Inventory pushes changes to [InventoryNet] via sync. All vars
+## are proxy read-only except [code]_strategic_reserves[/code], which is
+## proxy-authoritative during runtime: data flows proxy -> server. Use
+## [method set_strategic_reserve] to modify; the server picks up changes via
+## reverse sync. Server is the source only at game start and after load, via
+## [method get_network_init] / [method set_network_init]. Only [FacilityProxy]
+## has an inventory — [PlayerProxy], [BodyProxy], and [JoinProxy] do not
+## aggregate inventory.
 ##
 ## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
 ## will have access to API (just like any Godot class) but the GDScript class
@@ -41,8 +47,7 @@ var ordinal_qtr := -1
 
 var _stocks: PackedFloat64Array # physically present and owned (>= 0.0)
 var _remote_stores: Dictionary[int, PackedFloat64Array] # indexed by owning facility_id
-var _ops_reserves: PackedFloat64Array # tracker: stocks reserved for operations
-var _trade_reserves: PackedFloat64Array # tracker: stocks reserved for trade
+var _ops_reserves: PackedFloat64Array # target operations reserves (tracker only)
 var _in_transits: PackedFloat64Array # on the way (>= 0.0), posibly under contract
 var _contracteds: PackedFloat64Array # sum of all contracts (+/-), here or elsewhere
 var _rates: PackedFloat64Array # current facility production (+) or consumption (-)
@@ -50,9 +55,15 @@ var _expected_rates: PackedFloat64Array # smoothed forward-looking; gross_produc
 var _resource_flags: PackedInt64Array # enum ResourceFlags
 var _storages: PackedFloat64Array # indexed by storage_type; capacity per storage class
 
+# Set via FacilityProxy. Reverse data flow: proxy -> server!
+var _strategic_reserves: PackedFloat64Array # target strategic reserves set by AI (tracker only)
+
 # lazy calculations
 var _storages_used: PackedFloat64Array # indexed by storage_type; sum of _stocks + values of _remote_stores
 var _storages_used_valid := false
+
+# proxy dirty data (dirty indexes as bit flags)
+var _dirty_strategic_reserves: PackedInt64Array
 
 var _sync := SyncHelper.new()
 
@@ -77,14 +88,17 @@ func _init(is_new := false) -> void:
 		return
 	_stocks.resize(_n_resources)
 	_ops_reserves.resize(_n_resources)
-	_trade_reserves.resize(_n_resources)
 	_in_transits.resize(_n_resources)
 	_contracteds.resize(_n_resources)
 	_rates.resize(_n_resources)
 	_expected_rates.resize(_n_resources)
 	_resource_flags.resize(_n_resources)
 	_storages.resize(_n_storage_classes)
+	_strategic_reserves.resize(_n_resources)
 	_storages_used.resize(_n_storage_classes)
+	@warning_ignore("integer_division")
+	var n_resource_flags := (_n_resources - 1) / 63 + 1
+	_dirty_strategic_reserves.resize(n_resource_flags)
 
 
 # ********************************** READ *************************************
@@ -107,12 +121,6 @@ func get_remote_store(facility_id_: int, resource_type: int) -> float:
 ## ongoing operations).
 func get_ops_reserve(type: int) -> float:
 	return _ops_reserves[type]
-
-
-## Returns the trade-reserve buffer for [param type] (quantity reserved for
-## active trades).
-func get_trade_reserve(type: int) -> float:
-	return _trade_reserves[type]
 
 
 ## Returns in-transit quantity for [param type] (>= 0.0; possibly under
@@ -155,6 +163,27 @@ func get_storage_used(storage_type: int) -> float:
 	return _storages_used[storage_type]
 
 
+## Returns the strategic reserve for [param type] (AI target —
+## [FacilityProxy] is authoritative; see class doc).
+func get_strategic_reserve(type: int) -> float:
+	return _strategic_reserves[type]
+
+
+# ***************************** PROXY MODIFY **********************************
+
+## Sets the strategic reserve for [param type] to [param value].
+## Proxy-authoritative: this change flows proxy -> server. Returns true if
+## the value changed (caller marks [constant Proxy.DirtyFlags.DIRTY_INVENTORY]).
+func set_strategic_reserve(type: int, value: float) -> bool:
+	assert(!is_nan(value))
+	assert(value >= 0.0)
+	if _strategic_reserves[type] == value:
+		return false
+	_strategic_reserves[type] = value
+	_sync.set_dirty(_dirty_strategic_reserves, type)
+	return true
+
+
 # ********************************** SYNC *************************************
 
 ## Initializes this component from the server-supplied init payload.
@@ -163,13 +192,13 @@ func set_network_init(data: Array) -> void:
 	_stocks = data[1]
 	_remote_stores = data[2]
 	_ops_reserves = data[3]
-	_trade_reserves = data[4]
-	_in_transits = data[5]
-	_contracteds = data[6]
-	_rates = data[7]
-	_resource_flags = data[8]
-	_storages = data[9]
-	_expected_rates = data[10]
+	_in_transits = data[4]
+	_contracteds = data[5]
+	_rates = data[6]
+	_resource_flags = data[7]
+	_storages = data[8]
+	_expected_rates = data[9]
+	_strategic_reserves = data[10]
 	_storages_used_valid = false
 
 
@@ -186,7 +215,6 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_stocks)
 	_sync.add_sparse_floats_dict_delta(_remote_stores, _n_resources)
 	_sync.set_floats_dirty(_ops_reserves)
-	_sync.set_floats_dirty(_trade_reserves)
 	_sync.set_floats_dirty(_in_transits)
 	_sync.set_floats_dirty(_contracteds)
 	_sync.set_floats_dirty(_rates)
@@ -194,6 +222,17 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_ints_dirty(_resource_flags)
 	_sync.set_floats_dirty_63(_storages)
 	_storages_used_valid = false
+
+
+## Returns the reverse-flow payload for proxy-authoritative fields
+## ([code]_strategic_reserves[/code]). Mirrors the forward pattern:
+## bit-packed dirty flags + dense values via [SyncHelper].
+func get_proxy_dirty() -> Array:
+	var int_data := PackedInt64Array()
+	var float_data := PackedFloat64Array()
+	_sync.init_for_take(int_data, float_data)
+	_sync.get_floats_dirty(_strategic_reserves, _dirty_strategic_reserves)
+	return [int_data, float_data]
 
 
 func _recompute_storages_used() -> void:

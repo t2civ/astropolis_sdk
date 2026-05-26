@@ -211,6 +211,16 @@ func set_operations_target_utilization(type: int, value: float) -> void:
 		_dirty |= DIRTY_OPERATIONS
 
 
+# Inventory (proxy-authoritative; reverse data flow proxy -> server)
+
+## Sets the strategic reserve for [param type]. Proxy-authoritative:
+## this change flows proxy -> server.
+func set_inventory_strategic_reserve(type: int, value: float) -> void:
+	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
+	if inventory.set_strategic_reserve(type, value):
+		_dirty |= DIRTY_INVENTORY
+
+
 # Components
 
 func get_operations() -> OperationsNet:
@@ -371,10 +381,13 @@ func _sync_ai_changes() -> void:
 	# Only here if _dirty != 0.
 	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
+	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
 	var data := [_dirty]
 	if _dirty & DIRTY_FACILITY:
 		data.append(gui_name)
 	if _dirty & DIRTY_OPERATIONS:
 		data.append(operations.get_proxy_dirty())
+	if _dirty & DIRTY_INVENTORY:
+		data.append(inventory.get_proxy_dirty())
 	_dirty = 0
 	proxy_bus.emit_signal("proxy_changed", entity_type, facility_id, data)
