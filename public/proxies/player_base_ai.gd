@@ -284,6 +284,9 @@ static var counterparty_strategy_defs: Array[Dictionary] = [
 ]
 
 
+# *****************************************************************************
+# persisted
+
 ## Grand strategic posture. See [enum GlobalStrategies].
 var global_strategy := 0
 ## Per-resource strategies. See [enum PlayerResourceStrategies].
@@ -298,6 +301,7 @@ var body_strategies: Dictionary[int, int]
 ## is the same as "NEUTRAL". See [enum CounterpartyStrategies].
 var counterparty_strategies: Dictionary[int, int]
 
+# *****************************************************************************
 
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************

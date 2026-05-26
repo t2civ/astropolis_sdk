@@ -63,10 +63,7 @@ enum DirtyFlags {
 	DIRTY_BROKER = 1 << 14,
 }
 
-## Identifies the kind of server entity a [Proxy] proxies.
-## [code]N_ENTITY_TYPES[/code] is the count of real types;
-## [code]ENTITY_SERVER[/code] and [code]ENTITY_PROXY[/code] are extra
-## sync-routing markers.
+## Entity types for sync routing or other purposes.
 enum EntityType {
 	ENTITY_FACILITY,
 	ENTITY_PLAYER,
@@ -77,6 +74,13 @@ enum EntityType {
 	ENTITY_BROKER,
 	ENTITY_SERVER,
 	ENTITY_PROXY,
+	ENTITY_FACILITY_PROXY,
+	ENTITY_PLAYER_PROXY,
+	ENTITY_BODY_PROXY,
+	ENTITY_JOIN_PROXY,
+	ENTITY_MARKET_PROXY,
+	ENTITY_TRADER_PROXY,
+	ENTITY_BROKER_PROXY,
 	N_ENTITY_TYPES,
 }
 
@@ -92,7 +96,7 @@ enum ComponentType {
 	N_COMPONENT_TYPES,
 }
 
-## Server methods that can originate from Proxy.
+## Server methods that can originate from [Proxy].
 enum ProxyServerMethods {
 	SPOT_ASK,
 	SPOT_BID,
@@ -101,6 +105,14 @@ enum ProxyServerMethods {
 	CANCEL_ALL_SPOT_ASKS,
 	CANCEL_ALL_SPOT_BIDS,
 	N_PROXY_SERVER_METHODS,
+}
+
+## Trade order status update from Market to [TraderProxy].
+enum TradeOrderStatus {
+	BOOKED,
+	FILLED,
+	PARTIALLY_FILLED,
+	CANCELLED,
 }
 
 

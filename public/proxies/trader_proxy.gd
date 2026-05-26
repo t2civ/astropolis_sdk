@@ -23,7 +23,6 @@ extends Proxy
 ## Warning! This object lives and dies on the proxy thread! Containers and many
 ## methods are not threadsafe. Accessing non-container properties is safe.
 
-
 var trader_id := -1  ## Index in [member ProxyBus.trader_proxies].
 var facility: FacilityProxy  ## Owning [FacilityProxy]. Immutable after init.
 var facility_id := -1  ## [member FacilityProxy.facility_id] of [member facility].
@@ -32,6 +31,24 @@ var broker_id := -1  ## [member BrokerProxy.broker_id] of [member broker].
 var market: MarketProxy  ## May change at runtime. Lives on markets thread!
 var market_id := -1  ## [member MarketProxy.market_id] of [member market].
 
+## Memory of spot ask totals (unit quantity per resource).
+var _spot_ask_totals: PackedInt64Array
+## Memory of spot bid totals (unit quantity per resource).
+var _spot_bid_totals: PackedInt64Array
+## Memory of last known spot ask price for each resource. This will be THE
+## resource ask price if trader AI only has one ask per resource at a time.
+var _spot_ask_prices: PackedInt64Array
+## Memory of last known spot bid price for each resource. This will be THE
+## resource bid price if trader AI only has one bid per resource at a time.
+var _spot_bid_prices: PackedInt64Array
+## Memory of last known spot ask_id for each resource. This will be THE
+## resource ask_id if trader AI only has one ask per resource at a time.
+var _spot_ask_ids: PackedInt64Array
+## Memory of last known spot bid_id for each resource. This will be THE
+## resource bid_id if trader AI only has one bid per resource at a time.
+var _spot_bid_ids: PackedInt64Array
+
+
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
@@ -39,6 +56,17 @@ func _init() -> void:
 	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
 	super()
 	entity_type = ENTITY_TRADER
+	persist.append(&"_spot_ask_totals")
+	persist.append(&"_spot_bid_totals")
+	var n_resources: int = _table_n_rows[&"resources"]
+	_spot_ask_totals.resize(n_resources)
+	_spot_bid_totals.resize(n_resources)
+	_spot_ask_prices.resize(n_resources)
+	_spot_bid_prices.resize(n_resources)
+	_spot_ask_ids.resize(n_resources)
+	_spot_bid_ids.resize(n_resources)
+	_spot_ask_ids.fill(-1)
+	_spot_bid_ids.fill(-1)
 
 
 func _clear_for_destruction() -> void:
@@ -94,7 +122,6 @@ func get_market(_player_id: int) -> MarketProxy:
 	return market
 
 
-
 # ******************************** AI METHODS *********************************
 # Call on proxy thread.
 
@@ -102,6 +129,8 @@ func get_market(_player_id: int) -> MarketProxy:
 ## respect to trade unit. [expiration] is epoch day.
 func _spot_ask(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void:
 	const SPOT_ASK := ProxyServerMethods.SPOT_ASK
+	_spot_ask_totals[resource_type] += unit_quantity
+	_spot_ask_prices[resource_type] = unit_price
 	_send_to_market(SPOT_ASK, [resource_type, unit_quantity, unit_price, expiration, trader_id])
 
 
@@ -115,6 +144,8 @@ func _cancel_spot_ask(ask_id: int) -> void:
 ## respect to trade unit. [expiration] is epoch day.
 func _spot_bid(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void:
 	const SPOT_BID := ProxyServerMethods.SPOT_BID
+	_spot_bid_totals[resource_type] += unit_quantity
+	_spot_bid_prices[resource_type] = unit_price
 	_send_to_market(SPOT_BID, [resource_type, unit_quantity, unit_price, expiration, trader_id])
 
 
@@ -124,7 +155,43 @@ func _cancel_spot_bid(bid_id: int) -> void:
 	_send_to_market(CANCEL_SPOT_BID, [bid_id, trader_id])
 
 
-# *************************** INTERNAL PRIVATE ********************************
+# *************************** INCOMING MARKET CALLS ***************************
+
+func _update_ask(data: Array) -> void:
+	const BOOKED := TradeOrderStatus.BOOKED
+	const PARTIALLY_FILLED := TradeOrderStatus.PARTIALLY_FILLED
+	var resource_type: int = data[0]
+	var ask_id: int = data[3]
+	var ask_status: TradeOrderStatus = data[4]
+	if ask_status == BOOKED:
+		_spot_ask_ids[resource_type] = ask_id
+		return
+	var unit_quantity: int = data[1]
+	#var unit_price: int = data[2]
+	_spot_ask_totals[resource_type] -= unit_quantity
+	if ask_status != PARTIALLY_FILLED and ask_id == _spot_ask_ids[resource_type]:
+		_spot_ask_ids[resource_type] = -1
+		_spot_ask_prices[resource_type] = 0
+
+
+func _update_bid(data: Array) -> void:
+	const BOOKED := TradeOrderStatus.BOOKED
+	const PARTIALLY_FILLED := TradeOrderStatus.PARTIALLY_FILLED
+	var resource_type: int = data[0]
+	var bid_id: int = data[3]
+	var bid_status: TradeOrderStatus = data[4]
+	if bid_status == BOOKED:
+		_spot_bid_ids[resource_type] = bid_id
+		return
+	var unit_quantity: int = data[1]
+	#var unit_price: int = data[2]
+	_spot_bid_totals[resource_type] -= unit_quantity
+	if bid_status != PARTIALLY_FILLED and bid_id == _spot_bid_ids[resource_type]:
+		_spot_bid_ids[resource_type] = -1
+		_spot_bid_prices[resource_type] = 0
+
+
+# ***************************** INTERNAL PRIVATE ******************************
 # Don't override!
 
 func _send_to_market(method_id: int, data: Array) -> void:

@@ -137,15 +137,21 @@ static var resource_strategy_defs: Array[Dictionary] = [
 ]
 
 
+# *****************************************************************************
+# persisted
+
 ## Trader-posture strategy. See [enum TraderStrategies].
 var trader_strategy := 0
 ## Per-resource strategies. See [enum ResourceStrategies].
 var resource_strategies: PackedInt32Array
 
+# *****************************************************************************
+
+var _facility_ai: FacilityBaseAI
+
 
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
-
 
 func _init() -> void:
 	super()
@@ -157,9 +163,9 @@ func _init() -> void:
 
 func process_ai_init() -> void:
 	super()
-	var facility_ai := facility as FacilityBaseAI
-	assert(facility_ai, "TraderBaseAI expects facility to be FacilityBaseAI")
-	facility_ai.facility_resource_strategy_changed.connect(_on_facility_resource_strategy_changed)
+	_facility_ai = facility as FacilityBaseAI
+	assert(_facility_ai, "TraderBaseAI expects facility to be FacilityBaseAI")
+	_facility_ai.facility_resource_strategy_changed.connect(_on_facility_resource_strategy_changed)
 
 
 func process_ai_interval(_delta: float) -> void:
@@ -169,4 +175,10 @@ func process_ai_interval(_delta: float) -> void:
 # **************************** STRATEGY LISTENERS *****************************
 
 func _on_facility_resource_strategy_changed(_resource_type: int, _strategy_id: int) -> void:
+	pass
+
+
+# *************************** INCOMING MARKET CALLS ***************************
+
+func _update_ask(_data: Array) -> void:
 	pass

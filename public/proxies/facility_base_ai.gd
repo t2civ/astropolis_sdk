@@ -236,6 +236,9 @@ static var operation_strategy_defs: Array[Dictionary] = [
 ]
 
 
+# *****************************************************************************
+# persisted
+
 ## Facility-posture strategy. See [enum FacilityStrategies].
 var facility_strategy := 0
 ## Per-resource facility-level strategies. See [enum FacilityResourceStrategies].
@@ -243,10 +246,13 @@ var facility_resource_strategies: PackedInt32Array
 ## Per-operation strategies. See [enum OperationStrategies].
 var operation_strategies: PackedInt32Array
 
+# *****************************************************************************
+
+var _player_ai: PlayerBaseAI
+
 
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
-
 
 func _init() -> void:
 	super()
@@ -261,12 +267,12 @@ func _init() -> void:
 
 func process_ai_init() -> void:
 	super()
-	var player_ai := player as PlayerBaseAI
-	assert(player_ai, "FacilityBaseAI expects player to be PlayerBaseAI")
-	player_ai.global_strategy_changed.connect(_on_player_global_strategy_changed)
-	player_ai.player_resource_strategy_changed.connect(_on_player_resource_strategy_changed)
-	player_ai.player_facility_strategy_changed.connect(_on_player_facility_strategy_changed)
-	player_ai.body_strategy_changed.connect(_on_player_body_strategy_changed)
+	_player_ai = player as PlayerBaseAI
+	assert(_player_ai, "FacilityBaseAI expects player to be PlayerBaseAI")
+	_player_ai.global_strategy_changed.connect(_on_player_global_strategy_changed)
+	_player_ai.player_resource_strategy_changed.connect(_on_player_resource_strategy_changed)
+	_player_ai.player_facility_strategy_changed.connect(_on_player_facility_strategy_changed)
+	_player_ai.body_strategy_changed.connect(_on_player_body_strategy_changed)
 
 
 func process_ai_interval(_delta: float) -> void:
