@@ -17,14 +17,29 @@ extends RefCounted
 ## properties (and their getters) are safe; see method comments.
 
 
-## Per-resource inventory bit flags represent server-origin information
-## (bits 0 - 31) and proxy-origin command (bits 32 - 63).
+## Per-resource inventory bit flags. FROM_SERVER bits (0 - 31) are signals from
+## the server; FROM_PROXY bits (32 - 63) are AI commands to the server.
 enum InventoryFlags {
-	INFO_PLACEHOLDER = 1 << 0,
-	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
+	## Stock of this resource is below its operational reserve target.
+	OPS_RESERVE_BREACHED = 1 << 1,
+	## Stock of this resource is below its AI-set strategic reserve target.
+	STRATEGIC_RESERVE_BREACHED = 1 << 2,
+	## The storage class holding this resource is at or above the first
+	## throttling threshold.
+	STORAGE_SURPLUS = 1 << 3,
+	## No market spot price is established for this resource at this location.
+	PRICE_UNKNOWN = 1 << 4,
+	## Mask of all server-published signal bits.
+	FROM_SERVER_MASK = (1 << 32) - 1,
 
-	COMMAND_PLACEHOLDER = 1 << 32,
-	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
+	## Operations must not draw this resource below its strategic reserve.
+	PROTECT_STRATEGIC_RESERVE = 1 << 32,
+	## No operation may consume this resource (e.g., embargo, phase-out).
+	PROHIBIT_CONSUMPTION = 1 << 33,
+	## No operation may produce this resource (e.g., divestment, phase-out).
+	PROHIBIT_PRODUCTION = 1 << 34,
+	## Mask of all AI-command bits.
+	FROM_PROXY_MASK = ~((1 << 32) - 1),
 }
 
 

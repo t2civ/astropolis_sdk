@@ -65,7 +65,7 @@ extends Proxy
 ##     runtime-added Moon Base, etc. This will require a functioning transport
 ##     system.[br][br]
 ##
-## TODO: Although [Market] provides the "interface" for futures contracts delivered
+## TODO: Although Market provides the "interface" for futures contracts delivered
 ## at [member body], the physical machinery of futures trading happens at a
 ## centralized "Exchange" possibly elsewhere. E.g., futures contracts for
 ## delivery to Earth-orbiting stations or a Moon Base are likely to originate
@@ -80,7 +80,7 @@ extends Proxy
 ## from almost all other code which uses internal "sim units" defined in
 ## [IVUnits]. API convention here is to provide regular sim units in functions
 ## like [method get_spot_price] and use "unit" in the name to provide
-## [Market]-internal values (e.g. [method get_spot_unit_price]). Volume is the
+## Market-internal values (e.g. [method get_spot_unit_price]). Volume is the
 ## exception: it is float in sim units in both the storage and the API.[br][br]
 ##
 ## Arrays are indexed by resource_type unless indicated otherwise. A stored
@@ -101,7 +101,7 @@ static var _resource_trade_unit_multipliers: PackedFloat64Array # convert trade 
 
 
 var market_id := -1  ## Index into [member ProxyBus.market_proxies].
-var body: BodyProxy ## [Body] of the spot market and futures contract delivery.
+var body: BodyProxy ## Body of the spot market and futures contract delivery.
 
 var _body_id := -1
 var _spot_prices: PackedInt64Array
@@ -163,19 +163,19 @@ func get_spot_bid_price(type: int) -> float:
 	return _spot_bid_prices[type] / _resource_trade_unit_multipliers[type]
 
 
-## Returns the [Market]-internal unit price for [param type], or 0 if no
+## Returns the Market-internal unit price for [param type], or 0 if no
 ## current price.
 func get_spot_unit_price(type: int) -> int:
 	return _spot_prices[type]
 
 
-## Returns the [Market]-internal ask unit price for [param type], or 0 if no
+## Returns the Market-internal ask unit price for [param type], or 0 if no
 ## current ask.
 func get_spot_ask_unit_price(type: int) -> int:
 	return _spot_ask_prices[type]
 
 
-## Returns the [Market]-internal bid unit price for [param type], or 0 if no
+## Returns the Market-internal bid unit price for [param type], or 0 if no
 ## current bid.
 func get_spot_bid_unit_price(type: int) -> int:
 	return _spot_bid_prices[type]

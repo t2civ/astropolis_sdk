@@ -18,20 +18,39 @@ extends Proxy
 ## Server-side facility pushes changes to [FacilityProxy] and its components.
 ## A few "player control" properties have reverse proxy -> server data flow.[br][br]
 ##
+## Server-side automations translate AI intent set here into per-tick operation
+## behavior. AI writes FROM_PROXY_MASK flag bits on [member flags], on per-op
+## [member operations] flags, and on per-resource [member inventory] flags; the
+## server publishes FROM_SERVER_MASK runtime signals (margin, shortage, surplus)
+## back for AI to read.[br][br]
+##
 ## To modify AI, see comments in '_base_ai.gd' files.[br][br]
 ##
 ## WARNING: This object is maintained on the proxy thread. Only fixed-size
 ## properties (and their getters) are safe; see method comments.
 
 
-## Facility bit flags represent server-origin information (bits 0 - 31)
-## and proxy-origin command (bits 32 - 63).
+## Facility-level bit flags. FROM_SERVER bits (0 - 31) are signals from the
+## server; FROM_PROXY bits (32 - 63) are AI commands to the server.
 enum FacilityFlags {
-	INFO_PLACEHOLDER = 1 << 0,
-	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
-	
-	COMMAND_PLACEHOLDER = 1 << 32,
-	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
+	## Many resources at this facility have no established market price, so
+	## runtime margin estimates here are unreliable.
+	PRICE_UNRELIABLE = 1 << 1,
+	## Multiple critical inputs are simultaneously running below their
+	## operational reserve targets.
+	INPUT_CRISIS = 1 << 2,
+	## Mask of all server-published signal bits.
+	FROM_SERVER_MASK = (1 << 32) - 1,
+
+	## Crisis posture: operations continue regardless of profitability and
+	## storage constraints are relaxed.
+	MODE_EMERGENCY = 1 << 32,
+	## Laid-up state: no operations run; capacity is preserved for later restart.
+	MODE_MOTHBALL = 1 << 33,
+	## Winding down: only operations that net-consume inventory continue.
+	MODE_DECOMMISSIONING = 1 << 34,
+	## Mask of all AI-command bits.
+	FROM_PROXY_MASK = ~((1 << 32) - 1),
 }
 
 

@@ -17,14 +17,36 @@ extends RefCounted
 ## properties (and their getters) are safe; see method comments.
 
 
-## Per-operation bit flags represent server-origin information (bits 0 - 31)
-## and proxy-origin command (bits 32 - 63).
+## Per-operation bit flags. FROM_SERVER bits (0 - 31) are signals from the
+## server; FROM_PROXY bits (32 - 63) are AI commands to the server.
 enum OperationsFlags {
+	## This facility is equipped to run this operation.
 	CAN_HAVE = 1,
-	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
+	## The operation ran at a loss over the last interval at known prices.
+	MARGIN_NEGATIVE = 1 << 1,
+	## The operation was throttled below its intended rate last interval
+	## because an input was in short supply.
+	WAS_INPUT_LIMITED = 1 << 2,
+	## The operation was throttled below its intended rate last interval
+	## because an output's storage was nearly full.
+	WAS_STORAGE_LIMITED = 1 << 3,
+	## Mask of all server-published signal bits.
+	FROM_SERVER_MASK = (1 << 32) - 1,
 
-	COMMAND_PLACEHOLDER = 1 << 32,
-	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
+	## Idle the operation whenever its margin is non-positive and prices are
+	## reliable.
+	MARGIN_GATED = 1 << 32,
+	## When any of the op's outputs is below operational reserve, suspend
+	## profit-gating and ease storage throttling so the op can ramp up.
+	SHORTAGE_PRIORITY = 1 << 33,
+	## Hold the operation at a minimum baseline rate even when other
+	## automations would idle it.
+	STRATEGIC_FLOOR = 1 << 34,
+	## Hard-stop the operation when any of its outputs has insufficient
+	## storage headroom (no soft trickle).
+	CLEARANCE_LIMITED = 1 << 35,
+	## Mask of all AI-command bits.
+	FROM_PROXY_MASK = ~((1 << 32) - 1),
 }
 
 
