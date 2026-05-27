@@ -8,42 +8,29 @@
 class_name InventoryNet
 extends RefCounted
 
-## Net-synced inventory component held by [FacilityProxy].
+## Proxy-side inventory state for a [FacilityProxy].
 ##
-## Holds resource stocks, ops reserves, in-transits, contracts, rates,
-## storage capacity/usage, and AI-set strategic reserves. Arrays are indexed
-## by resource_type; storage arrays by storage_class. All values are in
-## internal units.
+## Held by [FacilityProxy] only — aggregate hosts ([PlayerProxy], [BodyProxy],
+## [JoinProxy]) do not carry inventory.[br][br]
 ##
-## Server-side Inventory pushes changes to [InventoryNet] via sync. All vars
-## are proxy read-only except [code]_strategic_reserves[/code], which is
-## proxy-authoritative during runtime: data flows proxy -> server. Use
-## [method set_strategic_reserve] to modify; the server picks up changes via
-## reverse sync. Server is the source only at game start and after load, via
-## [method get_network_init] / [method set_network_init]. Only [FacilityProxy]
-## has an inventory — [PlayerProxy], [BodyProxy], and [JoinProxy] do not
-## aggregate inventory.
-##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.
-##
-## Warning! Like [Proxy], this object is touched on the proxy thread.
-## Containers and many methods are not threadsafe; accessing non-container
-## properties is safe.
+## WARNING: This object is maintained on the proxy thread. Only fixed-size
+## properties (and their getters) are safe; see method comments.
 
 
-## Bit flags describing per-resource state and run logic.
-enum ResourceFlags {
-	# State
-	IS_SURPLUS = 1 << 1,
-	# Run logics
-	IS_MARKET = 1 << 5,
+## Per-resource inventory bit flags represent server-origin information
+## (bits 0 - 31) and proxy-origin command (bits 32 - 63).
+enum InventoryFlags {
+	INFO_PLACEHOLDER = 1 << 0,
+	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
+
+	COMMAND_PLACEHOLDER = 1 << 32,
+	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
 }
 
+
 # Proxy read-only! Data flows server -> proxy.
-## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var ordinal_qtr := -1
+
+var ordinal_qtr := -1 ## Ordinal quarter at last sync.
 
 var _stocks: PackedFloat64Array # physically present and owned (>= 0.0)
 var _remote_stores: Dictionary[int, PackedFloat64Array] # indexed by owning facility_id
@@ -52,10 +39,12 @@ var _in_transits: PackedFloat64Array # on the way (>= 0.0), posibly under contra
 var _contracteds: PackedFloat64Array # sum of all contracts (+/-), here or elsewhere
 var _rates: PackedFloat64Array # current facility production (+) or consumption (-)
 var _expected_rates: PackedFloat64Array # smoothed forward-looking; gross_production - gross_consumption
-var _resource_flags: PackedInt64Array # enum ResourceFlags
 var _storages: PackedFloat64Array # indexed by storage_type; capacity per storage class
 
-# Set via FacilityProxy. Reverse data flow: proxy -> server!
+# Bidirectional (FROM_SERVER bits server-authoritative, FROM_PROXY bits proxy-authoritative)
+var _flags: PackedInt64Array # see InventoryFlags
+
+# Reverse data flow: proxy -> server!
 var _strategic_reserves: PackedFloat64Array # target strategic reserves set by AI (tracker only)
 
 # lazy calculations
@@ -64,6 +53,7 @@ var _storages_used_valid := false
 
 # proxy dirty data (dirty indexes as bit flags)
 var _dirty_strategic_reserves: PackedInt64Array
+var _dirty_flags: PackedInt64Array # FROM_PROXY-side dirty for _flags
 
 var _sync := SyncHelper.new()
 
@@ -92,13 +82,14 @@ func _init(is_new := false) -> void:
 	_contracteds.resize(_n_resources)
 	_rates.resize(_n_resources)
 	_expected_rates.resize(_n_resources)
-	_resource_flags.resize(_n_resources)
 	_storages.resize(_n_storage_classes)
+	_flags.resize(_n_resources)
 	_strategic_reserves.resize(_n_resources)
 	_storages_used.resize(_n_storage_classes)
 	@warning_ignore("integer_division")
 	var n_resource_flags := (_n_resources - 1) / 63 + 1
 	_dirty_strategic_reserves.resize(n_resource_flags)
+	_dirty_flags.resize(n_resource_flags)
 
 
 # ********************************** READ *************************************
@@ -146,11 +137,6 @@ func get_expected_rate(type: int) -> float:
 	return _expected_rates[type]
 
 
-## Returns resource flags for [param type] (see [enum ResourceFlags]).
-func get_resource_flags(type: int) -> int:
-	return _resource_flags[type]
-
-
 ## Returns total storage capacity for [param storage_type].
 func get_storage(storage_type: int) -> float:
 	return _storages[storage_type]
@@ -161,6 +147,14 @@ func get_storage_used(storage_type: int) -> float:
 	if !_storages_used_valid:
 		_recompute_storages_used()
 	return _storages_used[storage_type]
+
+
+## Returns the full bidirectional flag value for resource [param type]
+## (see [enum InventoryFlags]). The [code]FROM_SERVER_MASK[/code] half is
+## server-authoritative; the [code]FROM_PROXY_MASK[/code] half is
+## proxy-authoritative.
+func get_flags(type: int) -> int:
+	return _flags[type]
 
 
 ## Returns the strategic reserve for [param type] (AI target —
@@ -184,6 +178,23 @@ func set_strategic_reserve(type: int, value: float) -> bool:
 	return true
 
 
+## Sets the [code]FROM_PROXY_MASK[/code] bits of flags for resource [param type]
+## to [param value], preserving the server-authoritative
+## [code]FROM_SERVER_MASK[/code] bits. Proxy-authoritative: this change flows
+## proxy -> server. Returns true if the value changed (caller marks
+## [constant Proxy.DirtyFlags.DIRTY_INVENTORY]).
+func set_flags(type: int, value: int) -> bool:
+	const FROM_PROXY_MASK := InventoryFlags.FROM_PROXY_MASK
+	assert((value & ~FROM_PROXY_MASK) == 0)
+	var current := _flags[type]
+	var new_value := (current & ~FROM_PROXY_MASK) | (value & FROM_PROXY_MASK)
+	if new_value == current:
+		return false
+	_flags[type] = new_value
+	_sync.set_dirty(_dirty_flags, type)
+	return true
+
+
 # ********************************** SYNC *************************************
 
 ## Initializes this component from the server-supplied init payload.
@@ -195,9 +206,9 @@ func set_network_init(data: Array) -> void:
 	_in_transits = data[4]
 	_contracteds = data[5]
 	_rates = data[6]
-	_resource_flags = data[7]
+	_expected_rates = data[7]
 	_storages = data[8]
-	_expected_rates = data[9]
+	_flags = data[9]
 	_strategic_reserves = data[10]
 	_storages_used_valid = false
 
@@ -205,6 +216,7 @@ func set_network_init(data: Array) -> void:
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set. Called by the parent [Proxy] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
+	const FROM_SERVER_MASK := InventoryFlags.FROM_SERVER_MASK
 	var int_data: PackedInt64Array = data[1]
 	var float_data: PackedFloat64Array = data[2]
 
@@ -219,19 +231,22 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	_sync.set_floats_dirty(_contracteds)
 	_sync.set_floats_dirty(_rates)
 	_sync.set_floats_dirty(_expected_rates)
-	_sync.set_ints_dirty(_resource_flags)
 	_sync.set_floats_dirty_63(_storages)
+	_sync.set_ints_dirty_masked(_flags, FROM_SERVER_MASK)
 	_storages_used_valid = false
 
 
 ## Returns the reverse-flow payload for proxy-authoritative fields
-## ([code]_strategic_reserves[/code]). Mirrors the forward pattern:
-## bit-packed dirty flags + dense values via [SyncHelper].
+## ([code]_strategic_reserves[/code] and the [code]FROM_PROXY_MASK[/code]
+## half of [code]_flags[/code]). Mirrors the forward pattern: bit-packed
+## dirty flags + dense values via [SyncHelper].
 func get_proxy_dirty() -> Array:
+	const FROM_PROXY_MASK := InventoryFlags.FROM_PROXY_MASK
 	var int_data := PackedInt64Array()
 	var float_data := PackedFloat64Array()
 	_sync.init_for_take(int_data, float_data)
 	_sync.get_floats_dirty(_strategic_reserves, _dirty_strategic_reserves)
+	_sync.get_ints_dirty_masked(_flags, _dirty_flags, FROM_PROXY_MASK)
 	return [int_data, float_data]
 
 

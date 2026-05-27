@@ -92,6 +92,29 @@ func get_ints_dirty_63(array: PackedInt64Array, flags: int) -> void:
 		flags &= ~lsb
 
 
+## Like [method get_ints_dirty] but emits only the bits in [param mask] for each
+## dirty entry. Used for directional flag sync where this side authoritatively
+## owns one mask half.
+func get_ints_dirty_masked(array: PackedInt64Array, flags_array: PackedInt64Array,
+		mask: int) -> void:
+	const BIT_INDEXES := Utils.BIT_INDEXES
+	const SIGN_BIT := 1 << 63
+	var flag_index := 0
+	var sign_bit := SIGN_BIT
+	while sign_bit:
+		var flags := flags_array[flag_index]
+		_int_data.append(flags)
+		sign_bit &= flags
+		flags &= ~SIGN_BIT
+		while flags:
+			var lsb := flags & -flags
+			var index := BIT_INDEXES[lsb] + flag_index * 63
+			_int_data.append(array[index] & mask)
+			flags &= ~lsb
+		flags_array[flag_index] = 0
+		flag_index += 1
+
+
 ## Encodes dirty entries of [param array] into the bound output buffers, using
 ## chunked dirty flags from [param flags_array]. Clears the flag entries.
 func get_floats_dirty(array: PackedFloat64Array, flags_array: PackedInt64Array) -> void:
@@ -227,6 +250,29 @@ func set_ints_dirty_63(array: PackedInt64Array) -> void:
 		array[index] = _int_data[int_offset]
 		int_offset += 1
 		flags &= ~lsb
+
+
+## Like [method set_ints_dirty] but only writes the bits in [param mask] for
+## each received value, preserving the existing bits outside the mask. Used for
+## directional flag sync where the peer authoritatively owns one mask half.
+func set_ints_dirty_masked(array: PackedInt64Array, mask: int) -> void:
+	const BIT_INDEXES := Utils.BIT_INDEXES
+	const SIGN_BIT := 1 << 63
+	var not_mask := ~mask
+	var flag_index := 0
+	var sign_bit := SIGN_BIT
+	while sign_bit:
+		var flags := _int_data[int_offset]
+		int_offset += 1
+		sign_bit &= flags
+		flags &= ~SIGN_BIT
+		while flags:
+			var lsb := flags & -flags
+			var index := BIT_INDEXES[lsb] + flag_index * 63
+			array[index] = (array[index] & not_mask) | (_int_data[int_offset] & mask)
+			int_offset += 1
+			flags &= ~lsb
+		flag_index += 1
 
 
 ## Reads dirty delta values out of the bound input buffers and adds each to

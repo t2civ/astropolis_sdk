@@ -8,68 +8,25 @@
 class_name OperationsNet
 extends RefCounted
 
-## Net-synced operations component held by [FacilityProxy],
-## [PlayerProxy], [BodyProxy], or [JoinProxy].
+## Proxy-side operations state for a [FacilityProxy].
 ##
-## Holds capacities, run rates, effective rates, optional financials, and
-## (Facility only) operation flags, commands, and target utilizations. Arrays
-## are indexed by operation_type, except where noted. Each module has 1 or
-## more operations and is (for all purposes) the sum of its operations.
-## Some modules can shift more easily among their ops (e.g., refining).
-## Others shift only over very long periods (e.g., iron mines don't change
-## into mineral mines overnight, but may shift slowly by attrition and
-## replacement).
+## Held by [FacilityProxy] and its [PlayerProxy], [BodyProxy], [JoinProxy]
+## aggregate hosts.[br][br]
 ##
-## Server-side Operations pushes changes to [OperationsNet] via sync. All
-## vars are proxy read-only except [code]_op_commands[/code] and
-## [code]_target_utilizations[/code], which are proxy-authoritative
-## during runtime: data flows proxy -> server. Use [method set_op_command]
-## and [method set_target_utilization] to modify; the server picks up changes
-## via reverse sync. Server is the source only at game start and after load,
-## via [method get_network_init] / [method set_network_init]. Financials are
-## Facility & Player only; [code]_op_flags[/code] and [code]_op_commands[/code]
-## are Facility only.
-##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.
-##
-## Warning! Like [Proxy], this object is touched on the proxy thread.
-## Containers and many methods are not threadsafe; accessing non-container
-## properties is safe.
+## WARNING: This object is maintained on the proxy thread. Only fixed-size
+## properties (and their getters) are safe; see method comments.
 
 
-## Bit flags describing operation availability and run logic. Set/cleared
-## by the server; proxy read-only.
-enum OpFlags {
-	# Op availability
+## Per-operation bit flags represent server-origin information (bits 0 - 31)
+## and proxy-origin command (bits 32 - 63).
+enum OperationsFlags {
 	CAN_HAVE = 1,
+	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
 
-	# Run logics
-	IS_IDLE_UNPROFITABLE = 1 << 5,
-	IS_IDLE_COMMAND = 1 << 6,
-	MINIMIZE_UNPROFITABLE = 1 << 7,
-	MINIMIZE_COMMAND = 1 << 8,
-	MAINTAIN_COMMAND = 1 << 9,
-	RUN_50_PERCENT_COMMAND = 1 << 10,
-	MAXIMIZE_NEW_MARKET = 1 << 11,
-	MAXIMIZE_PROFITABLE = 1 << 12,
-	MAXIMIZE_SHORTAGES = 1 << 13,
-	MAXIMIZE_COMMITMENTS = 1 << 14,
-	MAXIMIZE_COMMAND = 1 << 15,
+	COMMAND_PLACEHOLDER = 1 << 32,
+	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
 }
 
-## Player/AI op-control commands. Proxy-authoritative on facilities; set
-## via [method set_op_command].
-enum OpCommands {
-	AUTOMATE,        ## Self-manage for shortages, commitments, or profit.
-	IDLE,            ## Stop. Caution! Some ops are hard to restart!
-	MINIMIZE,        ## Wind down to idle or low rate, depending on operation.
-	MAINTAIN,        ## Hold current run rate.
-	RUN_50_PERCENT,  ## Hold at 50% of capacity.
-	MAXIMIZE,        ## Wind up to max.
-	N_OP_COMMANDS,   ## Count of valid commands.
-}
 
 ## Bit flags marking which scalar fields of this component are dirty for sync.
 enum {
@@ -80,8 +37,9 @@ enum {
 
 
 # Proxy read-only! Data flows server -> proxy.
-## Quarterly clock at last sync, as [code]year * 4 + (quarter - 1)[/code].
-var ordinal_qtr := -1
+
+var ordinal_qtr := -1 ## Ordinal quarter at last sync.
+
 var _gross_output_lfq := 0.0 # ='Economy'; set by Facility for propagation
 var _constructions := 0.0 # total mass of all things construced
 var _nominal_information := 0.0 # only if we don't have Cyberspace here!
@@ -99,10 +57,11 @@ var _cogs_rates: PackedFloat64Array # cost of goods sold; at current rate & pric
 # Facility only
 var _capacity_factors: PackedFloat64Array # environmental limit (renewable power) or historical (others)
 var _gross_margins: PackedFloat64Array # at current prices (even if rate = 0)
-var _op_flags: PackedInt64Array # enum; Facility only
 
-# Facility only; set via FacilityProxy. Reverse data flow: proxy -> server!
-var _op_commands: PackedInt64Array # enum; Facility only
+# Bidirectional (FROM_SERVER bits server-authoritative, FROM_PROXY bits proxy-authoritative)
+var _flags: PackedInt64Array # see OperationsFlags
+
+# Facility only. Reverse data flow: proxy -> server!
 var _target_utilizations: PackedFloat64Array
 
 # Operations data here
@@ -110,9 +69,8 @@ var _has_financials := false
 var _is_facility := false
 
 
-
 # proxy dirty data (dirty indexes as bit flags)
-var _dirty_op_commands: PackedInt64Array
+var _dirty_flags: PackedInt64Array # FROM_PROXY-side dirty for _flags
 var _dirty_target_utilizations: PackedInt64Array
 
 var _sync := SyncHelper.new()
@@ -160,15 +118,12 @@ func _init(is_new := false, has_financials_ := false, is_facility_ := false) -> 
 	_capacity_factors.resize(_n_operations)
 	_gross_margins.resize(_n_operations)
 	_gross_margins.fill(NAN)
-	_op_flags.resize(_n_operations)
-	_op_flags.fill(OpFlags.IS_IDLE_UNPROFITABLE)
-	_op_commands.resize(_n_operations)
-	_op_commands.fill(OpCommands.AUTOMATE)
+	_flags.resize(_n_operations)
 	_target_utilizations.resize(_n_operations)
 	_target_utilizations.fill(1.0)
 	@warning_ignore("integer_division")
 	var n_op_flags := (_n_operations - 1) / 63 + 1
-	_dirty_op_commands.resize(n_op_flags)
+	_dirty_flags.resize(n_op_flags)
 	_dirty_target_utilizations.resize(n_op_flags)
 
 
@@ -266,17 +221,27 @@ func get_crew(population_type := -1) -> float:
 ## Returns true if this facility may run operation [param type] (always
 ## false for non-facility hosts).
 func is_can_have(type: int) -> bool:
+	const CAN_HAVE := OperationsFlags.CAN_HAVE
 	if _is_facility:
-		return bool(_op_flags[type] & OpFlags.CAN_HAVE)
+		return bool(_flags[type] & CAN_HAVE)
 	return false
 
 
 ## Returns true if operation [param type] is "of interest" — either runnable
 ## here (facility) or non-zero capacity (aggregate hosts).
 func is_of_interest(type: int) -> bool:
+	const CAN_HAVE := OperationsFlags.CAN_HAVE
 	if _is_facility:
-		return bool(_op_flags[type] & OpFlags.CAN_HAVE)
+		return bool(_flags[type] & CAN_HAVE)
 	return _capacities[type] > 0.0
+
+
+## Returns the full bidirectional flag value for operation [param type]
+## (see [enum OperationsFlags]). The [code]FROM_SERVER_MASK[/code] half is
+## server-authoritative; the [code]FROM_PROXY_MASK[/code] half is
+## proxy-authoritative.
+func get_flags(type: int) -> int:
+	return _flags[type]
 
 
 ## Returns current run rate for operation [param type].
@@ -525,15 +490,20 @@ func get_module_computation(module_type: int) -> float:
 
 # ***************************** PROXY MODIFY **********************************
 
-## Sets the op command for operation [param type]. Proxy-authoritative:
-## this change flows proxy -> server. Returns true if the value changed
-## (caller marks [constant Proxy.DirtyFlags.DIRTY_OPERATIONS]).
-func set_op_command(type: int, command: int) -> bool:
-	assert(command < OpCommands.N_OP_COMMANDS)
-	if _op_commands[type] == command:
+## Sets the [code]FROM_PROXY_MASK[/code] bits of flags for operation
+## [param type] to [param value], preserving the server-authoritative
+## [code]FROM_SERVER_MASK[/code] bits. Proxy-authoritative: this change
+## flows proxy -> server. Returns true if the value changed (caller marks
+## [constant Proxy.DirtyFlags.DIRTY_OPERATIONS]).
+func set_flags(type: int, value: int) -> bool:
+	const FROM_PROXY_MASK := OperationsFlags.FROM_PROXY_MASK
+	assert((value & ~FROM_PROXY_MASK) == 0)
+	var current := _flags[type]
+	var new_value := (current & ~FROM_PROXY_MASK) | (value & FROM_PROXY_MASK)
+	if new_value == current:
 		return false
-	_op_commands[type] = command
-	_sync.set_dirty(_dirty_op_commands, type)
+	_flags[type] = new_value
+	_sync.set_dirty(_dirty_flags, type)
 	return true
 
 
@@ -565,22 +535,22 @@ func set_network_init(data: Array) -> void:
 	_cogs_rates = data[9]
 	_capacity_factors = data[10]
 	_gross_margins = data[11]
-	_op_flags = data[12]
-	_op_commands = data[13]
-	_target_utilizations = data[14]
-	_has_financials = data[15]
-	_is_facility = data[16]
+	_flags = data[12]
+	_target_utilizations = data[13]
+	_has_financials = data[14]
+	_is_facility = data[15]
 
 
 ## Applies a server-supplied dirty payload, updating fields whose dirty flags
 ## are set. Called by the parent [Proxy] during sync.
 func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
+	const FROM_SERVER_MASK := OperationsFlags.FROM_SERVER_MASK
 	var int_data: PackedInt64Array = data[1]
 	var float_data: PackedFloat64Array = data[2]
-	
+
 	var svr_qtr := int_data[0]
 	ordinal_qtr = svr_qtr # TODO: histories
-	
+
 	var dirty := int_data[int_offset]
 	int_offset += 1
 	if dirty & DIRTY_GROSS_OUTPUT_LFQ:
@@ -592,16 +562,16 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 	if dirty & DIRTY_NOMINAL_INFORMATION:
 		_nominal_information += float_data[float_offset]
 		float_offset += 1
-	
+
 	_sync.init_for_add(int_data, float_data, int_offset, float_offset)
 	_sync.add_floats_delta(_crews)
 	_sync.add_floats_delta(_capacities)
 	_sync.add_floats_delta(_run_rates)
 	_sync.add_floats_delta(_effective_rates)
-	
+
 	if !_has_financials:
 		return
-	
+
 	_sync.add_floats_delta(_revenue_rates)
 	_sync.add_floats_delta(_cogs_rates)
 
@@ -610,16 +580,18 @@ func add_dirty(data: Array, int_offset: int, float_offset: int) -> void:
 
 	_sync.set_floats_dirty(_capacity_factors) # not accumulator!
 	_sync.set_floats_dirty(_gross_margins) # not accumulator!
-	_sync.set_ints_dirty(_op_flags) # not accumulator!
+	_sync.set_ints_dirty_masked(_flags, FROM_SERVER_MASK) # not accumulator!
 
 
 ## Returns the reverse-flow payload for proxy-authoritative fields
-## ([code]_op_commands[/code] and [code]_target_utilizations[/code]). Mirrors
-## the forward pattern: bit-packed dirty flags + dense values via [SyncHelper].
+## ([code]_target_utilizations[/code] and the [code]FROM_PROXY_MASK[/code]
+## half of [code]_flags[/code]). Mirrors the forward pattern: bit-packed
+## dirty flags + dense values via [SyncHelper].
 func get_proxy_dirty() -> Array:
+	const FROM_PROXY_MASK := OperationsFlags.FROM_PROXY_MASK
 	var int_data := PackedInt64Array()
 	var float_data := PackedFloat64Array()
 	_sync.init_for_take(int_data, float_data)
-	_sync.get_ints_dirty(_op_commands, _dirty_op_commands)
 	_sync.get_floats_dirty(_target_utilizations, _dirty_target_utilizations)
+	_sync.get_ints_dirty_masked(_flags, _dirty_flags, FROM_PROXY_MASK)
 	return [int_data, float_data]

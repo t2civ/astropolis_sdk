@@ -135,8 +135,8 @@ enum FacilityResourceStrategies {
 
 ## Per-operation strategies.
 enum OperationStrategies {
-	## Delegate to server-side automation hints ([code]OpFlags[/code]); minimal
-	## AI intervention.
+	## Delegate to server-side automation hints (the [code]FROM_SERVER_MASK[/code]
+	## half of [enum OperationsNet.OperationsFlags]); minimal AI intervention.
 	AUTO,
 	## Run when gross margin is positive; ramp up in favorable periods; idle
 	## when unprofitable. Analog: merchant power plant on the spot market.

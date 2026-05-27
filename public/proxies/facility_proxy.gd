@@ -8,25 +8,32 @@
 class_name FacilityProxy
 extends Proxy
 
-## [FacilityProxy] represents a Player's development at a Body (see
-## [PlayerProxy] and [BodyProxy]).
+## [FacilityProxy] represents a [PlayerProxy]'s development at a [BodyProxy].
 ##
-## A Facility runs operations enabled by modules (see corresponding data
+## A facility runs operations enabled by modules (see corresponding data
 ## tables). A [FacilityProxy] has required components [OperationsNet],
 ## [InventoryNet] and [FinancialsNet], and optional components [PopulationNet],
-## [BiomeNet], and [CyberspaceNet].
+## [BiomeNet], and [CyberspaceNet].[br][br]
 ##
-## Server-side Facility pushes changes to [FacilityProxy] and its components.
-## A few "player control" properties have reverse proxy -> server data flow.
+## Server-side facility pushes changes to [FacilityProxy] and its components.
+## A few "player control" properties have reverse proxy -> server data flow.[br][br]
 ##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.
+## To modify AI, see comments in '_base_ai.gd' files.[br][br]
 ##
-## To modify AI, see comments in '_base_ai.gd' files.
-##
-## Warning! This object lives and dies on the proxy thread! Containers and many
-## methods are not threadsafe. Accessing non-container properties is safe.
+## WARNING: This object is maintained on the proxy thread. Only fixed-size
+## properties (and their getters) are safe; see method comments.
+
+
+## Facility bit flags represent server-origin information (bits 0 - 31)
+## and proxy-origin command (bits 32 - 63).
+enum FacilityFlags {
+	INFO_PLACEHOLDER = 1 << 0,
+	FROM_SERVER_MASK = (1 << 32) - 1, ## Reserved bits 0 - 31 are server origin.
+	
+	COMMAND_PLACEHOLDER = 1 << 32,
+	FROM_PROXY_MASK = ~((1 << 32) - 1), ## Reserved bits 32 - 63 are proxy origin.
+}
+
 
 var facility_id := -1  ## Index into [member ProxyBus.facility_proxies].
 var facility_class := -1  ## Facility class index. Not implemented yet.
@@ -42,6 +49,10 @@ var closed_cycle_ops: bool
 var solar_occlusion: float
 ## Time horizon used by AI and automations (inventory reserves, resupply, etc.).
 var time_horizon: float
+## Bidirectional bit flags (see [enum FacilityFlags]). FROM_SERVER bits are
+## server-authoritative; FROM_PROXY bits are proxy-authoritative. Use
+## [method set_flags] to modify the proxy half.
+var flags := 0
 
 var player: PlayerProxy  ## Owning [PlayerProxy].
 var polity: PlayerProxy  ## The polity of [member player].
@@ -193,13 +204,42 @@ func get_development_biodiversity() -> float:
 	return 0.0
 
 
+# Facility flags
+
+## Returns the full bidirectional flag value (see [enum FacilityFlags]).
+func get_flags() -> int:
+	return flags
+
+
+## Sets the [code]FROM_PROXY_MASK[/code] bits of [member flags] to
+## [param value], preserving the server-authoritative
+## [code]FROM_SERVER_MASK[/code] bits. Proxy-authoritative: this change
+## flows proxy -> server.
+func set_flags(value: int) -> void:
+	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
+	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
+	assert((value & ~FROM_PROXY_MASK) == 0)
+	var new_value := (flags & ~FROM_PROXY_MASK) | (value & FROM_PROXY_MASK)
+	if new_value == flags:
+		return
+	flags = new_value
+	_dirty |= DIRTY_FACILITY
+
+
 # Operations (proxy-authoritative; reverse data flow proxy -> server)
 
-## Sets the op command for [param type]. Proxy-authoritative: this change
-## flows proxy -> server.
-func set_operations_op_command(type: int, command: int) -> void:
+## Returns the full bidirectional flag value for operation [param operation_type]
+## (see [enum OperationsNet.OperationsFlags]).
+func get_operations_flags(operation_type: int) -> int:
+	return operations.get_flags(operation_type)
+
+
+## Sets the [code]FROM_PROXY_MASK[/code] bits of operations flags for
+## [param operation_type] to [param value]. Proxy-authoritative: this
+## change flows proxy -> server.
+func set_operations_flags(operation_type: int, value: int) -> void:
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
-	if operations.set_op_command(type, command):
+	if operations.set_flags(operation_type, value):
 		_dirty |= DIRTY_OPERATIONS
 
 
@@ -212,6 +252,21 @@ func set_operations_target_utilization(type: int, value: float) -> void:
 
 
 # Inventory (proxy-authoritative; reverse data flow proxy -> server)
+
+## Returns the full bidirectional flag value for resource [param resource_type]
+## (see [enum InventoryNet.InventoryFlags]).
+func get_inventory_flags(resource_type: int) -> int:
+	return inventory.get_flags(resource_type)
+
+
+## Sets the [code]FROM_PROXY_MASK[/code] bits of inventory flags for
+## [param resource_type] to [param value]. Proxy-authoritative: this
+## change flows proxy -> server.
+func set_inventory_flags(resource_type: int, value: int) -> void:
+	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
+	if inventory.set_flags(resource_type, value):
+		_dirty |= DIRTY_INVENTORY
+
 
 ## Sets the strategic reserve for [param type]. Proxy-authoritative:
 ## this change flows proxy -> server.
@@ -267,18 +322,19 @@ func set_network_init(data: Array) -> void:
 	closed_cycle_ops = data[8]
 	solar_occlusion = data[9]
 	time_horizon = data[10]
-	_player_id = data[11]
-	_polity_id = data[12]
-	_body_id = data[13]
-	_join_ids = data[14]
-	_market_id = data[15]
+	flags = data[11]
+	_player_id = data[12]
+	_polity_id = data[13]
+	_body_id = data[14]
+	_join_ids = data[15]
+	_market_id = data[16]
 
-	var operations_data: Array = data[16]
-	var inventory_data: Array = data[17]
-	var financials_data: Array = data[18]
-	var population_data: Array = data[19]
-	var biome_data: Array = data[20]
-	var cyberspace_data: Array = data[21]
+	var operations_data: Array = data[17]
+	var inventory_data: Array = data[18]
+	var financials_data: Array = data[19]
+	var population_data: Array = data[20]
+	var biome_data: Array = data[21]
+	var cyberspace_data: Array = data[22]
 
 	operations.set_network_init(operations_data)
 	inventory.set_network_init(inventory_data)
@@ -325,6 +381,8 @@ func _sync_server_dirty(data: Array) -> void:
 	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
 	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
 	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
+	const FROM_SERVER_MASK := FacilityFlags.FROM_SERVER_MASK
+	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
 	var offsets: PackedInt64Array = data[0]
 	var int_data: PackedInt64Array = data[1]
 	var dirty: int = offsets[0]
@@ -339,6 +397,7 @@ func _sync_server_dirty(data: Array) -> void:
 		var market_id: int = int_data[4]
 		market = proxy_bus.market_proxies[market_id] if market_id != -1 else null
 		polity = proxy_bus.player_proxies[int_data[5]]
+		flags = (flags & FROM_PROXY_MASK) | (int_data[6] & FROM_SERVER_MASK)
 		public_sector = float_data[0]
 		solar_occlusion = float_data[1]
 		time_horizon = float_data[2]
@@ -382,9 +441,11 @@ func _sync_ai_changes() -> void:
 	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
 	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
 	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
+	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
 	var data := [_dirty]
 	if _dirty & DIRTY_FACILITY:
 		data.append(gui_name)
+		data.append(flags & FROM_PROXY_MASK)
 	if _dirty & DIRTY_OPERATIONS:
 		data.append(operations.get_proxy_dirty())
 	if _dirty & DIRTY_INVENTORY:
