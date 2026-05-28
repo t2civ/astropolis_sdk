@@ -340,13 +340,9 @@ Enumeration table for names of physical strata that may occur in any body.
 
 ## mod_classes.tsv
 
-_Not yet implemented._
-
 Enumeration table for module classes.
 
 ## modules.tsv
-
-_Not yet implemented._ (Operation capacity is currently added directly without Modules.)
 
 Modules usually represent real physical components (e.g., a nuclear plant) and
 (mostly) have integral quantities. But we can have different modules that allow
