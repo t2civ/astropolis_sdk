@@ -83,11 +83,11 @@ func _update_selection(_dummy := false) -> void:
 		return
 	_is_busy = true
 	var body_name := _selection_manager.get_body_name()
-	MainThreadGlobal.call_ai_thread(_set_selections_on_ai_thread.bind(body_name))
+	MainThreadGlobal.call_proxy_thread(_set_selections_on_proxy_thread.bind(body_name))
 
 
-func _set_selections_on_ai_thread(body_name: StringName) -> void:
-	# AI thread!
+func _set_selections_on_proxy_thread(body_name: StringName) -> void:
+	# proxy thread!
 	const BODYFLAGS_STAR := IVBody.BodyFlags.BODYFLAGS_STAR
 	
 	_polities.clear()
@@ -97,25 +97,25 @@ func _set_selections_on_ai_thread(body_name: StringName) -> void:
 	_system.clear()
 	_selection_lookup.clear()
 	
-	var body: BodyInterface = Interface.get_interface_by_name(body_name)
+	var body: BodyProxy = Proxy.get_proxy_by_name(body_name)
 	if !body:
 		_is_busy = false
 		return
 	var is_star := bool(body.body_flags & BODYFLAGS_STAR)
 	_set_selections_recursive(body, is_star, true)
 	# TODO: Sort results in some sensible way
-	
+
 	_update_foldables.call_deferred()
 
 
-func _set_selections_recursive(body: BodyInterface, is_star: bool, root_call := false) -> void:
-	# AI thread!
+func _set_selections_recursive(body: BodyProxy, is_star: bool, root_call := false) -> void:
+	# proxy thread!
 	const PLAYER_CLASS_POLITY := Enums.PlayerClasses.PLAYER_CLASS_POLITY
 	const PLAYER_CLASS_AGENCY := Enums.PlayerClasses.PLAYER_CLASS_AGENCY
 	const PLAYER_CLASS_COMPANY := Enums.PlayerClasses.PLAYER_CLASS_COMPANY
-	
+
 	# add players that have a facility here
-	for facility: FacilityInterface in body.get_facilities():
+	for facility: FacilityProxy in body.get_facilities():
 		var player := facility.player
 		var player_gui_name := player.gui_name
 		if !player_gui_name: # hidden player

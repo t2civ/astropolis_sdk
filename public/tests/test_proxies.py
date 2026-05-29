@@ -1,26 +1,29 @@
 #!/usr/bin/env python3
-"""Astropolis Interface test runner.
+"""Astropolis Proxy test runner.
 
 Runs the generic I, Voyager tests first, then Astropolis-specific tests that
-interrogate Interface instances and their net component data.
+interrogate Proxy instances and their net component data.
 
 Usage:
-    python test_interfaces.py                  # game already running
-    python test_interfaces.py --launch         # start Godot automatically
-    python test_interfaces.py --economy        # include economy test (~1.25 game years)
-    python test_interfaces.py --skip-save      # skip generic save/load cycle
+    python test_proxies.py                  # game already running
+    python test_proxies.py --launch         # start Godot automatically
+    python test_proxies.py --economy        # include economy test (~1.25 game years)
+    python test_proxies.py --skip-save      # skip generic save/load cycle
 """
 
 import argparse
 import os
-import subprocess
 import sys
 import time
 
 # Import generic test infrastructure from the assistant plugin
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),
                                 "..", "..", "addons", "ivoyager_assistant", "tools"))
-from assistant_test import AssistantClient, TestRunner as GenericTestRunner
+from assistant_test import (
+    AssistantClient,
+    GodotLauncher,
+    TestRunner as GenericTestRunner,
+)
 
 
 class AstropolisTestRunner:
@@ -41,38 +44,38 @@ class AstropolisTestRunner:
             value > -negative_tolerance,
             "%s = %s (expected > %s)" % (name, value, -negative_tolerance))
 
-    def _wait_interfaces_ready(self, timeout=10.0):
-        """Poll MainThreadGlobal.interfaces_ready via get_astropolis_state.
+    def _wait_proxies_ready(self, timeout=10.0):
+        """Poll MainThreadGlobal.proxies_ready via get_astropolis_state.
 
         `IVStateManager.simulator_started` (and the `started` state flag) fire
-        before the AI thread has finished posting `add_interface` calls to the
-        main thread. `interfaces_ready` is the Astropolis-specific barrier that
-        guarantees the Interface registry has settled. See main_thread_global.gd.
+        before the proxy thread has finished posting `add_proxy` calls to the
+        main thread. `proxies_ready` is the Astropolis-specific barrier that
+        guarantees the Proxy registry has settled. See main_thread_global.gd.
         """
         start = time.monotonic()
         poll_interval = 0.1
         while time.monotonic() - start < timeout:
             resp = self.client.call("get_astropolis_state")
             result = resp.get("result", {})
-            if result.get("interfaces_ready", False):
+            if result.get("proxies_ready", False):
                 elapsed = time.monotonic() - start
-                print("  Interfaces ready after %.2fs (%d interfaces)" % (
-                    elapsed, result.get("n_interfaces", 0)))
+                print("  Proxies ready after %.2fs (%d proxies)" % (
+                    elapsed, result.get("n_proxies", 0)))
                 return True
             time.sleep(poll_interval)
         return False
 
     def run_all(self, economy=False):
-        print("\n=== Astropolis Interface Tests ===\n")
+        print("\n=== Astropolis Proxy Tests ===\n")
 
-        if not self._wait_interfaces_ready():
+        if not self._wait_proxies_ready():
             self.g.assert_true(False,
-                    "MainThreadGlobal.interfaces_ready within timeout")
+                    "MainThreadGlobal.proxies_ready within timeout")
             return
 
         self.test_astropolis_capability()
-        self.test_list_interfaces()
-        self.test_interface_info()
+        self.test_list_proxies()
+        self.test_proxy_info()
         self.test_instant_development_stats()
         self.test_short_time_stats()
         self.test_list_components()
@@ -89,29 +92,29 @@ class AstropolisTestRunner:
     def test_astropolis_capability(self):
         print("[test_astropolis_capability]")
         self.g.assert_true(
-            self.g.has_cap("astropolis_interfaces"),
+            self.g.has_cap("astropolis_proxies"),
             "AstropolisTestSuite capability registered"
         )
 
-    def test_list_interfaces(self):
-        print("[test_list_interfaces]")
-        resp = self.client.call("list_interfaces", {"has_development": True})
+    def test_list_proxies(self):
+        print("[test_list_proxies]")
+        resp = self.client.call("list_proxies", {"has_development": True})
         result = resp.get("result", {})
-        interfaces = result.get("interfaces", [])
-        names = [i["name"] for i in interfaces]
-        self.g.assert_true("PLANET_EARTH" in names, "PLANET_EARTH in interface list")
-        self.g.assert_true("JOIN_OFFWORLD" in names, "JOIN_OFFWORLD in interface list")
+        proxies = result.get("proxies", [])
+        names = [i["name"] for i in proxies]
+        self.g.assert_true("PLANET_EARTH" in names, "PLANET_EARTH in proxy list")
+        self.g.assert_true("JOIN_OFFWORLD" in names, "JOIN_OFFWORLD in proxy list")
         self.g.assert_true(
-            len(interfaces) > 2,
-            "Multiple interfaces with development (%d found)" % len(interfaces)
+            len(proxies) > 2,
+            "Multiple proxies with development (%d found)" % len(proxies)
         )
 
-    def test_interface_info(self):
-        print("[test_interface_info]")
+    def test_proxy_info(self):
+        print("[test_proxy_info]")
         for name in ("PLANET_EARTH", "JOIN_OFFWORLD"):
-            resp = self.client.call("get_interface_info", {"name": name})
+            resp = self.client.call("get_proxy_info", {"name": name})
             result = resp.get("result", {})
-            self.g.assert_true("error" not in resp, "%s interface found" % name)
+            self.g.assert_true("error" not in resp, "%s proxy found" % name)
             self.g.assert_true(result.get("has_development", False),
                                "%s has development" % name)
             self.g.assert_true(result.get("has_operations", False),
@@ -212,6 +215,13 @@ class AstropolisTestRunner:
                            "PLANET_EARTH has population component")
         self.g.assert_true(components.get("biome", {}).get("present", False),
                            "PLANET_EARTH has biome component")
+        # Regression guard: BodyProxy.get_market routes through
+        # broker.markets[0]. The broker's markets array is populated lazily
+        # via Proxy.process_ai_init; if that hook is gated on persisted
+        # state, post-load resolution silently breaks and the markets tab
+        # shows "no markets" for the body. See proxy.gd:_refs_resolved.
+        self.g.assert_true(components.get("market", {}).get("present", False),
+                           "PLANET_EARTH has market component (post-load broker resolved)")
 
         ops_info = components.get("operations", {})
         self.g.assert_true(ops_info.get("index_table") == "operations",
@@ -347,13 +357,13 @@ class AstropolisTestRunner:
         """Test error handling for invalid queries."""
         print("[test_component_errors]")
 
-        # Nonexistent interface
+        # Nonexistent proxy
         resp = self.client.call("inspect_component", {
             "name": "DOES_NOT_EXIST",
             "component": "operations",
         })
         self.g.assert_true("error" in resp or "_error" in resp.get("result", {}),
-                           "Error for nonexistent interface")
+                           "Error for nonexistent proxy")
 
         # Invalid component name
         resp = self.client.call("inspect_component", {
@@ -393,7 +403,7 @@ class AstropolisTestRunner:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Astropolis Interface Tests")
+    parser = argparse.ArgumentParser(description="Astropolis Proxy Tests")
     parser.add_argument("--host", default="127.0.0.1", help="Server host")
     parser.add_argument("--port", type=int, default=29071, help="Server port")
     parser.add_argument("--launch", action="store_true",
@@ -408,12 +418,13 @@ def main():
                         help="Skip generic save/load cycle")
     args = parser.parse_args()
 
-    godot_proc = None
+    launcher = None
     if args.launch:
         godot = args.godot or "../Godot_v4.6.2-stable_win64_console.exe"
         project = args.project or "."
         print("Launching Godot: %s --path %s" % (godot, project))
-        godot_proc = subprocess.Popen([godot, "--path", project])
+        launcher = GodotLauncher(godot, project)
+        launcher.start()
 
     client = AssistantClient(host=args.host, port=args.port)
     try:
@@ -447,8 +458,10 @@ def main():
         success = False
     finally:
         client.close()
-        if godot_proc:
-            godot_proc.wait(timeout=10)
+        if launcher:
+            launcher.shutdown_and_report()
+            if launcher.leaks:
+                success = False
 
     sys.exit(0 if success else 1)
 

@@ -7,11 +7,11 @@
 # *****************************************************************************
 extends IVAssistantTestSuite
 
-## Test suite exposing Astropolis Interface data via the assistant TCP server.
+## Test suite exposing Astropolis Proxy data via the assistant TCP server.
 ##
-## Provides methods to query Interface instances and their net component data.
-## All methods run on the main thread and access Interfaces via
-## [MainThreadGlobal.interfaces_by_name], calling only threadsafe getters.
+## Provides methods to query Proxy instances and their net component data.
+## All methods run on the main thread and access Proxies via
+## [MainThreadGlobal.proxies_by_name], calling only threadsafe getters.
 
 
 const MAX_INDEXED_ENTRIES := 500
@@ -20,8 +20,8 @@ const MAX_INDEXED_ENTRIES := 500
 func get_method_names() -> Array[String]:
 	return [
 		"get_astropolis_state",
-		"list_interfaces",
-		"get_interface_info",
+		"list_proxies",
+		"get_proxy_info",
 		"get_development_stats",
 		"list_components",
 		"inspect_component",
@@ -30,17 +30,17 @@ func get_method_names() -> Array[String]:
 
 
 func get_capabilities() -> Array[String]:
-	return ["astropolis_interfaces"]
+	return ["astropolis_proxies"]
 
 
 func dispatch(method: String, params: Dictionary) -> Variant:
 	match method:
 		"get_astropolis_state":
 			return _get_astropolis_state(params)
-		"list_interfaces":
-			return _list_interfaces(params)
-		"get_interface_info":
-			return _get_interface_info(params)
+		"list_proxies":
+			return _list_proxies(params)
+		"get_proxy_info":
+			return _get_proxy_info(params)
 		"get_development_stats":
 			return _get_development_stats(params)
 		"list_components":
@@ -57,84 +57,84 @@ func dispatch(method: String, params: Dictionary) -> Variant:
 
 func _get_astropolis_state(_params: Dictionary) -> Variant:
 	# Lightweight state probe. Clients should poll this after
-	# `simulator_started`/`started=true` and wait for `interfaces_ready=true`
-	# before querying the Interface system. See `MainThreadGlobal`.
+	# `simulator_started`/`started=true` and wait for `proxies_ready=true`
+	# before querying the Proxy system. See `MainThreadGlobal`.
 	return {
-		"interfaces_ready": MainThreadGlobal.interfaces_ready_emitted,
-		"n_interfaces": MainThreadGlobal.interfaces_by_name.size(),
+		"proxies_ready": MainThreadGlobal.proxies_ready_emitted,
+		"n_proxies": MainThreadGlobal.proxies_by_name.size(),
 	}
 
 
 # =============================================================================
 
-func _list_interfaces(params: Dictionary) -> Variant:
+func _list_proxies(params: Dictionary) -> Variant:
 	var filter_has_development: bool = params.get("has_development", false)
 	var result := []
-	for interface_name: StringName in MainThreadGlobal.interfaces_by_name:
-		var interface: Interface = MainThreadGlobal.interfaces_by_name[interface_name]
-		if !interface:
+	for proxy_name: StringName in MainThreadGlobal.proxies_by_name:
+		var proxy: Proxy = MainThreadGlobal.proxies_by_name[proxy_name]
+		if !proxy:
 			continue
-		var has_dev := interface.has_development()
+		var has_dev := proxy.has_development()
 		if filter_has_development and !has_dev:
 			continue
 		result.append({
-			"name": String(interface_name),
-			"entity_type": interface.entity_type,
+			"name": String(proxy_name),
+			"entity_type": proxy.entity_type,
 			"has_development": has_dev,
-			"gui_name": interface.gui_name,
+			"gui_name": proxy.gui_name,
 		})
-	return {"interfaces": result}
+	return {"proxies": result}
 
 
-func _get_interface_info(params: Dictionary) -> Variant:
-	var interface: Interface = _resolve_interface(params)
-	if interface == null:
-		return _interface_error
+func _get_proxy_info(params: Dictionary) -> Variant:
+	var proxy: Proxy = _resolve_proxy(params)
+	if proxy == null:
+		return _proxy_error
 	return {
-		"name": String(interface.name),
-		"entity_type": interface.entity_type,
-		"gui_name": interface.gui_name,
-		"has_development": interface.has_development(),
-		"has_markets": interface.has_markets(),
-		"has_operations": interface.get_operations() != null,
-		"has_population": interface.get_population() != null,
-		"has_biome": interface.get_biome() != null,
-		"has_cyberspace": interface.get_cyberspace() != null,
-		"has_financials": interface.get_financials() != null,
-		"has_inventory": interface.get_inventory() != null,
+		"name": String(proxy.name),
+		"entity_type": proxy.entity_type,
+		"gui_name": proxy.gui_name,
+		"has_development": proxy.has_development(),
+		"has_markets": proxy.has_markets(),
+		"has_operations": proxy.get(&"operations") != null,
+		"has_population": proxy.get(&"population") != null,
+		"has_biome": proxy.get(&"biome") != null,
+		"has_cyberspace": proxy.get(&"cyberspace") != null,
+		"has_financials": proxy.get(&"financials") != null,
+		"has_inventory": proxy.get(&"inventory") != null,
 	}
 
 
 func _get_development_stats(params: Dictionary) -> Variant:
-	var interface: Interface = _resolve_interface(params)
-	if interface == null:
-		return _interface_error
-	if !interface.has_development():
+	var proxy: Proxy = _resolve_proxy(params)
+	if proxy == null:
+		return _proxy_error
+	if !proxy.has_development():
 		return {"_error": {"code": ERR_INVALID_PARAMS,
-				"message": "Interface has no development data: %s" % params.get("name", "")}}
+				"message": "Proxy has no development data: %s" % params.get("name", "")}}
 	return {
-		"name": String(interface.name),
-		"population": interface.get_development_population(),
-		"economy": interface.get_development_economy(),
-		"power": interface.get_development_power(),
-		"constructions": interface.get_development_constructions(),
-		"manufacturing": interface.get_development_manufacturing(),
-		"information": interface.get_development_information(),
-		"computation": interface.get_development_computation(),
-		"biomass": interface.get_development_biomass(),
-		"bioproductivity": interface.get_development_bioproductivity(),
-		"biodiversity": interface.get_development_biodiversity(),
+		"name": String(proxy.name),
+		"population": proxy.get_development_population(),
+		"economy": proxy.get_development_economy(),
+		"power": proxy.get_development_power(),
+		"constructions": proxy.get_development_constructions(),
+		"manufacturing": proxy.get_development_manufacturing(),
+		"information": proxy.get_development_information(),
+		"computation": proxy.get_development_computation(),
+		"biomass": proxy.get_development_biomass(),
+		"bioproductivity": proxy.get_development_bioproductivity(),
+		"biodiversity": proxy.get_development_biodiversity(),
 	}
 
 
 func _list_components(params: Dictionary) -> Variant:
-	var interface: Interface = _resolve_interface(params)
-	if interface == null:
-		return _interface_error
+	var proxy: Proxy = _resolve_proxy(params)
+	if proxy == null:
+		return _proxy_error
 	var table_n_rows := IVTableData.table_n_rows
 	var components := {}
 
-	var ops := interface.get_operations()
+	var ops: OperationsNet = proxy.get(&"operations")
 	if ops:
 		components["operations"] = {
 			"present": true,
@@ -146,7 +146,7 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["operations"] = {"present": false}
 
-	var inv := interface.get_inventory()
+	var inv: InventoryNet = proxy.get(&"inventory")
 	if inv:
 		components["inventory"] = {
 			"present": true,
@@ -156,7 +156,7 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["inventory"] = {"present": false}
 
-	var pop := interface.get_population()
+	var pop: PopulationNet = proxy.get(&"population")
 	if pop:
 		components["population"] = {
 			"present": true,
@@ -166,23 +166,23 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["population"] = {"present": false}
 
-	components["financials"] = {"present": interface.get_financials() != null,
+	components["financials"] = {"present": proxy.get(&"financials") != null,
 			"type": "scalar"}
-	components["biome"] = {"present": interface.get_biome() != null,
+	components["biome"] = {"present": proxy.get(&"biome") != null,
 			"type": "scalar"}
-	components["cyberspace"] = {"present": interface.get_cyberspace() != null,
+	components["cyberspace"] = {"present": proxy.get(&"cyberspace") != null,
 			"type": "scalar"}
 
-	var has_exchange := interface.get_exchange() != null
-	components["exchange"] = {
-		"present": has_exchange,
-		"index_table": "resources" if has_exchange else "",
-		"n_indices": int(table_n_rows[&"resources"]) if has_exchange else 0,
+	var has_market := proxy.get_market(-1) != null
+	components["market"] = {
+		"present": has_market,
+		"index_table": "resources" if has_market else "",
+		"n_indices": int(table_n_rows[&"resources"]) if has_market else 0,
 	}
 
 	return {
-		"name": String(interface.name),
-		"entity_type": interface.entity_type,
+		"name": String(proxy.name),
+		"entity_type": proxy.entity_type,
 		"components": components,
 	}
 
@@ -197,33 +197,32 @@ func _query_component(params: Dictionary) -> Variant:
 	return _do_component_query(params, entry_filter, field_filter)
 
 
-# =============================================================================
-# Helpers
+# ********************************** HELPERS **********************************
 
 
-var _interface_error: Dictionary
+var _proxy_error: Dictionary
 
 
-func _resolve_interface(params: Dictionary) -> Interface:
-	var interface_name: String = params.get("name", "")
-	if interface_name.is_empty():
-		_interface_error = {"_error": {"code": ERR_INVALID_PARAMS,
+func _resolve_proxy(params: Dictionary) -> Proxy:
+	var proxy_name: String = params.get("name", "")
+	if proxy_name.is_empty():
+		_proxy_error = {"_error": {"code": ERR_INVALID_PARAMS,
 				"message": "'name' parameter is required"}}
 		return null
-	var interface: Interface = MainThreadGlobal.get_interface_by_name(
-			StringName(interface_name))
-	if !interface:
-		_interface_error = {"_error": {"code": ERR_INVALID_PARAMS,
-				"message": "Interface not found: %s" % interface_name}}
+	var proxy: Proxy = MainThreadGlobal.get_proxy_by_name(
+			StringName(proxy_name))
+	if !proxy:
+		_proxy_error = {"_error": {"code": ERR_INVALID_PARAMS,
+				"message": "Proxy not found: %s" % proxy_name}}
 		return null
-	return interface
+	return proxy
 
 
 func _do_component_query(params: Dictionary, entry_filter: Array,
 		field_filter: Array) -> Variant:
-	var interface: Interface = _resolve_interface(params)
-	if interface == null:
-		return _interface_error
+	var proxy: Proxy = _resolve_proxy(params)
+	if proxy == null:
+		return _proxy_error
 	var component: String = params.get("component", "")
 	if component.is_empty():
 		return {"_error": {"code": ERR_INVALID_PARAMS,
@@ -232,51 +231,51 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 
 	match component:
 		"operations":
-			var ops := interface.get_operations()
+			var ops: OperationsNet = proxy.get(&"operations")
 			if !ops:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_operations(ops, nonzero, entry_filter, field_filter)
 		"inventory":
-			var inv := interface.get_inventory()
+			var inv: InventoryNet = proxy.get(&"inventory")
 			if !inv:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_inventory(inv, nonzero, entry_filter, field_filter)
 		"population":
-			var pop := interface.get_population()
+			var pop: PopulationNet = proxy.get(&"population")
 			if !pop:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
-		"exchange":
-			var exchange := interface.get_exchange()
-			if !exchange:
-				return _no_component_error(interface, component)
-			return _read_exchange(exchange, nonzero, entry_filter, field_filter)
+		"market":
+			var market := proxy.get_market(-1)
+			if !market:
+				return _no_component_error(proxy, component)
+			return _read_market(market, nonzero, entry_filter, field_filter)
 		"financials":
-			var fin := interface.get_financials()
+			var fin: FinancialsNet = proxy.get(&"financials")
 			if !fin:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_financials(fin)
 		"biome":
-			var bio := interface.get_biome()
+			var bio: BiomeNet = proxy.get(&"biome")
 			if !bio:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_biome(bio)
 		"cyberspace":
-			var cyb := interface.get_cyberspace()
+			var cyb: CyberspaceNet = proxy.get(&"cyberspace")
 			if !cyb:
-				return _no_component_error(interface, component)
+				return _no_component_error(proxy, component)
 			return _read_cyberspace(cyb)
 
 	return {"_error": {"code": ERR_INVALID_PARAMS,
 			"message": ("Unknown component: %s (valid: operations, inventory,"
-			+ " population, exchange, financials, biome, cyberspace)")
+			+ " population, market, financials, biome, cyberspace)")
 			% component}}
 
 
-func _no_component_error(interface: Interface, component: String) -> Dictionary:
+func _no_component_error(proxy: Proxy, component: String) -> Dictionary:
 	return {"_error": {"code": ERR_INVALID_PARAMS,
-			"message": "Interface '%s' has no %s component"
-			% [interface.name, component]}}
+			"message": "Proxy '%s' has no %s component"
+			% [proxy.name, component]}}
 
 
 static func _sanitize(value: float) -> Variant:
@@ -306,8 +305,8 @@ static func _build_name_to_index(table_name: StringName) -> Dictionary:
 
 
 func _get_entry_indices(table_name: StringName, entry_filter: Array) -> Array:
-	## Returns array of [index, name_string] pairs. If entry_filter is empty,
-	## returns all indices. If entry_filter has names, returns only matching.
+	# Returns array of [index, name_string] pairs. If entry_filter is empty,
+	# returns all indices. If entry_filter has names, returns only matching.
 	var names: Array[StringName] = _get_table_names(table_name)
 	var n := names.size()
 	if entry_filter.is_empty():
@@ -393,7 +392,7 @@ func _read_operations(ops: OperationsNet, nonzero: bool,
 			break
 	return {
 		"component": "operations",
-		"run_qtr": ops.run_qtr,
+		"ordinal_qtr": ops.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -419,9 +418,9 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 			entry["ops_reserve"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
-		if _has_field("trade_reserve", field_filter):
-			var v := inv.get_trade_reserve(i)
-			entry["trade_reserve"] = _sanitize(v)
+		if _has_field("strategic_reserve", field_filter):
+			var v := inv.get_strategic_reserve(i)
+			entry["strategic_reserve"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("in_transit", field_filter):
@@ -451,7 +450,7 @@ func _read_inventory(inv: InventoryNet, nonzero: bool,
 			break
 	return {
 		"component": "inventory",
-		"run_qtr": inv.run_qtr,
+		"ordinal_qtr": inv.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -479,14 +478,14 @@ func _read_population(pop: PopulationNet, nonzero: bool,
 			break
 	return {
 		"component": "population",
-		"run_qtr": pop.run_qtr,
+		"ordinal_qtr": pop.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
 	}
 
 
-func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
+func _read_market(market: MarketProxy, nonzero: bool,
 		entry_filter: Array, field_filter: Array) -> Dictionary:
 	var indices := _get_entry_indices(&"resources", entry_filter)
 	var entries := {}
@@ -496,22 +495,22 @@ func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 		var entry := {}
 		var dominated_by_zero := true
 		if _has_field("price", field_filter):
-			var v := exchange.get_price(i)
+			var v := market.get_spot_price(i)
 			entry["price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("bid_price", field_filter):
-			var v := exchange.get_bid_price(i)
+			var v := market.get_spot_bid_price(i)
 			entry["bid_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("ask_price", field_filter):
-			var v := exchange.get_ask_price(i)
+			var v := market.get_spot_ask_price(i)
 			entry["ask_price"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
 		if _has_field("volume", field_filter):
-			var v := exchange.get_volume(i)
+			var v := market.get_spot_unit_volume(i)
 			entry["volume"] = _sanitize(v)
 			if _is_interesting(v):
 				dominated_by_zero = false
@@ -521,8 +520,8 @@ func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 		if entries.size() >= MAX_INDEXED_ENTRIES:
 			break
 	return {
-		"component": "exchange",
-		"run_qtr": exchange.run_qtr,
+		"component": "market",
+		"ordinal_qtr": market.ordinal_qtr,
 		"entries": entries,
 		"n_total": indices.size(),
 		"n_returned": entries.size(),
@@ -532,7 +531,7 @@ func _read_exchange(exchange: ExchangeInterface, nonzero: bool,
 func _read_financials(fin: FinancialsNet) -> Dictionary:
 	return {
 		"component": "financials",
-		"run_qtr": fin.run_qtr,
+		"ordinal_qtr": fin.ordinal_qtr,
 		"revenue": fin._revenue,
 		"gross_output": fin._gross_output,
 		"cost_of_goods_sold": fin._cost_of_goods_sold,
@@ -544,7 +543,7 @@ func _read_financials(fin: FinancialsNet) -> Dictionary:
 func _read_biome(bio: BiomeNet) -> Dictionary:
 	return {
 		"component": "biome",
-		"run_qtr": bio.run_qtr,
+		"ordinal_qtr": bio.ordinal_qtr,
 		"bioproductivity": bio.get_bioproductivity(),
 		"biomass": bio.get_biomass(),
 		"biodiversity": bio.get_biodiversity(),
@@ -554,7 +553,7 @@ func _read_biome(bio: BiomeNet) -> Dictionary:
 func _read_cyberspace(cyb: CyberspaceNet) -> Dictionary:
 	return {
 		"component": "cyberspace",
-		"run_qtr": cyb.run_qtr,
+		"ordinal_qtr": cyb.ordinal_qtr,
 		"computation_rate": cyb.get_computation_rate(),
 		"information": cyb.get_information(),
 	}

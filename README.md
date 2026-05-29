@@ -16,13 +16,13 @@ This 'SDK' is the base Godot project used by the author to develop Astropolis. Y
 All content data is defined in simple text data tables in [public/tables/](https://github.com/t2civ/astropolis_sdk/tree/master/public/tables) and [addons/ivoyager_core/data/solar_system/](https://github.com/ivoyager/ivoyager_core/tree/master/data/solar_system). Modders can modify or replace existing tables, or create new tables defining entirely new systems. Table row entities are _never_ hard-coded in core Astropolis (some items from '_classes.tsv' tables are 'soft'-coded in GUI which is accessible for modding). For more information about our data table system, go [here](https://github.com/ivoyager/ivoyager_table_importer).
 
 ### Program Architecture
-Astropolis has essentially a client-server architecture. AIs and GUIs are clients and communicate with servers, the non-public game internals, exclusively via 'interface' classes like PlayerInterface, FacilityInterface, BodyInterface, and so on (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/interfaces)). Game AIs are instantiations (i.e., subclasses) of these interfaces. GUIs hook up to interface classes to get display data or apply human player changes (with care for multithreading since the Interface/AI system runs in its own thread).
+Astropolis has essentially a client-server architecture. AIs and GUIs are clients and communicate with servers, the non-public game internals, exclusively via 'proxy' classes like PlayerProxy, FacilityProxy, BodyProxy, and so on (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/proxies)). Game AIs are instantiations (i.e., subclasses) of these proxies. GUIs hook up to proxy classes to get display data or apply human player changes (with care for multithreading since the Proxy/AI system runs in its own thread).
 
 
-Interface/AI classes are composed with objects Inventory, Operations, Financials, Composition, Population, Biome and Cyberspace (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/net_components)). These 'Net Components' are optimized for network data sync for multiplayer support.
+Proxy/AI classes are composed with objects Inventory, Operations, Financials, Composition, Population, Biome and Cyberspace (find [here](https://github.com/t2civ/astropolis_sdk/tree/master/public/proxy_components)). These 'Net Components' are optimized for network data sync for multiplayer support.
 
 
-Interface (base) and Net Component classes are presently coded in GDScript, but will be ported to C++ becoming GDExtension classes. Modders will then be able to code AI subclasses in GDScript, C#, C++, or any other language [supported by the Godot community](https://godotengine.org/features/).
+Proxy (base) and Net Component classes are presently coded in GDScript, but will be ported to C++ becoming GDExtension classes. Modders will then be able to code AI subclasses in GDScript, C#, C++, or any other language [supported by the Godot community](https://godotengine.org/features/).
 
 ### Installation
 

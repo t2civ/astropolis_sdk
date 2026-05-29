@@ -31,7 +31,7 @@ Notes:
 
 - **Atmosphere Processors** — Cryogenic distillation, pressure-swing adsorption, membrane separation, or centrifugal processing plants for separating target gases from planetary atmospheres. On gas giants, represent atmospheric skimming or balloon-based harvesting systems.
 - **Reservoirs & Treatment Plants** — Surface water collection, sedimentation, coagulation-flocculation, sand filtration, and disinfection facilities producing potable and industrial-grade fresh water from rivers, lakes, and artificial reservoirs.
-- **Brine Processing Plants** — Selective ion exchange, fractional crystallization, solvent extraction, and evaporation facilities for recovering dissolved minerals and salts from subsurface brines and inland saline water bodies.
+- **Brine Processing Plants** — Selective ion market, fractional crystallization, solvent extraction, and evaporation facilities for recovering dissolved minerals and salts from subsurface brines and inland saline water bodies.
 - **Quarries** — Surface extraction operations for bulk stone and loose regolith, producing construction aggregate, dimension stone, and industrial or ISRU feedstock.
 - **Mines (surface)** — Open-pit, strip, and placer mining capacity for solid resource extraction from surface strata to approximately 100 m depth. Target ore proportions adjustable over time.
 - **Mines (near-surface)** — Underground and deep open-pit mining capacity for strata at approximately 0.1–0.5 km depth, including sub-seafloor operations on continental shelves.
@@ -88,7 +88,7 @@ Notes:
 - **Metal Fabrication Works** — Cutting, welding, forming, machining, galvanizing, and assembly facilities for steel and aluminium structural products including beams, plate, pipe, pressure vessels, extrusions, and prefabricated modules.
 - **Composites Facilities** — Fiber-reinforced polymer and metal-matrix composite fabrication and assembly facilities for layup, filament winding, pultrusion, curing, and integration of composite materials into panels, overwrapped pressure vessels, fairings, and inflatable habitat shells.
 - **Textiles Mills** — Weaving, knitting, and coating facilities for high-performance fabrics including aramid, UHMWPE, carbon-fiber cloth, PTFE membranes, multilayer insulation blankets, filtration media, and spacesuit soft goods.
-- **Heavy Manufacturing Plants** — Casting, forging, machining, winding, and assembly facilities for turbines, engines, pumps, compressors, heat exchangers, generators, transformers, electric motors, and other heavy mechanical and electrical equipment.
+- **Heavy Manufacturing Plants** — Casting, forging, machining, winding, and assembly facilities for turbines, engines, pumps, compressors, heat marketrs, generators, transformers, electric motors, and other heavy mechanical and electrical equipment.
 - **Precision Manufacturing Plants** — Controlled-environment fabrication and assembly facilities for scientific instruments, medical devices, CNC machine tools, lithography systems, optical systems, and navigation hardware requiring tight tolerances and specialty materials.
 - **Electronics Factories** — Printed-circuit-board fabrication, semiconductor packaging, surface-mount assembly, display production, and system integration facilities for general-purpose computing, communications, and sensor hardware.
 - **Advanced Processor Fabs** — Extreme-ultraviolet lithography, high-bandwidth memory stacking, and advanced-packaging facilities for fabrication of high-performance tensor processors and neuromorphic computing hardware.

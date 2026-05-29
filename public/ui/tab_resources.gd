@@ -46,7 +46,7 @@ func _ready() -> void:
 func refresh() -> void:
 	if !_body_name or !_selection_name:
 		return
-	MainThreadGlobal.call_ai_thread(_get_ai_data.bind(_body_name, _selection_name))
+	MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(_body_name, _selection_name))
 
 
 ## Updates the cached selection ([param body_name] + [param selection_name])
@@ -56,44 +56,43 @@ func update_selection(body_name: StringName, selection_name: StringName) -> void
 	if _body_name != body_name or _selection_name != selection_name:
 		_body_name = body_name
 		_selection_name = selection_name
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(body_name, selection_name))
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(body_name, selection_name))
 
 
 
-# *****************************************************************************
-# AI thread !!!!
+# ******************************* PROXY THREAD ********************************
 
-func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
+func _get_proxy_data(body_name: StringName, selection_name: StringName) -> void:
 	const BODYFLAGS_SPACECRAFT := IVBody.BodyFlags.BODYFLAGS_SPACECRAFT
 	var data: Array = []
 	var polity_name := ""
 	if selection_name.begins_with("FACILITY_"):
-		var selection_interface := Interface.get_interface_by_name(selection_name)
-		polity_name = selection_interface.get_polity_name()
-	var body_interface: BodyInterface = Interface.get_interface_by_name(body_name)
-	if !body_interface:
+		var selection_proxy := Proxy.get_proxy_by_name(selection_name)
+		polity_name = selection_proxy.get_polity_name()
+	var body_proxy: BodyProxy = Proxy.get_proxy_by_name(body_name)
+	if !body_proxy:
 		_update_no_resources.call_deferred()
 		return
 
-	if !body_interface.has_strata():
-		var is_unknown := not body_interface.body_flags & BODYFLAGS_SPACECRAFT
+	if !body_proxy.has_strata():
+		var is_unknown := not body_proxy.body_flags & BODYFLAGS_SPACECRAFT
 		_update_no_resources.call_deferred(is_unknown)
 		return
-	
+
 	var stratum_polities := []
-	
-	var n_strata := body_interface.get_n_strata()
+
+	var n_strata := body_proxy.get_n_strata()
 
 	for i in n_strata:
-		var stratum_polity := body_interface.get_stratum_polity(i)
+		var stratum_polity := body_proxy.get_stratum_polity(i)
 		if polity_name and stratum_polity and polity_name != stratum_polity:
 			continue
 		if !stratum_polities.has(stratum_polity):
 			stratum_polities.append(stratum_polity)
-		var masses := body_interface.get_stratum_masses(i)
-		var total_mass := body_interface.get_stratum_total_mass(i)
-		var survey_type := body_interface.get_stratum_survey_type(i)
-		
+		var masses := body_proxy.get_stratum_masses(i)
+		var total_mass := body_proxy.get_stratum_total_mass(i)
+		var survey_type := body_proxy.get_stratum_survey_type(i)
+
 		var resources_data := []
 		# Stratum resource indexes must be converted to resource_type.
 		for j in _n_is_extraction_resources:
@@ -101,22 +100,22 @@ func _get_ai_data(body_name: StringName, selection_name: StringName) -> void:
 			if mass == 0.0:
 				continue
 			var resource_type: int = _is_extraction_resources[j]
-			var distribution_data := body_interface.get_stratum_resource_data(i, resource_type)
+			var distribution_data := body_proxy.get_stratum_resource_data(i, resource_type)
 			var resource_data := [resource_type, distribution_data]
 			resources_data.append(resource_data)
-		
+
 		resources_data.sort_custom(_sort_resources)
-		
+
 		var survey_name: StringName = _survey_substring[survey_type]
 		if !survey_name:
 			survey_name = _survey_names[survey_type]
-		
+
 		resources_data.append(total_mass)
-		resources_data.append(body_interface.get_stratum_density(i))
-		resources_data.append(body_interface.get_compostion_thickness(i))
-		resources_data.append(body_interface.get_compostion_body_radius(i))
+		resources_data.append(body_proxy.get_stratum_density(i))
+		resources_data.append(body_proxy.get_compostion_thickness(i))
+		resources_data.append(body_proxy.get_compostion_body_radius(i))
 		resources_data.append(survey_name)
-		resources_data.append(body_interface.get_stratum_stratum_type(i))
+		resources_data.append(body_proxy.get_stratum_stratum_type(i))
 		resources_data.append(stratum_polity)
 		
 		data.append(resources_data)
@@ -134,8 +133,7 @@ func _sort_resources(a: Array, b: Array) -> bool:
 	# sort on base_deposits
 	return a[1][4] > b[1][4]
 
-# *****************************************************************************
-# Main thread !!!!
+# ******************************** MAIN THREAD ********************************
 
 func _update_display(selection_name: StringName, stratum_polities: Array, data: Array) -> void:
 
@@ -329,7 +327,7 @@ class StratumFoldable extends FoldableContainer:
 			var resource_data: Array = resources_data[i]
 			var resource_type: int = resource_data[0]
 			var resource_name := _resource_names[resource_type]
-			var distribution_data: Array[float] = resource_data[1]
+			var distribution_data: PackedFloat64Array = resource_data[1]
 			var mean := distribution_data[0] * 100
 			var mean_sd := distribution_data[1] * 100
 			var dispersion := distribution_data[2]

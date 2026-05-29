@@ -9,7 +9,7 @@ class_name ITabMarkets
 extends MarginContainer
 
 ## "Markets" tab subpanel for [InfoPanel]. Shows resource prices, bid/ask,
-## and volume for the current selection's [ExchangeInterface], grouped by
+## and volume for the current selection's [MarketProxy], grouped by
 ## resource class.
 ##
 ## Tab indices follow row enumerations in [code]resource_classes.tsv[/code].
@@ -114,7 +114,7 @@ var _resource_classes_resources: Array[PackedInt32Array] = Utils.invert_many_to_
 
 
 func _ready() -> void:
-	IVStateManager.about_to_free_procedural_nodes.connect(_clear)
+	IVStateManager.about_to_free_procedural_nodes.connect(_clear_procedural)
 	visibility_changed.connect(_update_tab)
 	_selection_manager = IVSelectionManager.get_selection_manager(self)
 	_selection_manager.selection_changed.connect(_update_tab)
@@ -134,7 +134,7 @@ func _ready() -> void:
 	_update_tab()
 
 
-func _clear() -> void:
+func _clear_procedural() -> void:
 	if _selection_manager:
 		_selection_manager.selection_changed.disconnect(_update_tab)
 		_selection_manager = null
@@ -164,16 +164,16 @@ func _update_tab(_suppress_camera_move := false) -> void:
 		return
 		
 	var target_name := _selection_manager.get_name()
-	var interface := MainThreadGlobal.get_interface_by_name(target_name)
-	if !interface:
+	var proxy := MainThreadGlobal.get_proxy_by_name(target_name)
+	if !proxy:
 		_update_no_markets()
 		return
-	
-	var exchange := interface.get_exchange()
-	var inventory := interface.get_inventory()
 
-	if exchange or inventory:
-		MainThreadGlobal.call_ai_thread(_get_ai_data.bind(exchange, inventory))
+	var market := proxy.get_market(-1)
+	var has_inventory := proxy.has_inventory()
+
+	if market or has_inventory:
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(target_name, market, has_inventory))
 	else:
 		_update_no_markets()
 
@@ -183,13 +183,16 @@ func _update_no_markets() -> void:
 	_no_markets_label.show()
 
 
-# *****************************************************************************
-# AI thread !!!!
+# ******************************* PROXY THREAD ********************************
 
-func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
+func _get_proxy_data(target_name: StringName, market: MarketProxy, has_inventory: bool) -> void:
+	var proxy := Proxy.get_proxy_by_name(target_name)
+	if !proxy:
+		_update_no_markets.call_deferred()
+		return
 
-	var is_exchange := true if exchange else false
-	var is_inventory := true if inventory else false
+	var is_market := true if market else false
+	var is_inventory := has_inventory
 
 	var tab := current_tab
 	var resource_class_resources: PackedInt32Array = _resource_classes_resources[tab]
@@ -199,21 +202,21 @@ func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
 	while i < n_resources:
 
 		var resource_type: int = resource_class_resources[i]
-		var price := 0.0
-		var bid := 0.0
-		var ask := 0.0
+		var price := 0
+		var bid := 0
+		var ask := 0
 		var volume := 0.0
 		var in_stock := 0.0
 		var contracted := 0.0
 
-		if is_exchange:
-			price = exchange.get_price(resource_type)
-			bid = exchange.get_bid_price(resource_type)
-			ask = exchange.get_ask_price(resource_type)
-			volume = exchange.get_volume(resource_type)
+		if is_market:
+			price = market.get_spot_unit_price(resource_type)
+			bid = market.get_spot_bid_unit_price(resource_type)
+			ask = market.get_spot_ask_unit_price(resource_type)
+			volume = market.get_spot_unit_volume(resource_type)
 		if is_inventory:
-			in_stock = inventory.get_stock(resource_type)
-			contracted = inventory.get_contracted(resource_type)
+			in_stock = proxy.get_resource_stock(resource_type)
+			contracted = proxy.get_resource_contracted(resource_type)
 
 		data.append(resource_type)
 		data.append(price)
@@ -226,20 +229,19 @@ func _get_ai_data(exchange: ExchangeInterface, inventory: InventoryNet) -> void:
 
 
 
-	_update_tab_display.call_deferred(tab, n_resources, data, is_exchange, is_inventory)
+	_update_tab_display.call_deferred(tab, n_resources, data, is_market, is_inventory)
 	
 
-# *****************************************************************************
-# Main thread !!!!
+# ******************************** MAIN THREAD ********************************
 
 # TODO: Volume vs bid/ask toggle
 
-func _update_tab_display(tab: int, n_resources: int, data: Array, _is_exchange: bool,
+func _update_tab_display(tab: int, n_resources: int, data: Array, _is_market: bool,
 		is_inventory: bool) -> void:
-	# We convert prices and quantities to trade_unit here. We're assuming
-	# all trade_units are multipliers, but that could change (e.g., if we
-	# implement floating currencies).
-	
+	# Prices arrive in integer trade units (USD per trade_unit) — display as-is.
+	# Inventory quantities arrive in sim units and convert to trade units here.
+	# TODO: per-resource display-currency multiplier if non-USD currencies are added.
+
 	# make rows as needed
 	var vbox: VBoxContainer = _vboxes[tab]
 	var n_children := vbox.get_child_count()
@@ -262,28 +264,25 @@ func _update_tab_display(tab: int, n_resources: int, data: Array, _is_exchange: 
 			column += 1
 		vbox.add_child(hbox)
 		n_children += 1
-	
+
 	# header visibilities
 	_inventory_hdrs[tab].text = "Inventory" if is_inventory else ""
 	_contracted_hdrs[tab].text = "Contracted" if is_inventory else ""
-	
-	var currency_multiplier: float = unit_multipliers[&"$"]
-	
+
 	var i := 0
 	while i < n_resources:
 		var resource_type: int = data[i * N_DATA]
-		var price: float = data[i * N_DATA + 1]
-		var bid: float = data[i * N_DATA + 2]
-		var ask: float = data[i * N_DATA + 3]
+		var price: int = data[i * N_DATA + 1]
+		var bid: int = data[i * N_DATA + 2]
+		var ask: int = data[i * N_DATA + 3]
 		var volume: float = data[i * N_DATA + 4]
 		var in_stock: float = data[i * N_DATA + 5]
 		var contracted: float = data[i * N_DATA + 6]
-		
+
 		var trade_class: int = _trade_classes[resource_type]
 		var trade_unit: StringName = _trade_units[resource_type]
 		var unit_multiplier: float = unit_multipliers[trade_unit]
-		var price_multiplier := currency_multiplier / unit_multiplier
-		
+
 		var resource_text: String = tr(_resource_names[resource_type])
 		if _gui_ea[resource_type]:
 			resource_text += " (ea)"
@@ -291,10 +290,10 @@ func _update_tab_display(tab: int, n_resources: int, data: Array, _is_exchange: 
 			resource_text += " (" + TRADE_CLASS_TEXTS[trade_class] + trade_unit + ")"
 		var price_text := ""
 		if price and !_currency_unit[resource_type]:
-			price_text = IVQFormat.number(price / price_multiplier, 3)
+			price_text = str(price)
 		var bid_ask_text := (
-			("-" if !bid else IVQFormat.number(bid / price_multiplier, 3)) + "/"
-			+ ("-" if !ask else IVQFormat.number(ask / price_multiplier, 3))
+			("-" if !bid else str(bid)) + "/"
+			+ ("-" if !ask else str(ask))
 		)
 		var volume_text := "" if !volume else IVQFormat.number(volume, 2)
 		var in_stock_text := "" if !in_stock else IVQFormat.number(

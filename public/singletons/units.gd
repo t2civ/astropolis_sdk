@@ -42,7 +42,7 @@ extends Node
 ## not always the same as the unit dictionary key.
 
 # SI base units
-const SECOND := 1.0
+const SECOND := 1.0 # Astropolis note: Treat as hard-coded.
 const METER := 1e-3
 const KG := 1.0
 const AMPERE := 1.0
@@ -87,8 +87,8 @@ const BIT := 1.0 # TODO: Backport to I, Voyager and use in unit_multipliers
 const FLOP := 1.0 # Time integral of FLOPS
 const FLOPS := FLOP / SECOND # Same as real-world FLOPS except FP32-equivilant
 const SPP := 1.0 # biodiversity (effective species)
-const USD := 1e-6
-const Q := 1.0 # Short for the QSNINDC ;)
+const USD := 1.0  # Treat as hard-coded (this is Markets price "tick").
+const Q := 1e6 # Short for the QSNINDC ;)
 
 # ********************************************
 
