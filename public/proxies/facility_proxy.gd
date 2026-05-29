@@ -5,29 +5,23 @@
 # Copyright 2019-2026 Charlie Whitfield; ALL RIGHTS RESERVED
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
+@abstract
 class_name FacilityProxy
 extends Proxy
 
 ## [FacilityProxy] represents a [PlayerProxy]'s development at a [BodyProxy].
 ##
 ## A facility runs operations enabled by modules (see corresponding data
-## tables). A [FacilityProxy] has required components [OperationsNet],
-## [InventoryNet] and [FinancialsNet], and optional components [PopulationNet],
-## [BiomeNet], and [CyberspaceNet].[br][br]
+## tables). Server-side automations translate AI intent set here into per-tick
+## operation behavior. AI writes FROM_PROXY_MASK flag bits on [member flags],
+## on per-op operations flags, and on per-resource inventory flags; the server
+## publishes FROM_SERVER_MASK runtime signals (margin, shortage, surplus) back
+## for AI to read.
 ##
-## Server-side facility pushes changes to [FacilityProxy] and its components.
-## A few "player control" properties have reverse proxy -> server data flow.[br][br]
+## To modify AI, see [BaseAI] and the [code]*_base_ai.gd[/code] files.
 ##
-## Server-side automations translate AI intent set here into per-tick operation
-## behavior. AI writes FROM_PROXY_MASK flag bits on [member flags], on per-op
-## [member operations] flags, and on per-resource [member inventory] flags; the
-## server publishes FROM_SERVER_MASK runtime signals (margin, shortage, surplus)
-## back for AI to read.[br][br]
-##
-## To modify AI, see comments in '_base_ai.gd' files.[br][br]
-##
-## WARNING: This object is maintained on the proxy thread. Only fixed-size
-## properties (and their getters) are safe; see method comments.
+## WARNING: Lives on the proxy thread. Containers and many methods are not
+## threadsafe; accessing non-container properties is safe.
 
 
 ## Facility-level bit flags. FROM_SERVER bits (0 - 31) are signals from the
@@ -80,24 +74,12 @@ var trader: TraderProxy  ## Paired [TraderProxy]; set when TraderProxy registers
 var joins: Array[JoinProxy] = []  ## [JoinProxy] aggregates this facility belongs to.
 var market: MarketProxy  ## Set after init. Lives on markets thread!
 
-var operations := OperationsNet.new(true, true, true)  ## [OperationsNet] component.
-var inventory := InventoryNet.new(true)  ## [InventoryNet] component.
-var financials := FinancialsNet.new(true)  ## [FinancialsNet] component.
-var population: PopulationNet  ## Optional [PopulationNet] component (null when absent).
-var biome: BiomeNet  ## Optional [BiomeNet] component (null when absent).
-var cyberspace: CyberspaceNet  ## Optional [CyberspaceNet] component (null when absent).
-
 ## Body texture cached for [code]IVSelectionManager[/code] (currently the
 ## hosting body's [code]IVBody.texture_2d[/code]).
 var texture_2d: Texture2D
 
-# inited identifiers resolved later
-var _player_id := -1
-var _polity_id := -1
-var _body_id := -1
-var _join_ids: PackedInt32Array
-var _market_id := -1
 
+# ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
 	const ENTITY_FACILITY := Proxy.EntityType.ENTITY_FACILITY
@@ -113,11 +95,7 @@ func _clear_for_destruction() -> void:
 	joins.clear()
 	market = null
 	texture_2d = null
-
-
-#func process_ai_interval(_delta: float) -> void:
-#	prints(name, operations.capacities[0])
-
+	ai = null
 
 
 # ********************************* PROXY API *********************************
@@ -147,6 +125,10 @@ func has_markets() -> bool:
 	return true
 
 
+func has_inventory() -> bool:
+	return true
+
+
 func get_body_name() -> StringName:
 	return body.name
 
@@ -165,62 +147,6 @@ func get_player_class() -> int:
 
 func get_polity_name() -> StringName:
 	return polity.name
-
-
-func get_development_population(population_type := -1) -> float:
-	var total := operations.get_crew(population_type)
-	if population:
-		total += population.get_number(population_type)
-	return total
-
-
-func get_development_economy() -> float:
-	return operations.get_gross_output_lfq()
-
-
-func get_development_power() -> float:
-	return operations.get_power()
-
-
-func get_development_manufacturing() -> float:
-	return operations.get_total_manufacturing()
-
-
-func get_development_constructions() -> float:
-	return operations.get_constructions()
-
-
-func get_development_computation() -> float:
-	return operations.get_total_computation()
-
-
-func get_development_information() -> float:
-	var total := operations.get_nominal_information()
-	if cyberspace:
-		total += cyberspace.get_information()
-	return total
-
-
-func get_development_bioproductivity() -> float:
-	if biome:
-		return biome.get_bioproductivity()
-	return 0.0
-
-
-func get_development_biomass() -> float:
-	var total := operations.get_nominal_biomass()
-	if biome:
-		total += biome.get_biomass()
-	return total
-
-
-func get_development_biodiversity() -> float:
-	if biome:
-		var biodiversity := biome.get_biodiversity()
-		if biodiversity == 1.0 and get_development_population() == 0.0:
-			return 0.0
-		return biodiversity
-	return 0.0
 
 
 # Facility flags
@@ -245,80 +171,40 @@ func set_flags(value: int) -> void:
 	_dirty |= DIRTY_FACILITY
 
 
-# Operations (proxy-authoritative; reverse data flow proxy -> server)
+# Operations (proxy-authoritative; reverse data flow proxy -> server).
+# Implemented on the server-side facility proxy against its operations component.
 
-## Returns the full bidirectional flag value for operation [param operation_type]
-## (see [enum OperationsNet.OperationsFlags]).
-func get_operations_flags(operation_type: int) -> int:
-	return operations.get_flags(operation_type)
+## Returns the full bidirectional flag value for operation [param operation_type].
+@abstract func get_operations_flags(operation_type: int) -> int
 
 
 ## Sets the [code]FROM_PROXY_MASK[/code] bits of operations flags for
 ## [param operation_type] to [param value]. Proxy-authoritative: this
 ## change flows proxy -> server.
-func set_operations_flags(operation_type: int, value: int) -> void:
-	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
-	if operations.set_flags(operation_type, value):
-		_dirty |= DIRTY_OPERATIONS
+@abstract func set_operations_flags(operation_type: int, value: int) -> void
 
 
 ## Sets the target utilization for [param type]. Proxy-authoritative:
 ## this change flows proxy -> server.
-func set_operations_target_utilization(type: int, value: float) -> void:
-	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
-	if operations.set_target_utilization(type, value):
-		_dirty |= DIRTY_OPERATIONS
+@abstract func set_operations_target_utilization(type: int, value: float) -> void
 
 
-# Inventory (proxy-authoritative; reverse data flow proxy -> server)
+# Inventory (proxy-authoritative; reverse data flow proxy -> server).
+# Implemented on the server-side facility proxy against its inventory component.
 
-## Returns the full bidirectional flag value for resource [param resource_type]
-## (see [enum InventoryNet.InventoryFlags]).
-func get_inventory_flags(resource_type: int) -> int:
-	return inventory.get_flags(resource_type)
+## Returns the full bidirectional flag value for resource [param resource_type].
+@abstract func get_inventory_flags(resource_type: int) -> int
 
 
 ## Sets the [code]FROM_PROXY_MASK[/code] bits of inventory flags for
 ## [param resource_type] to [param value]. Proxy-authoritative: this
 ## change flows proxy -> server.
-func set_inventory_flags(resource_type: int, value: int) -> void:
-	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
-	if inventory.set_flags(resource_type, value):
-		_dirty |= DIRTY_INVENTORY
+@abstract func set_inventory_flags(resource_type: int, value: int) -> void
 
 
 ## Sets the strategic reserve for [param type]. Proxy-authoritative:
 ## this change flows proxy -> server.
-func set_inventory_strategic_reserve(type: int, value: float) -> void:
-	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
-	if inventory.set_strategic_reserve(type, value):
-		_dirty |= DIRTY_INVENTORY
-
-
-# Components
-
-func get_operations() -> OperationsNet:
-	return operations
-
-
-func get_inventory() -> InventoryNet:
-	return inventory
-
-
-func get_financials() -> FinancialsNet:
-	return financials
-
-
-func get_population() -> PopulationNet:
-	return population
-
-
-func get_biome() -> BiomeNet:
-	return biome
-
-
-func get_cyberspace() -> CyberspaceNet:
-	return cyberspace
+@abstract func set_inventory_strategic_reserve(type: int, value: float) -> void
 
 
 ## Returns this facility's spot [MarketProxy], or null if not yet set.
@@ -327,147 +213,3 @@ func get_cyberspace() -> CyberspaceNet:
 @warning_ignore("shadowed_variable")
 func get_market(_player_id: int) -> MarketProxy:
 	return market
-
-
-# ********************************** SYNC *************************************
-
-func set_network_init(data: Array) -> void:
-	facility_id = data[2]
-	name = data[3]
-	gui_name = data[4]
-	facility_class = data[5]
-	public_sector = data[6]
-	is_unitary = data[7]
-	closed_cycle_ops = data[8]
-	solar_occlusion = data[9]
-	time_horizon = data[10]
-	flags = data[11]
-	_player_id = data[12]
-	_polity_id = data[13]
-	_body_id = data[14]
-	_join_ids = data[15]
-	_market_id = data[16]
-
-	var operations_data: Array = data[17]
-	var inventory_data: Array = data[18]
-	var financials_data: Array = data[19]
-	var population_data: Array = data[20]
-	var biome_data: Array = data[21]
-	var cyberspace_data: Array = data[22]
-
-	operations.set_network_init(operations_data)
-	inventory.set_network_init(inventory_data)
-	financials.set_network_init(financials_data)
-
-	if population_data:
-		population = PopulationNet.new(true, true)
-		population.set_network_init(population_data)
-	if biome_data:
-		biome = BiomeNet.new(true)
-		biome.set_network_init(biome_data)
-	if cyberspace_data:
-		cyberspace = CyberspaceNet.new(true)
-		cyberspace.set_network_init(cyberspace_data)
-
-
-func process_ai_init() -> void:
-	player = proxy_bus.player_proxies[_player_id]
-	assert(player)
-	polity = proxy_bus.player_proxies[_polity_id]
-	assert(polity)
-	player.add_facility(self)
-	body = proxy_bus.body_proxies[_body_id]
-	assert(body)
-	body.add_facility(self)
-	for join_id in _join_ids:
-		var join: JoinProxy = proxy_bus.join_proxies[join_id]
-		assert(join)
-		assert(!joins.has(join))
-		joins.append(join)
-	if _market_id != -1:
-		market = proxy_bus.market_proxies[_market_id]
-		assert(market)
-	# IVSelectionManager
-	var ivbody := IVBody.bodies[body.name]
-	texture_2d = ivbody.texture_2d
-
-
-func _sync_server_dirty(data: Array) -> void:
-	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
-	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
-	const DIRTY_FINANCIALS := Proxy.DirtyFlags.DIRTY_FINANCIALS
-	const DIRTY_POPULATION := Proxy.DirtyFlags.DIRTY_POPULATION
-	const DIRTY_BIOME := Proxy.DirtyFlags.DIRTY_BIOME
-	const DIRTY_CYBERSPACE := Proxy.DirtyFlags.DIRTY_CYBERSPACE
-	const FROM_SERVER_MASK := FacilityFlags.FROM_SERVER_MASK
-	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
-	var offsets: PackedInt64Array = data[0]
-	var int_data: PackedInt64Array = data[1]
-	var dirty: int = offsets[0]
-	var k := 1 # offsets offset
-
-	if dirty & DIRTY_FACILITY:
-		var float_data: PackedFloat64Array = data[2]
-		var string_data: PackedStringArray = data[3]
-		facility_class = int_data[1]
-		is_unitary = bool(int_data[2])
-		closed_cycle_ops = bool(int_data[3])
-		var market_id: int = int_data[4]
-		market = proxy_bus.market_proxies[market_id] if market_id != -1 else null
-		polity = proxy_bus.player_proxies[int_data[5]]
-		flags = (flags & FROM_PROXY_MASK) | (int_data[6] & FROM_SERVER_MASK)
-		public_sector = float_data[0]
-		solar_occlusion = float_data[1]
-		time_horizon = float_data[2]
-		gui_name = string_data[0]
-
-	if dirty & DIRTY_OPERATIONS:
-		operations.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_INVENTORY:
-		inventory.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_FINANCIALS:
-		financials.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_POPULATION:
-		if !population:
-			population = PopulationNet.new(true, true)
-		population.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 2
-	if dirty & DIRTY_BIOME:
-		if !biome:
-			biome = BiomeNet.new(true)
-		biome.add_dirty(data, offsets[k], offsets[k + 1])
-		k += 3
-	if dirty & DIRTY_CYBERSPACE:
-		if !cyberspace:
-			cyberspace = CyberspaceNet.new(true)
-		cyberspace.add_dirty(data, offsets[k], offsets[k + 1])
-
-	assert(int_data[0] >= ordinal_qtr)
-	if int_data[0] > ordinal_qtr:
-		if ordinal_qtr == -1:
-			ordinal_qtr = int_data[0]
-		else:
-			ordinal_qtr = int_data[0]
-			process_ai_new_quarter() # after component histories have updated
-
-
-func _sync_ai_changes() -> void:
-	# Only here if _dirty != 0.
-	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
-	const DIRTY_OPERATIONS := Proxy.DirtyFlags.DIRTY_OPERATIONS
-	const DIRTY_INVENTORY := Proxy.DirtyFlags.DIRTY_INVENTORY
-	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
-	var data := [_dirty]
-	if _dirty & DIRTY_FACILITY:
-		data.append(gui_name)
-		data.append(flags & FROM_PROXY_MASK)
-	if _dirty & DIRTY_OPERATIONS:
-		data.append(operations.get_proxy_dirty())
-	if _dirty & DIRTY_INVENTORY:
-		data.append(inventory.get_proxy_dirty())
-	_dirty = 0
-	proxy_bus.emit_signal("proxy_changed", entity_type, facility_id, data)

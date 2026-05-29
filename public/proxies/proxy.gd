@@ -12,35 +12,15 @@ extends RefCounted
 ## Base class for entity proxies between AI/GUI clients and the game server.
 ##
 ## All GUI and in-game AI interaction with game internals goes through a
-## [Proxy]. Subclasses include [FacilityProxy], [PlayerProxy],
-## [BodyProxy], [JoinProxy], [TraderProxy], and
-## [MarketProxy]. Each is paired with a server-side entity that pushes
-## changes via sync methods. A few "player control" properties have reverse
-## proxy -> server data flow.
+## [Proxy]. Subclasses ([FacilityProxy], [PlayerProxy], [BodyProxy],
+## [JoinProxy], [TraderProxy], [MarketProxy], [BrokerProxy]) declare the
+## API. Sync plumbing and concrete instantiation live on the corresponding
+## server-side [code]*SvrProxy[/code] classes (nonpublic).
 ##
-## Components attached to a [Proxy] are net-sync objects: [OperationsNet],
-## [InventoryNet], [FinancialsNet], [PopulationNet], [BiomeNet],
-## [CyberspaceNet], and [StratumNet].
+## To modify AI, see [BaseAI] and the [code]*_base_ai.gd[/code] files.
 ##
-## SDK Note: This class will be ported to C++ becoming a GDExtension class. You
-## will have access to API (just like any Godot class) but the GDScript class
-## will be removed.
-##
-## To modify AI, see comments in '_base_ai.gd' files.
-##
-## Warning! This object lives and dies on the proxy thread! Containers and many
-## methods are not threadsafe. Accessing non-container properties is safe.
-##
-## TODO: @abstract methods.
-
-
-## Emitted on the proxy thread when this proxy's mirrored state changes;
-## payload is consumed by the sync layer on the receiver side. proxy thread only!
-signal proxy_changed(entity_type: int, entity_id: int, data: Array)
-
-## Emitted when persistent (saveable) data changes. Don't emit this directly;
-## mark the relevant dirty flag and let the sync layer emit.
-signal persist_data_changed(network_id: int, data: Array)
+## WARNING: Lives on the proxy thread. Containers and many methods are not
+## threadsafe; accessing non-container properties is safe.
 
 
 ## Bit flags marking which parts of a [Proxy] (and its components) are
@@ -115,8 +95,23 @@ enum TradeOrderStatus {
 	CANCELLED,
 }
 
+## Indices into the [PackedFloat64Array] rows returned by
+## [method get_module_data] and [method get_operation_data]. Rate fields may
+## be NAN where not applicable (e.g. fuel rate for a non-generator).
+enum OperationDataIndex {
+	UTILIZATION,
+	ELECTRICITY,
+	REVENUE,
+	GROSS_MARGIN,
+	FUEL_RATE,
+	EXTRACTION_RATE,
+	MASS_CONVERSION_RATE,
+	COMPUTATION,
+	N_OPERATION_DATA,
+}
 
-const INTERVAL := 7.0 * IVUnits.DAY ## Time between [method process_ai_interval] calls.
+
+const INTERVAL := 7.0 * IVUnits.DAY ## AI tick interval. See [constant BaseAI.INTERVAL].
 
 
 static var proxy_bus: ProxyBus ## Shared [ProxyBus] for proxy-thread signals and data.
@@ -137,29 +132,19 @@ var gui_name := ""  ## Display name; mutable. Empty player gui_name hides from G
 ## Quarterly clock as [code]year * 4 + (quarter - 1)[/code]. Never set for a
 ## [BodyProxy] without a facility.
 var ordinal_qtr := -1
-var last_interval := -INF  ## Time of last [method process_ai_interval] call.
-var next_interval := -INF  ## Time of next [method process_ai_interval] call.
+
+## AI paired with this proxy, or null on peers that don't run AI for this
+## entity. Read-only; managed by [code]ProxyServer[/code].
+var ai: BaseAI
 
 ## Member names persisted by save/load. Append in subclass [code]_init()[/code].
 ## Nested containers are ok; NO OBJECTS!
-var persist := [
-	&"ordinal_qtr",
-	&"last_interval",
-	&"next_interval",
-]
-
-## True if this proxy should run AI logic this frame. Read-only; managed
-## by the AI/server-control machinery.
-var use_this_ai := false
+var persist: Array[StringName] = []
 
 
+@warning_ignore_start("unused_private_class_variable") # used by subclasses
 var _dirty := 0
-@warning_ignore("unused_private_class_variable") # read by ProxyServer.
 var _refs_resolved := false
-@warning_ignore_start("unused_private_class_variable")
-var _is_local_player := false # gives GUI access
-var _is_server_ai := false
-var _is_local_use_ai := false # local player sets/unsets
 @warning_ignore_restore("unused_private_class_variable")
 
 
@@ -190,67 +175,18 @@ func _clear_for_destruction() -> void:
 	pass
 
 
-## Initializes this proxy from a server-supplied init payload. Subclasses
-## override to unpack their fields.
-func set_network_init(_data: Array) -> void:
-	pass
+## Initializes this proxy from a server-supplied init payload.
+@abstract func set_network_init(_data: Array) -> void
 
 
 ## Applies a server-supplied dirty payload, updating fields whose
-## [code]DIRTY_*[/code] flags are set. Subclasses override to unpack.
-func _sync_server_dirty(_data: Array) -> void:
-	pass
+## [code]DIRTY_*[/code] flags are set.
+@abstract func _sync_server_dirty(_data: Array) -> void
 
 
-func _sync_ai_changes() -> void:
-	_dirty = 0
-
-
-## Propagates a server-supplied delta payload (e.g. an aggregate change)
-## down through this proxy's components. Subclasses override as needed.
-func propagate_server_delta(_data: Array) -> void:
-	pass
-
-
-## Called every one to several frames during AI processing (unless excessive
-## AI processing). You probably shouldn't override this; consider
-## [method process_ai_interval] instead.
-func process_ai(time: float) -> void:
-	if time > next_interval:
-		if next_interval == -INF: # init
-			last_interval = time
-			next_interval = time + randf_range(0.0, INTERVAL) # stagger AI processing
-		else:
-			var delta := time - last_interval
-			last_interval = time
-			while next_interval < time:
-				next_interval += INTERVAL
-			process_ai_interval(delta)
-	if _dirty:
-		_sync_ai_changes()
-
-
-## Called once per process lifetime after this proxy is registered and after
-## current-frame batched-init channels have drained. Override to resolve
-## cross-proxy refs (via [member ProxyBus.proxies_by_name] or the typed
-## arrays on [ProxyBus]) and to perform one-time AI setup. Runs again on the
-## fresh post-load instance after a game load. Idempotent overrides required.
-func process_ai_init() -> void:
-	pass
-
-
-## Called once per [constant INTERVAL] during AI processing (unless excessive
-## AI processing). Most component changes happen every [constant INTERVAL],
-## so this is the recommended place for AI logic.
-func process_ai_interval(_delta: float) -> void:
-	pass
-
-
-## Called after component histories have updated for the new quarter
-## ([member ordinal_qtr] advanced). Never called for a [BodyProxy] without a
-## facility.
-func process_ai_new_quarter() -> void:
-	pass
+## Flushes proxy-side dirty state back to the server. ProxyServer calls this
+## per tick when [member _dirty] is non-zero.
+@abstract func _sync_ai_changes() -> void
 
 
 
@@ -267,53 +203,62 @@ func has_markets() -> bool:
 	return false
 
 
+## Returns true if this proxy carries inventory state (resource stocks,
+## contracts). Default false.
+func has_inventory() -> bool:
+	return false
+
+
+# Development totals. Default 0.0; the developed proxies (Facility, Player,
+# Body, Join) override with values combined from their components.
+
 ## Returns the development "population" total, optionally filtered to a
-## specific [param population_type] (-1 for total). Default 0.0.
+## specific [param population_type] (-1 for total).
 func get_development_population(_population_type := -1) -> float:
 	return 0.0
 
 
-## Returns the development "economy" total (gross output). Default 0.0.
+## Returns the development "economy" total (gross output).
 func get_development_economy() -> float:
 	return 0.0
 
 
-## Returns the development "power" total (electrical generation). Default 0.0.
+## Returns the development "power" total (electrical generation).
 func get_development_power() -> float:
 	return 0.0
 
 
-## Returns the development "manufacturing" total. Default 0.0.
+## Returns the development "manufacturing" total.
 func get_development_manufacturing() -> float:
 	return 0.0
 
 
-## Returns the development "constructions" total (mass constructed). Default 0.0.
+## Returns the development "constructions" total (mass constructed).
 func get_development_constructions() -> float:
 	return 0.0
 
 
-## Returns the development "computation" total. Default 0.0.
+## Returns the development "computation" total.
 func get_development_computation() -> float:
 	return 0.0
 
 
-## Returns the development "information" total. Default 0.0.
+## Returns the development "information" total.
 func get_development_information() -> float:
 	return 0.0
 
 
-## Returns the development "bioproductivity" total. Default 0.0.
+## Returns the development "bioproductivity" total.
 func get_development_bioproductivity() -> float:
 	return 0.0
 
 
-## Returns the development "biomass" total. Default 0.0.
+## Returns the development "biomass" total.
 func get_development_biomass() -> float:
 	return 0.0
 
 
-## Returns the development "biodiversity" metric (0.0–1.0). Default 0.0.
+## Returns the development "biodiversity" metric (0.0–1.0).
 func get_development_biodiversity() -> float:
 	return 0.0
 
@@ -353,47 +298,44 @@ func get_facilities() -> Array[Proxy]:
 	return []
 
 
-# Components
-
-## Returns the [OperationsNet] component, or null if this proxy has none.
-func get_operations() -> OperationsNet:
-	return null
-
-
-## Returns the [InventoryNet] component, or null if this proxy has none.
-func get_inventory() -> InventoryNet:
-	return null
-
-
-## Returns the [FinancialsNet] component, or null if this proxy has none.
-func get_financials() -> FinancialsNet:
-	return null
-
-
-## Returns the [PopulationNet] component, or null if this proxy has none.
-func get_population() -> PopulationNet:
-	return null
-
-
-## Returns the [BiomeNet] component, or null if this proxy has none.
-func get_biome() -> BiomeNet:
-	return null
-
-
-## Returns the [CyberspaceNet] component, or null if this proxy has none.
-func get_cyberspace() -> CyberspaceNet:
-	return null
-
-
 ## Returns the spot [MarketProxy] for [param _player_id], or null if not
 ## applicable.
 func get_market(_player_id: int) -> MarketProxy:
 	return null
 
 
-# TODO: Local player AI toggle (main thread).
-#func player_use_ai(use_ai: bool) -> void:
-#	if !_is_local_player:
-#		return
-#	_is_local_use_ai = use_ai
-#	_reset_ai()
+# Operations data (read-only). Default empty/false; the developed proxies
+# override. [method get_module_data] and [method get_operation_data] return a
+# row indexed by [enum OperationDataIndex].
+
+## True if this proxy reports per-operation financial metrics (revenue, margin).
+func has_financials() -> bool:
+	return false
+
+
+## True if [param module_type] (and any of its operations) has nonzero
+## capacity or interest at this proxy.
+func is_of_interest_module(_module_type: int) -> bool:
+	return false
+
+
+## Returns a display row for [param module_type] indexed by
+## [enum OperationDataIndex], or an empty array if this proxy has no operations.
+func get_module_data(_module_type: int) -> PackedFloat64Array:
+	return PackedFloat64Array()
+
+
+## Returns a display row for operation [param operation_type] indexed by
+## [enum OperationDataIndex], or an empty array if this proxy has no operations.
+func get_operation_data(_operation_type: int) -> PackedFloat64Array:
+	return PackedFloat64Array()
+
+
+# Inventory data (read-only). Default 0.0; FacilityProxy overrides.
+
+func get_resource_stock(_resource_type: int) -> float:
+	return 0.0
+
+
+func get_resource_contracted(_resource_type: int) -> float:
+	return 0.0

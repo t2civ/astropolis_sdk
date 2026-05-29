@@ -6,30 +6,18 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name TraderBaseAI
-extends TraderProxy
+extends BaseAI
 
 ## Default AI for traders the local player owns. Subclass to write custom
-## trader AI; the base [TraderProxy] is used for all non-owner peers.
+## trader AI by extending this class and adding
+## [code]const OVERRIDE_AI := true[/code].
 ##
 ## Strategies are declarative. Each [code]select_*_strategy()[/code] returns
 ## an [int] enum id (see [enum TraderStrategies], [enum ResourceStrategies])
 ## cached in a [code]<name>_strategy[/code] field; children read parent
-## declarations during their own selection. Per-strategy data lives in the
-## static [code]*_strategy_defs[/code] arrays as inner [Dictionary]s (empty
-## for now); parameter knobs and an optional [code]"method"[/code] key for
-## per-strategy logic overrides may grow into them. Cached selections are
-## persisted via [member Proxy.persist] so player intent survives save/load,
-## and are re-derived on each quarter tick on top of the loaded value.
-## Execution (bid/ask submission) is centralized in
-## [method process_ai_interval] — currently a placeholder pending base
-## [TraderProxy] facilities.
-##
-## Do not modify this class directly. To override the base AI locally, create
-## a new class that extends this class (or [TraderProxy]) and add
-## [code]const OVERRIDE_AI := true[/code]. Only the owning player runs the
-## extended AI; non-owner peers use the base [TraderProxy]. See
-## [PlayerCustomAI] for the extension template — the registry / select /
-## refresh pattern is the same for all three [code]BaseAI[/code] classes.
+## declarations during their own selection. Cached selections persist via
+## [member BaseAI.persist] and are re-derived on each quarter tick.
+## Execution (bid/ask submission) lives in [method process_ai_interval].
 
 
 ## Trader-posture strategies.
@@ -137,6 +125,12 @@ static var resource_strategy_defs: Array[Dictionary] = [
 ]
 
 
+static var _table_n_rows := IVTableData.table_n_rows
+
+
+var proxy: TraderProxy
+
+
 # *****************************************************************************
 # persisted
 
@@ -150,21 +144,27 @@ var resource_strategies: PackedInt32Array
 var _facility_ai: FacilityBaseAI
 
 
-
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
-	super()
 	persist.append(&"trader_strategy")
 	persist.append(&"resource_strategies")
 	var n_resources: int = _table_n_rows[&"resources"]
 	resource_strategies.resize(n_resources)
 
 
+func _clear_for_destruction() -> void:
+	proxy = null
+	_facility_ai = null
+
+
+func bind_proxy(proxy_: Proxy) -> void:
+	proxy = proxy_ as TraderProxy
+
+
 func process_ai_init() -> void:
-	super()
-	_facility_ai = facility as FacilityBaseAI
-	assert(_facility_ai, "TraderBaseAI expects facility to be FacilityBaseAI")
+	_facility_ai = proxy.facility.ai as FacilityBaseAI
+	assert(_facility_ai, "TraderBaseAI expects facility's AI to be FacilityBaseAI")
 	_facility_ai.facility_resource_strategy_changed.connect(_on_facility_resource_strategy_changed)
 
 
@@ -175,10 +175,4 @@ func process_ai_interval(_delta: float) -> void:
 # **************************** STRATEGY LISTENERS *****************************
 
 func _on_facility_resource_strategy_changed(_resource_type: int, _strategy_id: int) -> void:
-	pass
-
-
-# *************************** INCOMING MARKET CALLS ***************************
-
-func _update_ask(_data: Array) -> void:
 	pass

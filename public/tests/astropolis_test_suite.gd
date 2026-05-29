@@ -96,12 +96,12 @@ func _get_proxy_info(params: Dictionary) -> Variant:
 		"gui_name": proxy.gui_name,
 		"has_development": proxy.has_development(),
 		"has_markets": proxy.has_markets(),
-		"has_operations": proxy.get_operations() != null,
-		"has_population": proxy.get_population() != null,
-		"has_biome": proxy.get_biome() != null,
-		"has_cyberspace": proxy.get_cyberspace() != null,
-		"has_financials": proxy.get_financials() != null,
-		"has_inventory": proxy.get_inventory() != null,
+		"has_operations": proxy.get(&"operations") != null,
+		"has_population": proxy.get(&"population") != null,
+		"has_biome": proxy.get(&"biome") != null,
+		"has_cyberspace": proxy.get(&"cyberspace") != null,
+		"has_financials": proxy.get(&"financials") != null,
+		"has_inventory": proxy.get(&"inventory") != null,
 	}
 
 
@@ -134,7 +134,7 @@ func _list_components(params: Dictionary) -> Variant:
 	var table_n_rows := IVTableData.table_n_rows
 	var components := {}
 
-	var ops := proxy.get_operations()
+	var ops: OperationsNet = proxy.get(&"operations")
 	if ops:
 		components["operations"] = {
 			"present": true,
@@ -146,7 +146,7 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["operations"] = {"present": false}
 
-	var inv := proxy.get_inventory()
+	var inv: InventoryNet = proxy.get(&"inventory")
 	if inv:
 		components["inventory"] = {
 			"present": true,
@@ -156,7 +156,7 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["inventory"] = {"present": false}
 
-	var pop := proxy.get_population()
+	var pop: PopulationNet = proxy.get(&"population")
 	if pop:
 		components["population"] = {
 			"present": true,
@@ -166,11 +166,11 @@ func _list_components(params: Dictionary) -> Variant:
 	else:
 		components["population"] = {"present": false}
 
-	components["financials"] = {"present": proxy.get_financials() != null,
+	components["financials"] = {"present": proxy.get(&"financials") != null,
 			"type": "scalar"}
-	components["biome"] = {"present": proxy.get_biome() != null,
+	components["biome"] = {"present": proxy.get(&"biome") != null,
 			"type": "scalar"}
-	components["cyberspace"] = {"present": proxy.get_cyberspace() != null,
+	components["cyberspace"] = {"present": proxy.get(&"cyberspace") != null,
 			"type": "scalar"}
 
 	var has_market := proxy.get_market(-1) != null
@@ -231,17 +231,17 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 
 	match component:
 		"operations":
-			var ops := proxy.get_operations()
+			var ops: OperationsNet = proxy.get(&"operations")
 			if !ops:
 				return _no_component_error(proxy, component)
 			return _read_operations(ops, nonzero, entry_filter, field_filter)
 		"inventory":
-			var inv := proxy.get_inventory()
+			var inv: InventoryNet = proxy.get(&"inventory")
 			if !inv:
 				return _no_component_error(proxy, component)
 			return _read_inventory(inv, nonzero, entry_filter, field_filter)
 		"population":
-			var pop := proxy.get_population()
+			var pop: PopulationNet = proxy.get(&"population")
 			if !pop:
 				return _no_component_error(proxy, component)
 			return _read_population(pop, nonzero, entry_filter, field_filter)
@@ -251,17 +251,17 @@ func _do_component_query(params: Dictionary, entry_filter: Array,
 				return _no_component_error(proxy, component)
 			return _read_market(market, nonzero, entry_filter, field_filter)
 		"financials":
-			var fin := proxy.get_financials()
+			var fin: FinancialsNet = proxy.get(&"financials")
 			if !fin:
 				return _no_component_error(proxy, component)
 			return _read_financials(fin)
 		"biome":
-			var bio := proxy.get_biome()
+			var bio: BiomeNet = proxy.get(&"biome")
 			if !bio:
 				return _no_component_error(proxy, component)
 			return _read_biome(bio)
 		"cyberspace":
-			var cyb := proxy.get_cyberspace()
+			var cyb: CyberspaceNet = proxy.get(&"cyberspace")
 			if !cyb:
 				return _no_component_error(proxy, component)
 			return _read_cyberspace(cyb)

@@ -217,6 +217,7 @@ func _settings_listener(setting: StringName, value: Variant) -> void:
 
 func _get_proxy_data(target_name: StringName) -> void:
 	const PROCESS_GROUP_CONVERSION := Enums.ProcessGroup.PROCESS_GROUP_CONVERSION
+	const OpData := Proxy.OperationDataIndex
 	var data := []
 	var proxy := Proxy.get_proxy_by_name(target_name)
 	if !proxy:
@@ -224,26 +225,24 @@ func _get_proxy_data(target_name: StringName) -> void:
 		return
 
 	var tab := current_tab
-	var operations := proxy.get_operations()
-	var has_financials := operations.has_financials()
+	var has_financials := proxy.has_financials()
 
 	var modules: PackedInt32Array = _op_classes_modules[tab]
 	var n_modules := 0
 
 	for module_type in modules:
 
-		if not operations.is_of_interest_module(module_type):
+		if not proxy.is_of_interest_module(module_type):
 			continue
 
 		n_modules += 1
 
-		var utilization := operations.get_module_utilization(module_type)
-		var electricity := operations.get_module_electricity(module_type)
-		electricity /= _unit_multipliers[&"MW"]
+		var row := proxy.get_module_data(module_type)
+		var utilization := row[OpData.UTILIZATION]
+		var electricity := row[OpData.ELECTRICITY] / _unit_multipliers[&"MW"]
 		var flow := NAN
-		var revenue := operations.get_module_revenue(module_type)
-		revenue /= _unit_multipliers[&"$M/y"]
-		var margin := operations.get_module_gross_margin(module_type)
+		var revenue := row[OpData.REVENUE] / _unit_multipliers[&"$M/y"]
+		var margin := row[OpData.GROSS_MARGIN]
 
 		var module_ops: Array[int] = _module_operations[module_type]
 		var process_group: int = _operation_process_groups[module_ops[0]]
@@ -251,22 +250,18 @@ func _get_proxy_data(target_name: StringName) -> void:
 		match tab:
 			TAB_ENERGY:
 				if process_group == PROCESS_GROUP_CONVERSION:
-					flow = operations.get_module_fuel_rate(module_type)
-					flow /= _unit_multipliers[&"t/h"]
+					flow = row[OpData.FUEL_RATE] / _unit_multipliers[&"t/h"]
 			TAB_EXTRACTION:
 				electricity = -electricity
-				flow = operations.get_module_extraction_rate(module_type)
-				flow /= _unit_multipliers[&"t/h"]
+				flow = row[OpData.EXTRACTION_RATE] / _unit_multipliers[&"t/h"]
 			TAB_REFINING, TAB_CONVERSION, TAB_MANUFACTURING:
 				electricity = -electricity
-				flow = operations.get_module_mass_conversion_rate(module_type)
-				flow /= _unit_multipliers[&"t/h"]
+				flow = row[OpData.MASS_CONVERSION_RATE] / _unit_multipliers[&"t/h"]
 			TAB_BIOMES:
 				electricity = -electricity
 			TAB_SERVICES:
 				electricity = -electricity
-				flow = operations.get_module_computation(module_type)
-				flow /= _unit_multipliers[&"Pflop/s"]
+				flow = row[OpData.COMPUTATION] / _unit_multipliers[&"Pflop/s"]
 
 		var module_data := [
 			_module_names[module_type],
@@ -286,33 +281,28 @@ func _get_proxy_data(target_name: StringName) -> void:
 
 		for operation_type in module_ops:
 
-			utilization = operations.get_utilization(operation_type)
-			electricity = operations.get_electricity_rate(operation_type)
-			electricity /= _unit_multipliers[&"MW"]
+			row = proxy.get_operation_data(operation_type)
+			utilization = row[OpData.UTILIZATION]
+			electricity = row[OpData.ELECTRICITY] / _unit_multipliers[&"MW"]
 			flow = NAN
-			revenue = operations.get_revenue_rate(operation_type)
-			revenue /= _unit_multipliers[&"$M/y"]
-			margin = operations.get_gross_margin(operation_type)
+			revenue = row[OpData.REVENUE] / _unit_multipliers[&"$M/y"]
+			margin = row[OpData.GROSS_MARGIN]
 
 			match tab:
 				TAB_ENERGY:
 					if _operation_process_groups[operation_type] == PROCESS_GROUP_CONVERSION:
-						flow = operations.get_fuel_rate(operation_type)
-						flow /= _unit_multipliers[&"t/h"]
+						flow = row[OpData.FUEL_RATE] / _unit_multipliers[&"t/h"]
 				TAB_EXTRACTION:
 					electricity = -electricity
-					flow = operations.get_extraction_rate(operation_type)
-					flow /= _unit_multipliers[&"t/h"]
+					flow = row[OpData.EXTRACTION_RATE] / _unit_multipliers[&"t/h"]
 				TAB_REFINING, TAB_CONVERSION, TAB_MANUFACTURING:
 					electricity = -electricity
-					flow = operations.get_mass_conversion_rate(operation_type)
-					flow /= _unit_multipliers[&"t/h"]
+					flow = row[OpData.MASS_CONVERSION_RATE] / _unit_multipliers[&"t/h"]
 				TAB_BIOMES:
 					electricity = -electricity
 				TAB_SERVICES:
 					electricity = -electricity
-					flow = operations.get_computation(operation_type)
-					flow /= _unit_multipliers[&"Pflop/s"]
+					flow = row[OpData.COMPUTATION] / _unit_multipliers[&"Pflop/s"]
 
 			var sublabel := _operation_sublabels[operation_type]
 			if !sublabel:

@@ -6,31 +6,20 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name FacilityBaseAI
-extends FacilityProxy
+extends BaseAI
 
 ## Default AI for facilities the local player owns. Subclass to write custom
-## facility AI; the base [FacilityProxy] is used for all non-owner peers.
+## facility AI by extending this class and adding
+## [code]const OVERRIDE_AI := true[/code].
 ##
 ## Strategies are declarative. Each [code]select_*_strategy()[/code] returns
 ## an [int] enum id (see [enum FacilityStrategies],
 ## [enum FacilityResourceStrategies], [enum OperationStrategies]) cached in a
 ## [code]<name>_strategy[/code] field; children read parent declarations
-## during their own selection. Per-strategy data lives in the
-## static [code]*_strategy_defs[/code] arrays as inner [Dictionary]s (empty
-## for now); parameter knobs and an optional [code]"method"[/code] key for
-## per-strategy logic overrides may grow into them. Cached selections are
-## persisted via [member Proxy.persist] so player intent survives save/load,
-## and are re-derived on each quarter tick on top of the loaded value.
-## Execution (operation throttling, etc.) is centralized in
-## [method process_ai_interval] — currently a placeholder pending base
-## [FacilityProxy] facilities.
-##
-## Do not modify this class directly. To override the base AI locally, create
-## a new class that extends this class (or [FacilityProxy]) and add
-## [code]const OVERRIDE_AI := true[/code]. Only the owning player runs the
-## extended AI; non-owner peers use the base [FacilityProxy]. See
-## [PlayerCustomAI] for the extension template — the registry / select /
-## refresh pattern is the same for all three [code]BaseAI[/code] classes.
+## during their own selection. Cached selections persist via
+## [member BaseAI.persist] so player intent survives save/load, and are
+## re-derived on each quarter tick. Execution (operation throttling, etc.)
+## lives in [method process_ai_interval].
 
 
 ## Emitted when [member facility_strategy] changes.
@@ -136,7 +125,7 @@ enum FacilityResourceStrategies {
 ## Per-operation strategies.
 enum OperationStrategies {
 	## Delegate to server-side automation hints (the [code]FROM_SERVER_MASK[/code]
-	## half of [enum OperationsNet.OperationsFlags]); minimal AI intervention.
+	## half of operations flags); minimal AI intervention.
 	AUTO,
 	## Run when gross margin is positive; ramp up in favorable periods; idle
 	## when unprofitable. Analog: merchant power plant on the spot market.
@@ -236,6 +225,12 @@ static var operation_strategy_defs: Array[Dictionary] = [
 ]
 
 
+static var _table_n_rows := IVTableData.table_n_rows
+
+
+var proxy: FacilityProxy
+
+
 # *****************************************************************************
 # persisted
 
@@ -251,11 +246,9 @@ var operation_strategies: PackedInt32Array
 var _player_ai: PlayerBaseAI
 
 
-
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
-	super()
 	persist.append(&"facility_strategy")
 	persist.append(&"facility_resource_strategies")
 	persist.append(&"operation_strategies")
@@ -265,10 +258,18 @@ func _init() -> void:
 	operation_strategies.resize(n_operations)
 
 
+func _clear_for_destruction() -> void:
+	proxy = null
+	_player_ai = null
+
+
+func bind_proxy(proxy_: Proxy) -> void:
+	proxy = proxy_ as FacilityProxy
+
+
 func process_ai_init() -> void:
-	super()
-	_player_ai = player as PlayerBaseAI
-	assert(_player_ai, "FacilityBaseAI expects player to be PlayerBaseAI")
+	_player_ai = proxy.player.ai as PlayerBaseAI
+	assert(_player_ai, "FacilityBaseAI expects player's AI to be PlayerBaseAI")
 	_player_ai.global_strategy_changed.connect(_on_player_global_strategy_changed)
 	_player_ai.player_resource_strategy_changed.connect(_on_player_resource_strategy_changed)
 	_player_ai.player_facility_strategy_changed.connect(_on_player_facility_strategy_changed)

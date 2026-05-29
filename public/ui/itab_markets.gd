@@ -170,10 +170,10 @@ func _update_tab(_suppress_camera_move := false) -> void:
 		return
 
 	var market := proxy.get_market(-1)
-	var inventory := proxy.get_inventory()
+	var has_inventory := proxy.has_inventory()
 
-	if market or inventory:
-		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(market, inventory))
+	if market or has_inventory:
+		MainThreadGlobal.call_proxy_thread(_get_proxy_data.bind(target_name, market, has_inventory))
 	else:
 		_update_no_markets()
 
@@ -185,10 +185,14 @@ func _update_no_markets() -> void:
 
 # ******************************* PROXY THREAD ********************************
 
-func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
+func _get_proxy_data(target_name: StringName, market: MarketProxy, has_inventory: bool) -> void:
+	var proxy := Proxy.get_proxy_by_name(target_name)
+	if !proxy:
+		_update_no_markets.call_deferred()
+		return
 
 	var is_market := true if market else false
-	var is_inventory := true if inventory else false
+	var is_inventory := has_inventory
 
 	var tab := current_tab
 	var resource_class_resources: PackedInt32Array = _resource_classes_resources[tab]
@@ -211,8 +215,8 @@ func _get_proxy_data(market: MarketProxy, inventory: InventoryNet) -> void:
 			ask = market.get_spot_ask_unit_price(resource_type)
 			volume = market.get_spot_unit_volume(resource_type)
 		if is_inventory:
-			in_stock = inventory.get_stock(resource_type)
-			contracted = inventory.get_contracted(resource_type)
+			in_stock = proxy.get_resource_stock(resource_type)
+			contracted = proxy.get_resource_contracted(resource_type)
 
 		data.append(resource_type)
 		data.append(price)

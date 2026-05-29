@@ -6,31 +6,18 @@
 # Astropolis is a registered trademark of Charlie Whitfield in the US
 # *****************************************************************************
 class_name PlayerBaseAI
-extends PlayerProxy
+extends BaseAI
 
-## Default AI for the local player. Subclass to write custom player AI; the
-## base [PlayerProxy] is used for all non-owner peers.
+## Default AI for the local player. Subclass to write custom player AI by
+## extending this class and adding [code]const OVERRIDE_AI := true[/code];
+## see [PlayerCustomAI].
 ##
 ## Strategies are declarative. Each [code]select_*_strategy()[/code] returns
 ## an [int] enum id (see [enum GlobalStrategies], [enum PlayerResourceStrategies],
-## etc.) cached in a [code]<name>_strategy[/code] field or in a per-item
-## container; child AIs ([FacilityBaseAI], [TraderBaseAI]) read these
-## declarations during their own selection. Per-strategy data lives in the
-## static [code]*_strategy_defs[/code] arrays as inner [Dictionary]s (empty
-## for now); parameter knobs and an optional [code]"method"[/code] key for
-## per-strategy logic overrides may grow into them. Cached selections are
-## persisted via [member Proxy.persist] so player intent survives save/load,
-## and are re-derived on each quarter tick on top of the loaded value.
-## Execution (construction queue, diplomatic actions, etc.) is centralized
-## in [method process_ai_interval] — currently a placeholder pending base
-## [PlayerProxy] facilities.
-##
-## Do not modify this class directly. To override the base AI locally, create
-## a new class that extends this class (or [PlayerProxy]) and add
-## [code]const OVERRIDE_AI := true[/code]. Only the owning player runs the
-## extended AI; non-owner peers use the base [PlayerProxy]. See
-## [PlayerCustomAI] for the extension template — the registry / select /
-## refresh pattern is the same for all three [code]BaseAI[/code] classes.
+## etc.) cached in a [code]<name>_strategy[/code] field or per-item container;
+## child AIs ([FacilityBaseAI], [TraderBaseAI]) read these declarations
+## during their own selection. Cached selections persist via
+## [member BaseAI.persist] and are re-derived on each quarter tick.
 
 
 ## Emitted when [member global_strategy] changes.
@@ -284,6 +271,12 @@ static var counterparty_strategy_defs: Array[Dictionary] = [
 ]
 
 
+static var _table_n_rows := IVTableData.table_n_rows
+
+
+var proxy: PlayerProxy
+
+
 # *****************************************************************************
 # persisted
 
@@ -293,7 +286,7 @@ var global_strategy := 0
 var player_resource_strategies: PackedInt32Array
 ## Per-facility strategies keyed by [member FacilityProxy.facility_id]. Absent
 ## is the same as "NEUTRAL". See [enum PlayerFacilityStrategies].
-var player_facility_strategies: Dictionary[int, int] 
+var player_facility_strategies: Dictionary[int, int]
 ## Per-body strategies keyed by [member BodyProxy.body_id]. Absent is the same
 ## as "NEUTRAL". See [enum BodyStrategies].
 var body_strategies: Dictionary[int, int]
@@ -307,7 +300,6 @@ var counterparty_strategies: Dictionary[int, int]
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
-	super()
 	persist.append(&"global_strategy")
 	persist.append(&"player_resource_strategies")
 	persist.append(&"player_facility_strategies")
@@ -315,6 +307,18 @@ func _init() -> void:
 	persist.append(&"counterparty_strategies")
 	var n_resources: int = _table_n_rows[&"resources"]
 	player_resource_strategies.resize(n_resources)
+
+
+func _clear_for_destruction() -> void:
+	proxy = null
+
+
+func bind_proxy(proxy_: Proxy) -> void:
+	proxy = proxy_ as PlayerProxy
+
+
+func process_ai_init() -> void:
+	pass
 
 
 func process_ai_interval(_delta: float) -> void:
