@@ -48,9 +48,7 @@ var _spot_bid_ids: PackedInt64Array
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
-	const ENTITY_TRADER := Proxy.EntityType.ENTITY_TRADER
 	super()
-	entity_type = ENTITY_TRADER
 	persist.append(&"_spot_ask_totals")
 	persist.append(&"_spot_bid_totals")
 	var n_resources: int = _table_n_rows[&"resources"]
@@ -85,53 +83,17 @@ func get_market(_player_id: int) -> MarketProxy:
 
 ## Adds a spot sell order. [param unit_quantity] and [param unit_price] are
 ## with respect to trade unit. [param expiration] is epoch day.
-@abstract func _spot_ask(_resource_type: int, _unit_quantity: int, _unit_price: int, _expiration: int) -> void
+@abstract func _spot_ask(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void
 
 
 ## Removes a spot sell order if not processed already.
-@abstract func _cancel_spot_ask(_ask_id: int) -> void
+@abstract func _cancel_spot_ask(ask_id: int) -> void
 
 
 ## Adds a spot buy order. [param unit_quantity] and [param unit_price] are
 ## with respect to trade unit. [param expiration] is epoch day.
-@abstract func _spot_bid(_resource_type: int, _unit_quantity: int, _unit_price: int, _expiration: int) -> void
+@abstract func _spot_bid(resource_type: int, unit_quantity: int, unit_price: int, expiration: int) -> void
 
 
 ## Removes a spot buy order if not processed already.
-@abstract func _cancel_spot_bid(_bid_id: int) -> void
-
-
-# *************************** INCOMING MARKET CALLS ***************************
-
-func _update_ask(data: Array) -> void:
-	const BOOKED := TradeOrderStatus.BOOKED
-	const PARTIALLY_FILLED := TradeOrderStatus.PARTIALLY_FILLED
-	var resource_type: int = data[0]
-	var ask_id: int = data[3]
-	var ask_status: TradeOrderStatus = data[4]
-	if ask_status == BOOKED:
-		_spot_ask_ids[resource_type] = ask_id
-		return
-	var unit_quantity: int = data[1]
-	#var unit_price: int = data[2]
-	_spot_ask_totals[resource_type] -= unit_quantity
-	if ask_status != PARTIALLY_FILLED and ask_id == _spot_ask_ids[resource_type]:
-		_spot_ask_ids[resource_type] = -1
-		_spot_ask_prices[resource_type] = 0
-
-
-func _update_bid(data: Array) -> void:
-	const BOOKED := TradeOrderStatus.BOOKED
-	const PARTIALLY_FILLED := TradeOrderStatus.PARTIALLY_FILLED
-	var resource_type: int = data[0]
-	var bid_id: int = data[3]
-	var bid_status: TradeOrderStatus = data[4]
-	if bid_status == BOOKED:
-		_spot_bid_ids[resource_type] = bid_id
-		return
-	var unit_quantity: int = data[1]
-	#var unit_price: int = data[2]
-	_spot_bid_totals[resource_type] -= unit_quantity
-	if bid_status != PARTIALLY_FILLED and bid_id == _spot_bid_ids[resource_type]:
-		_spot_bid_ids[resource_type] = -1
-		_spot_bid_prices[resource_type] = 0
+@abstract func _cancel_spot_bid(bid_id: int) -> void

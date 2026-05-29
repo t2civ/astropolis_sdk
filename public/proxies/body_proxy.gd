@@ -45,12 +45,6 @@ var broker: BrokerProxy
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
-func _init() -> void:
-	const ENTITY_BODY := Proxy.EntityType.ENTITY_BODY
-	super()
-	entity_type = ENTITY_BODY
-
-
 func _clear_for_destruction() -> void:
 	parent = null
 	satellites.clear()
@@ -143,26 +137,16 @@ func get_market(player_id: int) -> MarketProxy:
 
 
 ## Registers [param satellite] under this body. Updates [member is_satellites].
-func add_satellite(satellite: BodyProxy) -> void:
-	assert(!satellites.has(satellite.name))
-	satellites[satellite.name] = satellite
-	is_satellites = true
+@abstract func add_satellite(satellite: BodyProxy) -> void
 
 
 ## Removes [param satellite] from this body. Updates [member is_satellites].
-func remove_satellite(satellite: BodyProxy) -> void:
-	satellites.erase(satellite.name)
-	is_satellites = !satellites.is_empty()
+@abstract func remove_satellite(satellite: BodyProxy) -> void
 
 
 ## Registers [param facility] at this body. Updates [member is_facilities].
-func add_facility(facility: Proxy) -> void:
-	assert(!facilities.has(facility))
-	facilities.append(facility)
-	is_facilities = true
+@abstract func add_facility(facility: Proxy) -> void
 
 
 ## Removes [param facility] from this body. Updates [member is_facilities].
-func remove_facility(facility: Proxy) -> void:
-	facilities.erase(facility)
-	is_facilities = !facilities.is_empty()
+@abstract func remove_facility(facility: Proxy) -> void

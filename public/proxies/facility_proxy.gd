@@ -48,6 +48,65 @@ enum FacilityFlags {
 }
 
 
+## Per-resource inventory bit flags. FROM_SERVER bits (0 - 31) are signals from
+## the server; FROM_PROXY bits (32 - 63) are AI commands to the server.
+enum InventoryFlags {
+	## Stock of this resource is below its operational reserve target.
+	OPS_RESERVE_BREACHED = 1 << 1,
+	## Stock of this resource is below its AI-set strategic reserve target.
+	STRATEGIC_RESERVE_BREACHED = 1 << 2,
+	## The storage class holding this resource is at or above the first
+	## throttling threshold.
+	STORAGE_SURPLUS = 1 << 3,
+	## No market spot price is established for this resource at this location.
+	PRICE_UNKNOWN = 1 << 4,
+	## Mask of all server-published signal bits.
+	FROM_SERVER_MASK = (1 << 32) - 1,
+
+	## Operations must not draw this resource below its strategic reserve.
+	PROTECT_STRATEGIC_RESERVE = 1 << 32,
+	## No operation may consume this resource (e.g., embargo, phase-out).
+	PROHIBIT_CONSUMPTION = 1 << 33,
+	## No operation may produce this resource (e.g., divestment, phase-out).
+	PROHIBIT_PRODUCTION = 1 << 34,
+	## Mask of all AI-command bits.
+	FROM_PROXY_MASK = ~((1 << 32) - 1),
+}
+
+
+## Per-operation bit flags. FROM_SERVER bits (0 - 31) are signals from the
+## server; FROM_PROXY bits (32 - 63) are AI commands to the server.
+enum OperationsFlags {
+	## This facility is equipped to run this operation.
+	CAN_HAVE = 1,
+	## The operation ran at a loss over the last interval at known prices.
+	MARGIN_NEGATIVE = 1 << 1,
+	## The operation was throttled below its intended rate last interval
+	## because an input was in short supply.
+	WAS_INPUT_LIMITED = 1 << 2,
+	## The operation was throttled below its intended rate last interval
+	## because an output's storage was nearly full.
+	WAS_STORAGE_LIMITED = 1 << 3,
+	## Mask of all server-published signal bits.
+	FROM_SERVER_MASK = (1 << 32) - 1,
+
+	## Idle the operation whenever its margin is non-positive and prices are
+	## reliable.
+	MARGIN_GATED = 1 << 32,
+	## When any of the op's outputs is below operational reserve, suspend
+	## profit-gating and ease storage throttling so the op can ramp up.
+	SHORTAGE_PRIORITY = 1 << 33,
+	## Hold the operation at a minimum baseline rate even when other
+	## automations would idle it.
+	STRATEGIC_FLOOR = 1 << 34,
+	## Hard-stop the operation when any of its outputs has insufficient
+	## storage headroom (no soft trickle).
+	CLEARANCE_LIMITED = 1 << 35,
+	## Mask of all AI-command bits.
+	FROM_PROXY_MASK = ~((1 << 32) - 1),
+}
+
+
 var facility_id := -1  ## Index into [member ProxyBus.facility_proxies].
 var facility_class := -1  ## Facility class index. Not implemented yet.
 var trader_id := -1  ## [member TraderProxy.trader_id] of this facility's paired trader.
@@ -81,12 +140,6 @@ var texture_2d: Texture2D
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
-func _init() -> void:
-	const ENTITY_FACILITY := Proxy.EntityType.ENTITY_FACILITY
-	super()
-	entity_type = ENTITY_FACILITY
-
-
 func _clear_for_destruction() -> void:
 	body = null
 	player = null
@@ -111,10 +164,7 @@ func remove() -> void:
 
 ## Sets [member gui_name] and marks the proxy dirty. Reverse-flow:
 ## proxy -> server.
-func set_gui_name(new_gui_name: String) -> void:
-	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
-	_dirty |= DIRTY_FACILITY
-	gui_name = new_gui_name
+@abstract func set_gui_name(new_gui_name: String) -> void
 
 
 func has_development() -> bool:
@@ -160,15 +210,7 @@ func get_flags() -> int:
 ## [param value], preserving the server-authoritative
 ## [code]FROM_SERVER_MASK[/code] bits. Proxy-authoritative: this change
 ## flows proxy -> server.
-func set_flags(value: int) -> void:
-	const DIRTY_FACILITY := Proxy.DirtyFlags.DIRTY_FACILITY
-	const FROM_PROXY_MASK := FacilityFlags.FROM_PROXY_MASK
-	assert((value & ~FROM_PROXY_MASK) == 0)
-	var new_value := (flags & ~FROM_PROXY_MASK) | (value & FROM_PROXY_MASK)
-	if new_value == flags:
-		return
-	flags = new_value
-	_dirty |= DIRTY_FACILITY
+@abstract func set_flags(value: int) -> void
 
 
 # Operations (proxy-authoritative; reverse data flow proxy -> server).
@@ -210,6 +252,5 @@ func set_flags(value: int) -> void:
 ## Returns this facility's spot [MarketProxy], or null if not yet set.
 ## [param _player_id] is unused for direct-routed facilities; the per-player
 ## sanctions routing happens at the Broker layer.
-@warning_ignore("shadowed_variable")
 func get_market(_player_id: int) -> MarketProxy:
 	return market

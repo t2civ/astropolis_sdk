@@ -68,9 +68,7 @@ static func _on_class_instanced() -> void:
 
 
 func _init() -> void:
-	const ENTITY_MARKET := Proxy.EntityType.ENTITY_MARKET
 	super()
-	entity_type = ENTITY_MARKET
 	if !_is_class_instanced:
 		_is_class_instanced = true
 		_on_class_instanced()
@@ -86,7 +84,6 @@ func has_markets() -> bool:
 	return true
 
 
-@warning_ignore("shadowed_variable")
 func get_market(_player_id: int) -> MarketProxy:
 	return self
 

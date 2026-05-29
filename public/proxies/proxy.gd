@@ -23,78 +23,6 @@ extends RefCounted
 ## threadsafe; accessing non-container properties is safe.
 
 
-## Bit flags marking which parts of a [Proxy] (and its components) are
-## dirty for sync.
-enum DirtyFlags {
-	DIRTY_QUARTER = 1,
-	DIRTY_FACILITY = 1 << 1,
-	DIRTY_PLAYER = 1 << 2,
-	DIRTY_BODY = 1 << 3,
-	DIRTY_JOIN = 1 << 4,
-	DIRTY_MARKET = 1 << 5,
-	DIRTY_TRADER = 1 << 6,
-	DIRTY_OPERATIONS = 1 << 7,
-	DIRTY_INVENTORY = 1 << 8,
-	DIRTY_FINANCIALS = 1 << 9,
-	DIRTY_POPULATION = 1 << 10,
-	DIRTY_BIOME = 1 << 11,
-	DIRTY_CYBERSPACE = 1 << 12,
-	DIRTY_STRATA = 1 << 13,
-	DIRTY_BROKER = 1 << 14,
-}
-
-## Entity types for sync routing or other purposes.
-enum EntityType {
-	ENTITY_FACILITY,
-	ENTITY_PLAYER,
-	ENTITY_BODY,
-	ENTITY_JOIN,
-	ENTITY_MARKET,
-	ENTITY_TRADER,
-	ENTITY_BROKER,
-	ENTITY_SERVER,
-	ENTITY_PROXY,
-	ENTITY_FACILITY_PROXY,
-	ENTITY_PLAYER_PROXY,
-	ENTITY_BODY_PROXY,
-	ENTITY_JOIN_PROXY,
-	ENTITY_MARKET_PROXY,
-	ENTITY_TRADER_PROXY,
-	ENTITY_BROKER_PROXY,
-	N_ENTITY_TYPES,
-}
-
-## Identifies which net-sync component on a [Proxy] a sync payload targets.
-enum ComponentType {
-	COMPONENT_OPERATIONS,
-	COMPONENT_INVENTORY,
-	COMPONENT_FINANCIALS,
-	COMPONENT_POPULATION,
-	COMPONENT_BIOME,
-	COMPONENT_CYBERSPACE,
-	COMPONENT_STRATUM,
-	N_COMPONENT_TYPES,
-}
-
-## Server methods that can originate from [Proxy].
-enum ProxyServerMethods {
-	SPOT_ASK,
-	SPOT_BID,
-	CANCEL_SPOT_ASK,
-	CANCEL_SPOT_BID,
-	CANCEL_ALL_SPOT_ASKS,
-	CANCEL_ALL_SPOT_BIDS,
-	N_PROXY_SERVER_METHODS,
-}
-
-## Trade order status update from Market to [TraderProxy].
-enum TradeOrderStatus {
-	BOOKED,
-	FILLED,
-	PARTIALLY_FILLED,
-	CANCELLED,
-}
-
 ## Indices into the [PackedFloat64Array] rows returned by
 ## [method get_module_data] and [method get_operation_data]. Rate fields may
 ## be NAN where not applicable (e.g. fuel rate for a non-generator).
@@ -126,7 +54,7 @@ static var _table_n_rows: Dictionary = IVTableData.table_n_rows
 
 
 var proxy_id := -1  ## Index into [member ProxyBus.proxies].
-var entity_type := -1  ## See [enum EntityType]. Set by subclass [code]_init()[/code].
+var entity_type := -1  ## Entity type tag; set by the server-side proxy.
 var name := &""  ## Unique, immutable identifier (e.g. [code]&"PLAYER_NASA"[/code]).
 var gui_name := ""  ## Display name; mutable. Empty player gui_name hides from GUI.
 ## Quarterly clock as [code]year * 4 + (quarter - 1)[/code]. Never set for a
@@ -175,17 +103,15 @@ func _clear_for_destruction() -> void:
 	pass
 
 
-## Initializes this proxy from a server-supplied init payload.
-@abstract func set_network_init(_data: Array) -> void
+## Initializes this proxy from a server-supplied init payload. Modders: Don't touch this!
+@abstract func set_network_init(data: Array) -> void
 
 
-## Applies a server-supplied dirty payload, updating fields whose
-## [code]DIRTY_*[/code] flags are set.
-@abstract func _sync_server_dirty(_data: Array) -> void
+## Applies a server-supplied dirty payload. Modders: Don't touch this!
+@abstract func _sync_server_dirty(data: Array) -> void
 
 
-## Flushes proxy-side dirty state back to the server. ProxyServer calls this
-## per tick when [member _dirty] is non-zero.
+## Flushes proxy-side dirty state back to the server. Modders: Don't touch this!
 @abstract func _sync_ai_changes() -> void
 
 

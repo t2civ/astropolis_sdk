@@ -19,7 +19,7 @@ extends Proxy
 ## WARNING: Lives on the proxy thread. Containers and many methods are not
 ## threadsafe; accessing non-container properties is safe.
 
-const MAX_MARKETS_PER_BODY := 5 ## Must match Broker.MAX_MARKETS_PER_BODY.
+const MAX_MARKETS_PER_BODY := 5
 
 var broker_id := -1  ## Index into [member ProxyBus.broker_proxies].
 var body: BodyProxy  ## Hosting [BodyProxy]. Immutable post-init.
@@ -31,9 +31,7 @@ var markets: Array[MarketProxy]
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
 func _init() -> void:
-	const ENTITY_BROKER := Proxy.EntityType.ENTITY_BROKER
 	super()
-	entity_type = ENTITY_BROKER
 	markets.resize(MAX_MARKETS_PER_BODY)
 
 
@@ -46,6 +44,4 @@ func _clear_for_destruction() -> void:
 # ********************************* PROXY API *********************************
 
 ## Returns the spot [MarketProxy] for [param _player_id]. Thread-safe.
-@warning_ignore("shadowed_variable")
-func get_market(_player_id: int) -> MarketProxy:
-	return markets[0]
+@abstract func get_market(player_id: int) -> MarketProxy

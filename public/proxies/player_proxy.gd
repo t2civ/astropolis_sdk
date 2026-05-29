@@ -35,12 +35,6 @@ var facilities: Array[Proxy] = []
 
 # ************************* VIRTUAL & IMPLEMENTATION **************************
 
-func _init() -> void:
-	const ENTITY_PLAYER := Proxy.EntityType.ENTITY_PLAYER
-	super()
-	entity_type = ENTITY_PLAYER
-
-
 func _clear_for_destruction() -> void:
 	polity = null
 	facilities.clear()
@@ -71,14 +65,9 @@ func get_facilities() -> Array[Proxy]:
 
 
 ## Registers [param facility] under this player. Marks the player "alive".
-func add_facility(facility: Proxy) -> void:
-	assert(!facilities.has(facility))
-	facilities.append(facility)
-	is_facilities = true
+@abstract func add_facility(facility: Proxy) -> void
 
 
 ## Removes [param facility] from this player. Updates [member is_facilities]
 ## to reflect whether the player still owns any facilities.
-func remove_facility(facility: Proxy) -> void:
-	facilities.erase(facility)
-	is_facilities = !facilities.is_empty()
+@abstract func remove_facility(facility: Proxy) -> void

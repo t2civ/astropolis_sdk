@@ -57,14 +57,6 @@ var join_id := -1  ## Index into [member ProxyBus.join_proxies].
 var join_depth := 0
 
 
-# ************************* VIRTUAL & IMPLEMENTATION **************************
-
-func _init() -> void:
-	const ENTITY_JOIN := Proxy.EntityType.ENTITY_JOIN
-	super()
-	entity_type = ENTITY_JOIN
-
-
 # ********************************* PROXY API *********************************
 
 func has_development() -> bool:
